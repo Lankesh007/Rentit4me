@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "174037767631",
+    "project_id": "rentit4me-ee4bc",
+    "storage_bucket": "rentit4me-ee4bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174037767631:android:0a2d1e68d51fdb80282eba",
+        "android_client_info": {
+          "package_name": "com.rentNew.renteeforme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174037767631-kjo3osd064adq6sadkc4f41vbjd1evnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6idw4F9MNyBhXDkaU39SG-NUm5Y9nSSw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174037767631-kjo3osd064adq6sadkc4f41vbjd1evnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
