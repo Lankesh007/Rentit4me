@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html/parser.dart';
@@ -15,11 +14,13 @@ import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class ProductEditScreen extends StatefulWidget {
   String productid;
-  ProductEditScreen({this.productid});
+  ProductEditScreen({Key key, this.productid}) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<ProductEditScreen> createState() => _ProductEditScreenState(productid);
 }
 
