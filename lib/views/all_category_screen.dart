@@ -22,11 +22,10 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
   List categorylistData = [];
   String categoryslugname;
 
-  bool _check = false;
+  bool check = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getData();
   }
@@ -182,7 +181,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
         print(category.toString());
         print(myProducts.toString());
 
-        _check = true;
+        check = true;
       });
     }
   }

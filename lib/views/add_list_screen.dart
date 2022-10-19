@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, missing_return, deprecated_member_use
 
 import 'dart:developer';
 import 'dart:io';
@@ -44,8 +44,6 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
   var items = ['Select Location', 'All Cities', 'Same As Profile', 'Manually'];
 
   bool _termcondition = false;
-  bool _sms = false;
-  bool _email = false;
   String category;
   String subcategory;
   String title;

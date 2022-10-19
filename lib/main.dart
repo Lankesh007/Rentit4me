@@ -23,7 +23,6 @@ void main() async {
   //   badge: true,
   //   sound: true,
   // );
-
   runApp(const MyApp());
 }
 

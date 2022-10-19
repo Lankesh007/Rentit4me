@@ -15,7 +15,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/billing_and_taxation.dart';
-import 'package:rentit4me_new/views/business_detail_screen.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/make_payment_screen.dart';
 import 'package:rentit4me_new/views/select_membership_screen.dart';
@@ -55,7 +54,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   String businessName = '';
   String initialtrustedbadge = "Select";
   String initialIdProof = "Select";
-  List _badgedata = ["Select", "Yes", "No"];
+  final List _badgedata = ["Select", "Yes", "No"];
 
   String adharcarddoc = "";
   TextEditingController address = TextEditingController();
@@ -206,7 +205,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               }).toList(),
                               onChanged: (value) {
                                 if (value != "Select Country") {
-                                  countrylistData.forEach((element) {
+                                  for (var element in countrylistData) {
                                     if (element['name'].toString() == value) {
                                       setState(() {
                                         selectedCountry = value;
@@ -218,7 +217,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                         kyc = false;
                                       });
                                     }
-                                  });
+                                  }
                                 } else {
                                   showToast("Select Country");
                                 }
@@ -251,7 +250,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                             }).toList(),
                             onChanged: (value) {
                               if (value != "Select State") {
-                                statelistData.forEach((element) {
+                                for (var element in statelistData) {
                                   if (element['name'].toString() == value) {
                                     setState(() {
                                       selectedState = value;
@@ -260,7 +259,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                       selectedCity = 'Select City';
                                     });
                                   }
-                                });
+                                }
                               } else {
                                 showToast("Select State");
                               }
@@ -292,14 +291,14 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                             }).toList(),
                             onChanged: (value) {
                               if (value != "Select City") {
-                                citylistData.forEach((element) {
+                                for (var element in citylistData) {
                                   if (element['name'].toString() == value) {
                                     setState(() {
                                       selectedCity = value;
                                       city_id = element['id'].toString();
                                     });
                                   }
-                                });
+                                }
                               } else {
                                 showToast("Select City");
                               }
@@ -1324,13 +1323,13 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         _loading = false;
         statelistData.addAll(list);
 
-        statelistData.forEach((element) {
+        for (var element in statelistData) {
           setState(() {
             stateId = element['id'].toString();
             log("stateId---->$stateId");
             _getCityData(stateId);
           });
-        });
+        }
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');

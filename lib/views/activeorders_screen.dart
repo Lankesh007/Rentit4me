@@ -1,8 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, use_build_context_synchronously, deprecated_member_use, missing_return
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +27,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
   String startdate = "From Date";
   String enddate = "To Date";
-  static const platform = const MethodChannel("razorpay_flutter");
+  static const platform = MethodChannel("razorpay_flutter");
 
   Razorpay _razorpay;
 
@@ -106,7 +105,6 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -144,8 +142,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 
-                  20,
+                  height: 20,
                 ),
                 Card(
                   elevation: 4.0,
@@ -262,7 +259,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                                   "Please enter your search or select date");
                             } else {
                               if (searchvalue == "Enter order id" ||
-                                  searchvalue.length == 0 ||
+                                  searchvalue.isEmpty ||
                                   searchvalue.isEmpty) {
                                 _myactiveorderslistByDate();
                               } else {
@@ -293,7 +290,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Container(
+                SizedBox(
                   height: size.height * 0.50,
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
@@ -633,7 +630,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                                                                             context,
                                                                         StateSetter
                                                                             setState) {
-                                                              return Container(
+                                                              return SizedBox(
                                                                 height: MediaQuery.of(
                                                                             context)
                                                                         .size
@@ -789,7 +786,6 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                                                                             .width,
                                                                         child: ElevatedButton(
                                                                             onPressed: () async {
-                                                                              SharedPreferences pref = await SharedPreferences.getInstance();
                                                                               map = {};
                                                                               setState(() {
                                                                                 map["user_id"] = prefs.getString('userid');
@@ -886,7 +882,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
     );
   }
 
-  Widget _getaction(String statusvalue) {
+  Widget getaction(String statusvalue) {
     if (statusvalue == "3") {
       return Container(
         padding: EdgeInsets.all(4.0),

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, use_build_context_synchronously, deprecated_member_use
 
 import 'dart:convert';
 
@@ -658,6 +658,7 @@ class _MakeEditOfferScreenState extends State<MakeEditOfferScreen> {
       use24HourFormat: false,
       locale: Locale('en', 'US'),
       icon: Icon(Icons.calendar_today_sharp, size: 20),
+      // ignore: missing_return
       validator: (val) {
         setState(() {
           startDate.text = val;

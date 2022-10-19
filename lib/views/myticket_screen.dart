@@ -1,4 +1,5 @@
-import 'dart:ui';
+
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -27,7 +28,6 @@ class _MyticketScreenState extends State<MyticketScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _allticketlist();
   }
@@ -176,7 +176,7 @@ class _MyticketScreenState extends State<MyticketScreen> {
                                   "Please enter your search or select date");
                             } else {
                               if (searchvalue == "Enter Subject" ||
-                                  searchvalue.trim().length == 0 ||
+                                  searchvalue.trim().isEmpty ||
                                   searchvalue.trim().isEmpty) {
                                 _allticketlistByDate();
                               } else {
@@ -206,7 +206,7 @@ class _MyticketScreenState extends State<MyticketScreen> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: size.height * 0.50,
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
@@ -487,10 +487,11 @@ class _MyticketScreenState extends State<MyticketScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         startdate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _selectEndtDate(BuildContext context) async {
@@ -524,9 +525,10 @@ class _MyticketScreenState extends State<MyticketScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         enddate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 }

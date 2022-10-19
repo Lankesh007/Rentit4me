@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use, unused_catch_clause, unrelated_type_equality_checks
 
 import 'dart:convert';
 import 'dart:developer';
@@ -240,7 +240,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       children: [
                                         myads == null || myads == ""
                                             ? SizedBox()
-                                            : Text("$myads",
+                                            : Text(myads,
                                                 style: TextStyle(
                                                     color: kPrimaryColor,
                                                     fontSize: 16,
@@ -319,7 +319,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
+                                children: const [
                                   // Container(
                                   //   width: size.width * 0.40,
                                   //   child: Row(
@@ -2110,7 +2110,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userid');
-    var url = "https://rentit4me.com/api/basic-profile-update";
+    var url = Apis.basicProfileUpdateApi;
 
     var bodyMap = {
       "id": userId.toString(),
@@ -2213,7 +2213,9 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           fontSize: 16.0,
         );
       }
-    } on Exception catch (e) {}
+    } on Exception catch (e) {
+      return NullThrownError();
+    }
     setState(() {
       buttonLoading = false;
     });

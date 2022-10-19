@@ -1,4 +1,5 @@
-import 'dart:convert';
+// ignore_for_file: deprecated_member_use
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -12,7 +13,7 @@ class PendingStatusScreen extends StatefulWidget {
 }
 
 class _PendingStatusScreenState extends State<PendingStatusScreen> {
-  bool _loading = false;
+  bool loading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String _connectionStatus = 'Unknown';
@@ -20,7 +21,6 @@ class _PendingStatusScreenState extends State<PendingStatusScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initConnectivity();
   }
@@ -83,7 +83,7 @@ class _PendingStatusScreenState extends State<PendingStatusScreen> {
         centerTitle: true,
       ),
       body: ModalProgressHUD(
-        inAsyncCall: _loading,
+        inAsyncCall: loading,
         color: kPrimaryColor,
         child: SingleChildScrollView(
           child: Padding(

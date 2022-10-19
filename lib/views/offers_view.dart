@@ -2,7 +2,7 @@
 
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:rentit4me_new/views/OfferRecievedScreen.dart';
+import 'package:rentit4me_new/views/offer_recieved_screen.dart';
 import 'package:rentit4me_new/views/offer_made_screen.dart';
 
 class OffersViewScreen extends StatefulWidget {

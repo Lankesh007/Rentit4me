@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -26,7 +28,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _myorderslist();
 
@@ -188,7 +189,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                               showToast("Please enter order id or select date");
                             } else {
                               if (searchvalue == "Enter order id" ||
-                                  searchvalue.length == 0 ||
                                   searchvalue.isEmpty) {
                                 _myorderslistByDate();
                               } else {
@@ -198,6 +198,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                           },
                           child: Card(
                             elevation: 8.0,
+
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -219,7 +220,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Container(
+                SizedBox(
                   height: size.height * 0.50,
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
@@ -349,9 +350,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                 Padding(
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
-                                        "Order Id : " +
-                                            myorderslist[index]['order_id']
-                                                .toString(),
+                                        "Order Id : ${myorderslist[index]['order_id']}",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500))),
@@ -371,9 +370,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                         },
                                         child: SizedBox(
                                             width: size.width * 0.60,
-                                            child: Text("Product Name : " +
-                                                myorderslist[index]['title']
-                                                    .toString()))),
+                                            child: Text("Product Name : ${myorderslist[index]['title']}"))),
                                     SizedBox(width: 4.0),
                                     myorderslist[index]["status"].toString() ==
                                             "delivered"
@@ -411,9 +408,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Quantity: " +
-                                          myorderslist[index]['quantity']
-                                              .toString()),
+                                      Text("Quantity: ${myorderslist[index]['quantity']}"),
                                       myorderslist[index]['period']
                                                       .toString() ==
                                                   "" ||
@@ -421,17 +416,13 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                   null
                                           ? SizedBox()
                                           : Text(
-                                              "Duration: " +
-                                                  myorderslist[index]['period']
-                                                      .toString() +
-                                                  " " +
-                                                  _getrenttype(
+                                              "Duration: ${myorderslist[index]['period']} ${_getrenttype(
                                                       myorderslist[index]
                                                               ['period']
                                                           .toString(),
                                                       myorderslist[index]
                                                               ['rent_type_name']
-                                                          .toString()),
+                                                          .toString())}",
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 14)),
@@ -446,9 +437,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Rent type: " +
-                                          myorderslist[index]['rent_type_name']
-                                              .toString()),
+                                      Text("Rent type: ${myorderslist[index]['rent_type_name']}"),
                                       myorderslist[index]['status']
                                                       .toString() ==
                                                   "pending" ||
@@ -456,9 +445,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                       .toString() ==
                                                   "scheduler pickup"
                                           ? Text("Status: Delivery Pending")
-                                          : Text("Status: " +
-                                              myorderslist[index]['status']
-                                                  .toString()),
+                                          : Text("Status: ${myorderslist[index]['status']}"),
                                     ],
                                   ),
                                 )
@@ -488,14 +475,12 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     final body = {
       "id": prefs.getString('userid'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + myorders),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + myorders), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {

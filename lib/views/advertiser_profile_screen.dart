@@ -1,8 +1,9 @@
+// ignore_for_file: must_be_immutable, no_logic_in_create_state
+
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
@@ -10,7 +11,7 @@ import 'package:rentit4me_new/views/product_detail_screen.dart';
 
 class AdvertiserProfileScreen extends StatefulWidget {
   String advertiserid;
-  AdvertiserProfileScreen({this.advertiserid});
+  AdvertiserProfileScreen({Key key, this.advertiserid}) : super(key: key);
 
   @override
   State<AdvertiserProfileScreen> createState() =>
@@ -26,7 +27,7 @@ class _AdvertiserProfileScreenState extends State<AdvertiserProfileScreen> {
 
   var focusNode = FocusNode();
 
-  bool _loading = false;
+  bool loading = false;
   String _profilepath = "";
 
   String myads = "";
@@ -46,7 +47,6 @@ class _AdvertiserProfileScreenState extends State<AdvertiserProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getProfile(advertiserid);
     _getAdviserAdProducts(advertiserid);
@@ -93,7 +93,7 @@ class _AdvertiserProfileScreenState extends State<AdvertiserProfileScreen> {
                             ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(10)),
-                              child: Container(
+                              child: SizedBox(
                                 height: 45,
                                 width: 45,
                                 child: CachedNetworkImage(
@@ -521,7 +521,7 @@ class _AdvertiserProfileScreenState extends State<AdvertiserProfileScreen> {
                             ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
-                              child: Container(
+                              child: SizedBox(
                                 height: 45,
                                 width: 45,
                                 child: CachedNetworkImage(
@@ -578,12 +578,12 @@ class _AdvertiserProfileScreenState extends State<AdvertiserProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    adviseradslist.isEmpty || adviseradslist.length == 0
+                    adviseradslist.isEmpty
                         ? const SizedBox()
                         : Padding(
                             padding:
                                 EdgeInsets.only(left: 15, top: 10, right: 15),
-                            child: adviseradslist.length == 0
+                            child: adviseradslist.isEmpty
                                 ? const SizedBox(height: 0)
                                 : GridView.builder(
                                     shrinkWrap: true,

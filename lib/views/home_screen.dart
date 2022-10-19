@@ -1,4 +1,4 @@
-// ignore_for_file: sort_child_properties_last, use_build_context_synchronously
+// ignore_for_file: sort_child_properties_last, use_build_context_synchronously, prefer_interpolation_to_compose_strings, library_private_types_in_public_api
 
 import 'dart:convert';
 import 'dart:developer';
@@ -169,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Container(
+          content: SizedBox(
             height: MediaQuery.of(context).size.height * 0.4,
             child: SingleChildScrollView(
               child: Column(
@@ -1439,7 +1439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.40,
                                     width: MediaQuery.of(context).size.width,
@@ -1459,7 +1459,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   ),
-                                  Container(
+                                  SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.23,
                                     width: MediaQuery.of(context).size.width,
@@ -1492,7 +1492,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
@@ -1506,7 +1506,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fit: BoxFit.fill,
                                           ),
                                         ),
-                                        Container(
+                                        SizedBox(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
@@ -1828,7 +1828,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 10.0, top: 5.0, bottom: 5.0, right: 10.0),
-                        child: Container(
+                        child: SizedBox(
                           height: 200,
                           width: double.infinity,
                           child: Container(

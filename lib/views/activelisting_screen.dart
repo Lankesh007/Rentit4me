@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'dart:developer';
 
@@ -871,7 +871,6 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
 
   Future<void> _postboost(String id) async {
     print(id);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });

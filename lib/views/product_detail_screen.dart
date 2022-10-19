@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, must_be_immutable, no_logic_in_create_state, unused_field, use_build_context_synchronously, missing_return
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, must_be_immutable, no_logic_in_create_state, unused_field, use_build_context_synchronously, missing_return, deprecated_member_use
 
 import 'dart:convert';
 import 'dart:developer';
@@ -45,20 +45,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String renttype;
   String renttypeid;
   String useramount;
-
+  bool apiLoading = false;
   String queryId;
   String address;
   String price;
   String email;
-
   bool _checkData = false;
   bool _checkuser = false;
-
   String renttypename;
   String renteramount;
   String productamount;
   String securityamount;
-
   String negotiable;
   double totalrent = 0;
   double totalsecurity = 0;
@@ -66,16 +63,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   double conviencechargeper = 0;
   double conviencevalue = 0;
   String days;
-
   List<dynamic> rentpricelist = [];
   List<String> renttypelist = [];
-
   Map<String, dynamic> likedadproductlist = {};
-
   String productQty;
   String startDate = "From Date";
   String actionbtn;
-
   String capitalize(str) {
     return "${str[0].toUpperCase()}${str.substring(1).toLowerCase()}";
   }
@@ -112,9 +105,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _getData();
     super.initState();
     initializeDateFormatting();
-
-    // init();
-
     _getproductDetail(productid);
     _getcheckapproveData();
     _getmakeoffer(productid);
@@ -125,13 +115,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   _getgooglelocation() async {
     Position position = await _determinePosition();
 
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+    googleMapController.animateCamera(
+      CameraUpdate.newCameraPosition(
         CameraPosition(
-            target: LatLng(position.latitude, position.longitude), zoom: 14)));
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 14,
+        ),
+      ),
+    );
     markers.clear();
-    markers.add(Marker(
+    markers.add(
+      Marker(
         markerId: const MarkerId('currentLocation'),
-        position: LatLng(position.latitude, position.longitude)));
+        position: LatLng(position.latitude, position.longitude),
+      ),
+    );
     setState(() {});
   }
 
@@ -182,272 +180,233 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         title: Text("Detail", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
-      body: _checkData == false
+      body: apiLoading == true
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 300,
-                      width: double.infinity,
-                      child: CachedNetworkImage(
-                        imageUrl: productimage,
-                        fit: BoxFit.fill,
-                        errorWidget: (context, url, error) =>
-                            Image.asset('assets/images/no_image.jpg'),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      padding: EdgeInsets.only(top: 5),
-                      width: size.width,
-                      child: ListView.separated(
-                          shrinkWrap: true,
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const SizedBox(width: 10),
-                          itemCount: productimages.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                setState(() {
-                                  productimage = sliderpath +
-                                      productimages[index]['upload_base_path']
-                                          .toString() +
-                                      productimages[index]['file_name']
-                                          .toString();
-                                });
-                              },
-                              child: SizedBox(
-                                height: 55,
-                                width: size.width * 0.30,
-                                child: CachedNetworkImage(
-                                  imageUrl: sliderpath +
-                                      productimages[index]['upload_base_path'] +
-                                      productimages[index]['file_name'],
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
-                    Divider(
-                      thickness: 0.9,
-                      height: 30,
-                    ),
-                    Text(productname,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold)),
-                    // SizedBox(height: 2.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: boostpack == "null" ||
-                                boostpack == "" ||
-                                boostpack == null
-                            ? SizedBox()
-                            : Container(
-                                height: 25,
-                                width: 100,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(4.0)),
-                                child: Text("Sponsored",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 16)))),
-                    SizedBox(height: 15.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: description == "" ||
-                                description == "null" ||
-                                description == null
-                            ? SizedBox()
-                            : Text(description,
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 12))),
-                    SizedBox(height: 35.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: renttype == null ||
-                                renttype == "" ||
-                                renttype == "null"
-                            ? Text(productprice,
-                                style: TextStyle(
-                                    color: Colors.deepOrangeAccent,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500))
-                            : Text(productprice,
-                                style: TextStyle(
-                                    color: Colors.deepOrangeAccent,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500))),
-                    SizedBox(height: 15.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: Row(
-                          children: [
-                            Text("Security Deposit :",
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500)),
-                            Text(" INR $securitydeposit",
-                                style: TextStyle(
-                                    color: Colors.deepOrangeAccent,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500)),
-                          ],
-                        )),
-                    SizedBox(height: 15.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AdvertiserProfileScreen(
-                                            advertiserid: addedbyid)));
-                          },
-                          child: Text("Listed By : $addedby",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500)),
-                        )),
-                    SizedBox(height: 15.0),
-                    SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          kyc == 1
-                              ? Expanded(
-                                  child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.green.shade100,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "KYC",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
-                                        ),
-                                        Image.asset(
-                                          "assets/images/check-mark.png",
-                                          scale: 16,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ))
-                              : SizedBox(),
-                          SizedBox(
-                            width: 30,
+          : productimages.isEmpty
+              ? Center(
+                  child: Text(
+                    "No data found !!",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 300,
+                          width: double.infinity,
+                          child: CachedNetworkImage(
+                            imageUrl: productimage,
+                            fit: BoxFit.fill,
+                            errorWidget: (context, url, error) =>
+                                Image.asset('assets/images/no_image.jpg'),
                           ),
-                          trustedbadgeapproval == "approved" ?? ""
-                              ? Expanded(
-                                  child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.green.shade100,
-                                      borderRadius: BorderRadius.circular(40)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Trusted Badge",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
-                                        ),
-                                        Image.asset(
-                                          "assets/images/check-mark.png",
-                                          scale: 16,
-                                        )
-                                      ],
+                        ),
+                        Container(
+                          height: 80,
+                          padding: EdgeInsets.only(top: 5),
+                          width: size.width,
+                          child: ListView.separated(
+                              shrinkWrap: true,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const SizedBox(width: 10),
+                              itemCount: productimages.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      productimage = sliderpath +
+                                          productimages[index]
+                                                  ['upload_base_path']
+                                              .toString() +
+                                          productimages[index]['file_name']
+                                              .toString();
+                                    });
+                                  },
+                                  child: SizedBox(
+                                    height: 55,
+                                    width: size.width * 0.30,
+                                    child: CachedNetworkImage(
+                                      imageUrl: sliderpath +
+                                          productimages[index]
+                                              ['upload_base_path'] +
+                                          productimages[index]['file_name'],
+                                      fit: BoxFit.fill,
                                     ),
                                   ),
-                                ))
-                              : SizedBox(),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 3.0),
-                    userid == null || userid == ""
-                        ? SizedBox(
-                            height: 60,
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LoginScreen()));
-                                  },
-                                  child: Container(
-                                    height: 45,
-                                    width: size.width * 0.45,
+                                );
+                              }),
+                        ),
+                        Divider(
+                          thickness: 0.9,
+                          height: 30,
+                        ),
+                        Text(
+                          productname,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        // SizedBox(height: 2.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: boostpack == "null" ||
+                                    boostpack == "" ||
+                                    boostpack == null
+                                ? SizedBox()
+                                : Container(
+                                    height: 25,
+                                    width: 100,
                                     alignment: Alignment.center,
-                                    decoration: const BoxDecoration(
-                                        color: kPrimaryColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(22.0))),
-                                    child: Text("LOGIN TO START DISCUSSION",
-                                        textAlign: TextAlign.center,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Text("Sponsored",
                                         style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700)),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LoginScreen()));
-                                  },
-                                  child: Container(
-                                    height: 45,
-                                    width: size.width * 0.45,
-                                    alignment: Alignment.center,
-                                    decoration: const BoxDecoration(
+                                            color: Colors.black,
+                                            fontSize: 16)))),
+                        SizedBox(height: 15.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: description == "" ||
+                                    description == "null" ||
+                                    description == null
+                                ? SizedBox()
+                                : Text(description,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 12))),
+                        SizedBox(height: 35.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: renttype == null ||
+                                    renttype == "" ||
+                                    renttype == "null"
+                                ? Text(productprice,
+                                    style: TextStyle(
                                         color: Colors.deepOrangeAccent,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(22.0))),
-                                    child: Text("RENT NOW",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700)),
-                                  ),
-                                ),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500))
+                                : Text(productprice,
+                                    style: TextStyle(
+                                        color: Colors.deepOrangeAccent,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500))),
+                        SizedBox(height: 15.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Text("Security Deposit :",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                Text(" INR $securitydeposit",
+                                    style: TextStyle(
+                                        color: Colors.deepOrangeAccent,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
                               ],
-                            ),
-                          )
-                        : userid != ""
+                            )),
+                        SizedBox(height: 15.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AdvertiserProfileScreen(
+                                                advertiserid: addedbyid)));
+                              },
+                              child: Text("Listed By : $addedby",
+                                  style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500)),
+                            )),
+                        SizedBox(height: 15.0),
+                        SizedBox(
+                          height: 100,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              kyc == 1
+                                  ? Expanded(
+                                      child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.green.shade100,
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "KYC",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18),
+                                            ),
+                                            Image.asset(
+                                              "assets/images/check-mark.png",
+                                              scale: 16,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ))
+                                  : SizedBox(),
+                              SizedBox(
+                                width: 30,
+                              ),
+                              trustedbadgeapproval == "approved" ?? ""
+                                  ? Expanded(
+                                      child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.green.shade100,
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Trusted Badge",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18),
+                                            ),
+                                            Image.asset(
+                                              "assets/images/check-mark.png",
+                                              scale: 16,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ))
+                                  : SizedBox(),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 3.0),
+                        userid == null || userid == ""
                             ? SizedBox(
                                 height: 60,
                                 width: double.infinity,
@@ -457,13 +416,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        log(queryId);
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    Conversation(
-                                                        queryId: queryId)));
+                                                    LoginScreen()));
                                       },
                                       child: Container(
                                         height: 45,
@@ -473,7 +430,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             color: kPrimaryColor,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(22.0))),
-                                        child: Text("START DISCUSSION",
+                                        child: Text("LOGIN TO START DISCUSSION",
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700)),
@@ -481,40 +439,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        if (trustedbadge == 1 &&
-                                            trustedbadgeapproval
-                                                    .toLowerCase() ==
-                                                "pending") {
-                                          showToast(
-                                              "Your verification is under process.");
-                                        } else {
-                                          if (actionbtn == "Make An Offer") {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MakeEditOfferScreen(
-                                                          pageFor:
-                                                              "Make an offer",
-                                                          productid: productid,
-                                                          nego: int.parse(
-                                                              negotiable),
-                                                          editable: false,
-                                                        )));
-                                          } else {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MakeEditOfferScreen(
-                                                          pageFor: "Edit Offer",
-                                                          productid: productid,
-                                                          nego: int.parse(
-                                                              negotiable),
-                                                          editable: true,
-                                                        )));
-                                          }
-                                        }
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginScreen()));
                                       },
                                       child: Container(
                                         height: 45,
@@ -524,8 +453,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             color: Colors.deepOrangeAccent,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(22.0))),
-                                        child: Text(
-                                            actionbtn.toString().toUpperCase(),
+                                        child: Text("RENT NOW",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700)),
@@ -534,353 +462,449 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   ],
                                 ),
                               )
-                            : SizedBox(),
-                    SizedBox(height: 30),
-                    // Row(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     Text("Address : ",
-                    //         style: TextStyle(
-                    //             color: kPrimaryColor,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.bold)),
-                    //     SizedBox(
-                    //       width: size.width * 0.70,
-                    //       child: address == null
-                    //           ? SizedBox()
-                    //           : Text(address,
-                    //               maxLines: 2,
-                    //               style: TextStyle(
-                    //                   color: kPrimaryColor, fontSize: 18)),
-                    //     )
-                    //   ],
-                    // ),
+                            : userid != ""
+                                ? SizedBox(
+                                    height: 60,
+                                    width: double.infinity,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            log(queryId);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Conversation(
+                                                            queryId: queryId)));
+                                          },
+                                          child: Container(
+                                            height: 45,
+                                            width: size.width * 0.45,
+                                            alignment: Alignment.center,
+                                            decoration: const BoxDecoration(
+                                                color: kPrimaryColor,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(22.0))),
+                                            child: Text("START DISCUSSION",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w700)),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            if (trustedbadge == 1 &&
+                                                trustedbadgeapproval
+                                                        .toLowerCase() ==
+                                                    "pending") {
+                                              showToast(
+                                                  "Your verification is under process.");
+                                            } else {
+                                              if (actionbtn ==
+                                                  "Make An Offer") {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MakeEditOfferScreen(
+                                                              pageFor:
+                                                                  "Make an offer",
+                                                              productid:
+                                                                  productid,
+                                                              nego: int.parse(
+                                                                  negotiable),
+                                                              editable: false,
+                                                            )));
+                                              } else {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MakeEditOfferScreen(
+                                                              pageFor:
+                                                                  "Edit Offer",
+                                                              productid:
+                                                                  productid,
+                                                              nego: int.parse(
+                                                                  negotiable),
+                                                              editable: true,
+                                                            )));
+                                              }
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 45,
+                                            width: size.width * 0.45,
+                                            alignment: Alignment.center,
+                                            decoration: const BoxDecoration(
+                                                color: Colors.deepOrangeAccent,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(22.0))),
+                                            child: Text(
+                                                actionbtn
+                                                    .toString()
+                                                    .toUpperCase(),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w700)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
+                        SizedBox(height: 30),
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     Text("Address : ",
+                        //         style: TextStyle(
+                        //             color: kPrimaryColor,
+                        //             fontSize: 18,
+                        //             fontWeight: FontWeight.bold)),
+                        //     SizedBox(
+                        //       width: size.width * 0.70,
+                        //       child: address == null
+                        //           ? SizedBox()
+                        //           : Text(address,
+                        //               maxLines: 2,
+                        //               style: TextStyle(
+                        //                   color: kPrimaryColor, fontSize: 18)),
+                        //     )
+                        //   ],
+                        // ),
 
-                    SizedBox(height: 0),
-                    // Row(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     Text("Price : ",
-                    //         style: TextStyle(
-                    //             color: kPrimaryColor,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.bold)),
-                    //     SizedBox(
-                    //       width: size.width * 0.70,
-                    //       child: negotiable == "0" ? Text("Fixed",
-                    //           maxLines: 2,
-                    //           style: TextStyle(
-                    //               color: kPrimaryColor, fontSize: 18)) : Text(
-                    //           "Negotiable",
-                    //           maxLines: 2,
-                    //           style: TextStyle(
-                    //               color: kPrimaryColor, fontSize: 18)),
-                    //     )
-                    //   ],
-                    //   ],
-                    // ),
-                    // SizedBox(height: 20),
-                    // Row(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     Text("Email : ",
-                    //         style: TextStyle(
-                    //             color: kPrimaryColor,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.bold)),
-                    //     SizedBox(
-                    //       width: size.width * 0.70,
-                    //       child: email == null
-                    //           ? SizedBox()
-                    //           : Text(email,
-                    //               maxLines: 1,
-                    //               style: TextStyle(
-                    //                   color: kPrimaryColor, fontSize: 18)),
-                    //     )
-                    //   ],
-                    // ),
-                    // // Padding(
-                    //     padding: EdgeInsets.symmetric(vertical: 10.0),
-                    //     child: Container(
-                    //       height: 550,
-                    //       width: double.infinity,
-                    //       child: GoogleMap(
-                    //         initialCameraPosition: initialCameraPosition,
-                    //         markers: markers,
-                    //         zoomControlsEnabled: false,
-                    //         mapType: MapType.normal,
-                    //         onMapCreated: (GoogleMapController controller) {
-                    //           googleMapController = controller;
-                    //         },
-                    //       ),
-                    //     ),
-                    // ),
-                    // likedadproductlist.isEmpty
-                    //     ? SizedBox()
-                    //     : SizedBox(height: 30),
-                    // likedadproductlist.isEmpty
-                    //     ? SizedBox(height: 0)
-                    //     : const Text("You May Also Like",
-                    //         style: TextStyle(
-                    //             color: Colors.deepOrangeAccent,
-                    //             fontWeight: FontWeight.w700,
-                    //             fontSize: 21)),
-                    // likedadproductlist.isEmpty
-                    //     ? SizedBox(height: 0)
-                    //     : SizedBox(height: 10),
-                    // likedadproductlist.isEmpty
-                    //     ? SizedBox(height: 0)
-                    //     : GridView.builder(
-                    //         shrinkWrap: true,
-                    //         itemCount: likedadproductlist.length,
-                    //         physics: ClampingScrollPhysics(),
-                    //         gridDelegate:
-                    //             const SliverGridDelegateWithFixedCrossAxisCount(
-                    //                 crossAxisCount: 2,
-                    //                 crossAxisSpacing: 4.0,
-                    //                 mainAxisSpacing: 4.0,
-                    //                 childAspectRatio: 1.0),
-                    //         itemBuilder: (context, index) {
-                    //           return InkWell(
-                    //             onTap: () {
-                    //               Navigator.push(
-                    //                   context,
-                    //                   MaterialPageRoute(
-                    //                       builder: (context) =>
-                    //                           ProductDetailScreen(
-                    //                               productid:
-                    //                                   likedadproductlist[index]
-                    //                                           ['id']
-                    //                                       .toString())));
-                    //             },
-                    //             child: Card(
-                    //               shape: RoundedRectangleBorder(
-                    //                 borderRadius: BorderRadius.circular(4.0),
-                    //               ),
-                    //               child: Column(
-                    //                 children: [
-                    //                   CachedNetworkImage(
-                    //                     height: 80,
-                    //                     width: double.infinity,
-                    //                     placeholder: (context, url) =>
-                    //                         Image.asset(
-                    //                             'assets/images/no_image.jpg',
-                    //                             fit: BoxFit.fill),
-                    //                     errorWidget: (context, url, error) =>
-                    //                         Image.asset(
-                    //                             'assets/images/no_image.jpg',
-                    //                             fit: BoxFit.fill),
-                    //                     fit: BoxFit.fill,
-                    //                     imageUrl: likedadproductlist[index]
-                    //                                     ['images']
-                    //                                 .length >
-                    //                             0
-                    //                         ? sliderpath +
-                    //                             "assets/frontend/images/listings/" +
-                    //                             likedadproductlist[index]
-                    //                                         ['images'][0]
-                    //                                     ['file_name']
-                    //                                 .toString()
-                    //                         : "http://themedemo.wpeka.com/wp-content/themes/apppress/images/icons/included/color.png",
-                    //                   ),
-                    //                   SizedBox(height: 5.0),
-                    //                   Padding(
-                    //                     padding: EdgeInsets.only(
-                    //                         left: 5.0, right: 15.0),
-                    //                     child: Align(
-                    //                       alignment: Alignment.topLeft,
-                    //                       child: Text(
-                    //                           likedadproductlist[index]['title']
-                    //                               .toString(),
-                    //                           maxLines: 1,
-                    //                           style: TextStyle(
-                    //                               color: Colors.black,
-                    //                               fontWeight: FontWeight.w700,
-                    //                               fontSize: 16)),
-                    //                     ),
-                    //                   ),
-                    //                   SizedBox(height: 5.0),
-                    //                   Padding(
-                    //                     padding: const EdgeInsets.only(
-                    //                         left: 4.0, right: 4.0),
-                    //                     child: Row(
-                    //                       mainAxisAlignment:
-                    //                           MainAxisAlignment.spaceBetween,
-                    //                       children: [
-                    //                         SizedBox(
-                    //                             width: size.width * 0.4,
-                    //                             child: Text(
-                    //                                 "Starting from ${likedadproductlist[index]['currency'].toString()} ${likedadproductlist[index]['prices'][0]['price'].toString()}",
-                    //                                 style: TextStyle(
-                    //                                     color: kPrimaryColor,
-                    //                                     fontSize: 12))),
-                    //                         // IconButton(
-                    //                         //     iconSize: 28,
-                    //                         //     onPressed: () {
-                    //                         //       Navigator.push(
-                    //                         //           context,
-                    //                         //           MaterialPageRoute(
-                    //                         //               builder: (context) =>
-                    //                         //                   ProductDetailScreen(
-                    //                         //                       productid: likedadproductlist[
-                    //                         //                                   index]
-                    //                         //                               ['id']
-                    //                         //                           .toString())));
-                    //                         //     },
-                    //                         //     icon: Icon(
-                    //                         //         Icons.add_box_rounded,
-                    //                         //         color: kPrimaryColor))
-                    //                       ],
-                    //                     ),
-                    //                   )
-                    //                 ],
-                    //               ),
-                    //             ),
-                    //           );
-                    //         }),
+                        SizedBox(height: 0),
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     Text("Price : ",
+                        //         style: TextStyle(
+                        //             color: kPrimaryColor,
+                        //             fontSize: 18,
+                        //             fontWeight: FontWeight.bold)),
+                        //     SizedBox(
+                        //       width: size.width * 0.70,
+                        //       child: negotiable == "0" ? Text("Fixed",
+                        //           maxLines: 2,
+                        //           style: TextStyle(
+                        //               color: kPrimaryColor, fontSize: 18)) : Text(
+                        //           "Negotiable",
+                        //           maxLines: 2,
+                        //           style: TextStyle(
+                        //               color: kPrimaryColor, fontSize: 18)),
+                        //     )
+                        //   ],
+                        //   ],
+                        // ),
+                        // SizedBox(height: 20),
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     Text("Email : ",
+                        //         style: TextStyle(
+                        //             color: kPrimaryColor,
+                        //             fontSize: 18,
+                        //             fontWeight: FontWeight.bold)),
+                        //     SizedBox(
+                        //       width: size.width * 0.70,
+                        //       child: email == null
+                        //           ? SizedBox()
+                        //           : Text(email,
+                        //               maxLines: 1,
+                        //               style: TextStyle(
+                        //                   color: kPrimaryColor, fontSize: 18)),
+                        //     )
+                        //   ],
+                        // ),
+                        // // Padding(
+                        //     padding: EdgeInsets.symmetric(vertical: 10.0),
+                        //     child: Container(
+                        //       height: 550,
+                        //       width: double.infinity,
+                        //       child: GoogleMap(
+                        //         initialCameraPosition: initialCameraPosition,
+                        //         markers: markers,
+                        //         zoomControlsEnabled: false,
+                        //         mapType: MapType.normal,
+                        //         onMapCreated: (GoogleMapController controller) {
+                        //           googleMapController = controller;
+                        //         },
+                        //       ),
+                        //     ),
+                        // ),
+                        // likedadproductlist.isEmpty
+                        //     ? SizedBox()
+                        //     : SizedBox(height: 30),
+                        // likedadproductlist.isEmpty
+                        //     ? SizedBox(height: 0)
+                        //     : const Text("You May Also Like",
+                        //         style: TextStyle(
+                        //             color: Colors.deepOrangeAccent,
+                        //             fontWeight: FontWeight.w700,
+                        //             fontSize: 21)),
+                        // likedadproductlist.isEmpty
+                        //     ? SizedBox(height: 0)
+                        //     : SizedBox(height: 10),
+                        // likedadproductlist.isEmpty
+                        //     ? SizedBox(height: 0)
+                        //     : GridView.builder(
+                        //         shrinkWrap: true,
+                        //         itemCount: likedadproductlist.length,
+                        //         physics: ClampingScrollPhysics(),
+                        //         gridDelegate:
+                        //             const SliverGridDelegateWithFixedCrossAxisCount(
+                        //                 crossAxisCount: 2,
+                        //                 crossAxisSpacing: 4.0,
+                        //                 mainAxisSpacing: 4.0,
+                        //                 childAspectRatio: 1.0),
+                        //         itemBuilder: (context, index) {
+                        //           return InkWell(
+                        //             onTap: () {
+                        //               Navigator.push(
+                        //                   context,
+                        //                   MaterialPageRoute(
+                        //                       builder: (context) =>
+                        //                           ProductDetailScreen(
+                        //                               productid:
+                        //                                   likedadproductlist[index]
+                        //                                           ['id']
+                        //                                       .toString())));
+                        //             },
+                        //             child: Card(
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(4.0),
+                        //               ),
+                        //               child: Column(
+                        //                 children: [
+                        //                   CachedNetworkImage(
+                        //                     height: 80,
+                        //                     width: double.infinity,
+                        //                     placeholder: (context, url) =>
+                        //                         Image.asset(
+                        //                             'assets/images/no_image.jpg',
+                        //                             fit: BoxFit.fill),
+                        //                     errorWidget: (context, url, error) =>
+                        //                         Image.asset(
+                        //                             'assets/images/no_image.jpg',
+                        //                             fit: BoxFit.fill),
+                        //                     fit: BoxFit.fill,
+                        //                     imageUrl: likedadproductlist[index]
+                        //                                     ['images']
+                        //                                 .length >
+                        //                             0
+                        //                         ? sliderpath +
+                        //                             "assets/frontend/images/listings/" +
+                        //                             likedadproductlist[index]
+                        //                                         ['images'][0]
+                        //                                     ['file_name']
+                        //                                 .toString()
+                        //                         : "http://themedemo.wpeka.com/wp-content/themes/apppress/images/icons/included/color.png",
+                        //                   ),
+                        //                   SizedBox(height: 5.0),
+                        //                   Padding(
+                        //                     padding: EdgeInsets.only(
+                        //                         left: 5.0, right: 15.0),
+                        //                     child: Align(
+                        //                       alignment: Alignment.topLeft,
+                        //                       child: Text(
+                        //                           likedadproductlist[index]['title']
+                        //                               .toString(),
+                        //                           maxLines: 1,
+                        //                           style: TextStyle(
+                        //                               color: Colors.black,
+                        //                               fontWeight: FontWeight.w700,
+                        //                               fontSize: 16)),
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(height: 5.0),
+                        //                   Padding(
+                        //                     padding: const EdgeInsets.only(
+                        //                         left: 4.0, right: 4.0),
+                        //                     child: Row(
+                        //                       mainAxisAlignment:
+                        //                           MainAxisAlignment.spaceBetween,
+                        //                       children: [
+                        //                         SizedBox(
+                        //                             width: size.width * 0.4,
+                        //                             child: Text(
+                        //                                 "Starting from ${likedadproductlist[index]['currency'].toString()} ${likedadproductlist[index]['prices'][0]['price'].toString()}",
+                        //                                 style: TextStyle(
+                        //                                     color: kPrimaryColor,
+                        //                                     fontSize: 12))),
+                        //                         // IconButton(
+                        //                         //     iconSize: 28,
+                        //                         //     onPressed: () {
+                        //                         //       Navigator.push(
+                        //                         //           context,
+                        //                         //           MaterialPageRoute(
+                        //                         //               builder: (context) =>
+                        //                         //                   ProductDetailScreen(
+                        //                         //                       productid: likedadproductlist[
+                        //                         //                                   index]
+                        //                         //                               ['id']
+                        //                         //                           .toString())));
+                        //                         //     },
+                        //                         //     icon: Icon(
+                        //                         //         Icons.add_box_rounded,
+                        //                         //         color: kPrimaryColor))
+                        //                       ],
+                        //                     ),
+                        //                   )
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           );
+                        //         }),
 
-                    SizedBox(
-                      height: 0,
-                    ),
+                        SizedBox(
+                          height: 0,
+                        ),
 
-                    Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Today's Special Deals",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-
-                    Image.network(bottomimage1.toString()),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Image.network(bottomimage2.toString()),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Image.network(
-                          bottomimage3.toString(),
-                          scale: 1.5,
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Today's Special Deals",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
                         ),
                         SizedBox(
-                          width: 3,
+                          height: 20,
                         ),
-                        Image.network(
-                          bottomimage3.toString(),
-                          scale: 1.5,
+
+                        Image.network(bottomimage1.toString()),
+                        SizedBox(
+                          height: 10,
                         ),
+                        Image.network(bottomimage2.toString()),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 1),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.network(
+                                bottomimage3.toString(),
+                                scale: 1.55,
+                              ),
+                              Image.network(
+                                bottomimage3.toString(),
+                                scale: 1.55,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Container(
+                        //   padding: const EdgeInsets.only(bottom: 5),
+                        //   width: double.infinity,
+                        //   child: Column(
+                        //     children: [
+                        //       const SizedBox(height: 5),
+                        //       Container(
+                        //         width: double.infinity,
+                        //         child: Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.start,
+                        //           children: [
+                        //             Container(
+                        //               height:
+                        //                   MediaQuery.of(context).size.height * 0.40,
+                        //               width: MediaQuery.of(context).size.width,
+                        //               child: Padding(
+                        //                 padding: const EdgeInsets.only(
+                        //                     left: 10.0,
+                        //                     top: 10.0,
+                        //                     right: 10.0,
+                        //                     bottom: 0.0),
+                        //                 child: ClipRRect(
+                        //                   borderRadius: const BorderRadius.all(
+                        //                       Radius.circular(0.0)),
+                        //                   child: CachedNetworkImage(
+                        //                     imageUrl: bottomimage1.toString(),
+                        //                     fit: BoxFit.fill,
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //             Container(
+                        //               height:
+                        //                   MediaQuery.of(context).size.height * 0.23,
+                        //               width: MediaQuery.of(context).size.width,
+                        //               child: Padding(
+                        //                 padding: const EdgeInsets.only(
+                        //                     left: 10.0,
+                        //                     top: 10.0,
+                        //                     right: 10.0,
+                        //                     bottom: 5.0),
+                        //                 child: ClipRRect(
+                        //                   borderRadius: const BorderRadius.all(
+                        //                       Radius.circular(0.0)),
+                        //                   child: CachedNetworkImage(
+                        //                     imageUrl: bottomimage2.toString() ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
+                        //                     fit: BoxFit.fill,
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+
+                        //             Container(
+                        //               height:
+                        //                   MediaQuery.of(context).size.height * 0.23,
+                        //               width: MediaQuery.of(context).size.width,
+                        //               padding: const EdgeInsets.only(
+                        //                   left: 10.0,
+                        //                   top: 5.0,
+                        //                   right: 10.0,
+                        //                   bottom: 10.0),
+                        //               child: Row(
+                        //                 mainAxisAlignment:
+                        //                     MainAxisAlignment.spaceBetween,
+                        //                 children: [
+                        //                   Container(
+                        //                     height:
+                        //                         MediaQuery.of(context).size.height *
+                        //                             0.21,
+                        //                     width:
+                        //                         MediaQuery.of(context).size.width *
+                        //                             0.45,
+                        //                     child: CachedNetworkImage(
+                        //                       imageUrl: bottomimage3,
+                        //                       fit: BoxFit.fill,
+                        //                     ),
+                        //                   ),
+                        //                   Container(
+                        //                     height:
+                        //                         MediaQuery.of(context).size.height *
+                        //                             0.21,
+                        //                     width:
+                        //                         MediaQuery.of(context).size.width *
+                        //                             0.43,
+                        //                     child: CachedNetworkImage(
+                        //                       imageUrl: bottomimage4,
+                        //                       fit: BoxFit.fill,
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             )
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
-
-                    // Container(
-                    //   padding: const EdgeInsets.only(bottom: 5),
-                    //   width: double.infinity,
-                    //   child: Column(
-                    //     children: [
-                    //       const SizedBox(height: 5),
-                    //       Container(
-                    //         width: double.infinity,
-                    //         child: Column(
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             Container(
-                    //               height:
-                    //                   MediaQuery.of(context).size.height * 0.40,
-                    //               width: MediaQuery.of(context).size.width,
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.only(
-                    //                     left: 10.0,
-                    //                     top: 10.0,
-                    //                     right: 10.0,
-                    //                     bottom: 0.0),
-                    //                 child: ClipRRect(
-                    //                   borderRadius: const BorderRadius.all(
-                    //                       Radius.circular(0.0)),
-                    //                   child: CachedNetworkImage(
-                    //                     imageUrl: bottomimage1.toString(),
-                    //                     fit: BoxFit.fill,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //             Container(
-                    //               height:
-                    //                   MediaQuery.of(context).size.height * 0.23,
-                    //               width: MediaQuery.of(context).size.width,
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.only(
-                    //                     left: 10.0,
-                    //                     top: 10.0,
-                    //                     right: 10.0,
-                    //                     bottom: 5.0),
-                    //                 child: ClipRRect(
-                    //                   borderRadius: const BorderRadius.all(
-                    //                       Radius.circular(0.0)),
-                    //                   child: CachedNetworkImage(
-                    //                     imageUrl: bottomimage2.toString() ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
-                    //                     fit: BoxFit.fill,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-
-                    //             Container(
-                    //               height:
-                    //                   MediaQuery.of(context).size.height * 0.23,
-                    //               width: MediaQuery.of(context).size.width,
-                    //               padding: const EdgeInsets.only(
-                    //                   left: 10.0,
-                    //                   top: 5.0,
-                    //                   right: 10.0,
-                    //                   bottom: 10.0),
-                    //               child: Row(
-                    //                 mainAxisAlignment:
-                    //                     MainAxisAlignment.spaceBetween,
-                    //                 children: [
-                    //                   Container(
-                    //                     height:
-                    //                         MediaQuery.of(context).size.height *
-                    //                             0.21,
-                    //                     width:
-                    //                         MediaQuery.of(context).size.width *
-                    //                             0.45,
-                    //                     child: CachedNetworkImage(
-                    //                       imageUrl: bottomimage3,
-                    //                       fit: BoxFit.fill,
-                    //                     ),
-                    //                   ),
-                    //                   Container(
-                    //                     height:
-                    //                         MediaQuery.of(context).size.height *
-                    //                             0.21,
-                    //                     width:
-                    //                         MediaQuery.of(context).size.width *
-                    //                             0.43,
-                    //                     child: CachedNetworkImage(
-                    //                       imageUrl: bottomimage4,
-                    //                       fit: BoxFit.fill,
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //             )
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
     );
   }
 
@@ -943,15 +967,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Future _getproductDetail(String productid) async {
+    setState(() {
+      apiLoading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String userId = prefs.getString('userid');
     log("userid---->$userId");
-    final body = {
-      "id": widget.productid,
-      "user_id": userId
-    }; //print(productid);
-    //print(prefs.getString('userid'));
+    final body = {"id": widget.productid, "user_id": userId};
     log("test----" + body.toString());
 
     var response = await http.post(Uri.parse(BASE_URL + productdetail),
@@ -963,6 +986,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
+      apiLoading = false;
       setState(() {
         userid = prefs.getString('userid');
 
@@ -970,7 +994,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           productimage = sliderpath +
               data['Images'][0]['upload_base_path'].toString() +
               data['Images'][0]['file_name'].toString();
+
           productimages.addAll(data['Images']);
+          apiLoading = false;
 
           productname = data['posted_ad']['title'].toString();
           final document = parse(data['posted_ad']['description'].toString());
@@ -981,9 +1007,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           negotiable = data['posted_ad']['negotiate'].toString();
 
           queryId = data['additional']['added-by']['quickblox_id'].toString();
-
-          //print("query id here $queryId");
-
           List temp = [];
           data['posted_ad']['prices'].forEach((element) {
             if (element['price'] != null) {
@@ -1022,6 +1045,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           _checkData = true;
         } else {
+          setState(() {
+            apiLoading = false;
+          });
           productname = data['posted_ad']['title'].toString();
           final document = parse(data['posted_ad']['description'].toString());
           description =
@@ -1062,6 +1088,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           _checkData = true;
         }
+      });
+      setState(() {
+        apiLoading = false;
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -1264,13 +1293,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       "state": prefs.getString('state'),
       "city": prefs.getString('city'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + homeUrl),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + prefs.getString("token").toString(),
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + homeUrl), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + prefs.getString("token").toString(),
+    });
     if (response.statusCode == 200) {
       setState(() {
         // likedadproductlist

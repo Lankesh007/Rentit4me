@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, no_logic_in_create_state
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -11,7 +13,7 @@ import 'package:http/http.dart' as http;
 
 class OffersScreen extends StatefulWidget {
   String productid;
-  OffersScreen({this.productid});
+  OffersScreen({Key key, this.productid}) : super(key: key);
 
   @override
   State<OffersScreen> createState() => _OffersScreenState(productid);
@@ -37,7 +39,6 @@ class _OffersScreenState extends State<OffersScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _offerrecievedlist();
   }
@@ -180,7 +181,6 @@ class _OffersScreenState extends State<OffersScreen> {
                                 'Please enter your search or select date');
                           } else {
                             if (searchvalue == "Search for product" ||
-                                searchvalue.trim().length == 0 ||
                                 searchvalue.trim().isEmpty) {
                               _offerrecievedlistByDate();
                             } else {
@@ -879,10 +879,11 @@ class _OffersScreenState extends State<OffersScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         startdate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _selectEndtDate(BuildContext context) async {
@@ -915,9 +916,10 @@ class _OffersScreenState extends State<OffersScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         enddate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 }

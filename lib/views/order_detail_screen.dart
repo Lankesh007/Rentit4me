@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, no_logic_in_create_state
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
@@ -12,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   String orderid;
-  OrderDetailScreen({this.orderid});
+  OrderDetailScreen({Key key, this.orderid}) : super(key: key);
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState(orderid);
@@ -59,7 +61,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   String userrating;
   String feedback;
   bool showConversionCharges = false;
-  String convenience_charge;
+  String convenienceCharge;
   String convenience_chargeValue;
 
   //rating
@@ -71,7 +73,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     print(orderid);
     _getorderdetailproduct();
@@ -121,14 +122,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                         fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 10),
                                 productimage == null
-                                    ? Container(
+                                    ? SizedBox(
                                         height: 180,
                                         width: double.infinity,
                                         child: Image.asset(
                                             'assets/images/no_image.jpg',
                                             fit: BoxFit.fill),
                                       )
-                                    : Container(
+                                    : SizedBox(
                                         height: 180,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
@@ -396,9 +397,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                     period == null || period == ""
                                         ? SizedBox()
                                         : Text(
-                                            period +
-                                                " " +
-                                                _getrenttype(renttypeid),
+                                            "$period ${_getrenttype(renttypeid)}",
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 14))
@@ -497,10 +496,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  "Convenience Charge (" +
-                                                      convenience_charge
-                                                          .toString() +
-                                                      "%)",
+                                                  "Convenience Charge ($convenienceCharge%)",
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 14)),
@@ -872,9 +868,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         address =
             "${data['Additional Information']['address']}, ${data['Additional Information']['city_name']}, ${data['Additional Information']['state_name']}, ${data['Additional Information']['pincode']}";
 
-        print(prefs.getString('userid').toString() +
-            "----" +
-            data['Order Details']['advertiser_id'].toString());
+        print("${prefs.getString('userid')}----${data['Order Details']['advertiser_id']}");
         if (prefs.getString('userid').toString() ==
             data['Order Details']['advertiser_id'].toString()) {
           renteecheck = true;
@@ -887,21 +881,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               double.parse(data['Rating']['post_ad_rating'].toString());
           feedbackhint = data['Rating']['feedback'];
         }
-        convenience_charge =
+        convenienceCharge =
             data['Order Details']['convenience_charge'].toString();
         if (data['Order Details']['advertiser_id'].toString() ==
             prefs.getString('userid')) {
           showConversionCharges = false;
-          var temp = (double.parse(convenience_charge) / 100) *
+          var temp = (double.parse(convenienceCharge) / 100) *
               (double.parse(totalrent) + double.parse(totalsecurity));
           finalamount = (double.parse(finalamount) - temp).toString();
         } else {
           showConversionCharges = true;
-          var temp = (double.parse(convenience_charge) / 100) *
+          var temp = (double.parse(convenienceCharge) / 100) *
               (double.parse(totalrent) + double.parse(totalsecurity));
           convenience_chargeValue = temp.toString();
         }
-        print("showConversionCharges---" + showConversionCharges.toString());
+        print("showConversionCharges---$showConversionCharges");
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');

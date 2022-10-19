@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -171,7 +173,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                 "Please enter your search or select date");
                           } else {
                             if (searchvalue == "Search for Notification" ||
-                                searchvalue.length == 0 ||
+                               
                                 searchvalue.isEmpty) {
                               _messageslistByDate();
                             } else {
@@ -419,10 +421,11 @@ class _MessageScreenState extends State<MessageScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         startdate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _selectEndtDate(BuildContext context) async {
@@ -456,9 +459,10 @@ class _MessageScreenState extends State<MessageScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         enddate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, no_leading_underscores_for_local_identifiers, missing_required_param
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +9,6 @@ import 'package:rentit4me_new/themes/constant.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/views/dashboard.dart';
-import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/offer_made_product_detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +21,7 @@ class OfferRecievedScreen extends StatefulWidget {
 
 class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
   String searchvalue = "Search for product";
-  TextEditingController rentee_amount = TextEditingController();
+  TextEditingController renteeAmount = TextEditingController();
   List<dynamic> offerrecievedlist = [];
 
   List<String> responselist = [
@@ -328,11 +327,8 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                 Card(
                                     color: Colors.grey[100],
                                     child: ListTile(
-                                        title: Text("Convenience Charges (" +
-                                            conPer
-                                                .toStringAsFixed(0)
-                                                .toString() +
-                                            "%)"),
+                                        title: Text(
+                                            "Convenience Charges (${conPer.toStringAsFixed(0)}%)"),
                                         subtitle: Text(taxValue.toString()))),
                                 Card(
                                     color: Colors.grey[100],
@@ -549,7 +545,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .deepOrangeAccent)),
-                                                          content: Container(
+                                                          content: SizedBox(
                                                             child:
                                                                 SingleChildScrollView(
                                                                     child: Column(
@@ -652,7 +648,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                                                             keyboardType:
                                                                                 TextInputType.number,
                                                                             controller:
-                                                                                rentee_amount,
+                                                                                renteeAmount,
                                                                             decoration:
                                                                                 InputDecoration(
                                                                               border: OutlineInputBorder(),
@@ -679,7 +675,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                                                             offerrecievedlist[index]['post_ad_id'].toString(),
                                                                             responsevalue,
                                                                             offerrecievedlist[index]['user_id'].toString(),
-                                                                            rentee_amount,
+                                                                            renteeAmount,
                                                                             offerrecievedlist[index]['offer_request_id'].toString());
                                                                       }
                                                                     },
@@ -1010,19 +1006,19 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
   }
 
   Future<void> _offeraction(String postid, String offerstatus, String userid,
-      TextEditingController rentiee_amount, String offerrequestid) async {
+      TextEditingController renteeAmount, String offerrequestid) async {
     print(jsonEncode({
       "post_ad_id": postid,
       "user_id": userid,
       "offer_status": offerstatus,
-      "rentee_amount": rentee_amount.text.toString(),
+      "rentee_amount": renteeAmount.text.toString(),
       "offer_request_id": offerrequestid.toString()
     }));
     final body = {
       "post_ad_id": postid,
       "user_id": userid,
       "offer_status": offerstatus,
-      "rentee_amount": rentee_amount.text.toString(),
+      "rentee_amount": renteeAmount.text.toString(),
       "offer_request_id": offerrequestid.toString()
     };
     var response = await http.post(Uri.parse(BASE_URL + offeraction),
@@ -1036,10 +1032,8 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         showToast(jsonDecode(response.body)['Response'].toString());
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>  Dashboard()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
         //_offerrecievedlist();
       } else {
         showToast(jsonDecode(response.body)['ErrorMessage'].toString());
@@ -1080,10 +1074,11 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         startdate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _selectEndtDate(BuildContext context) async {
@@ -1116,13 +1111,15 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         enddate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
-  _categoryDialogBox() {
+  // ignore: unused_element
+  Future<Object> _categoryDialogBox() {
     return showGeneralDialog(
       context: context,
       barrierLabel: '',
@@ -1155,7 +1152,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         child: Column(
           children: <Widget>[
             SizedBox(height: 10),
-            Container(
+            SizedBox(
                 child: Scrollbar(
               thickness: 2,
               child: ListView.separated(
@@ -1167,6 +1164,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                     Divider(),
                 //itemCount: restlist.length,
                 itemBuilder: (BuildContext context, int index) {
+                  return Container();
                   //return _catlist(context, index, restlist[index].name, restlist[index].items.length.toString());
                 },
               ),

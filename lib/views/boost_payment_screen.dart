@@ -91,7 +91,7 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
       };
       _razorpay.open(options);
     } catch (e) {
-      print("test2-----" + e.toString());
+      print("test2-----$e");
     }
   }
 

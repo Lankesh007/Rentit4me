@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -473,10 +475,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         startdate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _selectEndtDate(BuildContext context) async {
@@ -510,9 +513,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         enddate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 }

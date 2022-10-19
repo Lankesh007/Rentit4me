@@ -1,10 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:rentit4me_new/animations/animations.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/boost_payment_screen.dart';
@@ -14,6 +14,8 @@ import 'package:rentit4me_new/views/product_edit_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AlllistingScreen extends StatefulWidget {
+  const AlllistingScreen({Key key}) : super(key: key);
+
   @override
   State<AlllistingScreen> createState() => _AlllistingScreenState();
 }
@@ -33,7 +35,6 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _alllist();
   }
@@ -50,13 +51,13 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
           InkWell(
             onTap: () {
               List delet = [];
-              alllist.forEach((element) {
+              for (var element in alllist) {
                 if (element['selected']) {
                   delet.add(element['id'].toString());
                 }
-              });
+              }
 
-              if (delet.length > 0) {
+              if (delet.isNotEmpty) {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -82,7 +83,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                   };
                                   var response = await http.post(
                                       Uri.parse(
-                                          BASE_URL + "posted-ads/bulk-delete"),
+                                          "${BASE_URL}posted-ads/bulk-delete"),
                                       body: jsonEncode(body),
                                       headers: {
                                         "Accept": "application/json",
@@ -254,7 +255,6 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                 'Please enter your search or select date');
                           } else {
                             if (searchvalue == "Enter Title" ||
-                                searchvalue.length == 0 ||
                                 searchvalue.isEmpty) {
                               _alllistByDate();
                             } else {

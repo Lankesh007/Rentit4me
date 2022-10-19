@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -33,7 +35,6 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _inactivealllist();
   }
@@ -178,7 +179,7 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
                                 'Please enter your search or select date');
                           } else {
                             if (searchvalue == "Enter Title" ||
-                                searchvalue.length == 0 ||
+                                searchvalue.isEmpty ||
                                 searchvalue.isEmpty) {
                               _inactivealllistByDate();
                             } else {
@@ -219,12 +220,12 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
                   List temp = [];
 
                   List a = alllist[index]['prices'];
-                  a.forEach((element) {
+                  for (var element in a) {
                     if (element['price'] != null) {
                       temp.add(
                           "INR ${element['price']} (${element['rent_type_name']})");
                     }
-                  });
+                  }
                   return InkWell(
                       onTap: () {},
                       child: Stack(
@@ -240,7 +241,7 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         height: 55,
                                         width: 55,
                                         child: ClipRRect(
@@ -681,7 +682,7 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
     final body = {
       "id": prefs.getString('userid'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings/inactive"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings/inactive"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -718,7 +719,7 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
       "from_date": startdate,
       "to_date": enddate
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings/inactive"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings/inactive"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -755,7 +756,7 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
       "id": prefs.getString('userid'),
       "search": searchvalue,
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings/inactive"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings/inactive"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -813,10 +814,11 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         startdate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _selectEndtDate(BuildContext context) async {
@@ -850,10 +852,11 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         enddate = DateFormat('yyyy-MM-dd').format(picked);
       });
+    }
   }
 
   Future<void> _postboost(String id) async {
