@@ -54,14 +54,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initConnectivity();
     setState(() {
       _loading = false;
     });
     getToken();
-    //print(Navigator.of(context).)
   }
 
   Future<void> initConnectivity() async {
@@ -659,6 +657,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
       } else {
+         buttonLoading = false;
         showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {

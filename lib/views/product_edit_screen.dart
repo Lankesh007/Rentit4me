@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:dropdown_search/dropdown_search.dart';
@@ -28,7 +30,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   String productid;
   _ProductEditScreenState(this.productid);
 
-  bool _checkData = false;
+  bool checkData = false;
   bool _loading = false;
 
   bool _sms = false;
@@ -56,8 +58,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   String subcategoryhint = "Select Subcategory";
 
   List additionalimage = [];
-  List<dynamic> _categorieslist = [];
-  List<dynamic> _subcategorieslist = [];
+  final List<dynamic> _categorieslist = [];
+  final List<dynamic> _subcategorieslist = [];
 
   String negotiablevalue = "Select";
   String hidemobilevalue = "Yes";
@@ -239,7 +241,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   @override
   void initState() {
     super.initState();
-    print("............productid" + productid);
+    print("............productid$productid");
     _getpreproductedit(productid);
     _getCategories();
     _getcountryData();
@@ -808,7 +810,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                     }).toList(),
                                     onChanged: (value) {
                                       if (value != "Select Country") {
-                                        countrylistData.forEach((element) {
+                                        for (var element in countrylistData) {
                                           if (element['name'].toString() ==
                                               value) {
                                             setState(() {
@@ -822,7 +824,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                                   element['id'].toString());
                                             });
                                           }
-                                        });
+                                        }
                                       } else {
                                         showToast("Select Country");
                                       }
@@ -856,7 +858,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                   }).toList(),
                                   onChanged: (value) {
                                     if (value != "Select State") {
-                                      statelistData.forEach((element) {
+                                      for (var element in statelistData) {
                                         if (element['name'].toString() ==
                                             value) {
                                           setState(() {
@@ -868,7 +870,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                                 element['id'].toString());
                                           });
                                         }
-                                      });
+                                      }
                                     } else {
                                       showToast("Select State");
                                     }
@@ -901,7 +903,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                   }).toList(),
                                   onChanged: (value) {
                                     if (value != "Select City") {
-                                      citylistData.forEach((element) {
+                                      for (var element in citylistData) {
                                         if (element['name'].toString() ==
                                             value) {
                                           setState(() {
@@ -912,7 +914,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                             //_getStateData(element['id'].toString());
                                           });
                                         }
-                                      });
+                                      }
                                     } else {
                                       showToast("Select City");
                                     }
@@ -1111,8 +1113,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                       ),
                                       controller: hourlyprice,
                                       onChanged: (value) {
-                                        if (value.toString().trim().length !=
-                                            0) {
+                                        if (value.toString().trim().isNotEmpty) {
                                           setState(() {
                                             renttype[0]
                                                 ['amount'] = value..toString();
@@ -1160,8 +1161,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if (value.toString().trim().length !=
-                                            0) {
+                                        if (value.toString().trim().isNotEmpty) {
                                           setState(() {
                                             renttype[1]['amount'] =
                                                 value.toString();
@@ -1213,8 +1213,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if (value.toString().trim().length !=
-                                            0) {
+                                        if (value.toString().trim().isNotEmpty) {
                                           setState(() {
                                             renttype[2]['amount'] =
                                                 value.toString();
@@ -1266,8 +1265,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if (value.toString().trim().length !=
-                                            0) {
+                                        if (value.toString().trim().isNotEmpty) {
                                           setState(() {
                                             renttype[3]['amount'] =
                                                 value.toString();
@@ -1291,7 +1289,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Container(
+                          SizedBox(
                             width: size.width * 0.60,
                             child: Row(
                                 mainAxisAlignment:
@@ -1561,13 +1559,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
         data['Images'].forEach((element) {
           if (element['is_main'] == 1) {
-            mainimage = sliderpath +
-                "${element['upload_base_path'].toString()}${element['file_name'].toString()}";
+            mainimage = "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}";
           } else {
             additionalimage.add({
               "update": false,
-              "image": sliderpath +
-                  "${element['upload_base_path'].toString()}${element['file_name'].toString()}",
+              "image": "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}",
               "id": element['id'].toString()
             });
           }
@@ -1601,7 +1597,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
           }
         });
 
-        _checkData = true;
+        checkData = true;
 
         if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
           sameAddress = true;
@@ -1760,8 +1756,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               }
                             }
                             Navigator.of(context).pop();
-                            print(".........................2" +
-                                jsonEncode(additionalimage).toString());
+                            print(".........................2${jsonEncode(additionalimage)}");
                           },
                           style: ButtonStyle(
                               backgroundColor:
@@ -1809,8 +1804,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               }
                             }
                             Navigator.of(context).pop();
-                            print("........................." +
-                                jsonEncode(additionalimage).toString());
+                            print(".........................${jsonEncode(additionalimage)}");
                           },
                           style: ButtonStyle(
                               backgroundColor:
@@ -1828,17 +1822,17 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   }
 
   Future<Map> submitpostaddData(List files) async {
-    if (files.length == 0) {
+    if (files.isEmpty) {
       showToast("Please add atleast one additonal image");
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List temp = [];
-      renttype.forEach((element) {
+      for (var element in renttype) {
         if (element['enable']) {
           temp.add(element);
         }
-      });
-      if (temp.length == 0) {
+      }
+      if (temp.isEmpty) {
         showToast("Please select atleast one rent type");
       } else {
         setState(() {
@@ -1848,13 +1842,13 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         List newImages = [];
         List oldImages = [];
 
-        files.forEach((element) {
+        for (var element in files) {
           if (element['update'].toString() == "true") {
             newImages.add(element['image']);
           } else {
             oldImages.add(element['id']);
           }
-        });
+        }
 
         var requestMulti =
             http.MultipartRequest('POST', Uri.parse(BASE_URL + updatepost));
@@ -1897,18 +1891,18 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         if (!mainimage.contains('http')) {
           requestMulti.files.add(http.MultipartFile("main_image",
               File(mainimage).openRead(), File(mainimage).lengthSync(),
-              filename: "image" + p.extension(mainimage.toString())));
+              filename: "image${p.extension(mainimage.toString())}"));
         }
 
         List<http.MultipartFile> newList = [];
 
-        if (newImages.length > 0) {
+        if (newImages.isNotEmpty) {
           for (var i = 0; i < newImages.length; i++) {
             File imageFile = File(newImages[i].toString());
             var stream = http.ByteStream(imageFile.openRead());
             var length = await imageFile.length();
             var multipartFile = http.MultipartFile("images[]", stream, length,
-                filename: "image" + p.extension(newImages[i].toString()));
+                filename: "image${p.extension(newImages[i].toString())}");
             newList.add(multipartFile);
           }
         }

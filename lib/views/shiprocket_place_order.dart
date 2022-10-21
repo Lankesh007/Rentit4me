@@ -1,8 +1,7 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, must_be_immutable, library_private_types_in_public_api
 
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -14,7 +13,7 @@ import 'package:http/http.dart' as http;
 
 class ShipRocketPlaceOrder extends StatefulWidget {
   String id;
-  ShipRocketPlaceOrder({this.id});
+  ShipRocketPlaceOrder({Key key, this.id}) : super(key: key);
   @override
   _ShipRocketPlaceOrderState createState() => _ShipRocketPlaceOrderState();
 }
@@ -42,7 +41,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
       "userid": prefs.getString('userid').toString()
     };
     var response = await http.post(
-        Uri.parse(BASE_URL + "shiprocket-create-order"),
+        Uri.parse("${BASE_URL}shiprocket-create-order"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -65,10 +64,9 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getPickupLocation().then((value) {
-      if (value.length > 0) {
+      if (value.isNotEmpty) {
         setState(() {
           pickupLocationList.clear();
           pickupLocationList.addAll(value);
@@ -125,7 +123,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
 
                               var response = await http.post(
                                   Uri.parse(
-                                      BASE_URL + "get-shiprocket-addresses"),
+                                      "${BASE_URL}get-shiprocket-addresses"),
                                   headers: {
                                     "Accept": "application/json",
                                     'Content-Type': 'application/json'
@@ -240,7 +238,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                   SizedBox(
                     height: 10,
                   ),
-                  pickupLocationList.length == 0
+                  pickupLocationList.isEmpty
                       ? Center(
                           child: Text("Please add pickup location"),
                         )
@@ -273,7 +271,8 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                       onChanged: (newValue) {
                                         setState(() {
                                           pickupLocationValue = newValue;
-                                          pickupLocationList.forEach((element) {
+                                          for (var element
+                                              in pickupLocationList) {
                                             if (newValue ==
                                                 int.parse(
                                                     element['id'].toString())) {
@@ -281,7 +280,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                                   element['pickup_location']
                                                       .toString();
                                             }
-                                          });
+                                          }
                                         });
                                       },
                                       items: pickupLocationList.map((value) {
@@ -364,10 +363,11 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                             ),
                             TextFormField(
                               validator: (value) {
-                                if (value.isEmpty)
+                                if (value.isEmpty) {
                                   return "Required Field";
-                                else
+                                } else {
                                   return null;
+                                }
                               },
                               controller: length,
                               inputFormatters: [
@@ -408,10 +408,11 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                             ),
                             TextFormField(
                               validator: (value) {
-                                if (value.isEmpty)
+                                if (value.isEmpty) {
                                   return "Required Field";
-                                else
+                                } else {
                                   return null;
+                                }
                               },
                               controller: breadth,
                               inputFormatters: [
@@ -452,10 +453,11 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                             ),
                             TextFormField(
                               validator: (value) {
-                                if (value.isEmpty)
+                                if (value.isEmpty) {
                                   return "Required Field";
-                                else
+                                } else {
                                   return null;
+                                }
                               },
                               controller: height,
                               inputFormatters: [
@@ -575,8 +577,8 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                         };
                                         print(jsonEncode(body));
                                         var response = await http.post(
-                                            Uri.parse(BASE_URL +
-                                                "shiprocket/place-order"),
+                                            Uri.parse(
+                                                "${BASE_URL}shiprocket/place-order"),
                                             body: jsonEncode(body),
                                             headers: {
                                               "Accept": "application/json",

@@ -1129,11 +1129,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           }
           securitydeposit = data['posted_ad']['security'].toString();
           rentpricelist.addAll(data['posted_ad']['prices']);
-          rentpricelist.forEach((element) {
+          for (var element in rentpricelist) {
             if (element['price'] != null) {
               renttypelist.add(element['rent_type_name'].toString());
             }
-          });
+          }
           conviencechargeper =
               double.parse(data['convenience_charges']['charge'].toString());
           conviencevalue = 0;

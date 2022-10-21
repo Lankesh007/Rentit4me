@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'dart:convert';
 
@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:rentit4me_new/models/user_profile_data.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
@@ -95,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 45,
                                     width: 45,
                                     child: CachedNetworkImage(imageUrl: ""),
@@ -325,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<ProfileResponse> getprofile() async {
+  Future getprofile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final body = {
       "id": prefs.get('userid'),

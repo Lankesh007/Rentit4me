@@ -131,7 +131,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       pref.setString("pincode", place.postalCode.toString());
       pref.setString("address_type", place.subLocality.toString());
-
       currentCity = place.locality;
       log("current city--->$currentCity");
 
@@ -466,6 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
+            await Future.delayed(Duration(milliseconds: 1500));
             _getData();
             getCounrtyId();
             _getprofileData();
@@ -626,11 +626,40 @@ class _HomeScreenState extends State<HomeScreen> {
                                 indicatorBgPadding: 10.0,
                                 dotPosition: DotPosition.bottomCenter,
                                 images: images
-                                    .map((item) => Container(
+                                    .map((item) => SizedBox(
                                         child: CachedNetworkImage(
                                             imageUrl: item, fit: BoxFit.fill)))
                                     .toList(),
                               ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Latest Additions",
+                              style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange),
+                                      elevation: MaterialStateProperty.all(5),
+                                      shape: BorderRadius.circular(10)
+                                ),
+                                onPressed: () {},
+                                child: Text("view all"))
+                          ],
+                        ),
                       ),
                       // Padding(
                       //   key: scrollKey,

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'dart:developer';
 
@@ -182,7 +182,6 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
                                 'Please enter your search or select date');
                           } else {
                             if (searchvalue == "Enter Title" ||
-                                searchvalue.length == 0 ||
                                 searchvalue.isEmpty) {
                               _promotedalllistByDate();
                             } else {
@@ -223,12 +222,12 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
                   List temp = [];
 
                   List a = alllist[index]['prices'];
-                  a.forEach((element) {
+                  for (var element in a) {
                     if (element['price'] != null) {
                       temp.add(
                           "INR ${element['price']} (${element['rent_type_name']})");
                     }
-                  });
+                  }
                   return InkWell(
                       onTap: () {},
                       child: Stack(
@@ -244,7 +243,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         height: 55,
                                         width: 55,
                                         child: ClipRRect(
@@ -685,7 +684,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
     final body = {
       "id": prefs.getString('userid'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings/promoted"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings/promoted"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -723,7 +722,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
       "from_date": startdate,
       "to_date": enddate
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings/promoted"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings/promoted"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -760,7 +759,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
       "id": prefs.getString('userid'),
       "search": searchvalue,
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings/promoted"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings/promoted"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -866,7 +865,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
   Future<void> _postboost(String id) async {
     log("calling");
     log(id.toString());
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
