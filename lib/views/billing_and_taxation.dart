@@ -170,15 +170,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+       
       ),
       body: ListView(
         children: [
@@ -1024,11 +1016,12 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
   Future getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString("userid");
-    var url = "https://rentit4me.com/api/profile";
+    var url = BASE_URL + profileUrl;
     var body = {
       "id": userId.toString(),
     };
-    var response = await APIHelper.apiPostRequest(url, body);
+    var data=jsonEncode(body);
+    var response = await APIHelper.apiPostRequest(url, data);
 
     var result = jsonDecode(response);
     if (result['ErrorMessage'] == "success") {

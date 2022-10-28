@@ -1,7 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
-const String BASE_URL1 = "https://dev.techstreet.in/rentit4me/public/api/";
-const String BASE_URL = "https://rentit4me.com/api/";
+const String BASE_URL = "https://dev.techstreet.in/rentit4me/public/api/";
+const String BASE_URL1 = "https://rentit4me.com/api/";
+const String devImage="https://dev.techstreet.in/rentit4me/public/";
 
 const String imagepath =
     "https://rentit4me.com/assets/frontend/images/category/";
@@ -83,11 +84,12 @@ const String deleteproductUrl = "posted-ads/delete";
 const String viewoffersUrl = "view-offers";
 
 class Apis {
-  static const String BASE_URL = "https://rentit4me.com/api/";
+  static const String BASE_URL1 = "https://rentit4me.com/api/";
+  static const String BASE_URL =
+      "https://dev.techstreet.in/rentit4me/public/api/";
 
   static const String countryByNameApi = "${BASE_URL}fetch-country-by-name";
   static const String personalDetailsApi = "${BASE_URL}personal-profile-update";
   static const String billingAndTaxationApi = "${BASE_URL}billing-and-taxation";
   static const String basicProfileUpdateApi = "${BASE_URL}basic-profile-update";
-
 }

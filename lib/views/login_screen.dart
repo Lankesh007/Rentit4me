@@ -99,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  int userId = 0;
+
   @override
   void dispose() {
     emailController.dispose();
@@ -644,20 +646,21 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         prefs.setBool('logged_in', true);
-        prefs.setString(
-            'userid', jsonDecode(response.body)['Response']['user']['id'].toString());
+        var result = jsonDecode(response.body);
+        userId = result['Response']['id'];
+        log("userId---->$userId");
+        prefs.setString('userid', userId.toString());
         prefs.setString('usertype',
-            jsonDecode(response.body)['Response']['user']['user_type'].toString());
+            jsonDecode(response.body)['Response']['user_type'].toString());
         setState(() {
-          prefs.setString(
-              "token", jsonDecode(response.body)['Response']['token']);
+          prefs.setString("token", jsonDecode(response.body)['token']);
           log("token---->${prefs.getString('token')}");
         });
         _getprofileData();
 
         //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
       } else {
-         buttonLoading = false;
+        buttonLoading = false;
         showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
@@ -677,49 +680,54 @@ class _LoginScreenState extends State<LoginScreen> {
     };
     var response = await http.post(Uri.parse(BASE_URL + profileUrl),
         body: jsonEncode(body),
-        
         headers: {
           "Accept": "application/json",
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
-        print(jsonEncode(
-          {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        }
-        ));
-        print(body);
+    print(jsonEncode({
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    }));
+    print(body);
     log(response.body);
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
-      if (data['User']['package_id'] != null) {
-        if (data['User']['is_signup_complete'] == 1) {
-          if (data['User']['payment_status'] == 1) {
-            prefs.setString(
-                'userquickid', data['User']['quickblox_id'].toString());
-            prefs.setString(
-                'quicklogin', data['User']['quickblox_email'].toString());
-            prefs.setString(
-                'quickpassword', data['User']['quickblox_password'].toString());
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => Dashboard()));
+      if (jsonDecode(response.body)['ErrorMessage'] !=
+          "Please complete your personal details first") {
+        if (data['User']['package_id'] != null) {
+          if (data['User']['is_signup_complete'] == 1) {
+            if (data['User']['payment_status'] == 1) {
+              prefs.setString(
+                  'userquickid', data['User']['quickblox_id'].toString());
+              prefs.setString(
+                  'quicklogin', data['User']['quickblox_email'].toString());
+              prefs.setString('quickpassword',
+                  data['User']['quickblox_password'].toString());
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => Dashboard()));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const MakePaymentScreen()));
+            }
           } else {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        const MakePaymentScreen()));
+                    builder: (BuildContext context) => PersonalDetailScreen()));
           }
-        } else {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => PersonalDetailScreen()));
         }
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => PersonalDetailScreen()));
       }
     } else {
       throw Exception('Failed to get data due to ${response.body}');

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -238,6 +240,7 @@ class _UserlocationScreenState extends State<UserlocationScreen> {
     prefs.setString('country', place.country.toString());
     prefs.setString('state', place.administrativeArea.toString());
     prefs.setString('city', place.locality.toString());
+    log(prefs.getString('city'));
     prefs.setString('countryId', place.isoCountryCode.toString());
     prefs.setString('pinCode', place.postalCode.toString());
   

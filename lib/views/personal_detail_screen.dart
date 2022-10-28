@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
@@ -34,15 +35,15 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   // String usertype;
 
   List countrylistData = [];
-  String country_id;
+  int country_id;
 
   List statelistData = [];
-  String state_id;
+  int state_id;
   String stateId = '';
   String countryId = '';
 
   List citylistData = [];
-  String city_id;
+  int city_id;
   final bankName = TextEditingController();
   final branchName = TextEditingController();
   final accountNo = TextEditingController();
@@ -112,6 +113,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   String state;
   String city;
   String pinCode;
+  String userId;
 
   getPrefsData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -124,11 +126,14 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     pinCode = prefs.getString('pinCode');
     log("city--->$pinCode");
     pincode.text = pinCode;
+    userId = prefs.getString('userid');
+    log("userId--->$userId");
   }
 
   @override
   void initState() {
     super.initState();
+    _getcountryData();
     getPrefsData();
     _getprofile().then((value) {
       _getcountryData();
@@ -209,7 +214,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                     if (element['name'].toString() == value) {
                                       setState(() {
                                         selectedCountry = value;
-                                        country_id = element['id'].toString();
+                                        country_id = element['id'];
                                         _getStateData(element['id'].toString());
                                         selectedState = 'Select State';
                                         selectedCity = 'Select City';
@@ -254,7 +259,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   if (element['name'].toString() == value) {
                                     setState(() {
                                       selectedState = value;
-                                      state_id = element['id'].toString();
+                                      state_id = element['id'];
                                       _getCityData(element['id'].toString());
                                       selectedCity = 'Select City';
                                     });
@@ -295,7 +300,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   if (element['name'].toString() == value) {
                                     setState(() {
                                       selectedCity = value;
-                                      city_id = element['id'].toString();
+                                      city_id = element['id'];
                                     });
                                   }
                                 }
@@ -540,7 +545,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          kyc == true && country_id == "113"
+                          kyc == true && country_id == 113
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -651,7 +656,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                         ))
                                   ],
                                 )
-                              : kyc == true
+                              : kyc == true && country_id != 113
                                   ? Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -858,26 +863,26 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                       ? InkWell(
                           onTap: () {
                             // if (kyc == "1") {
-                            if (country_id == null || country_id == "") {
+                            if (country_id == null || country_id == null) {
                               showToast("Please select your country");
-                            } else if (state_id == null || state_id == "") {
+                            } else if (state_id == null || state_id == null) {
                               showToast("Please select your state");
-                            } else if (city_id == null || city_id == "") {
+                            } else if (city_id == null || city_id == null) {
                               showToast("Please select your city");
                             } else if (!_emailcheck && !_smscheck) {
                               showToast("Please check either email or sms");
                             } else if (initialtrustedbadge == "Select") {
                               showToast("Please select Trusted Badge");
                             } else if (tb == true &&
-                                country_id == "113" &&
+                                country_id == 113 &&
                                 adharcarddoc == "") {
                               showToast("Please upload Aadhaar Card");
                             } else if (kyc == true &&
-                                country_id != "113" &&
+                                country_id != 113 &&
                                 initialIdProof == "Select") {
                               showToast("Please select Id Proof");
                             } else if (kyc == true &&
-                                country_id != "113" &&
+                                country_id != 113 &&
                                 internIdProofDocument == "") {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
@@ -922,32 +927,32 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                       : InkWell(
                           onTap: () {
                             // if (kyc == "1") {
-                            if (country_id == null || country_id == "") {
+                            if (country_id == null || country_id == null) {
                               showToast("Please select your country");
-                            } else if (state_id == null || state_id == "") {
+                            } else if (state_id == null || state_id == null) {
                               showToast("Please select your state");
-                            } else if (city_id == null || city_id == "") {
+                            } else if (city_id == null || city_id == null) {
                               showToast("Please select your city");
                             } else if (!_emailcheck && !_smscheck) {
                               showToast("Please check either email or sms");
                             } else if (initialtrustedbadge == "Select") {
                               showToast("Please select Trusted Badge");
                             } else if (tb == true &&
-                                country_id == "113" &&
+                                country_id == 113 &&
                                 adharcarddoc == "") {
                               showToast("Please upload Aadhaar Card");
                             } else if (kyc == true &&
-                                country_id != "113" &&
+                                country_id != 113 &&
                                 initialIdProof == "Select") {
                               showToast("Please select Id Proof");
                             } else if (kyc == true &&
-                                country_id != "113" &&
+                                country_id != 113 &&
                                 internIdProofDocument == "") {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
                             } else if (key.currentState.validate()) {
-                              submitPersonalDetailsWithTrustedBadge();
+                              submitPersonalDetails();
                             }
                           },
                           child: SizedBox(
@@ -1213,12 +1218,12 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
       setState(() {
-        businessName = data['User']['business_name'].toString();
-        prefs.setString('businessName', businessName);
-        log("---->" + prefs.getString('businessName'));
-        country_id = data['User']['country'].toString();
-        state_id = data['User']['state'].toString();
-        city_id = data['User']['city'].toString();
+        // businessName = data['User']['business_name'].toString();
+        // prefs.setString('businessName', businessName);
+        // log("---->" + prefs.getString('businessName'));
+        country_id = data['User']['country'];
+        state_id = data['User']['state'];
+        city_id = data['User']['city'];
 
         selectedCountry = data['User']['country_name'].toString();
         selectedState = data['User']['state_name'].toString();
@@ -1285,8 +1290,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     });
     var response = await http.get(Uri.parse(BASE_URL + getCountries), headers: {
       "Accept": "application/json",
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
+    print("===>$response");
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body)['Response']['countries'];
       setState(() {
@@ -1310,12 +1316,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     final body = {
       "id": id,
     };
-    var response = await http.post(Uri.parse(BASE_URL + getState),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + getState), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    });
     //print(response.body);
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body)['Response']['states'];
@@ -1363,6 +1368,13 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   }
 
   Future _personaldetailupdatewithdoc() async {
+    List comPrefList = [];
+    if (checkEmail == "1") {
+      comPrefList.add("1");
+    }
+    if (checkSms == "2") {
+      comPrefList.add('2');
+    }
     List temp = [];
     if (_emailcheck) {
       temp.add("1");
@@ -1371,6 +1383,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       temp.add("2");
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    log( 'Bearer ${prefs.getString("token")}');
     // setState(() {
     //   _loading = true;
     // });
@@ -1382,30 +1396,31 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     requestMulti.fields["country"] = country_id.toString();
     requestMulti.fields["state"] = state_id.toString();
     requestMulti.fields["city"] = city_id.toString();
-    requestMulti.fields["kyc"] = kyc ? "1" : "0";
-    requestMulti.fields["com_prefs"] = temp.join(",").toString();
-    requestMulti.fields["trusted_badge"] =
-        initialtrustedbadge == "Yes" ? "1" : "0";
-    requestMulti.fields["account_type"] = dropdownvalue.toString();
-    requestMulti.fields["bank_name"] = bankname.text.toString();
-    requestMulti.fields["branch_name"] = branchname.text.toString();
-    requestMulti.fields["ifsc"] = ifsccode.text.toString();
-    requestMulti.fields["account_no"] = accountno.text.toString();
-    requestMulti.fields["adhaar_no"] = kyc && country_id == "113"
-        ? accountno.text.toString()
-        : internIdProofController.text.toString();
-    requestMulti.fields["pincode"] = pincode.text.toString();
+    requestMulti.fields["kyc"] = kyc.toString();
+    requestMulti.fields["com_prefs"] = comPrefList.join(',');
+    requestMulti.fields["trusted_badge"] = initialtrustedbadge.toString();
+    // requestMulti.fields["account_type"] = dropdownvalue.toString();
+    // requestMulti.fields["bank_name"] = bankname.text.toString();
+    // requestMulti.fields["branch_name"] = branchname.text.toString();
+    // requestMulti.fields["ifsc"] = ifsccode.text.toString();
+    // requestMulti.fields["account_no"] = accountno.text.toString();
+    requestMulti.fields["adhaar_no"] = adharnum.text.toString();
+    // requestMulti.fields["pincode"] = pincode.text.toString();
     print(requestMulti.fields);
 
-    if (kyc && country_id == "113") {
+    if (kyc == true && country_id == 113) {
       requestMulti.files
           .add(await http.MultipartFile.fromPath('adhaar_doc', adharcarddoc));
-    } else if (kyc && country_id != "113") {
-      requestMulti.files.add(await http.MultipartFile.fromPath(
-          'adhaar_doc', internIdProofDocument));
+    } else if (kyc != true && country_id != 113) {
+      requestMulti.files
+          .add(await http.MultipartFile.fromPath('adhaar_doc', adharcarddoc));
     }
 
     requestMulti.send().then((response) {
+      response.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+
       response.stream.toBytes().then((value) {
         try {
           var responseString = String.fromCharCodes(value);
@@ -1433,6 +1448,99 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       });
     });
   }
+
+    Future submitPersonalDetails() async {
+      List comPrefList = [];
+    if (checkEmail == "1") {
+      comPrefList.add("1");
+    }
+    if (checkSms == "2") {
+      comPrefList.add('2');
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    log('Bearer ${prefs.getString("token")}');
+
+    String userId = prefs.getString('userid');
+    setState(() {
+      buttonLoading = true;
+    });
+    var url = BASE_URL + personalupdate;
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": country_id.toString(),
+      "state": state_id.toString(),
+      "pincode": pincode.text.toString(),
+      "city": city_id.toString(),
+      "kyc": kyc.toString(),
+      "com_prefs": comPrefList.join(','),
+      "trusted_badge": initialtrustedbadge,
+      "adhaar_no": adharnum.text.toString(),
+      // "adhaar_doc": adharcarddoc.toString(),
+    };
+
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (kyc == true && country_id == 113) {
+        var pic =
+            await http.MultipartFile.fromPath('adhaar_doc', adharcarddoc.toString());
+        request.files.add(pic);
+        log("ENTETED====>  $pic");
+      } else {
+        log("ENTETED====>  not sent");
+      }
+
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => BillingAndTaxation()));
+        Fluttertoast.showToast(
+          msg: "Personal Details Submitted Successfully !!:",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green.shade700,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Something Went Wrong !!:",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green.shade700,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    } on Exception catch (e) {}
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
 
   // Future _personaldetailupdatewithoutdoc(
   //     String countryid,

@@ -14,12 +14,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/helper/dialog_helper.dart';
 import 'package:rentit4me_new/helper/loader.dart';
+import 'package:rentit4me_new/models/latest_addition_model.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/views/top_selling_categories_screen.dart';
 import 'package:rentit4me_new/views/user_finder_data_screen.dart';
+import 'package:rentit4me_new/views/view_all_latest_edition.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:rentit4me_new/widgets/navigation_drawer_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,9 +60,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<dynamic> mysubfeaturedcategories = [];
   bool loggedIn = false;
 
+  bool searchHeader = false;
+
   List<dynamic> location = [];
   String cityName = '';
   String cityId = '';
+  double height = 0;
+  double width = 0;
+  List<LatestAdditionsModel> latestAdditionList = [];
 
   bool findCity = false;
   List<dynamic> category = [];
@@ -68,6 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> categoryslug = [];
   String categoryslugname;
   List<dynamic> images = [];
+
+  bool loader = false;
 
   List<dynamic> likedadproductlist = [];
 
@@ -85,6 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String addressType = "";
   bool selectCity = false;
   String currentCity = "";
+  bool _loading = false;
+  TextEditingController address = TextEditingController();
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -126,37 +137,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _getAddress(value) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(value.latitude, value.longitude);
+    print(placemarks);
     Placemark place = placemarks[0];
-    SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-      pref.setString("pincode", place.postalCode.toString());
-      pref.setString("address_type", place.subLocality.toString());
-      currentCity = place.locality;
-      log("current city--->$currentCity");
-
-      pref.setString(
-          "defaultAddress",
-          place.subAdministrativeArea.toString() +
-              " ," +
-              place.name.toString() +
-              " ," +
-              place.subLocality.toString() +
-              " ," +
-              place.locality.toString() +
-              " ," +
-              place.postalCode.toString() +
-              " ," +
-              place.country.toString());
-      defaultAddress = pref.getString("defaultAddress").toString();
-      addressType = place.subLocality.toString();
-      List temp = [
-        {
-          "address_type": place.subLocality.toString(),
-          "address": defaultAddress,
-          "pincode": place.postalCode.toString()
-        }
-      ];
-      pref.setString("recent_address_list", jsonEncode(temp));
+      _loading = false;
+      findCity = true;
+      address.text = place.subAdministrativeArea.toString();
+      log("===>" + address.text);
     });
   }
 
@@ -227,8 +214,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             findCity = true;
                             log('=---->$currentCity');
+                            _determinePosition()
+                                .then((value) => _getAddress(value));
                           });
                           // _determinePosition();
+
                           var snackBar = const SnackBar(
                               content: Text('City Auto Detected !!'));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -334,6 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _getData();
     getCounrtyId();
+    getLatestAddition();
     _getprofileData();
 
     _getlocationbyUserlocation();
@@ -342,6 +333,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () {
         return showDialog(
@@ -406,33 +399,84 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Image.asset('assets/images/logo.png', scale: 25),
               const SizedBox(
-                width: 20,
+                width: 10,
               ),
-              Container(
-                alignment: Alignment.center,
-                height: 40,
-                width: size.width * 0.4,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: Colors.grey)),
-                child: TextFormField(
-                  readOnly: true,
-                  onTap: () {
-                    showMyDialog();
-                  },
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: findCity == true
-                          ? "   $currentCity"
-                          : selectCity == true
-                              ? "   $locationvalue"
-                              : "   $countryName",
-                      suffixIcon: const Icon(
-                        Icons.location_searching_sharp,
-                        color: kContentColorLightTheme,
-                      )),
-                ),
+              searchHeader != true
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddlistingScreen()));
+                      },
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.orange[600],
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text("Post An Ad",
+                              style: TextStyle(fontSize: 15))),
+                    )
+                  : Container(
+                      alignment: Alignment.center,
+                      height: 40,
+                      width: size.width * 0.4,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(color: Colors.grey)),
+                      child: TextFormField(
+                        readOnly: true,
+                        onTap: () {
+                          showMyDialog();
+                        },
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: findCity == true
+                                ? address.text.toString()
+                                : selectCity == true
+                                    ? "   $locationvalue"
+                                    : "   $countryName",
+                            suffixIcon: const Icon(
+                              Icons.location_searching_sharp,
+                              color: kContentColorLightTheme,
+                            )),
+                      ),
+                    ),
+              const SizedBox(
+                width: 10,
               ),
+              searchHeader == true
+                  ? SizedBox()
+                  : InkWell(
+                      onTap: () {
+                        searchHeader = true;
+                        log(searchHeader.toString());
+                      },
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        height: 40,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.orange[600],
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              searchHeader = !searchHeader;
+                              log(searchHeader.toString());
+                            });
+                          },
+                          icon: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
             ],
           ),
           leading: Row(
@@ -466,9 +510,11 @@ class _HomeScreenState extends State<HomeScreen> {
         body: RefreshIndicator(
           onRefresh: () async {
             await Future.delayed(Duration(milliseconds: 1500));
+            searchHeader = false;
             _getData();
             getCounrtyId();
             _getprofileData();
+            getLatestAddition();
             _getlocationbyUserlocation();
           },
           child: SingleChildScrollView(
@@ -649,18 +695,61 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600),
                             ),
-                            ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.deepOrange),
-                                      elevation: MaterialStateProperty.all(5),
-                                      shape: BorderRadius.circular(10)
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewAllLatestAddition()));
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 40,
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.orange[600],
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
                                 ),
-                                onPressed: () {},
-                                child: Text("view all"))
+                                child: Text(
+                                  "View All",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
+                      latestAdditionList.isEmpty
+                          ? Center(
+                              child: Text("No Record Found !!"),
+                            )
+                          : loader == true
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : SizedBox(
+                                  height: height * 0.47,
+                                  width: width,
+                                  child: GridView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: latestAdditionList.length,
+                                      itemBuilder: (BuildContext context,
+                                              int index) =>
+                                          latestAdditionWidget(
+                                              latestAdditionList[index], index),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 1.0,
+                                              mainAxisSpacing: 1.0)),
+                                ),
+
+                      SizedBox(
+                        height: 10,
+                      ),
+
                       // Padding(
                       //   key: scrollKey,
                       //   padding: const EdgeInsets.symmetric(
@@ -1215,18 +1304,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             loggedIn == true
                                 ? InkWell(
                                     onTap: () {
-                                      if (isSignedUp == 1 &&
-                                          trustedBadge == 0 &&
-                                          trustedBadgeApproval != "approved" &&
-                                          packageId != null) {
-                                        showToast("Verification Under Process");
-                                      } else {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     const AddlistingScreen()));
-                                      }
+                                      // if (isSignedUp == 1 &&
+                                      //     trustedBadge == 0 &&
+                                      //     trustedBadgeApproval == "approved" &&
+                                      //     packageId != null) {
+                                      //   showToast("Verification Under Process");
+                                      // } else {
+                                      
+                                      // }
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
@@ -1280,42 +1370,56 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       mytopcategories.isEmpty || mytopcategories.isEmpty
                           ? SizedBox()
-                          : InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TopSellingCategoriesScreen()));
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 15, top: 10),
-                                    child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text("Top Selling Categories",
-                                          style: TextStyle(
-                                              color: Colors.deepOrangeAccent,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700)),
+                          : Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TopSellingCategoriesScreen()));
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 5, top: 5),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text("Top Selling Categories",
+                                            style: TextStyle(
+                                                color: Colors.blue[900],
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w700)),
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                      margin: const EdgeInsets.only(
-                                          top: 15, right: 20),
-                                      child: Text(
-                                        "View All",
-                                        style: TextStyle(
-                                            color: Colors.deepOrangeAccent,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w700),
-                                      ))
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top:8.0),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 40,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          color: Colors.orange[600],
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "View All",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),  
+                                  ],
+                                ),
                               ),
-                            ),
+                          ),
                       mytopcategories.isEmpty || mytopcategories.isEmpty
                           ? SizedBox()
                           : Padding(
@@ -1453,18 +1557,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         padding: const EdgeInsets.only(bottom: 5),
                         width: double.infinity,
-                        color: kContainerColor,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 10),
-                            const Text("Today's Special Deals",
-                                style: TextStyle(
-                                    color: Colors.deepOrangeAccent,
-                                    fontSize: 14)),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text("Today's Special Deals",
+                                  style: TextStyle(
+                                      color: Colors.blue[900],
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600)),
+                            ),
                             const SizedBox(height: 5),
                             Container(
                               width: double.infinity,
-                              color: kContainerColor,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1877,6 +1984,116 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget latestAdditionWidget(LatestAdditionsModel item, int i) {
+    i = item.prices.length;
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => ProductDetailScreen(
+                          productid: item.id.toString(),
+                        ))));
+          },
+          child: Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  height: height * 0.16,
+                  width: width * 0.5,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: NetworkImage(devImage +
+                        item.uploadBasePath.toString() +
+                        item.fileName.toString()),
+                    fit: BoxFit.cover,
+                  )),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                    width: width * 0.5,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      item.title,
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    )),
+                SizedBox(
+                  height: 20,
+                  width: width * 0.5,
+                  child: GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: i,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        var i = item.prices[index];
+                        return Column(
+                          children: [
+                            Container(
+                                height: 20,
+                                width: width * 0.5,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Starting From INR " + i.price.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                      color: Colors.grey),
+                                )),
+                          ],
+                        );
+                      }),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future getLatestAddition() async {
+    setState(() {
+      loader = true;
+    });
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int countryId = preferences.getInt('countryId');
+    log("countryId---->$countryId");
+    var url = BASE_URL + homeUrl;
+    var body = {
+      "country": countryId.toString(),
+      "state": "",
+      "city": "",
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    log("=====>" + result.toString());
+
+    if (result['ErrorMessage'] == 'success') {
+      var list = result['Response']['latest_ads'] as List;
+      setState(() {
+        latestAdditionList.clear();
+        var listdata =
+            list.map((e) => LatestAdditionsModel.fromJson(e)).toList();
+        latestAdditionList.addAll(listdata);
+        loader = false;
+      });
+    }
+    setState(() {
+      loader = false;
+    });
+  }
+
   Future _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('userid') == null || prefs.getString('userid') == "") {
@@ -1911,18 +2128,18 @@ class _HomeScreenState extends State<HomeScreen> {
           images.add(sliderpath + element['value'].toString());
         });
 
-        jsonDecode(response.body)['Response']['cities'].forEach((element) {
-          location.add(element['name'].toString());
-        });
+        // jsonDecode(response.body)['Response']['cities'].forEach((element) {
+        //   location.add(element['name'].toString());
+        // });
 
-        categorylistData
-            .addAll(jsonDecode(response.body)['Response']['categories']);
+        // categorylistData
+        //     .addAll(jsonDecode(response.body)['Response']['categories']);
 
-        jsonDecode(response.body)['Response']['categories'].forEach((element) {
-          categoryslug.add(element['slug'].toString());
-          category.add(element['title'].toString());
-          myProducts.add(imagepath + element['image'].toString());
-        });
+        // jsonDecode(response.body)['Response']['categories'].forEach((element) {
+        //   categoryslug.add(element['slug'].toString());
+        //   category.add(element['title'].toString());
+        //   myProducts.add(imagepath + element['image'].toString());
+        // });
 
         mytopcategorieslistData.addAll(
             jsonDecode(response.body)['Response']['top_selling_categories']);
@@ -1932,54 +2149,55 @@ class _HomeScreenState extends State<HomeScreen> {
           mytopcategories.add(imagepath + element['image'].toString());
         });
 
-        myfeaturedcategories.addAll(
-            jsonDecode(response.body)['Response']['featured_categories']);
-        mysubfeaturedcategories.addAll(
-            jsonDecode(response.body)['Response']['featured_subcategories']);
+        // myfeaturedcategories.addAll(
+        //     jsonDecode(response.body)['Response']['featured_categories']);
+        // mysubfeaturedcategories.addAll(
+        //     jsonDecode(response.body)['Response']['featured_subcategories']);
         // jsonDecode(response.body)['Response']['featured_categories'].forEach((element){
         //     featuredname.add(element['title'].toString());
         //     myfeaturedcategories.add(imagepath + element['image'].toString());
         // });
 
-        likedadproductlist
-            .addAll(jsonDecode(response.body)['Response']['You_may_also_like']);
+        // likedadproductlist
+        //     .addAll(jsonDecode(response.body)['Response']['You_may_also_like']);
 
+        print(jsonDecode(response.body)['Response']['today_special_deals']);
         todaydealsimage1 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_1']['value']
                 .toString();
         todaydealsimage2 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_2']['value']
                 .toString();
         todaydealsimage3 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_3']['value']
                 .toString();
         todaydealsimage4 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_4']['value']
                 .toString();
 
         bottomimage1 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_1']['value']
                 .toString();
         bottomimage2 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_2']['value']
                 .toString();
         bottomimage3 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_3']['value']
                 .toString();
         bottomimage4 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_4']['value']
                 .toString();
 
         bottomsingleimage = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_single']['value']
                 .toString();
 
@@ -2034,6 +2252,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (prefs.getString('city') != null || prefs.getString('city') != "") {
       setState(() {
         locationvalue = prefs.getString('city');
+
         currentCity = locationvalue;
       });
     }

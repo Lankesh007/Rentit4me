@@ -60,7 +60,6 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       // _checkLoggedIn()
       //     .then((value) => _getprofileData().then((value) => _loadWidget()));
-    
 
       if (prefs.getString('userid') == "" ||
           prefs.getString('userid') == null) {
@@ -175,18 +174,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future getprofileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final body = {
-      "id": prefs.getString('userid'),
-    };
+    final body = {};
     var response = await http.post(Uri.parse(BASE_URL + profileUrl),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',  
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
+    print("Bearer ${prefs.getString("token")}");
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
+      log("data----->$data");
       if (data != null) {
         if (data['User']['otp_verify'] == "1") {
           if (data['User']['is_signup_complete'] == 1 &&
@@ -207,6 +206,11 @@ class _SplashScreenState extends State<SplashScreen> {
               MaterialPageRoute(builder: (context) => OtpScreen()),
               (route) => false);
         }
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => PersonalDetailScreen()),
+            (route) => false);
       }
       //   if (data['User']['package_id'].toString() != null) {
       //     if (data['User']['payment_status'].toString() == "1") {

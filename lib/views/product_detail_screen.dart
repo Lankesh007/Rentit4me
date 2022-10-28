@@ -177,7 +177,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Detail", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Details", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: apiLoading == true
