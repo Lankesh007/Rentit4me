@@ -496,6 +496,7 @@ class _SignupScreenState extends State<SignupScreen> {
             jsonDecode(response.body)['Response']['token']
                 .toString());
         log("token---->${prefs.getString('token')}");
+        prefs.setString('businessName', businessController.text.toString());
         _sendotp(mobile);
       } else {
         if (jsonDecode(response.body)['ErrorMessage'].toString() ==

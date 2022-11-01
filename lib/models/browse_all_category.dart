@@ -1,4 +1,4 @@
-class TopSellingCategory {
+class BrowseAllCategories {
   int id;
   int parentId;
   String title;
@@ -6,16 +6,16 @@ class TopSellingCategory {
   String description;
   String image;
   int topSelling;
-  Null featured;
+  String featured;
   int orderBy;
   int status;
   String createdAt;
   String updatedAt;
-  Null createdBy;
-  Null updatedBy;
+  String createdBy;
+  String updatedBy;
   List<Subcategories> subcategories;
 
-  TopSellingCategory(
+  BrowseAllCategories(
       {this.id,
       this.parentId,
       this.title,
@@ -32,7 +32,7 @@ class TopSellingCategory {
       this.updatedBy,
       this.subcategories});
 
-  TopSellingCategory.fromJson(Map<String, dynamic> json) {
+  BrowseAllCategories.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     parentId = json['parent_id'];
     title = json['title'];
@@ -40,7 +40,7 @@ class TopSellingCategory {
     description = json['description'];
     image = json['image'];
     topSelling = json['top_selling'];
-    featured = json['featured'];
+    featured = json['featured'].toString();
     orderBy = json['order_by'];
     status = json['status'];
     createdAt = json['created_at'];
@@ -50,13 +50,13 @@ class TopSellingCategory {
     if (json['subcategories'] != null) {
       subcategories = <Subcategories>[];
       json['subcategories'].forEach((v) {
-        subcategories.add( Subcategories.fromJson(v));
+        subcategories.add(Subcategories.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  <String, dynamic>{};
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['parent_id'] = parentId;
     data['title'] = title;
@@ -86,14 +86,14 @@ class Subcategories {
   String slug;
   String description;
   String image;
-  Null topSelling;
+  String topSelling;
   int featured;
   int orderBy;
   int status;
   String createdAt;
   String updatedAt;
-  Null createdBy;
-  Null updatedBy;
+  String createdBy;
+  String updatedBy;
 
   Subcategories(
       {this.id,

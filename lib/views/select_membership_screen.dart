@@ -292,6 +292,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
+    log('Bearer ${prefs.getString("token")}');
     print(response.body);
     setState(() {
       _loading = false;
@@ -334,7 +335,10 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
     setState(() {
       _loading = true;
     });
-    final body = {"id": prefs.getString('userid'), "package_id": membershipid};
+    final body = {
+      "id": membershipid.toString(),
+      "package_id": membershipid.toString()
+    };
     var response = await http.post(Uri.parse(BASE_URL + selectmembership),
         body: jsonEncode(body),
         headers: {
@@ -342,6 +346,8 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
+    log("Bearer ${prefs.getString("token")}");
+    log(body.toString());
 
     log("response---->${response.body.toString()}");
     if (response.statusCode == 200) {
@@ -386,6 +392,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
+
     print(response.body);
     setState(() {
       _loading = false;

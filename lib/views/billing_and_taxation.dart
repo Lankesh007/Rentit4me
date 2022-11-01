@@ -30,6 +30,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
   final gstNumber = TextEditingController();
   final panNumber = TextEditingController();
   final aadharNumber = TextEditingController();
+  final businessNames=TextEditingController();
   String dropdownvalue = 'Select';
   String gstDocumnet = '';
   String panCardDocumnet = '';
@@ -142,10 +143,10 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
   getPrefencesData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // setState(()  {
+    setState(()  {
     businessName = prefs.getString('businessName');
     log("----->$businessName");
-    // });
+    });
   }
 
   @override
@@ -416,11 +417,12 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: TextField(
+                    controller: businessNames,
                     decoration: InputDecoration(
                       hintText: businessName,
                       border: InputBorder.none,
                     ),
-                    readOnly: true,
+                    // readOnly: true,
                     onChanged: (value) {
                       setState(() {});
                     },
@@ -446,7 +448,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                         hintText: "GST No.(must be 15 digit)",
                         border: InputBorder.none,
                         counterText: ""),
-                    maxLength: 12,
+                    maxLength: 15,
                     onChanged: (value) {
                       setState(() {
                         // adharno = value;
@@ -1040,6 +1042,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     var url = Apis.billingAndTaxationApi;
     var bodyMap = {
       "id": userId.toString(),
+      "business_name":businessNames.text.toString(),
       "account_type": dropdownvalue.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),

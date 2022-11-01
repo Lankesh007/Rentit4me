@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/helper/loader.dart';
+import 'package:rentit4me_new/models/people_also_like_model.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/advertiser_profile_screen.dart';
@@ -19,6 +21,7 @@ import 'package:rentit4me_new/views/conversation.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/views/make_edit_offer.dart';
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -88,6 +91,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String accountKey = "hr2cuVsMyCZXsZMEE32H";
 
   List productimages = [];
+  List<dynamic> location = [];
+  List<dynamic> category = [];
+  List<dynamic> categorylistData = [];
 
   final TextEditingController useramountController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
@@ -104,12 +110,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void initState() {
     _getData();
     super.initState();
+    getPeopleAlsoLike();
     initializeDateFormatting();
     _getproductDetail(productid);
     _getcheckapproveData();
     _getmakeoffer(productid);
 
-    _getgooglelocation();
+    // _getgooglelocation();
   }
 
   _getgooglelocation() async {
@@ -159,10 +166,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   //     // Some error occurred, look at the exception message for more details
   //   }
   // }
+  double height = 0;
+  double width = 0;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: kContentColorDarkTheme,
@@ -222,7 +235,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 return InkWell(
                                   onTap: () {
                                     setState(() {
-                                      productimage = sliderpath +
+                                      productimage = devImage +
                                           productimages[index]
                                                   ['upload_base_path']
                                               .toString() +
@@ -234,7 +247,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     height: 55,
                                     width: size.width * 0.30,
                                     child: CachedNetworkImage(
-                                      imageUrl: sliderpath +
+                                      imageUrl: devImage +
                                           productimages[index]
                                               ['upload_base_path'] +
                                           productimages[index]['file_name'],
@@ -244,18 +257,127 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 );
                               }),
                         ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Ad Id : $adId",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Divider(
                           thickness: 0.9,
                           height: 30,
                         ),
+
                         Text(
                           productname,
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18,
+                              fontSize: 22  ,
                               fontWeight: FontWeight.bold),
                         ),
+
+                        SizedBox(height: 10.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: renttype == null ||
+                                    renttype == "" ||
+                                    renttype == "null"
+                                ? Text(productprice,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500))
+                                : Text(productprice,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500))),
+                        SizedBox(height: 15.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Text("Security Deposit :",
+                                    style: TextStyle(
+                                        color: Colors.deepOrange,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                Text(" INR $securitydeposit",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                              ],
+                            )),
+                        SizedBox(height: 10.0),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AdvertiserProfileScreen(
+                                                advertiserid: addedbyid)));
+                              },
+                              child: Row(
+                                children: [
+                                  Text("Listed By ",
+                                      style: TextStyle(
+                                          color: Colors.deepOrange,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(" : $addedby",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                            )),
+                        SizedBox(height: 10.0),
+                        RatingBar.builder(
+                          itemSize: 20,
+                          initialRating: 3,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: false,
+                          itemCount: 5,
+                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                          ),
+                          onRatingUpdate: (rating) {
+                            print(rating);
+                          },
+                        ),
+                        SizedBox(height: 10.0),
+
+                        Divider(
+                          thickness: 0.9,
+                          height: 30,
+                        ),
                         // SizedBox(height: 2.0),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          height: 50,
+                          width: width,
+                          color: Colors.grey[300],
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              "Description",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
                         Align(
                             alignment: Alignment.topLeft,
                             child: boostpack == "null" ||
@@ -275,137 +397,104 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             color: Colors.black,
                                             fontSize: 16)))),
                         SizedBox(height: 15.0),
-                        Align(
-                            alignment: Alignment.topLeft,
-                            child: description == "" ||
-                                    description == "null" ||
-                                    description == null
-                                ? SizedBox()
-                                : Text(description,
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12))),
-                        SizedBox(height: 35.0),
-                        Align(
-                            alignment: Alignment.topLeft,
-                            child: renttype == null ||
-                                    renttype == "" ||
-                                    renttype == "null"
-                                ? Text(productprice,
-                                    style: TextStyle(
-                                        color: Colors.deepOrangeAccent,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500))
-                                : Text(productprice,
-                                    style: TextStyle(
-                                        color: Colors.deepOrangeAccent,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500))),
-                        SizedBox(height: 15.0),
-                        Align(
-                            alignment: Alignment.topLeft,
-                            child: Row(
-                              children: [
-                                Text("Security Deposit :",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                Text(" INR $securitydeposit",
-                                    style: TextStyle(
-                                        color: Colors.deepOrangeAccent,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                              ],
-                            )),
-                        SizedBox(height: 15.0),
-                        Align(
-                            alignment: Alignment.topLeft,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AdvertiserProfileScreen(
-                                                advertiserid: addedbyid)));
-                              },
-                              child: Text("Listed By : $addedby",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                            )),
-                        SizedBox(height: 15.0),
-                        SizedBox(
-                          height: 100,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              kyc == 1
-                                  ? Expanded(
-                                      child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.green.shade100,
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "KYC",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            Image.asset(
-                                              "assets/images/check-mark.png",
-                                              scale: 16,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ))
-                                  : SizedBox(),
-                              SizedBox(
-                                width: 30,
-                              ),
-                              trustedbadgeapproval == "approved" ?? ""
-                                  ? Expanded(
-                                      child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.green.shade100,
-                                          borderRadius:
-                                              BorderRadius.circular(40)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Trusted Badge",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            Image.asset(
-                                              "assets/images/check-mark.png",
-                                              scale: 16,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ))
-                                  : SizedBox(),
-                            ],
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Align(
+                              alignment: Alignment.topLeft,
+                              child: description == "" ||
+                                      description == "null" ||
+                                      description == null
+                                  ? SizedBox()
+                                  : Text(description,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 12))),
                         ),
-                        SizedBox(height: 3.0),
+                        Divider(
+                          thickness: 0.9,
+                          height: 30,
+                        ),
+                        kyc == 1
+                            ? SizedBox(
+                                height: 100,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    kyc == 1
+                                        ? Expanded(
+                                            child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.green.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "KYC",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18),
+                                                  ),
+                                                  Image.asset(
+                                                    "assets/images/check-mark.png",
+                                                    scale: 16,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                        : SizedBox(),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                    trustedbadgeapproval == "approved" ?? ""
+                                        ? Expanded(
+                                            child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.green.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(40)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Trusted Badge",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18),
+                                                  ),
+                                                  Image.asset(
+                                                    "assets/images/check-mark.png",
+                                                    scale: 16,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                        : SizedBox(),
+                                  ],
+                                ),
+                              )
+                            : SizedBox(),
+                        SizedBox(
+                          height: 10,
+                        ),
+
                         userid == null || userid == ""
                             ? SizedBox(
                                 height: 60,
@@ -473,12 +562,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         InkWell(
                                           onTap: () {
                                             log(queryId);
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Conversation(
-                                                            queryId: queryId)));
+                                            // Navigator.push(
+                                            //     context,
+                                            //     MaterialPageRoute(
+                                            //         builder: (context) =>
+                                            //             Conversation(
+                                            //                 queryId: queryId)));
                                           },
                                           child: Container(
                                             height: 45,
@@ -558,7 +647,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     ),
                                   )
                                 : SizedBox(),
-                        SizedBox(height: 30),
+                        Divider(
+                          thickness: 0.9,
+                          height: 30,
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          height: height * 0.2,
+                          width: width * 0.98,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10),
+                                    height: 40,
+                                    width: 3,
+                                    color: Colors.deepOrange,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Post Comments",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 30,),
+                              Container(
+                                alignment: Alignment.center,
+                                width: width * 0.98,
+                                child: Text("No Comments...",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey)),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20),
+
                         // Row(
                         //   crossAxisAlignment: CrossAxisAlignment.start,
                         //   children: [
@@ -578,8 +717,60 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         //     )
                         //   ],
                         // ),
-
-                        SizedBox(height: 0),
+                        Divider(),
+                        pageLodaing == true
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  CircularProgressIndicator(),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    child: Text(
+                                      "Loading...",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : peopleAlsoLikeList.isEmpty
+                                ? SizedBox()
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: Text(
+                                          "You May Also Like",
+                                          style: TextStyle(
+                                              color: Colors.blue[900],
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Divider(),
+                                      SizedBox(height: 10),
+                                      SizedBox(
+                                        height: height * 0.32,
+                                        width: width,
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            physics: BouncingScrollPhysics(),
+                                            itemCount:
+                                                peopleAlsoLikeList.length,
+                                            itemBuilder: ((context, index) =>
+                                                youMayAlsoLikeWidget(
+                                                    peopleAlsoLikeList[
+                                                        index]))),
+                                      ),
+                                      SizedBox(height: 0),
+                                    ],
+                                  ),
                         // Row(
                         //   crossAxisAlignment: CrossAxisAlignment.start,
                         //   children: [
@@ -698,7 +889,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         //                                     ['images']
                         //                                 .length >
                         //                             0
-                        //                         ? sliderpath +
+                        //                         ? devImage +
                         //                             "assets/frontend/images/listings/" +
                         //                             likedadproductlist[index]
                         //                                         ['images'][0]
@@ -765,43 +956,127 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         SizedBox(
                           height: 0,
                         ),
+                        Divider(),
 
                         Container(
-                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             "Today's Special Deals",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
+                                color: Colors.blue[900],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
 
-                        Image.network(bottomimage1.toString()),
+                        Divider(),
                         SizedBox(
                           height: 10,
                         ),
-                        Image.network(bottomimage2.toString()),
                         SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 1),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.network(
-                                bottomimage3.toString(),
-                                scale: 1.55,
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.40,
+                                width: MediaQuery.of(context).size.width,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0,
+                                      top: 10.0,
+                                      right: 10.0,
+                                      bottom: 0.0),
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(0.0)),
+                                    child: CachedNetworkImage(
+                                      imageUrl: bottomimage1,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              Image.network(
-                                bottomimage3.toString(),
-                                scale: 1.55,
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.23,
+                                width: MediaQuery.of(context).size.width,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0,
+                                      top: 10.0,
+                                      right: 10.0,
+                                      bottom: 5.0),
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(0.0)),
+                                    child: CachedNetworkImage(
+                                      imageUrl: bottomimage2,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
                               ),
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.23,
+                                width: MediaQuery.of(context).size.width,
+                                padding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    top: 5.0,
+                                    right: 10.0,
+                                    bottom: 10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.21,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.43,
+                                      child: CachedNetworkImage(
+                                        imageUrl: bottomimage3,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.21,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.43,
+                                      child: CachedNetworkImage(
+                                        imageUrl: bottomimage4,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),
+
+                        // Container(
+                        //   margin: const EdgeInsets.symmetric(horizontal: 5),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     children: [
+                        //       Image.network(
+                        //         bottomimage3.toString(),
+                        //         scale: 1.55,
+                        //       ),
+                        //       Image.network(
+                        //         bottomimage3.toString(),
+                        //         scale: 1.55,
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
 
                         // Container(
                         //   padding: const EdgeInsets.only(bottom: 5),
@@ -908,6 +1183,78 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  Widget youMayAlsoLikeWidget(PeopleAlsoMayLikeModel item) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductDetailScreen(
+                      productid: item.id.toString(),
+                    )));
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: height * 0.2,
+              width: width * 0.43,
+              child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: item.images.length,
+                  itemBuilder: ((context, index) {
+                    var i = item.images[index];
+                    return Container(
+                      height: height * 0.18,
+                      width: width * 0.43,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  devImage + i.uploadBasePath + i.fileName),
+                              fit: BoxFit.cover)),
+                    );
+                  })),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              width: width * 0.43,
+              child: Text(
+                item.title,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              width: width * 0.43,
+              child: Text(
+                "Starting From INR ${item.startingPrice}",
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Divider(),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future _getcheckapproveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final body = {
@@ -966,6 +1313,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
+  String adId = '';
   Future _getproductDetail(String productid) async {
     setState(() {
       apiLoading = true;
@@ -989,9 +1337,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       apiLoading = false;
       setState(() {
         userid = prefs.getString('userid');
+        adId = data['posted_ad']['ad_id'];
 
         if (data['Images'].length > 0) {
-          productimage = sliderpath +
+          productimage = devImage +
               data['Images'][0]['upload_base_path'].toString() +
               data['Images'][0]['file_name'].toString();
 
@@ -1033,7 +1382,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           actionbtn = data['offer'].toString();
           log(data['liked_ads'].toString());
-          likedadproductlist = data['liked_ads'];
+          // likedadproductlist = data['liked_ads'];
           log("tttt----" + likedadproductlist.toString());
 
           if (data['posted_ad']['user_id'].toString() ==
@@ -1284,48 +1633,179 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String bottomimage3;
   String bottomimage4;
   String bottomsingleimage;
+  bool _check = false;
+  bool sharedpref = false;
+  List<dynamic> images = [];
+  final List<dynamic> myProducts = [];
+
+  List mytopcategorieslistData = [];
+
+  final List<dynamic> mytopcategories = [];
+  final List<dynamic> mytopcategoriesname = [];
+  String todaydealsimage1;
+  String todaydealsimage2;
+  String todaydealsimage3;
+  String todaydealsimage4;
 
   Future _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('userid') == null || prefs.getString('userid') == "") {}
+    if (prefs.getString('userid') == null || prefs.getString('userid') == "") {
+      setState(() {
+        sharedpref = false;
+      });
+    } else {
+      setState(() {
+        sharedpref = true;
+      });
+    }
     final body = {
-      "country": prefs.getString('country'),
-      "state": prefs.getString('state'),
+      "country": prefs.getInt('countryId'),
+      // "state": prefs.getString('state'),
       "city": prefs.getString('city'),
     };
+    log("body--->$body");
     var response = await http
         .post(Uri.parse(BASE_URL + homeUrl), body: jsonEncode(body), headers: {
       "Accept": "application/json",
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + prefs.getString("token").toString(),
+      'Authorization': 'Bearer ${prefs.getString("token")}',
     });
     if (response.statusCode == 200) {
       setState(() {
+        images.clear();
+        location.clear();
+        category.clear();
+        myProducts.clear();
+        mytopcategories.clear();
+
+        jsonDecode(response.body)['Response']['slider'].forEach((element) {
+          images.add(sliderpath + element['value'].toString());
+        });
+
+        // jsonDecode(response.body)['Response']['cities'].forEach((element) {
+        //   location.add(element['name'].toString());
+        // });
+
+        // categorylistData
+        //     .addAll(jsonDecode(response.body)['Response']['categories']);
+
+        // jsonDecode(response.body)['Response']['categories'].forEach((element) {
+        //   categoryslug.add(element['slug'].toString());
+        //   category.add(element['title'].toString());
+        //   myProducts.add(imagepath + element['image'].toString());
+        // });
+
+        mytopcategorieslistData.addAll(
+            jsonDecode(response.body)['Response']['top_selling_categories']);
+        jsonDecode(response.body)['Response']['top_selling_categories']
+            .forEach((element) {
+          mytopcategoriesname.add(element['title'].toString());
+          mytopcategories.add(imagepath + element['image'].toString());
+        });
+
+        // myfeaturedcategories.addAll(
+        //     jsonDecode(response.body)['Response']['featured_categories']);
+        // mysubfeaturedcategories.addAll(
+        //     jsonDecode(response.body)['Response']['featured_subcategories']);
+        // jsonDecode(response.body)['Response']['featured_categories'].forEach((element){
+        //     featuredname.add(element['title'].toString());
+        //     myfeaturedcategories.add(imagepath + element['image'].toString());
+        // });
+
         // likedadproductlist
         //     .addAll(jsonDecode(response.body)['Response']['You_may_also_like']);
 
+        print(jsonDecode(response.body)['Response']['today_special_deals']);
+        todaydealsimage1 = sliderpath +
+            jsonDecode(response.body)['Response']['today_special_deals']
+                    ['mid_banner_1']['value']
+                .toString();
+        todaydealsimage2 = sliderpath +
+            jsonDecode(response.body)['Response']['today_special_deals']
+                    ['mid_banner_2']['value']
+                .toString();
+        todaydealsimage3 = sliderpath +
+            jsonDecode(response.body)['Response']['today_special_deals']
+                    ['mid_banner_3']['value']
+                .toString();
+        todaydealsimage4 = sliderpath +
+            jsonDecode(response.body)['Response']['today_special_deals']
+                    ['mid_banner_4']['value']
+                .toString();
+
         bottomimage1 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_1']['value']
                 .toString();
         bottomimage2 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_2']['value']
                 .toString();
         bottomimage3 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_3']['value']
                 .toString();
         bottomimage4 = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_4']['value']
                 .toString();
 
         bottomsingleimage = sliderpath +
-            jsonDecode(response.body)['Response']['Today’s Special Deals']
+            jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_single']['value']
                 .toString();
+
+        _check = true;
       });
     }
+  }
+
+  List<PeopleAlsoMayLikeModel> peopleAlsoLikeList = [];
+  bool pageLodaing = false;
+
+  Future getPeopleAlsoLike() async {
+    setState(() {
+      pageLodaing = true;
+    });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    int countryID = 0;
+    String cityId = '';
+    String userId = '';
+
+    setState(() {
+      countryID = prefs.getInt('countryId');
+      cityId = prefs.getString('cityId');
+      userId = prefs.getString('userid');
+    });
+
+    var url = Apis.adViewApi;
+    var body = {
+      "id": widget.productid,
+      "user_id": userId.toString(),
+      "country": countryID.toString(),
+      // "city": "",cityId.toString(),
+      "city": ""
+    };
+    log(body.toString());
+    var response = await APIHelper.apiPostRequest(url, body);
+    log(response);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      var list = result['Response']['liked_ads'] as List;
+      setState(() {
+        peopleAlsoLikeList.clear();
+        var listdata =
+            list.map((e) => PeopleAlsoMayLikeModel.fromJson(e)).toList();
+        peopleAlsoLikeList.addAll(listdata);
+      });
+      setState(() {
+        pageLodaing = false;
+      });
+    }
+    setState(() {
+      pageLodaing = false;
+    });
   }
 }

@@ -80,6 +80,7 @@ dependencies:
   flutter_facebook_auth: ^4.4.0+1
   flutter_launcher_icons: ^0.10.0
   contained_tab_bar_view: ^0.8.0
+  modal_bottom_sheet: ^2.1.2
   
 dev_dependencies:
   flutter_test:

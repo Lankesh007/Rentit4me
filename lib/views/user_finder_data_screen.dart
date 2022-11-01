@@ -16,12 +16,16 @@ import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'add_list_screen.dart';
+import 'login_screen.dart';
+
 class UserfinderDataScreen extends StatefulWidget {
   String getlocation;
   String getcategory;
   String getcategoryslug;
   String cityId;
   String finalLocation;
+  String search;
 
   List data = [];
   UserfinderDataScreen(
@@ -31,7 +35,8 @@ class UserfinderDataScreen extends StatefulWidget {
       this.getcategoryslug,
       this.cityId,
       this.finalLocation,
-      this.data})
+      this.data
+      ,this.search })
       : super(key: key);
 
   @override
@@ -266,9 +271,12 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
 
   @override
   void initState() {
+    getHomeSearch();
     _getCountryName();
+    _getprofileData();
     super.initState();
-    _getlocationandcategoryData();
+
+    // _getlocationandcategoryData();
     if (widget.data.isNotEmpty) {
       setState(() {
         productData.clear();
@@ -328,33 +336,56 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        width: size.width * 0.4,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: Colors.grey)),
-                        child: TextFormField(
-                          readOnly: true,
-                          onTap: () {
-                            showMyDialog();
-                          },
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: widget.finalLocation != ""
-                                  ? findCity == true
-                                      ? "   $currentCity"
-                                      : selectCity == true
-                                          ? "   $locationvalue"
-                                          : "   $countryName"
-                                  : widget.finalLocation,
-                              suffixIcon: const Icon(
-                                Icons.location_searching_sharp,
-                                color: kContentColorLightTheme,
-                              )),
-                        ),
-                      ),
+                      // Container(
+                      //   alignment: Alignment.center,
+                      //   height: 40,
+                      //   width: size.width * 0.4,
+                      //   decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(50),
+                      //       border: Border.all(color: Colors.grey)),
+                      //   child: TextFormField(
+                      //     readOnly: true,
+                      //     onTap: () {
+                      //       showMyDialog();
+                      //     },
+                      //     decoration: InputDecoration(
+                      //         border: InputBorder.none,
+                      //         hintText: widget.finalLocation != ""
+                      //             ? findCity == true
+                      //                 ? "   $currentCity"
+                      //                 : selectCity == true
+                      //                     ? "   $locationvalue"
+                      //                     : "   $countryName"
+                      //             : widget.finalLocation,
+                      //         suffixIcon: const Icon(
+                      //           Icons.location_searching_sharp,
+                      //           color: kContentColorLightTheme,
+                      //         )),
+                      //   ),
+                      // ),
+                    InkWell(
+                      onTap: () {
+                        loggedIn == true
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddlistingScreen()))
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                      },
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.orange[600],
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text("Post An Ad",
+                              style: TextStyle(fontSize: 15))),
+                    )
                     ],
                   )
                 : Text(widget.getcategory.toString(),
@@ -907,7 +938,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                     ],
                   )),
             ),*/
-       
+
             Expanded(
                 child: isLoading
                     ? const Center(child: SizedBox())
@@ -968,7 +999,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                                                             Image.asset(
                                                                 'assets/images/no_image.jpg'),
                                                         fit: BoxFit.cover,
-                                                        imageUrl: sliderpath +
+                                                        imageUrl: devImage +
                                                             _searchlist[index][
                                                                     'upload_base_path']
                                                                 .toString() +
@@ -1130,7 +1161,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                                                                           'assets/images/no_image.jpg'),
                                                                   fit: BoxFit
                                                                       .cover,
-                                                                  imageUrl: sliderpath +
+                                                                  imageUrl: devImage +
                                                                       item.uploadBasePath
                                                                           .toString() +
                                                                       item.fileName),
@@ -1215,6 +1246,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
 
   bool listEnd = false;
   Future _getData(String location, String category) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isLoading = true;
     });
@@ -1234,7 +1266,8 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     log("new data ${response.body}");
     setState(() {
@@ -1270,25 +1303,25 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       "state": prefs.getString('state'),
       "city": prefs.getString('city'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + homeUrl),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + homeUrl), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     if (response.statusCode == 200) {
       setState(() {
         isLoading = false;
         location.clear();
         category.clear();
-        jsonDecode(response.body)['Response']['cities'].forEach((element) {
-          location.add(element['name'].toString());
-        });
-        categorylistData
-            .addAll(jsonDecode(response.body)['Response']['categories']);
-        jsonDecode(response.body)['Response']['categories'].forEach((element) {
-          category.add(element['title'].toString());
-        });
+        // jsonDecode(response.body)['Response']['cities'].forEach((element) {
+        //   location.add(element['name'].toString());
+        // });
+        // categorylistData
+        //     .addAll(jsonDecode(response.body)['Response']['categories']);
+        // jsonDecode(response.body)['Response']['categories'].forEach((element) {
+        //   category.add(element['title'].toString());
+        // });
       });
       _setlocationorcategory(getlocation, getcategory);
     }
@@ -1328,6 +1361,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       String city,
       String pattern,
       String renttype) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     productData.clear();
     _searchlist.clear();
     setState(() {
@@ -1359,7 +1393,8 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       isLoading = false;
@@ -1376,23 +1411,27 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
     }
   }
 
-  Future getDataBySearching() async {
+ Future getHomeSearch() async {
     setState(() {
       isLoading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int countryId = prefs.getInt('countryId');
     String cityId = prefs.getString('cityId');
-    var url = "https://rentit4me.com/api/browse-ads";
+    var url = BASE_URL + filterUrl;
     var body = cityId != ""
         ? {
-            "city_id": cityId,
-            "search": searchController.text,
-            "country_id": countryId.toString(),
+            "city": widget.cityId.toString(),
+            "search": "",
+            "q":widget.search.toString() ,
+            "country": countryId.toString(),
           }
         : {
-            "search": searchController.text,
-            "country_id": countryId.toString(),
+            // "city": cityId.toString(),
+
+            "search": "",
+            "q": widget.search.toString(),
+            "country": countryId.toString(),
           };
 
     log("body--->$body");
@@ -1402,7 +1441,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
 
     if (result['ErrorMessage'] == "success") {
       setState(() {
-        var list = result['Response']['leads'] as List;
+        var list = result['Response']['leads']['data'] as List;
         searchProductList.clear();
         var listdata = list.map((e) => SearchProductModel.fromJson(e)).toList();
         searchProductList.addAll(listdata);
@@ -1412,4 +1451,89 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       isLoading = false;
     });
   }
+  
+  Future getDataBySearching() async {
+    setState(() {
+      isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int countryId = prefs.getInt('countryId');
+    String cityId = prefs.getString('cityId');
+    var url = BASE_URL + filterUrl;
+    var body = cityId != ""
+        ? {
+            "city": cityId.toString(),
+            "search": "",
+            "q": searchController.text,
+            "country": countryId.toString(),
+          }
+        : {
+            // "city": cityId.toString(),
+
+            "search": "",
+            "q": searchController.text,
+            "country": countryId.toString(),
+          };
+
+    log("body--->$body");
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    log(result.toString());
+
+    if (result['ErrorMessage'] == "success") {
+      setState(() {
+        var list = result['Response']['leads']['data'] as List;
+        searchProductList.clear();
+        var listdata = list.map((e) => SearchProductModel.fromJson(e)).toList();
+        searchProductList.addAll(listdata);
+      });
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+  
+  bool loggedIn = false;
+
+    Future _getprofileData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final body = {
+      "id": prefs.getString('userid'),
+    };
+    var response = await http.post(Uri.parse(BASE_URL + profileUrl),
+        body: jsonEncode(body),
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+        });
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body)['Response'];
+      if (json.decode(response.body)['Response'] != null) {
+        prefs.setString(
+            'profile', sliderpath + data['User']['avatar_path'].toString());
+        prefs.setString('name', data['User']['name'].toString());
+        prefs.setString('email', data['User']['email'].toString());
+        prefs.setString('mobile', data['User']['mobile'].toString());
+        prefs.setString('userquickid', data['User']['quickblox_id'].toString());
+        prefs.setString(
+            'quicklogin', data['User']['quickblox_email'].toString());
+        prefs.setString(
+            'quickpassword', data['User']['quickblox_password'].toString());
+
+        loggedIn = prefs.getBool('logged_in');
+        // isSignedUp = data['User']['is_signup_complete'];
+        // trustedBadge = data['User']['trusted_badge'];
+        // trustedBadgeApproval = data['User']['trusted_badge_approval'];
+        // packageId = data['User']['package_id'];
+
+        log("---->${data['User']['quickblox_email']}");
+
+        log("login or not---->$loggedIn");
+      }
+    } else {
+      throw Exception('Failed to get data due to ${response.body}');
+    }
+  }
+
 }

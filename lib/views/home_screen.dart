@@ -59,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<dynamic> myfeaturedcategories = [];
   final List<dynamic> mysubfeaturedcategories = [];
   bool loggedIn = false;
+  bool autoDetectCity = false;
 
   bool searchHeader = false;
 
@@ -142,8 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _loading = false;
       findCity = true;
-      address.text = place.subAdministrativeArea.toString();
+      address.text = place.locality.toString();
       log("===>" + address.text);
+      getUpdtaeSearchLocation();
+      var snackBar = const SnackBar(
+                              content: Text('City Detected Successfully !!'));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
   }
 
@@ -212,16 +217,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
+                            autoDetectCity = true;
                             findCity = true;
                             log('=---->$currentCity');
                             _determinePosition()
                                 .then((value) => _getAddress(value));
+
                           });
                           // _determinePosition();
 
-                          var snackBar = const SnackBar(
-                              content: Text('City Auto Detected !!'));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          
 
                           Navigator.pop(context);
                         },
@@ -278,6 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         return ListTile(
                           title: Text(suggestion['name'].toString()),
                           onTap: () async {
+                            autoDetectCity = false;
                             SharedPreferences preferences =
                                 await SharedPreferences.getInstance();
                             preferences.setString(
@@ -286,12 +292,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'cityId', suggestion['id'].toString());
                             cityId = preferences.getString('cityId');
                             log("cityId--->$cityId");
+
                             setState(() {
                               locationvalue = suggestion['name'].toString();
                               selectCity = true;
                               findCity = false;
                             });
                             Navigator.pop(context);
+                            getLatestAddition();
                           },
                         );
                       },
@@ -322,12 +330,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _getData();
     getCounrtyId();
-    getLatestAddition();
-    _getprofileData();
-
-    _getlocationbyUserlocation();
+    searchController.clear();
   }
 
   @override
@@ -404,10 +408,15 @@ class _HomeScreenState extends State<HomeScreen> {
               searchHeader != true
                   ? InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddlistingScreen()));
+                        loggedIn == true
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddlistingScreen()))
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
                       },
                       child: Container(
                           alignment: Alignment.center,
@@ -435,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: findCity == true
-                                ? address.text.toString()
+                                ? "   ${address.text.toString()}"
                                 : selectCity == true
                                     ? "   $locationvalue"
                                     : "   $countryName",
@@ -471,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             });
                           },
                           icon: Icon(
-                            Icons.search,
+                            Icons.location_on_outlined,
                             color: Colors.white,
                           ),
                         ),
@@ -501,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
                 icon: !sharedpref
-                    ? Image.asset('assets/images/enter.png',
+                    ? Image.asset('assets/images/user.png',
                         color: kPrimaryColor, scale: 1.2)
                     : Image.asset('assets/images/power.png',
                         color: kPrimaryColor, scale: 1.2)),
@@ -511,6 +520,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onRefresh: () async {
             await Future.delayed(Duration(milliseconds: 1500));
             searchHeader = false;
+            searchController.clear();
             _getData();
             getCounrtyId();
             _getprofileData();
@@ -565,30 +575,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                           body: prefs.getString('cityId') != ""
                                               ? jsonEncode({
                                                   // "search": "",
-                                                  "country_id": prefs
+                                                  "country": prefs
                                                       .getInt('countryId')
                                                       .toString(),
                                                   // "state": prefs.getString('state'),
-                                                  "city_id":
+                                                  "city":
                                                       prefs.getString('cityId'),
-                                                  "search": searchController
-                                                      .text
-                                                      .toString(),
+                                                  "search": "",
+                                                  "q": searchController.text
+                                                      .toString()
                                                 })
                                               : jsonEncode({
                                                   // "search": "",
-                                                  "country_id": prefs
+                                                  "country": prefs
                                                       .getInt('countryId')
                                                       .toString(),
                                                   // "state": prefs.getString('state'),
-                                                  // "city_id": prefs.getString('cityId'),
-                                                  "search": searchController
-                                                      .text
-                                                      .toString(),
+                                                  // "city": prefs.getString('cityId'),
+                                                  "search": "",
+                                                  "q": searchController.text
+                                                      .toString()
                                                 }),
                                           headers: {
                                             "Accept": "application/json",
-                                            'Content-Type': 'application/json'
+                                            'Content-Type': 'application/json',
+                                            'Authorization':
+                                                'Bearer ${prefs.getString("token")}',
                                           });
 
                                       Navigator.of(context, rootNavigator: true)
@@ -603,12 +615,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           List temp = [];
                                           temp.clear();
                                           temp.addAll(jsonDecode(response.body)[
-                                              'Response']['leads']);
-                                          setState(() {
-                                            searchController.text = "";
-                                          });
+                                              'Response']['leads']['data']);
+                                          setState(() {});
                                           log(jsonDecode(response.body)[
-                                                  'Response']['leads']
+                                                  'Response']['leads']['data']
                                               .toString());
                                           Navigator.push(
                                             context,
@@ -623,6 +633,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 data: temp,
                                                 finalLocation:
                                                     countryName.toString(),
+                                                search: searchController.text
+                                                    .toString(),
                                               ),
                                             ),
                                           );
@@ -697,7 +709,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewAllLatestAddition()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ViewAllLatestAddition(
+                                              cityId: cityId.toString(),
+                                            )));
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -729,16 +747,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: CircularProgressIndicator(),
                                 )
                               : SizedBox(
-                                  height: height * 0.47,
+                                  height: latestAdditionList.length <= 2
+                                      ? height * 0.23
+                                      : height * 0.47,
                                   width: width,
                                   child: GridView.builder(
                                       physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: latestAdditionList.length,
-                                      itemBuilder: (BuildContext context,
-                                              int index) =>
-                                          latestAdditionWidget(
-                                              latestAdditionList[index], index),
+                                      itemBuilder:
+                                          (BuildContext context, int index) =>
+                                              latestAdditionWidget(
+                                                  latestAdditionList[index]),
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 2,
@@ -1288,15 +1308,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 25),
-                              child: const Text(
-                                  "     Join 1000+ Users And Start Uploading Your Products For Free",
+                              width: width * 0.89,
+                              alignment: Alignment.center,
+                              // margin:
+                              //     const EdgeInsets.symmetric(horizontal: 20),
+                              child: const Text("Join 1000+ Users And Start",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 22,
+                                    fontSize: 20,
                                   )),
+                            ),
+                            Container(
+                              width: width * 0.89,
+                              alignment: Alignment.center,
+                              // margin:
+                              //     const EdgeInsets.symmetric(horizontal: 20),
+                              child:
+                                  const Text("Uploading Your Products For Free",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      )),
                             ),
                             const SizedBox(
                               height: 10,
@@ -1304,18 +1338,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             loggedIn == true
                                 ? InkWell(
                                     onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const AddlistingScreen()));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const AddlistingScreen()));
                                       // if (isSignedUp == 1 &&
                                       //     trustedBadge == 0 &&
                                       //     trustedBadgeApproval == "approved" &&
                                       //     packageId != null) {
                                       //   showToast("Verification Under Process");
                                       // } else {
-                                      
+
                                       // }
                                     },
                                     child: Container(
@@ -1371,8 +1405,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       mytopcategories.isEmpty || mytopcategories.isEmpty
                           ? SizedBox()
                           : Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            child: InkWell(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: InkWell(
                                 onTap: () {
                                   Navigator.push(
                                       context,
@@ -1383,7 +1418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(left: 5, top: 5),
@@ -1397,7 +1432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(top:8.0),
+                                      padding: const EdgeInsets.only(top: 8.0),
                                       child: Container(
                                         alignment: Alignment.center,
                                         height: 40,
@@ -1415,11 +1450,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
-                                    ),  
+                                    ),
                                   ],
                                 ),
                               ),
-                          ),
+                            ),
                       mytopcategories.isEmpty || mytopcategories.isEmpty
                           ? SizedBox()
                           : Padding(
@@ -1437,7 +1472,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               crossAxisCount: 2,
                                               crossAxisSpacing: 8.0,
                                               mainAxisSpacing: 8.0),
-                                      itemCount: 4,
+                                      itemCount: mytopcategories.length,
                                       itemBuilder: (BuildContext ctx, index) {
                                         return InkWell(
                                           onTap: () async {
@@ -1984,100 +2019,109 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget latestAdditionWidget(LatestAdditionsModel item, int i) {
-    i = item.prices.length;
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => ProductDetailScreen(
-                          productid: item.id.toString(),
-                        ))));
-          },
-          child: Container(
-            alignment: Alignment.centerLeft,
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: height * 0.16,
-                  width: width * 0.5,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: NetworkImage(devImage +
-                        item.uploadBasePath.toString() +
-                        item.fileName.toString()),
-                    fit: BoxFit.cover,
-                  )),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                    width: width * 0.5,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      item.title,
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    )),
-                SizedBox(
-                  height: 20,
-                  width: width * 0.5,
-                  child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: i,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                      ),
-                      itemBuilder: (BuildContext context, int index) {
-                        var i = item.prices[index];
-                        return Column(
-                          children: [
-                            Container(
-                                height: 20,
-                                width: width * 0.5,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Starting From INR " + i.price.toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13,
-                                      color: Colors.grey),
-                                )),
-                          ],
-                        );
-                      }),
-                ),
-              ],
+  Widget latestAdditionWidget(LatestAdditionsModel item) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: ((context) =>
+                  ProductDetailScreen(productid: item.id.toString())),
+            ));
+      },
+      child: Container(
+        alignment: Alignment.centerLeft,
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 10,
             ),
-          ),
+            Container(
+              height: height * 0.16,
+              width: width * 0.5,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: NetworkImage(devImage +
+                    item.uploadBasePath.toString() +
+                    item.fileName.toString()),
+                fit: BoxFit.cover,
+              )),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+                width: width * 0.5,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item.title,
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                )),
+            SizedBox(
+              height: 20,
+              width: width * 0.5,
+              child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: item.prices.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    var i = item.prices[index];
+                    return Column(
+                      children: [
+                        Container(
+                            height: 20,
+                            width: width * 0.5,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Starting From INR " + i.price.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  color: Colors.grey),
+                            )),
+                      ],
+                    );
+                  }),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   Future getLatestAddition() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int countryid;
+    String cityid;
+
     setState(() {
+      countryid = preferences.getInt('countryId');
+      cityid = preferences.getString('cityId');
+
+      log('cityId--->$cityid');
+
       loader = true;
     });
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    int countryId = preferences.getInt('countryId');
-    log("countryId---->$countryId");
+
     var url = BASE_URL + homeUrl;
-    var body = {
-      "country": countryId.toString(),
-      "state": "",
-      "city": "",
-    };
+    var body = autoDetectCity == true
+        ? {
+            "country": countryid.toString(),
+            "city": getCityId == 0 ? "" : getCityId.toString(),
+            // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
+          }
+        : {
+            "country": countryid.toString(),
+            "city": cityid == null ? "" : cityid.toString(),
+            // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
+          };
+    log('body---->$body');
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
-    log("=====>" + result.toString());
+    log("=====>q" + result.toString());
 
     if (result['ErrorMessage'] == 'success') {
       var list = result['Response']['latest_ads'] as List;
@@ -2105,17 +2149,20 @@ class _HomeScreenState extends State<HomeScreen> {
         sharedpref = true;
       });
     }
+    int cId = prefs.getInt('countryId');
+    log('--->$cId');
     final body = {
-      "country": prefs.getString('country'),
-      "state": prefs.getString('state'),
+      "country": cId.toString(),
+      // "state": prefs.getString('state'),
       "city": prefs.getString('city'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + homeUrl),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    log("body--->$body");
+    var response = await http
+        .post(Uri.parse(BASE_URL + homeUrl), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     if (response.statusCode == 200) {
       setState(() {
         images.clear();
@@ -2252,6 +2299,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (prefs.getString('city') != null || prefs.getString('city') != "") {
       setState(() {
         locationvalue = prefs.getString('city');
+        log("Location Value" + locationvalue.toString());
 
         currentCity = locationvalue;
       });
@@ -2284,10 +2332,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future getCounrtyId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    countryName = prefs.getString('country');
+    setState(() {
+      countryName = prefs.getString('country');
+    });
+    log("countryName--->$countryName");
     var url = Apis.countryByNameApi;
     var body = {
-      "country_name": countryName,
+      "country_name": countryName.toString(),
     };
 
     var response = await APIHelper.apiPostRequest(url, body);
@@ -2295,7 +2346,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result['ErrorMessage'] == "success") {
       countryId = result['Response']['country']['id'];
+      log("GetCountryId---->${countryId.toString()}");
       prefs.setInt('countryId', countryId);
+      log("get cId---->" + prefs.getInt('countryId').toString());
+      _getData();
+      getLatestAddition();
+      _getprofileData();
+
+      _getlocationbyUserlocation();
+    }
+  }
+
+  int getCityId = 0;
+  Future getUpdtaeSearchLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int countryID;
+    setState(() {
+      countryID = prefs.getInt('countryId');
+      log("---->$countryID");
+    });
+
+    var url = Apis.updtaeSearchLocationApi;
+    var body = {
+      "country": countryID.toString(),
+      "city": address.text.toString(),
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+
+    if (result['ErrorCode'] == 0) {
+      getCityId = result['Response']['id'];
+      prefs.setString('cityId', getCityId.toString());
+      log(prefs.getString('cityId'));
+      log("cityI--->${getCityId.toString()}");
+      getLatestAddition();
     }
   }
 }

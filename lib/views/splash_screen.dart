@@ -8,7 +8,6 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/views/otp_screen.dart';
 import 'package:rentit4me_new/views/personal_detail_screen.dart';
 import 'dart:convert';
@@ -65,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
           prefs.getString('userid') == null) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
             (route) => false);
       } else {
         getprofileData();

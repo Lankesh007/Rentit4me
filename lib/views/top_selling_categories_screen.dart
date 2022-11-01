@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:rentit4me_new/models/top_selling_categories_model.dart';
+import 'package:rentit4me_new/models/browse_all_category.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TopSellingCategoriesScreen extends StatefulWidget {
   final String country;
@@ -21,7 +21,7 @@ class TopSellingCategoriesScreen extends StatefulWidget {
 
 class _TopSellingCategoriesScreenState
     extends State<TopSellingCategoriesScreen> {
-  List<TopSellingCatgoriesModel> topCategoriesList = [];
+  List<BrowseAllCategories> browseAllCategoryList = [];
   final searchController = TextEditingController();
   double height = 0;
   double width = 0;
@@ -31,7 +31,7 @@ class _TopSellingCategoriesScreenState
   @override
   void initState() {
     getCategoriesDetails();
-    searchList.addAll(topCategoriesList);
+    searchList.addAll(browseAllCategoryList);
     super.initState();
   }
 
@@ -64,7 +64,7 @@ class _TopSellingCategoriesScreenState
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              "Categories",
+              "Browse All Categories",
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -92,7 +92,7 @@ class _TopSellingCategoriesScreenState
                     ),
                   ],
                 )
-              : topCategoriesList.isEmpty
+              : browseAllCategoryList.isEmpty
                   ? Container(
                       height: height * 0.68,
                       alignment: Alignment.center,
@@ -101,18 +101,25 @@ class _TopSellingCategoriesScreenState
                   : SizedBox(
                       height: height * 0.68,
                       width: width,
-                      child: GridView.builder(
+                      child: ListView.builder(
                         physics: BouncingScrollPhysics(),
-                        itemCount: topCategoriesList.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 4.0,
-                                mainAxisSpacing: 4.0,
-                                childAspectRatio: 1.0),
-                        itemBuilder: (context, index) => categoriesWidget(
-                          topCategoriesList[index],
-                        ),
+                        itemCount: browseAllCategoryList.length,
+                        itemBuilder: ((context, index) => categoriesWidget(
+                              browseAllCategoryList[index],
+                            )),
+                        // child: GridView.builder(
+                        //   physics: BouncingScrollPhysics(),
+                        //   itemCount: browseAllCategoryList.length,
+                        //   gridDelegate:
+                        //       const SliverGridDelegateWithFixedCrossAxisCount(
+                        //           crossAxisCount: 2,
+                        //           crossAxisSpacing: 4.0,
+                        //           mainAxisSpacing: 4.0,
+                        //           childAspectRatio: 1.0),
+                        //   itemBuilder: (context, index) => categoriesWidget(
+                        //     browseAllCategoryList[index],
+                        //   ),
+                        // ),
                       ),
                     ),
         ],
@@ -158,42 +165,96 @@ class _TopSellingCategoriesScreenState
     );
   }
 
-  Widget categoriesWidget(TopSellingCatgoriesModel item) {
+  Widget categoriesWidget(BrowseAllCategories item) {
     return Column(
       children: [
         Container(
-          height: height * 0.22,
-          width: width * 0.5,
+          height: height * 0.30,
+          width: width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Card(
-            elevation: 5,
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(5),
-                          topRight: Radius.circular(5)),
-                      image: DecorationImage(
-                          image: NetworkImage(
-                            imagepath + item.image,
-                          ),
-                          fit: BoxFit.cover)),
-                  height: height * 0.18,
-                  width: width,
-                ),
-                SizedBox(
-                  height: 3,
-                ),
-                Text(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 3,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
                   item.title,
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                   maxLines: 1,
-                )
-              ],
-            ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              item.subcategories.isEmpty
+                  ? Container(
+                      height: height * 0.22,
+                      width: width * 0.5,
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "No Records Found...",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400, fontSize: 15),
+                        maxLines: 1,
+                      ),
+                    )
+                  : SizedBox(
+                      height: height * 0.23,
+                      width: width,
+                      child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: item.subcategories.length,
+                          itemBuilder: (context, index) {
+                            var i = item.subcategories[index];
+                            return SizedBox(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(0),
+                                            topRight: Radius.circular(0)),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                              imagepath + i.image,
+                                            ),
+                                            fit: BoxFit.cover)),
+                                    height: height * 0.18,
+                                    width: width * 0.5,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    height: height * 0.02,
+                                    width: width * 0.5,
+                                    alignment: Alignment.centerLeft,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: Text(
+                                      i.title,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 15),
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                    ),
+              Divider()
+            ],
           ),
         ),
       ],
@@ -206,31 +267,23 @@ class _TopSellingCategoriesScreenState
     setState(() {
       pageLodaing = true;
     });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String country = prefs.getString('country');
-    String state = prefs.getString('state');
-    String city = prefs.getString('city');
 
-    var url = "https://rentit4me.com/api/home";
-    var body = {
-      "country": country,
-      "state": state,
-      "city": city,
-    };
-    var response = await APIHelper.apiPostRequest(url, body);
+    var url = Apis.browseAllCategoriesApi;
+
+    var response = await APIHelper.apiGetRequest(url);
     var result = jsonDecode(response);
+    log("response---->$result");
     if (result['ErrorMessage'] == "success") {
-      var list = result['Response']['top_selling_categories'] as List;
+      var list = result['Response'] as List;
       setState(() {
-        topCategoriesList.clear();
-        var listdata=list.map((e) => TopSellingCatgoriesModel.fromJson(e)).toList();
-        topCategoriesList.addAll(listdata);
+        browseAllCategoryList.clear();
+        var listdata =
+            list.map((e) => BrowseAllCategories.fromJson(e)).toList();
+        browseAllCategoryList.addAll(listdata);
       });
     }
     setState(() {
       pageLodaing = false;
     });
   }
-
-
 }

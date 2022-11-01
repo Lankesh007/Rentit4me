@@ -215,7 +215,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                       setState(() {
                                         selectedCountry = value;
                                         country_id = element['id'];
-                                        _getStateData(element['id'].toString());
+                                        _getStateData(element['id']);
                                         selectedState = 'Select State';
                                         selectedCity = 'Select City';
                                         initialtrustedbadge = 'Select';
@@ -1300,7 +1300,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         countrylistData.addAll(list);
         _loading = false;
 
-        _getStateData(prefs.getString('countryId'));
+        _getStateData(prefs.getInt('countryId'));
       });
     } else {
       print(response.body);
@@ -1308,7 +1308,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     }
   }
 
-  Future _getStateData(String id) async {
+  Future _getStateData(int id) async {
     setState(() {
       _loading = true;
       statelistData.clear();

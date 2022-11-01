@@ -116,7 +116,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 email: email,
                 onClicked: () => Navigator.of(context).pop()),
             Container(
-              padding: padding,
+              width: MediaQuery.of(context).size.width*0.9,
               child: Column(
                 children: [
                   const SizedBox(height: 20),
@@ -176,7 +176,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           child: const Align(
                               alignment: Alignment.topLeft,
                               child: Padding(
-                                padding: EdgeInsets.all(8.0),
+                                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
                                 child: Text("Membership & Subscriptions",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
@@ -226,7 +226,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           child: const Align(
                               alignment: Alignment.topLeft,
                               child: Padding(
-                                padding: EdgeInsets.all(8.0),
+                                                               padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                                 child: Text("Payment",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
@@ -286,7 +287,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Create New Listing",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -335,7 +337,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("All Listing",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -384,7 +387,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       //   child: const Align(
                       //     alignment: Alignment.topLeft,
                       //     child: Padding(
-                      //       padding: EdgeInsets.all(8.0),
+                      //                                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                       //       child: Text("Active Listing",
                       //           style: TextStyle(
                       //               color: Colors.white, fontSize: 16)),
@@ -433,7 +437,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       //   child: const Align(
                       //     alignment: Alignment.topLeft,
                       //     child: Padding(
-                      //       padding: EdgeInsets.all(8.0),
+                      //                                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                       //       child: Text("Inactive Listing",
                       //           style: TextStyle(
                       //               color: Colors.white, fontSize: 16)),
@@ -482,7 +487,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       //   child: const Align(
                       //     alignment: Alignment.topLeft,
                       //     child: Padding(
-                      //       padding: EdgeInsets.all(8.0),
+                      //                                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                       //       child: Text("Promoted Listing",
                       //           style: TextStyle(
                       //               color: Colors.white, fontSize: 16)),
@@ -542,7 +548,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Chat",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -591,7 +598,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Notifications",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -640,7 +648,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Offers Made",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -689,7 +698,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Offers Received",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -750,7 +760,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("My Orders",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -799,7 +810,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                              padding: EdgeInsets.all(8.0),
+                                                             padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                               child: Text("Active Orders",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16))),
@@ -847,7 +859,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Completed Orders",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -896,7 +909,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Orders Received",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -960,7 +974,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Basic Detail",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -991,7 +1006,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                             child: Text("Security",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -1054,7 +1070,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                              padding: EdgeInsets.all(8.0),
+                                                             padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                               child: Text("Create New Ticket",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16)),
@@ -1099,7 +1116,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                              padding: EdgeInsets.all(8.0),
+                                                             padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+
                               child: Text("My Ticket",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16)),

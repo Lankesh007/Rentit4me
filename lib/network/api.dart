@@ -2,7 +2,7 @@
 
 const String BASE_URL = "https://dev.techstreet.in/rentit4me/public/api/";
 const String BASE_URL1 = "https://rentit4me.com/api/";
-const String devImage="https://dev.techstreet.in/rentit4me/public/";
+const String devImage = "https://dev.techstreet.in/rentit4me/public/";
 
 const String imagepath =
     "https://rentit4me.com/assets/frontend/images/category/";
@@ -92,4 +92,9 @@ class Apis {
   static const String personalDetailsApi = "${BASE_URL}personal-profile-update";
   static const String billingAndTaxationApi = "${BASE_URL}billing-and-taxation";
   static const String basicProfileUpdateApi = "${BASE_URL}basic-profile-update";
+  static const String browseAllCategoriesApi = "${BASE_URL}categories";
+  static const String updtaeSearchLocationApi="${BASE_URL}update-search-location";
+  static const String adViewApi="${BASE_URL}adview";
+  static const String browseAdsApi="${BASE_URL}browse-ads";
+  
 }
