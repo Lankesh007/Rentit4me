@@ -396,7 +396,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         child: Column(
           children: [
-            const Text("Business Detail",
+            const Text("Business Details",
                 style: TextStyle(
                     color: kPrimaryColor,
                     fontSize: 18,
@@ -417,12 +417,11 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: TextField(
-                    controller: businessNames,
                     decoration: InputDecoration(
                       hintText: businessName,
                       border: InputBorder.none,
                     ),
-                    // readOnly: true,
+                    readOnly: true,
                     onChanged: (value) {
                       setState(() {});
                     },
@@ -1042,7 +1041,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     var url = Apis.billingAndTaxationApi;
     var bodyMap = {
       "id": userId.toString(),
-      "business_name":businessNames.text.toString(),
+      "business_name":prefs.getString('businessName').toString(),
       "account_type": dropdownvalue.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),

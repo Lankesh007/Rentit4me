@@ -115,23 +115,15 @@ class _OtpScreenState extends State<OtpScreen> {
         inAsyncCall: loading,
         child: SingleChildScrollView(
           child: Column(
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(left: 15.0, top: 10.0),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Verification",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16)),
-                ),
+            children: [
+              SizedBox(
+                height: 20,
               ),
               const Padding(
                 padding: EdgeInsets.only(left: 15.0, top: 5.0, right: 25.0),
                 child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("We sent you an SMS code",
+                  alignment: Alignment.center,
+                  child: Text("Otp Verification",
                       style: TextStyle(
                           color: Colors.black,
                           fontStyle: FontStyle.normal,
@@ -139,22 +131,15 @@ class _OtpScreenState extends State<OtpScreen> {
                           fontWeight: FontWeight.bold)),
                 ),
               ),
-              Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15.0, top: 5.0, right: 25.0),
-                  child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        children: [
-                          Text("On number:",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 12)),
-                          SizedBox(width: 5.0),
-                          Text("+91 $phoneNumber",
-                              style:
-                                  TextStyle(color: kPrimaryColor, fontSize: 12))
-                        ],
-                      ))),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                    "Enter 6 Digit OTP Sent On Your Registered Mobile Number.",
+                    style: TextStyle(color: Colors.black, fontSize: 13)),
+              ),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 10.0, top: 80.0, right: 10.0, bottom: 10.0),
@@ -191,7 +176,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 },
                 child: const Padding(
                     padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                    child: Text("Code not received?",
+                    child: Text("Resend Code ?",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: kPrimaryColor, fontSize: 12))),
               )

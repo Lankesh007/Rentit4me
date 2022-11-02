@@ -330,6 +330,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
     }
   }
 
+  int packageId = 0;
   Future _selectmembership(String membershipid, String amount) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -337,7 +338,6 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
     });
     final body = {
       "id": membershipid.toString(),
-      "package_id": membershipid.toString()
     };
     var response = await http.post(Uri.parse(BASE_URL + selectmembership),
         body: jsonEncode(body),
@@ -356,12 +356,21 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
       });
 
       if (jsonDecode(response.body)['ErrorCode'] == 0) {
+        packageId = jsonDecode(response.body)['Response']['package_id'];
+        log("package Id--->$packageId");
+
         if (jsonDecode(response.body)['redirection'] == "profile") {
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => Dashboard()));
         } else {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const MakePaymentScreen()));
+          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+          //     builder: (context) => const MakePaymentScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MakePaymentScreen(
+                        packageId: packageId.toString(),
+                      )));
         }
       } else {
         showToast(jsonDecode(response.body)['ErrorMessage'].toString());

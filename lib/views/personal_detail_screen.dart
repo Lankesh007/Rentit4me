@@ -135,9 +135,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     super.initState();
     _getcountryData();
     getPrefsData();
-    _getprofile().then((value) {
-      _getcountryData();
-    });
+    _getprofile().then((value) {});
 
     //_getprofile();
   }
@@ -1300,7 +1298,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         countrylistData.addAll(list);
         _loading = false;
 
-        _getStateData(prefs.getInt('countryId'));
+        // _getStateData(prefs.getInt('countryId'));
       });
     } else {
       print(response.body);
@@ -1332,8 +1330,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
           setState(() {
             stateId = element['id'].toString();
             log("stateId---->$stateId");
-            _getCityData(stateId);
           });
+          _getCityData(stateId);
         }
       });
     } else {
@@ -1347,8 +1345,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       citylistData.clear();
     });
     final body = {
-      "id": int.parse(id),
+      "id": int.parse(id).toString(),
     };
+    log(body.toString());
     var response = await http.post(Uri.parse(BASE_URL + getCity),
         body: jsonEncode(body),
         headers: {
@@ -1384,7 +1383,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    log( 'Bearer ${prefs.getString("token")}');
+    log('Bearer ${prefs.getString("token")}');
     // setState(() {
     //   _loading = true;
     // });
@@ -1449,8 +1448,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     });
   }
 
-    Future submitPersonalDetails() async {
-      List comPrefList = [];
+  Future submitPersonalDetails() async {
+    List comPrefList = [];
     if (checkEmail == "1") {
       comPrefList.add("1");
     }
@@ -1487,14 +1486,13 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         'Authorization': 'Bearer ${prefs.getString("token")}',
       });
       if (kyc == true && country_id == 113) {
-        var pic =
-            await http.MultipartFile.fromPath('adhaar_doc', adharcarddoc.toString());
+        var pic = await http.MultipartFile.fromPath(
+            'adhaar_doc', adharcarddoc.toString());
         request.files.add(pic);
         log("ENTETED====>  $pic");
       } else {
         log("ENTETED====>  not sent");
       }
-
 
       request.fields.addAll(bodyMap);
       var response = await request.send();
@@ -1540,7 +1538,6 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       buttonLoading = false;
     });
   }
-
 
   // Future _personaldetailupdatewithoutdoc(
   //     String countryid,

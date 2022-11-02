@@ -11,7 +11,7 @@ class APIHelper {
     try {
       var response = await get(Uri.parse(url), headers: {
         "Content-Type": "application/json",
-        "Authorization": "Token ${prefs.getString("token")}"
+        "Authorization": "Bearer ${prefs.getString("token")}",
       });
       if (response.statusCode == 200) {
         return response.body;

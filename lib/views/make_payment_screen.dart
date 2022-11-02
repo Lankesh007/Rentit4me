@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
 import 'dart:convert';
+import 'dart:developer';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +10,12 @@ import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MakePaymentScreen extends StatefulWidget {
-  const MakePaymentScreen({Key key}) : super(key: key);
+  final String packageId;
+  const MakePaymentScreen({this.packageId, Key key}) : super(key: key);
 
   @override
   State<MakePaymentScreen> createState() => _MakePaymentScreenState();
@@ -28,14 +32,17 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
   String type;
   String amount;
   String active;
+  bool couponApplied = false;
+  final applyCouponController = TextEditingController();
 
   Razorpay _razorpay;
-
+  bool buttonLoader = false;
   @override
   void initState() {
     super.initState();
     _getmakepayment();
     initializeRazorpay();
+    removeCouponDetails();
   }
 
   void initializeRazorpay() {
@@ -112,14 +119,14 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
         inAsyncCall: _loading,
         child: _loading == true
             ? Center(child: CircularProgressIndicator(color: kPrimaryColor))
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                        width: double.infinity,
-                        child: Card(
-                            elevation: 4.0,
+            : ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            width: double.infinity,
                             child: Padding(
                                 padding: EdgeInsets.all(16.0),
                                 child: Column(
@@ -129,110 +136,279 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                         child: Text("Make Payment",
                                             style: TextStyle(
                                                 color: kPrimaryColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500))),
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.w600))),
+                                    SizedBox(height: 15),
+                                    Divider(thickness: 0.9),
+                                    Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Apply Coupoun",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: kPrimaryColor),
+                                        )),
                                     SizedBox(height: 15),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text("Plan",
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w400)),
-                                        package_name == null
-                                            ? const SizedBox()
-                                            : Text(package_name,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w300))
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Ad Duration",
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w400)),
-                                        ad_duration == null
-                                            ? SizedBox()
-                                            : Text(ad_duration,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w300))
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Ad Limit",
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w400)),
-                                        ad_limit == null
-                                            ? SizedBox()
-                                            : Text(ad_limit,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w300))
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Membership Amount",
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w400)),
-                                        amount == null
-                                            ? SizedBox()
-                                            : Container(
-                                                height: 25,
-                                                width: 60,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0),
-                                                    color: Colors.green),
-                                                child: Text(amount,
+                                        Container(
+                                          height: 40,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.45,
+                                          alignment: Alignment.topCenter,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(3)),
+                                          child: TextFormField(
+                                            readOnly: couponApplied == false
+                                                ? false
+                                                : true,
+                                            controller: applyCouponController,
+                                            textAlign: TextAlign.center,
+                                            decoration: InputDecoration(
+                                                hintText: couponApplied == true
+                                                    ? "Apply Coupon"
+                                                    : appliedCouponTitle,
+                                                border: InputBorder.none),
+                                          ),
+                                        ),
+                                        couponApplied == false
+                                            ? InkWell(
+                                                onTap: () {
+                                                  if (applyCouponController
+                                                      .text.isEmpty) {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please Enter Coupon !!");
+                                                  } else {
+                                                    applyCouponDetails();
+                                                  }
+                                                },
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  height: 40,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.deepOrange,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3)),
+                                                  child: Text(
+                                                    buttonLoader == true
+                                                        ? "please wait..."
+                                                        : "Apply",
                                                     style: TextStyle(
                                                         color: Colors.white,
-                                                        fontSize: 16,
                                                         fontWeight:
-                                                            FontWeight.w500)))
+                                                            FontWeight.w600),
+                                                  ),
+                                                ),
+                                              )
+                                            : InkWell(
+                                                onTap: () {
+                                                  removeCouponDetails();
+                                                },
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  height: 40,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.deepOrange,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3)),
+                                                  child: Text(
+                                                    "Remove ",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
                                       ],
                                     ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Divider(thickness: 0.9),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    couponApplied == true
+                                        ? Text(
+                                            "Hurrey You : $appliedCouponTitle",
+                                            style: TextStyle(
+                                                color: Colors.deepOrange),
+                                          )
+                                        : Container(),
                                     SizedBox(height: 15),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width,
+                                      color: Color.fromARGB(77, 108, 105, 105),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "Payment Details",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Card(
+                                      elevation: 5,
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text("Plan",
+                                                    style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400)),
+                                                planName == null
+                                                    ? const SizedBox()
+                                                    : Text(planName.toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w300))
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text("Ad Duration",
+                                                    style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400)),
+                                                adDuration == null
+                                                    ? SizedBox()
+                                                    : Text(
+                                                        adDuration.toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w300))
+                                              ],
+                                            ),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text("Ad Limit",
+                                                    style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400)),
+                                                adLimit == null
+                                                    ? SizedBox()
+                                                    : Text(adLimit.toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w300))
+                                              ],
+                                            ),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text("Membership Amount",
+                                                    style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400)),
+                                                planAmount == null
+                                                    ? SizedBox()
+                                                    : Container(
+                                                        height: 25,
+                                                        width: 60,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8.0),
+                                                            color:
+                                                                Colors.green),
+                                                        child: Text(
+                                                            planAmount
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500)))
+                                              ],
+                                            ),
+                                            SizedBox(height: 15),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
                                     InkWell(
                                       onTap: () {
-                                        startPayment(amount);
+                                        startPayment(planAmount.toString());
                                       },
                                       child: Container(
-                                        height: 40,
+                                        height: 45,
                                         width: double.infinity,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
-                                            color: kPrimaryColor),
+                                            color: Colors.deepOrange),
                                         child: Text("Pay",
                                             style: TextStyle(
                                                 color: Colors.white,
@@ -240,64 +416,58 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                       ),
                                     )
                                   ],
-                                ))))
-                  ],
-                ),
+                                )))
+                      ],
+                    ),
+                  ),
+                ],
               ),
       ),
     );
   }
+
+  int id = 0;
+  String planName = '';
+  int planId = 0;
+  int planFor = 0;
+  int adLimit = 0;
+  int adDuration = 0;
+  int planAmount = 0;
+  String planType = '';
+  int planActive = 0;
+  int planBy = 0;
 
   Future<void> _getmakepayment() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
-    final body = {
-      "id": prefs.getString('userid'),
+    final data = {
+      "id": widget.packageId.toString(),
     };
-    var response = await http.post(Uri.parse(BASE_URL + makepayment),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        });
-    print(response.body);
+    var url = BASE_URL + "get-membership-details";
+    var body = data;
+
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    log("res--->$result");
+    if (result['ErrorCode'] == 0) {
+      id = result['Response']['id'];
+      planName = result['Response']['name'].toString();
+      planId = result['Response']['plan_id'];
+      planFor = result['Response']['plan_for'];
+      planBy = result['Response']['plan_by'];
+      adDuration = result['Response']['ad_duration'];
+      planAmount = result['Response']['amount'];
+      planType = result['Response']['type'];
+      planActive = result['Response']['active'];
+      setState(() {
+        _loading = false;
+      });
+    }
     setState(() {
       _loading = false;
     });
-    if (response.statusCode == 200) {
-      if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-        if (jsonDecode(response.body)['Response']['Membership']['name']
-                .toString() ==
-            "Free") {
-          // ignore: use_build_context_synchronously
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Dashboard()));
-        } else {
-          setState(() {
-            package_id = jsonDecode(response.body)['Response']['Membership']
-                    ['id']
-                .toString();
-            package_name = jsonDecode(response.body)['Response']['Membership']
-                    ['name']
-                .toString();
-            ad_duration = jsonDecode(response.body)['Response']['Membership']
-                    ['ad_duration']
-                .toString();
-            ad_limit = jsonDecode(response.body)['Response']['Membership']
-                    ['ad_limit']
-                .toString();
-            amount = jsonDecode(response.body)['Response']['Membership']
-                    ['amount']
-                .toString();
-          });
-        }
-      } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
-      }
-    }
   }
 
   Future _payformembership(String package_id, String paymentid) async {
@@ -342,5 +512,61 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
       print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
+  }
+
+  Future removeCouponDetails() async {
+    var url = BASE_URL + "remove-coupon";
+    var response = await APIHelper.apiGetRequest(url);
+
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      couponApplied = false;
+      Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
+    } else {
+      Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
+    }
+  }
+
+  String appliedCouponTitle = '';
+  int perPersonCount = 0;
+  int appliedDiscount = 0;
+  int appliedSubTotal = 0;
+  int appliedGrandTotal = 0;
+  String couponCode = '';
+
+  Future applyCouponDetails() async {
+    setState(() {
+      buttonLoader = true;
+    });
+    var url = BASE_URL + "apply-coupon";
+    var body = {
+      "coupon": applyCouponController.text.toString(),
+      "type": planType.toString(),
+      "sub_total": planAmount.toString(),
+    };
+
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      appliedCouponTitle = result['Response']['coupon_title'].toString();
+      perPersonCount = result['Response']['per_person_count'];
+      appliedDiscount = result['Response']['discount'];
+      appliedSubTotal = result['Response']['sub_total'];
+      appliedGrandTotal = result['Response']['grand_total'];
+      couponCode = result['Response']['coupon_code'].toString();
+      couponApplied = true;
+      Fluttertoast.showToast(msg: result['ErrorMessage']);
+      setState(() {
+        buttonLoader = false;
+      });
+    } else {
+      Fluttertoast.showToast(msg: result['ErrorMessage']);
+      setState(() {
+        buttonLoader = false;
+      });
+    }
+    setState(() {
+      buttonLoader = false;
+    });
   }
 }

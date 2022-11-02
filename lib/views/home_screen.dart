@@ -146,9 +146,9 @@ class _HomeScreenState extends State<HomeScreen> {
       address.text = place.locality.toString();
       log("===>" + address.text);
       getUpdtaeSearchLocation();
-      var snackBar = const SnackBar(
-                              content: Text('City Detected Successfully !!'));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      var snackBar =
+          const SnackBar(content: Text('City Detected Successfully !!'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
   }
 
@@ -222,11 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             log('=---->$currentCity');
                             _determinePosition()
                                 .then((value) => _getAddress(value));
-
                           });
                           // _determinePosition();
-
-                          
 
                           Navigator.pop(context);
                         },

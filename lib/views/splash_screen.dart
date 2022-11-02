@@ -173,7 +173,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future getprofileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final body = {};
+    final body = {
+      "id": prefs.getString('userid').toString(),
+    };
     var response = await http.post(Uri.parse(BASE_URL + profileUrl),
         body: jsonEncode(body),
         headers: {
@@ -205,12 +207,7 @@ class _SplashScreenState extends State<SplashScreen> {
               MaterialPageRoute(builder: (context) => OtpScreen()),
               (route) => false);
         }
-      } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => PersonalDetailScreen()),
-            (route) => false);
-      }
+      } 
       //   if (data['User']['package_id'].toString() != null) {
       //     if (data['User']['payment_status'].toString() == "1") {
       //       setState(() {
