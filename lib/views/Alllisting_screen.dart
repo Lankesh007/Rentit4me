@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
@@ -323,7 +322,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(28)),
                                           child: Image.network(
-                                              sliderpath +
+                                              devImage +
                                                   alllist[index]
                                                           ['upload_base_path']
                                                       .toString() +
@@ -762,7 +761,8 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
 
     setState(() {
@@ -938,12 +938,14 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
   }
 
   Future<void> _postboost(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
     var response = await http.get(Uri.parse(BASE_URL + postboost), headers: {
       "Accept": "application/json",
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
     });
     print(response.body);
     if (response.statusCode == 200) {

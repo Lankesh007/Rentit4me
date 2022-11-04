@@ -112,7 +112,7 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                               return InkWell(
                                 onTap: () {
                                   setState(() {
-                                    productimage = sliderpath +
+                                    productimage = devImage +
                                         productimages[index]['upload_base_path']
                                             .toString() +
                                         productimages[index]['file_name']
@@ -124,7 +124,7 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                                   width: 80,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8.0)),
-                                  child: Image.network(sliderpath +
+                                  child: Image.network(devImage +
                                       productimages[index]['upload_base_path']
                                           .toString() +
                                       productimages[index]['file_name']
@@ -301,12 +301,14 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
       setState(() {
-        productimage = sliderpath +
+        productimage = devImage +
             data['Images'][0]['upload_base_path'] +
             data['Images'][0]['file_name'].toString();
         productimages.addAll(data['Images']);

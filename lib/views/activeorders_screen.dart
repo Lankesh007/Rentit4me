@@ -549,7 +549,9 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                                                         "Accept":
                                                             "application/json",
                                                         'Content-Type':
-                                                            'application/json'
+                                                            'application/json',
+                                                        'Authorization':
+                                                            'Bearer ${prefs.getString("token")}',
                                                       });
 
                                                   if (jsonDecode(response.body)[
@@ -911,7 +913,8 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -951,7 +954,8 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -990,7 +994,8 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {

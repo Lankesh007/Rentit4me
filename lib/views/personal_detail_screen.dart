@@ -212,13 +212,14 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                     if (element['name'].toString() == value) {
                                       setState(() {
                                         selectedCountry = value;
+                                        log("selected-->$selectedCountry");
                                         country_id = element['id'];
-                                        _getStateData(element['id']);
                                         selectedState = 'Select State';
                                         selectedCity = 'Select City';
                                         initialtrustedbadge = 'Select';
                                         kyc = false;
                                       });
+                                      _getStateData(element['id']);
                                     }
                                   }
                                 } else {
@@ -256,11 +257,14 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                 for (var element in statelistData) {
                                   if (element['name'].toString() == value) {
                                     setState(() {
+                                      selectedState = "";
                                       selectedState = value;
                                       state_id = element['id'];
-                                      _getCityData(element['id'].toString());
+                                      log(state_id.toString());
+                                      log(state_id.toString());
                                       selectedCity = 'Select City';
                                     });
+                                    _getCityData(state_id);
                                   }
                                 }
                               } else {
@@ -416,7 +420,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 8.0),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
@@ -523,7 +527,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                               tb = true;
                                               initialIdProof = "Select";
                                             } else {
-                                              kyc = true;
+                                              // kyc = true;
                                               tb = false;
                                             }
                                           });
@@ -547,7 +551,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Aadhaar Number",
+                                    Text("Aadhar Number",
                                         style: TextStyle(
                                             color: kPrimaryColor,
                                             fontSize: 16,
@@ -584,7 +588,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                             },
                                             controller: adharnum,
                                             decoration: InputDecoration(
-                                              // hintText: adharnum,
+                                              hintText:
+                                                  "Aadhar number (must be 12 digits)",
+                                              counterText: "",
                                               border: InputBorder.none,
                                             ),
                                           ),
@@ -592,7 +598,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text("Adhar Card",
+                                    Text("Aadhar Card",
                                         style: TextStyle(
                                             color: kPrimaryColor,
                                             fontSize: 16,
@@ -861,7 +867,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                       ? InkWell(
                           onTap: () {
                             // if (kyc == "1") {
-                            if (country_id == null || country_id == null) {
+                            if (selectedCountry == "Select Country" ||
+                                selectedCountry == null) {
                               showToast("Please select your country");
                             } else if (state_id == null || state_id == null) {
                               showToast("Please select your state");
@@ -925,10 +932,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                       : InkWell(
                           onTap: () {
                             // if (kyc == "1") {
-                            if (country_id == null || country_id == null) {
+                            if (selectedCountry == "Select Country" ||
+                                selectedCountry == null) {
                               showToast("Please select your country");
                             } else if (state_id == null || state_id == null) {
-                              showToast("Please select your state");
+                              showToast("Please select your state s");
                             } else if (city_id == null || city_id == null) {
                               showToast("Please select your city");
                             } else if (!_emailcheck && !_smscheck) {
@@ -1223,7 +1231,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         state_id = data['User']['state'];
         city_id = data['User']['city'];
 
-        selectedCountry = data['User']['country_name'].toString();
+        // selectedCountry = data['User']['country_name'].toString();
+        log("Select country---->$selectedCountry");
         selectedState = data['User']['state_name'].toString();
         selectedCity = data['User']['city_name'].toString();
 
@@ -1331,7 +1340,6 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
             stateId = element['id'].toString();
             log("stateId---->$stateId");
           });
-          _getCityData(stateId);
         }
       });
     } else {
@@ -1339,13 +1347,13 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     }
   }
 
-  Future _getCityData(String id) async {
+  Future _getCityData(int id) async {
     setState(() {
       _loading = true;
       citylistData.clear();
     });
     final body = {
-      "id": int.parse(id).toString(),
+      "id": id.toString(),
     };
     log(body.toString());
     var response = await http.post(Uri.parse(BASE_URL + getCity),
@@ -1457,7 +1465,26 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       comPrefList.add('2');
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    String kycdone = '';
+    String trustedBadge = '';
+    if (initialtrustedbadge == "Yes") {
+      setState(() {
+        trustedBadge = "1";
+      });
+    } else {
+      setState(() {
+        trustedBadge = "0";
+      });
+    }
+    if (kyc == true) {
+      setState(() {
+        kycdone = "1";
+      });
+    } else {
+      setState(() {
+        kycdone = "0";
+      });
+    }
     log('Bearer ${prefs.getString("token")}');
 
     String userId = prefs.getString('userid');
@@ -1472,9 +1499,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       "state": state_id.toString(),
       "pincode": pincode.text.toString(),
       "city": city_id.toString(),
-      "kyc": kyc.toString(),
+      "kyc": kycdone.toString(),
       "com_prefs": comPrefList.join(','),
-      "trusted_badge": initialtrustedbadge,
+      "trusted_badge": trustedBadge.toString(),
       "adhaar_no": adharnum.text.toString(),
       // "adhaar_doc": adharcarddoc.toString(),
     };
@@ -1860,12 +1887,32 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       buttonLoading = true;
     });
     SharedPreferences preferences = await SharedPreferences.getInstance();
+    String kycdone = '';
+    String trustedBadge = '';
     List comPrefList = [];
     if (checkEmail == "1") {
       comPrefList.add("1");
     }
     if (checkSms == "2") {
       comPrefList.add('2');
+    }
+    if (initialtrustedbadge == "Yes") {
+      setState(() {
+        trustedBadge = "1";
+      });
+    } else {
+      setState(() {
+        trustedBadge = "0";
+      });
+    }
+    if (kyc == true) {
+      setState(() {
+        kycdone = "1";
+      });
+    } else {
+      setState(() {
+        kycdone = "0";
+      });
     }
     String userId = preferences.getString("userid");
     log("userId--->" + userId);
@@ -1877,9 +1924,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       "state": state_id.toString(),
       "pincode": pincode.text.toString(),
       "city": city_id.toString(),
-      "kyc": kyc.toString(),
+      "kyc": kycdone.toString(),
       "com_prefs": comPrefList.join(','),
-      "trusted_badge": initialtrustedbadge,
+      "trusted_badge": trustedBadge.toString(),
       "adhaar_no": adharnum.text.toString(),
       "adhaar_doc": adharcarddoc.toString(),
     };
@@ -1908,6 +1955,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   }
 
   Future submitDetailsOfConsumer() async {
+    String kycdone = '';
+    String trustedBadge = '';
     setState(() {
       buttonLoading = true;
     });
@@ -1919,6 +1968,24 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     if (checkSms == "2") {
       comPrefList.add('2');
     }
+    if (initialtrustedbadge == "Yes") {
+      setState(() {
+        trustedBadge = "1";
+      });
+    } else {
+      setState(() {
+        trustedBadge = "0";
+      });
+    }
+    if (kyc == true) {
+      setState(() {
+        kycdone = "1";
+      });
+    } else {
+      setState(() {
+        kycdone = "0";
+      });
+    }
     String userId = preferences.getString("userid");
     log("userId--->" + userId);
     var url = Apis.personalDetailsApi;
@@ -1929,9 +1996,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       "state": state_id.toString(),
       "pincode": pincode.text.toString(),
       "city": city_id.toString(),
-      "kyc": kyc.toString(),
+      "kyc": kycdone.toString(),
       "com_prefs": comPrefList.join(','),
-      "trusted_badge": initialtrustedbadge,
+      "trusted_badge": trustedBadge.toString(),
       "adhaar_no": adharnum.text.toString(),
       "adhaar_doc": adharcarddoc.toString(),
       "account_type": dropdownvalue.toString(),
@@ -1963,4 +2030,6 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       buttonLoading = false;
     });
   }
+
+  
 }

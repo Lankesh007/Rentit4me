@@ -34,6 +34,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
   String active;
   bool couponApplied = false;
   final applyCouponController = TextEditingController();
+  bool removeCouponButton = false;
 
   Razorpay _razorpay;
   bool buttonLoader = false;
@@ -81,7 +82,9 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
       var options = {
         'key': 'rzp_test_NNbwJ9tmM0fbxj',
         'name': 'Rentit4me',
-        'amount': (double.parse(amount) * 100).toString(),
+        'amount': couponApplied == true
+            ? (double.parse(appliedGrandTotal.toString()) * 100).toString()
+            : (double.parse(amount) * 100).toString(),
         'description': '',
         'timeout': 600, // in seconds
         'prefill': {
@@ -232,7 +235,9 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                           BorderRadius.circular(
                                                               3)),
                                                   child: Text(
-                                                    "Remove ",
+                                                    removeCouponButton == true
+                                                        ? "Please wait..."
+                                                        : "Remove",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontWeight:
@@ -351,7 +356,110 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                                     .w300))
                                               ],
                                             ),
+                                            Column(
+                                              children: [
+                                                couponApplied == false
+                                                    ? SizedBox()
+                                                    : Column(
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              const Text(
+                                                                  "Discount Amount",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          kPrimaryColor,
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400)),
+                                                              Container(
+                                                                  height: 25,
+                                                                  width: 60,
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                      color: Colors
+                                                                          .green),
+                                                                  child: Text(
+                                                                      appliedDiscount
+                                                                          .toString(),
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.w500)))
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                couponApplied == false
+                                                    ? SizedBox()
+                                                    : Column(
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              const Text(
+                                                                  "Sub Total Amount",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          kPrimaryColor,
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400)),
+                                                              Container(
+                                                                  height: 25,
+                                                                  width: 60,
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                      color: Colors
+                                                                          .green),
+                                                                  child: Text(
+                                                                      appliedSubTotal
+                                                                          .toString(),
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.w500)))
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                              ],
+                                            ),
                                             SizedBox(height: 10),
+                                            Divider(
+                                              thickness: 0.9,
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -378,8 +486,12 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                             color:
                                                                 Colors.green),
                                                         child: Text(
-                                                            planAmount
-                                                                .toString(),
+                                                            couponApplied ==
+                                                                    false
+                                                                ? planAmount
+                                                                    .toString()
+                                                                : appliedGrandTotal
+                                                                    .toString(),
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .white,
@@ -388,6 +500,9 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                                     FontWeight
                                                                         .w500)))
                                               ],
+                                            ),
+                                            Divider(
+                                              thickness: 0.9,
                                             ),
                                             SizedBox(height: 15),
                                           ],
@@ -399,7 +514,12 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        startPayment(planAmount.toString());
+                                        if (couponApplied == true &&
+                                            appliedGrandTotal == 0) {
+                                          getFreeMemberShipAppliedCoupon();
+                                        } else {
+                                          startPayment(planAmount.toString());
+                                        }
                                       },
                                       child: Container(
                                         height: 45,
@@ -409,7 +529,10 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                             color: Colors.deepOrange),
-                                        child: Text("Pay",
+                                        child: Text(
+                                            getFreeMem == true
+                                                ? "Please wait..."
+                                                : "Pay",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 16)),
@@ -436,6 +559,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
   String planType = '';
   int planActive = 0;
   int planBy = 0;
+  String couponType = '';
 
   Future<void> _getmakepayment() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -452,15 +576,19 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     var result = jsonDecode(response);
     log("res--->$result");
     if (result['ErrorCode'] == 0) {
-      id = result['Response']['id'];
-      planName = result['Response']['name'].toString();
-      planId = result['Response']['plan_id'];
-      planFor = result['Response']['plan_for'];
-      planBy = result['Response']['plan_by'];
-      adDuration = result['Response']['ad_duration'];
-      planAmount = result['Response']['amount'];
-      planType = result['Response']['type'];
-      planActive = result['Response']['active'];
+      setState(() {
+        id = result['Response']['id'];
+        planName = result['Response']['name'].toString();
+        planId = result['Response']['plan_id'];
+        planFor = result['Response']['plan_for'];
+        planBy = result['Response']['plan_by'];
+        adDuration = result['Response']['ad_duration'];
+        planAmount = result['Response']['amount'];
+        planType = result['Response']['type'];
+        planActive = result['Response']['active'];
+        couponType = result['Response']['coupon_type'].toString();
+        adLimit = result['Response']['ad_limit'];
+      });
       setState(() {
         _loading = false;
       });
@@ -515,16 +643,30 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
   }
 
   Future removeCouponDetails() async {
+    setState(() {
+      removeCouponButton = true;
+    });
+
     var url = BASE_URL + "remove-coupon";
     var response = await APIHelper.apiGetRequest(url);
 
     var result = jsonDecode(response);
     if (result['ErrorCode'] == 0) {
-      couponApplied = false;
+      setState(() {
+        couponApplied = false;
+        applyCouponController.clear();
+      });
+
       Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
     } else {
       Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
+      setState(() {
+        removeCouponButton = false;
+      });
     }
+    setState(() {
+      removeCouponButton = false;
+    });
   }
 
   String appliedCouponTitle = '';
@@ -541,20 +683,25 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     var url = BASE_URL + "apply-coupon";
     var body = {
       "coupon": applyCouponController.text.toString(),
-      "type": planType.toString(),
+      "type": couponType.toString(),
       "sub_total": planAmount.toString(),
     };
 
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     if (result['ErrorCode'] == 0) {
-      appliedCouponTitle = result['Response']['coupon_title'].toString();
-      perPersonCount = result['Response']['per_person_count'];
-      appliedDiscount = result['Response']['discount'];
-      appliedSubTotal = result['Response']['sub_total'];
-      appliedGrandTotal = result['Response']['grand_total'];
-      couponCode = result['Response']['coupon_code'].toString();
-      couponApplied = true;
+      setState(() {
+        couponApplied = true;
+        appliedCouponTitle = result['Response']['coupon_title'].toString();
+        perPersonCount = result['Response']['per_person_count'];
+        appliedDiscount = result['Response']['discount'];
+        log("applied dis-->$appliedDiscount");
+        appliedSubTotal = result['Response']['sub_total'];
+        appliedGrandTotal = result['Response']['grand_total'];
+        log("applied total-->$appliedGrandTotal");
+
+        couponCode = result['Response']['coupon_code'].toString();
+      });
       Fluttertoast.showToast(msg: result['ErrorMessage']);
       setState(() {
         buttonLoader = false;
@@ -567,6 +714,40 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     }
     setState(() {
       buttonLoader = false;
+    });
+  }
+
+  bool getFreeMem = false;
+
+  Future getFreeMemberShipAppliedCoupon() async {
+    setState(() {
+      getFreeMem = true;
+    });
+    var url = BASE_URL + "signup-membership";
+    var body = {
+      "id": widget.packageId,
+      "razorpay_payment_id": "",
+      "amount": "0"
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
+          (route) => false);
+      Fluttertoast.showToast(msg: result['ErrorMessage']);
+      setState(() {
+        getFreeMem = false;
+      });
+    } else {
+      Fluttertoast.showToast(msg: result['ErrorMessage']);
+      setState(() {
+        getFreeMem = false;
+      });
+    }
+    setState(() {
+      getFreeMem = false;
     });
   }
 }

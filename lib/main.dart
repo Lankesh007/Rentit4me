@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
           //darkTheme: darkThemeData(context),
           title: 'Rentit4me',
           theme: ThemeData(
+            fontFamily: "Regular",
             primarySwatch: Colors.indigo,
+
           ),
           home: SplashScreen()
           // home: PersonalDetailScreen(),

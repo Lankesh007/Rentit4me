@@ -404,8 +404,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               searchHeader != true
                   ? InkWell(
-                      onTap: () {
-                        loggedIn == true
+                      onTap: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        String userID = prefs.getString("userid");
+                        userID != "" || userID != null
                             ? Navigator.push(
                                 context,
                                 MaterialPageRoute(

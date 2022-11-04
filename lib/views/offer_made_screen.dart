@@ -117,7 +117,6 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
   }
 
   void startPayment(String amount) async {
-    
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print(amount);
     try {
@@ -160,7 +159,9 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Card(
                   elevation: 4.0,
                   child: Padding(
@@ -933,7 +934,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       _loading = false;

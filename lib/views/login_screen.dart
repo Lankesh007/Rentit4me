@@ -9,11 +9,13 @@ import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
+import 'package:rentit4me_new/views/forgot_password.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/make_payment_screen.dart';
 import 'package:rentit4me_new/views/personal_detail_screen.dart';
@@ -159,6 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
               icon: const Icon(Icons.home, color: Colors.black))
         ],
       ),
+
       body: ContainedTabBarView(
         tabs: const [
           Text('Sign In',
@@ -308,7 +311,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                         child: InkWell(
                           onTap: () {
-                            launch("https://rentit4me.com/forget-password");
+                            // launch("https://rentit4me.com/forget-password");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) => ForgotPassword())));
                           },
                           child: Text(
                             "Forgot Password ?",
@@ -645,7 +652,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _loading = false;
       });
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-        prefs.setBool('logged_in', true);
+        // prefs.setBool('logged_in', true);
         var result = jsonDecode(response.body);
         userId = result['Response']['id'];
         log("userId---->$userId");
@@ -693,42 +700,43 @@ class _LoginScreenState extends State<LoginScreen> {
     print(body);
     log(response.body);
     if (response.statusCode == 200) {
-      var data = json.decode(response.body)['Response'];
-      if (jsonDecode(response.body)['ErrorMessage'] !=
-          "Please complete your personal details first") {
-        if (data['User']['package_id'] != null) {
-          if (data['User']['is_signup_complete'] == 1) {
-            if (data['User']['payment_status'] == 1) {
-              prefs.setString(
-                  'userquickid', data['User']['quickblox_id'].toString());
-              prefs.setString(
-                  'quicklogin', data['User']['quickblox_email'].toString());
-              prefs.setString('quickpassword',
-                  data['User']['quickblox_password'].toString());
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => Dashboard()));
-            } else {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const MakePaymentScreen()));
-            }
+      var data = json.decode(response.body)['Response']['User'];
+
+      if (data['package_id'] != null || data['package_id'] != 0) {
+        if (data['is_signup_complete'] == 1) {
+          if (data['payment_status'] == 1) {
+            prefs.setString(
+                'userquickid', data['quickblox_id'].toString());
+            prefs.setString(
+                'quicklogin', data['quickblox_email'].toString());
+            prefs.setString(
+                'quickpassword', data['quickblox_password'].toString());
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => Dashboard()));
           } else {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => PersonalDetailScreen()));
+                    builder: (BuildContext context) =>
+                        const PersonalDetailScreen()));
           }
-        }
-      } else {
-        Navigator.pushReplacement(
+        } else {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => PersonalDetailScreen()));
+                builder: (BuildContext context) => PersonalDetailScreen()),
+          );
+          Fluttertoast.showToast(msg: "Your Signup is not completed ");
+        }
       }
+      // else {
+      //   Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (BuildContext context) => PersonalDetailScreen()));
+      // }
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }

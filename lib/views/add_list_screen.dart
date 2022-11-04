@@ -438,64 +438,86 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                         ),
                         SizedBox(height: 10),
                         Container(
-                          height: 50,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15)),
-                          child: FormField(
-                            builder: (FormFieldState state) {
-                              return InputDecorator(
-                                decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.grey),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    filled: true,
-                                    // labelText: "Select",
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.deepOrange),
-                                    )),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    // Initial Value
-
-                                    value: dropdownvalue,
-
-                                    // Down Arrow Icon
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-
-                                    // Array list of items
-                                    items: items.map((String items) {
-                                      return DropdownMenuItem(
-                                        value: items,
-                                        child: Text(items),
-                                      );
-                                    }).toList(),
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        dropdownvalue = newValue;
-                                        log("====>$dropdownvalue");
-                                        if (dropdownvalue == "Manually") {
-                                          sameAddress = false;
-                                          if (sameAddress == false) {
-                                            _getprofileData();
-                                          }
-                                        }
-                                      });
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
+                              border: Border.all(color: Colors.grey, width: 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: TextField(
+                              readOnly: true,
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.start,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "  ALL Cities"
+                              ),
+                              onChanged: (value) {
+                                securityamount = value.toString();
+                              },
+                            ),
                           ),
                         ),
-                        SizedBox(height: 10),
+
+                        // Container(
+                        //   height: 50,
+                        //   decoration: BoxDecoration(
+                        //       borderRadius: BorderRadius.circular(15)),
+                        //   child: FormField(
+                        //     builder: (FormFieldState state) {
+                        //       return InputDecorator(
+                        //         decoration: InputDecoration(
+                        //             fillColor: Colors.white,
+                        //             enabledBorder: OutlineInputBorder(
+                        //                 borderSide:
+                        //                     BorderSide(color: Colors.grey),
+                        //                 borderRadius:
+                        //                     BorderRadius.circular(10)),
+                        //             filled: true,
+                        //             // labelText: "Select",
+                        //             isDense: true,
+                        //             contentPadding: EdgeInsets.all(10),
+                        //             border: OutlineInputBorder(
+                        //               borderSide:
+                        //                   BorderSide(color: Colors.deepOrange),
+                        //             )),
+                        //         child: DropdownButtonHideUnderline(
+                        //           child: DropdownButton(
+                        //             // Initial Value
+
+                        //             value: dropdownvalue,
+
+                        //             // Down Arrow Icon
+                        //             icon: const Icon(Icons.keyboard_arrow_down),
+
+                        //             // Array list of items
+                        //             items: items.map((String items) {
+                        //               return DropdownMenuItem(
+                        //                 value: items,
+                        //                 child: Text(items),
+                        //               );
+                        //             }).toList(),
+                        //             // After selecting the desired option,it will
+                        //             // change button value to selected value
+                        //             onChanged: (String newValue) {
+                        //               setState(() {
+                        //                 dropdownvalue = newValue;
+                        //                 log("====>$dropdownvalue");
+                        //                 if (dropdownvalue == "Manually") {
+                        //                   sameAddress = false;
+                        //                   if (sameAddress == false) {
+                        //                     _getprofileData();
+                        //                   }
+                        //                 }
+                        //               });
+                        //             },
+                        //           ),
+                        //         ),
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
+                        // SizedBox(height: 10),
                         dropdownvalue == "Manually"
                             ? AbsorbPointer(
                                 absorbing: sameAddress,
@@ -1540,21 +1562,23 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
       requestMulti.fields["rent_type[3]"] = renttype[2]['type'].toString();
       requestMulti.fields["price[4]"] = renttype[3]['amount'].toString();
       requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
-      if (sameAddress) {
-        requestMulti.fields["address_type"] = "same_as_profile";
-      } else {
-        requestMulti.fields["address_type"] = dropdownvalue == "Manually"
-            ? "manually"
-            : dropdownvalue == "All Cities"
-                ? "all_cities"
-                : dropdownvalue == "Same As Profile"
-                    ? "same_as_profile"
-                    : "";
-        requestMulti.fields["country"] = country_id.toString();
-        requestMulti.fields["state"] = state_id.toString();
-        requestMulti.fields["city"] = city_id.toString();
-        requestMulti.fields["address"] = address.text.toString();
-      }
+      requestMulti.fields["address_type"] = "all_cities".toString();
+
+      // if (sameAddress) {
+      //   requestMulti.fields["address_type"] = "same_as_profile";
+      // } else {
+      //   requestMulti.fields["address_type"] = dropdownvalue == "Manually"
+      //       ? "manually"
+      //       : dropdownvalue == "All Cities"
+      //           ? "all_cities"
+      //           : dropdownvalue == "Same As Profile"
+      //               ? "same_as_profile"
+      //               : "";
+      //   requestMulti.fields["country"] = country_id.toString();
+      //   requestMulti.fields["state"] = state_id.toString();
+      //   requestMulti.fields["city"] = city_id.toString();
+      //   requestMulti.fields["address"] = address.text.toString();
+      // }
 
       requestMulti.files.add(http.MultipartFile("main_image",
           File(mainimage).openRead(), File(mainimage).lengthSync(),

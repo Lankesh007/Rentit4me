@@ -30,7 +30,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
   final gstNumber = TextEditingController();
   final panNumber = TextEditingController();
   final aadharNumber = TextEditingController();
-  final businessNames=TextEditingController();
+  final businessNames = TextEditingController();
   String dropdownvalue = 'Select';
   String gstDocumnet = '';
   String panCardDocumnet = '';
@@ -139,20 +139,21 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
   double height = 0;
   double width = 0;
-  String businessName;
+  // String businessName;
 
-  getPrefencesData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(()  {
-    businessName = prefs.getString('businessName');
-    log("----->$businessName");
-    });
-  }
+  // getPrefencesData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     businessName = prefs.getString('businessName');
+  //     log("----->$businessName");
+  //   });
+  // }
 
   @override
   void initState() {
     getUserDetails();
-    getPrefencesData();
+    getProfiledata();
+    // getPrefencesData();
     super.initState();
   }
 
@@ -171,7 +172,6 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
           ),
         ),
         centerTitle: true,
-       
       ),
       body: ListView(
         children: [
@@ -430,7 +430,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
             const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("GST Number*",
+              child: Text("GST Number",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -460,7 +460,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
             const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("PAN Number*",
+              child: Text("PAN Number",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -488,39 +488,39 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                 )),
             const SizedBox(height: 10),
             const SizedBox(height: 10),
+            // const Align(
+            //   alignment: Alignment.topLeft,
+            //   child: Text("Aadhar Number*",
+            //       style: TextStyle(
+            //           color: kPrimaryColor, fontWeight: FontWeight.w500)),
+            // ),
+            // const SizedBox(height: 8),
+            // Container(
+            //     decoration: BoxDecoration(
+            //         border:
+            //             Border.all(width: 1, color: Colors.deepOrangeAccent),
+            //         borderRadius: BorderRadius.all(Radius.circular(12))),
+            //     child: Padding(
+            //       padding: const EdgeInsets.only(left: 10.0),
+            //       child: TextField(
+            //         keyboardType: TextInputType.number,
+            //         decoration: InputDecoration(
+            //             hintText: "Aadhar No.(must be 12 digit)",
+            //             border: InputBorder.none,
+            //             counterText: ""),
+            //         maxLength: 12,
+            //         onChanged: (value) {
+            //           setState(() {
+            //             // adharno = value;
+            //           });
+            //         },
+            //         controller: aadharNumber,
+            //       ),
+            //     )),
+            // const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("Aadhar Number*",
-                  style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.w500)),
-            ),
-            const SizedBox(height: 8),
-            Container(
-                decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        hintText: "Aadhar No.(must be 12 digit)",
-                        border: InputBorder.none,
-                        counterText: ""),
-                    maxLength: 12,
-                    onChanged: (value) {
-                      setState(() {
-                        // adharno = value;
-                      });
-                    },
-                    controller: aadharNumber,
-                  ),
-                )),
-            const SizedBox(height: 10),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text("GST*",
+              child: Text("GST ",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -575,7 +575,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
             const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("PAN *",
+              child: Text("PAN ",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -626,59 +626,60 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                       )),
             ),
             const SizedBox(height: 10),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text("Aadhar *",
-                  style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.w500)),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child: aadharImage != null
-                  ? InkWell(
-                      onTap: getImageofAadhar,
-                      child: Image.file(
-                        (aadharImage),
-                        width: width,
-                        height: 200.0,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              width: 1, color: Colors.deepOrangeAccent),
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 5.0, horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                getImageofAadhar();
-                              },
-                              child: Container(
-                                height: 45,
-                                width: 120,
-                                alignment: Alignment.center,
-                                decoration: const BoxDecoration(
-                                    color: Colors.deepOrangeAccent,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8.0))),
-                                child: Text("Choose file",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16)),
-                              ),
-                            )
-                          ],
-                        ),
-                      )),
-            ),
-            const SizedBox(height: 10),
+            // const Align(
+            //   alignment: Alignment.topLeft,
+            //   child: Text("Aadhar *",
+            //       style: TextStyle(
+            //           color: kPrimaryColor, fontWeight: FontWeight.w500)),
+            // ),
+            // const SizedBox(height: 8),
+            // Container(
+            //   margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+            //   child: aadharImage != null
+            //       ? InkWell(
+            //           onTap: getImageofAadhar,
+            //           child: Image.file(
+            //             (aadharImage),
+            //             width: width,
+            //             height: 200.0,
+            //             fit: BoxFit.cover,
+            //           ),
+            //         )
+            //       : Container(
+            //           decoration: BoxDecoration(
+            //               color: Colors.white,
+            //               border: Border.all(
+            //                   width: 1, color: Colors.deepOrangeAccent),
+            //               borderRadius: BorderRadius.all(Radius.circular(12))),
+            //           child: Padding(
+            //             padding: EdgeInsets.symmetric(
+            //                 vertical: 5.0, horizontal: 8.0),
+            //             child: Row(
+            //               mainAxisAlignment: MainAxisAlignment.end,
+            //               children: [
+            //                 InkWell(
+            //                   onTap: () {
+            //                     getImageofAadhar();
+            //                   },
+            //                   child: Container(
+            //                     height: 45,
+            //                     width: 120,
+            //                     alignment: Alignment.center,
+            //                     decoration: const BoxDecoration(
+            //                         color: Colors.deepOrangeAccent,
+            //                         borderRadius:
+            //                             BorderRadius.all(Radius.circular(8.0))),
+            //                     child: Text("Choose file",
+            //                         style: TextStyle(
+            //                             color: Colors.white, fontSize: 16)),
+            //                   ),
+            //                 )
+            //               ],
+            //             ),
+            //           )),
+            // ),
+
+            // const SizedBox(height: 10),
           ],
         ),
       ),
@@ -688,19 +689,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
   Widget submitButtonWidgetBusiness() {
     return InkWell(
       onTap: () {
-        if (gstNumber.text.isEmpty && gstNumber.text.length < 15) {
-          showToast("Please fill Gst Number");
-        } else if (panNumber.text.isEmpty && panNumber.text.length < 10) {
-          showToast("Please fill Pan Number");
-        } else if (aadharNumber.text.isEmpty && aadharNumber.text.length < 12) {
-          showToast("Please fill Aadhar number");
-        } else if (_pickedImage == null) {
-          showToast("Please choose GST document");
-        } else if (panImage == null) {
-          showToast("Please choose PAN Card ");
-        } else if (aadharImage == null) {
-          showToast("Please choose Aadhar Card ");
-        } else if (bankName.text.isEmpty &&
+        if (bankName.text.isEmpty &&
             branchName.text.isEmpty &&
             accountNo.text.isEmpty &&
             dropdownvalue == "Select" &&
@@ -1021,7 +1010,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     var body = {
       "id": userId.toString(),
     };
-    var data=jsonEncode(body);
+    var data = jsonEncode(body);
     var response = await APIHelper.apiPostRequest(url, data);
 
     var result = jsonDecode(response);
@@ -1041,13 +1030,13 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     var url = Apis.billingAndTaxationApi;
     var bodyMap = {
       "id": userId.toString(),
-      "business_name":prefs.getString('businessName').toString(),
+      "business_name": businessName.toString(),
       "account_type": dropdownvalue.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "ifsc": iFSCCode.text.toString(),
       "account_no": accountNo.text.toString(),
-      "adhaar_no": aadharNumber.text.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
       "gst_no": gstNumber.text.toString(),
     };
@@ -1064,6 +1053,9 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
         log("ENTETED====>  $pic");
       } else {
         log("ENTETED====>  $_pickedImage");
+        setState(() {
+          buttonLoading = false;
+        });
       }
       if (panImage.path.isNotEmpty) {
         var pic = await http.MultipartFile.fromPath('pan_doc', panImage.path);
@@ -1071,15 +1063,18 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
         log("ENTETED====>  $pic");
       } else {
         log("ENTETED====>  $panImage");
+        setState(() {
+          buttonLoading = false;
+        });
       }
-      if (aadharImage.path.isNotEmpty) {
-        var pic =
-            await http.MultipartFile.fromPath('adhaar_doc', aadharImage.path);
-        request.files.add(pic);
-        log("ENTETED====>  $pic");
-      } else {
-        log("ENTETED====>  $aadharImage");
-      }
+      // if (aadharImage.path.isNotEmpty) {
+      //   var pic =
+      //       await http.MultipartFile.fromPath('adhaar_doc', aadharImage.path);
+      //   request.files.add(pic);
+      //   log("ENTETED====>  $pic");
+      // } else {
+      //   log("ENTETED====>  $aadharImage");
+      // }
 
       request.fields.addAll(bodyMap);
       var response = await request.send();
@@ -1097,18 +1092,38 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         log("StatusCodePost11---->${response.statusCode}");
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => SelectMemberShipScreen()));
-        Fluttertoast.showToast(
-          msg: "Taxation Submitted Successfully !!:",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green.shade700,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        var result = jsonDecode(responseString);
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SelectMemberShipScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
       } else {
         Fluttertoast.showToast(
           msg: "Something Went Wrong !!:",
@@ -1119,10 +1134,31 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
           textColor: Colors.white,
           fontSize: 16.0,
         );
+        setState(() {
+          buttonLoading = false;
+        });
       }
     } on Exception catch (e) {}
     setState(() {
       buttonLoading = false;
     });
+  }
+
+  String businessName = '';
+  Future getProfiledata() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var url = "${BASE_URL}profile";
+    var body = {"id": prefs.getString('userid')};
+    var response = await APIHelper.apiPostRequest(url, body);
+
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      setState(() {
+        businessName = result['Response']['User']['business_name'].toString();
+        log("businessName-->$businessName");
+      });
+    } else {
+      Fluttertoast.showToast(msg: result['ErrorMessage']);
+    }
   }
 }

@@ -256,13 +256,13 @@ class _OtpScreenState extends State<OtpScreen> {
         }
       },
       style: ElevatedButton.styleFrom(
-          primary: Colors.indigo,
+          primary: Colors.deepOrange,
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
           textStyle: const TextStyle(
               color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
       child: Text(
         "Submit",
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 16),
       ),
     );
   }

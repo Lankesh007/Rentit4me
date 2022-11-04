@@ -15,6 +15,7 @@ import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/views/account.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDetailScreen extends StatefulWidget {
@@ -45,11 +46,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   String accountDNumebr = '';
   String accountType = '';
   String iFSCCODE = '';
+  bool gstfile = false;
+  bool panFile = false;
 
   var items = [
     'Select',
-    'Current',
-    'Saving',
+    'current',
+    'saving',
   ];
 
   String profileimage = '';
@@ -76,7 +79,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   final panNumber = TextEditingController();
   final aadharNumber = TextEditingController();
   final businessName = TextEditingController();
-  String dropdownvalue = 'Select';
+  String dropdownvalue;
   String gstDocumnet = '';
   String panCardDocumnet = '';
   String aadharCardDocument = '';
@@ -103,17 +106,15 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   bool gstDocumentBool = false;
   int stackindex = 0;
   List adviseradslist = [];
+  String gstNo = '';
+  String panNo = '';
 
-  _setData() async {
-    bankName.text = bankDName;
-    branchName.text = bankDbranchName;
-    accountNo.text = accountDNumebr;
-    iFSCCode.text = iFSCCODE;
-  }
+  _setData() async {}
 
   @override
   void initState() {
     super.initState();
+
     _setData();
     _getprofileData();
     _getcountryData();
@@ -260,97 +261,10 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Card(
-                        elevation: 4.0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text("Email*",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      controller: email,
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Phone Number*",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      controller: mobile,
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 10.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: const [
-                                  // Container(
-                                  //   width: size.width * 0.40,
-                                  //   child: Row(
-                                  //     children: [
-                                  //       const Text("Hide Mobile",
-                                  //           style: TextStyle(
-                                  //               color: kPrimaryColor,
-                                  //               fontWeight: FontWeight.bold)),
-                                  //       const SizedBox(width: 5),
-                                  //       Checkbox(
-                                  //           value: _hidemob,
-                                  //           onChanged: (value) {
-                                  //             if (value) {
-                                  //               setState(() {
-                                  //                 _hidemob = value;
-                                  //               });
-                                  //             } else {
-                                  //               setState(() {
-                                  //                 _hidemob = value;
-                                  //               });
-                                  //             }
-                                  //           })
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Card(
+                      //   elevation: 4.0,
+                      //   child:
+                      // ),
                       const SizedBox(height: 20),
                       Card(
                         elevation: 4.0,
@@ -367,6 +281,95 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                         color: kPrimaryColor,
                                         fontSize: 21,
                                         fontWeight: FontWeight.w700)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 0.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Email*",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(12))),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: TextFormField(
+                                            controller: email,
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        )),
+                                    const SizedBox(height: 20),
+                                    const Text("Phone Number*",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12))),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8.0),
+                                          child: TextFormField(
+                                            controller: mobile,
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        )),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: const [
+                                        // Container(
+                                        //   width: size.width * 0.40,
+                                        //   child: Row(
+                                        //     children: [
+                                        //       const Text("Hide Mobile",
+                                        //           style: TextStyle(
+                                        //               color: kPrimaryColor,
+                                        //               fontWeight: FontWeight.bold)),
+                                        //       const SizedBox(width: 5),
+                                        //       Checkbox(
+                                        //           value: _hidemob,
+                                        //           onChanged: (value) {
+                                        //             if (value) {
+                                        //               setState(() {
+                                        //                 _hidemob = value;
+                                        //               });
+                                        //             } else {
+                                        //               setState(() {
+                                        //                 _hidemob = value;
+                                        //               });
+                                        //             }
+                                        //           })
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 10),
                               const Text("Full Name",
@@ -437,6 +440,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                         InkWell(
                                           onTap: () {
                                             showPhotoCaptureOptions();
+                                            setState(() {});
                                           },
                                           child: Container(
                                             height: 45,
@@ -455,10 +459,407 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       ],
                                     ),
                                   )),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    const Text("Country*",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12))),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: TextField(
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  selectedCountry.toString(),
+                                              border: InputBorder.none,
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {});
+                                            },
+                                          ),
+                                        )),
+
+                                    // Padding(
+                                    //   padding:
+                                    //       const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                                    //   child: DropdownSearch(
+                                    //     selectedItem: "Select Country",
+                                    //     mode: Mode.DIALOG,
+                                    //     showSelectedItem: true,
+                                    //     autoFocusSearchBox: true,
+                                    //     showSearchBox: true,
+                                    //     showFavoriteItems: true,
+                                    //     favoriteItems: (val) {
+                                    //       return [selectedCountry];
+                                    //     },
+                                    //     hint: 'Select Country',
+                                    //     dropdownSearchDecoration: InputDecoration(
+                                    //         enabledBorder: OutlineInputBorder(
+                                    //             borderRadius:
+                                    //                 BorderRadius.circular(12),
+                                    //             borderSide: BorderSide(
+                                    //                 color:
+                                    //                     Colors.deepOrangeAccent,
+                                    //                 width: 1)),
+                                    //         contentPadding:
+                                    //             EdgeInsets.only(left: 10)),
+                                    //     items: countrylistData.map((e) {
+                                    //       return e['name'].toString();
+                                    //     }).toList(),
+                                    //     onChanged: (value) {
+                                    //       if (value != "Select Country") {
+                                    //         for (var element
+                                    //             in countrylistData) {
+                                    //           if (element['name'].toString() ==
+                                    //               value) {
+                                    //             setState(() {
+                                    //               initialcountryname =
+                                    //                   value.toString();
+                                    //               initialstatename = null;
+                                    //               initialcityname = null;
+                                    //               countryId =
+                                    //                   element['id'].toString();
+                                    //               _getStateData(
+                                    //                   element['id'].toString());
+                                    //             });
+                                    //           }
+                                    //         }
+                                    //       } else {
+                                    //         showToast("Select Country");
+                                    //       }
+                                    //     },
+                                    //   ),
+                                    // ),
+
+                                    const SizedBox(height: 10),
+                                    const Text("State*",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12))),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: TextField(
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  selectedState.toString(),
+                                              border: InputBorder.none,
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {});
+                                            },
+                                          ),
+                                        )),
+
+                                    // DropdownSearch(
+                                    //   selectedItem: "Select State",
+                                    //   mode: Mode.DIALOG,
+                                    //   showSelectedItem: true,
+                                    //   autoFocusSearchBox: true,
+                                    //   showSearchBox: true,
+                                    //   hint: 'Select State',
+                                    //   dropdownSearchDecoration: InputDecoration(
+                                    //       enabledBorder: OutlineInputBorder(
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(12),
+                                    //           borderSide: BorderSide(
+                                    //               color:
+                                    //                   Colors.deepOrangeAccent,
+                                    //               width: 1)),
+                                    //       contentPadding:
+                                    //           EdgeInsets.only(left: 10)),
+                                    //   items: statelistData.map((e) {
+                                    //     return e['name'].toString();
+                                    //   }).toList(),
+                                    //   onChanged: (value) {
+                                    //     if (value != "Select State") {
+                                    //       for (var element in statelistData) {
+                                    //         if (element['name'].toString() ==
+                                    //             value) {
+                                    //           setState(() {
+                                    //             initialstatename =
+                                    //                 value.toString();
+                                    //             initialstatename = null;
+                                    //             initialcityname = null;
+                                    //             stateId =
+                                    //                 element['id'].toString();
+                                    //             _getCityData(
+                                    //                 element['id'].toString());
+                                    //           });
+                                    //         }
+                                    //       }
+                                    //     } else {
+                                    //       showToast("Select State");
+                                    //     }
+                                    //   },
+                                    // ),
+
+                                    const SizedBox(height: 10),
+                                    const Text("City*",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    // DropdownSearch(
+                                    //   selectedItem: "Select City",
+                                    //   mode: Mode.DIALOG,
+                                    //   showSelectedItem: true,
+                                    //   autoFocusSearchBox: true,
+                                    //   showSearchBox: true,
+                                    //   hint: 'Select City',
+                                    //   dropdownSearchDecoration: InputDecoration(
+                                    //       enabledBorder: OutlineInputBorder(
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(12),
+                                    //           borderSide: BorderSide(
+                                    //               color:
+                                    //                   Colors.deepOrangeAccent,
+                                    //               width: 1)),
+                                    //       contentPadding:
+                                    //           EdgeInsets.only(left: 10)),
+                                    //   items: citylistData.map((e) {
+                                    //     return e['name'].toString();
+                                    //   }).toList(),
+                                    //   onChanged: (value) {
+                                    //     if (value != "Select City") {
+                                    //       for (var element in citylistData) {
+                                    //         if (element['name'].toString() ==
+                                    //             value) {
+                                    //           setState(() {
+                                    //             initialcityname =
+                                    //                 value.toString();
+                                    //             //initialstatename = null;
+                                    //             //initialcityname = null;
+                                    //             cityId =
+                                    //                 element['id'].toString();
+                                    //             //_getStateData(element['id'].toString());
+                                    //           });
+                                    //         }
+                                    //       }
+                                    //     } else {
+                                    //       showToast("Select City");
+                                    //     }
+                                    //   },
+                                    // ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12))),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: TextField(
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              hintText: selectedCity.toString(),
+                                              border: InputBorder.none,
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {});
+                                            },
+                                          ),
+                                        )),
+
+                                    const SizedBox(height: 10),
+                                    const Text("Address",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12))),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: TextFormField(
+                                            controller: address,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        )),
+                                    const SizedBox(height: 10),
+                                    const Text("Pincode",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Colors.deepOrangeAccent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12))),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: TextFormField(
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Required Field';
+                                              }
+                                              return null;
+                                            },
+                                            controller: pincode,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        )),
+                                    const SizedBox(height: 10),
+                                    const Text("Communication Preferences*",
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    const SizedBox(height: 8.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Checkbox(
+                                                value: _emailcheck,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _emailcheck = value;
+                                                    if (_emailcheck) {
+                                                      commprefs.add(1);
+                                                    } else {
+                                                      for (var element
+                                                          in commprefs) {
+                                                        if (element == 1) {
+                                                          commprefs.removeWhere(
+                                                              (element) =>
+                                                                  element == 1);
+                                                        }
+                                                      }
+                                                    }
+                                                  });
+                                                }),
+                                            const Text("Email",
+                                                style: TextStyle(
+                                                    color: kPrimaryColor,
+                                                    fontWeight:
+                                                        FontWeight.w700))
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Row(
+                                          children: [
+                                            Checkbox(
+                                                value: _smscheck,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _smscheck = value;
+                                                    if (_smscheck) {
+                                                      commprefs.add(2);
+                                                    } else {
+                                                      for (var element
+                                                          in commprefs) {
+                                                        if (element == 2) {
+                                                          commprefs.removeWhere(
+                                                              (element) =>
+                                                                  element == 2);
+                                                        }
+                                                      }
+                                                    }
+                                                  });
+                                                }),
+                                            const Text("SMS",
+                                                style: TextStyle(
+                                                    color: kPrimaryColor,
+                                                    fontWeight:
+                                                        FontWeight.w700))
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+
+                                    // SizedBox(
+                                    //   width: double.infinity,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       const Text("Push Notification",
+                                    //           style: TextStyle(
+                                    //               color: kPrimaryColor,
+                                    //               fontWeight: FontWeight.bold)),
+                                    //       const SizedBox(width: 5),
+                                    //       Checkbox(
+                                    //           value: _checknotifi,
+                                    //           onChanged: (value) {
+                                    //             if (value) {
+                                    //               setState(() {
+                                    //                 _checknotifi = value;
+                                    //               });
+                                    //             } else {
+                                    //               setState(() {
+                                    //                 _checknotifi = value;
+                                    //               });
+                                    //             }
+                                    //           }),
+                                    //       const SizedBox(width: 5),
+                                    //       const Text('Allow',
+                                    //           style: TextStyle(
+                                    //               color: kPrimaryColor,
+                                    //               fontWeight: FontWeight.bold))
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ),
+
+                      userType == 3
+                          ? bankDetailsWidget()
+                          : Column(children: [
+                              businessDetailsWidget(),
+                              bankDetailsWidget(),
+                            ]),
                       const SizedBox(height: 20),
                       Card(
                         elevation: 4.0,
@@ -619,318 +1020,11 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Card(
-                        elevation: 4.0,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Align(
-                                  alignment: Alignment.center,
-                                  child: Text("Setting",
-                                      style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontSize: 21,
-                                          fontWeight: FontWeight.w700))),
-                              const SizedBox(height: 10),
-                              const Text("Country*",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                                child: DropdownSearch(
-                                  selectedItem: "Select Country",
-                                  mode: Mode.DIALOG,
-                                  showSelectedItem: true,
-                                  autoFocusSearchBox: true,
-                                  showSearchBox: true,
-                                  showFavoriteItems: true,
-                                  favoriteItems: (val) {
-                                    return [selectedCountry];
-                                  },
-                                  hint: 'Select Country',
-                                  dropdownSearchDecoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          borderSide: BorderSide(
-                                              color: Colors.deepOrangeAccent,
-                                              width: 1)),
-                                      contentPadding:
-                                          EdgeInsets.only(left: 10)),
-                                  items: countrylistData.map((e) {
-                                    return e['name'].toString();
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != "Select Country") {
-                                      for (var element in countrylistData) {
-                                        if (element['name'].toString() ==
-                                            value) {
-                                          setState(() {
-                                            initialcountryname =
-                                                value.toString();
-                                            initialstatename = null;
-                                            initialcityname = null;
-                                            countryId =
-                                                element['id'].toString();
-                                            _getStateData(
-                                                element['id'].toString());
-                                          });
-                                        }
-                                      }
-                                    } else {
-                                      showToast("Select Country");
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              const Text("State*",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              DropdownSearch(
-                                selectedItem: "Select State",
-                                mode: Mode.DIALOG,
-                                showSelectedItem: true,
-                                autoFocusSearchBox: true,
-                                showSearchBox: true,
-                                hint: 'Select State',
-                                dropdownSearchDecoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(
-                                            color: Colors.deepOrangeAccent,
-                                            width: 1)),
-                                    contentPadding: EdgeInsets.only(left: 10)),
-                                items: statelistData.map((e) {
-                                  return e['name'].toString();
-                                }).toList(),
-                                onChanged: (value) {
-                                  if (value != "Select State") {
-                                    for (var element in statelistData) {
-                                      if (element['name'].toString() == value) {
-                                        setState(() {
-                                          initialstatename = value.toString();
-                                          initialstatename = null;
-                                          initialcityname = null;
-                                          stateId = element['id'].toString();
-                                          _getCityData(
-                                              element['id'].toString());
-                                        });
-                                      }
-                                    }
-                                  } else {
-                                    showToast("Select State");
-                                  }
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              const Text("City*",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              DropdownSearch(
-                                selectedItem: "Select City",
-                                mode: Mode.DIALOG,
-                                showSelectedItem: true,
-                                autoFocusSearchBox: true,
-                                showSearchBox: true,
-                                hint: 'Select City',
-                                dropdownSearchDecoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(
-                                            color: Colors.deepOrangeAccent,
-                                            width: 1)),
-                                    contentPadding: EdgeInsets.only(left: 10)),
-                                items: citylistData.map((e) {
-                                  return e['name'].toString();
-                                }).toList(),
-                                onChanged: (value) {
-                                  if (value != "Select City") {
-                                    for (var element in citylistData) {
-                                      if (element['name'].toString() == value) {
-                                        setState(() {
-                                          initialcityname = value.toString();
-                                          //initialstatename = null;
-                                          //initialcityname = null;
-                                          cityId = element['id'].toString();
-                                          //_getStateData(element['id'].toString());
-                                        });
-                                      }
-                                    }
-                                  } else {
-                                    showToast("Select City");
-                                  }
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              const Text("Address",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: TextFormField(
-                                      controller: address,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Pincode",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: TextFormField(
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Required Field';
-                                        }
-                                        return null;
-                                      },
-                                      controller: pincode,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Communication Preferences*",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                          value: _emailcheck,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _emailcheck = value;
-                                              if (_emailcheck) {
-                                                commprefs.add(1);
-                                              } else {
-                                                for (var element in commprefs) {
-                                                  if (element == 1) {
-                                                    commprefs.removeWhere(
-                                                        (element) =>
-                                                            element == 1);
-                                                  }
-                                                }
-                                              }
-                                            });
-                                          }),
-                                      const Text("Email",
-                                          style: TextStyle(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w700))
-                                    ],
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                          value: _smscheck,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _smscheck = value;
-                                              if (_smscheck) {
-                                                commprefs.add(2);
-                                              } else {
-                                                for (var element in commprefs) {
-                                                  if (element == 2) {
-                                                    commprefs.removeWhere(
-                                                        (element) =>
-                                                            element == 2);
-                                                  }
-                                                }
-                                              }
-                                            });
-                                          }),
-                                      const Text("SMS",
-                                          style: TextStyle(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w700))
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              // SizedBox(
-                              //   width: double.infinity,
-                              //   child: Row(
-                              //     children: [
-                              //       const Text("Push Notification",
-                              //           style: TextStyle(
-                              //               color: kPrimaryColor,
-                              //               fontWeight: FontWeight.bold)),
-                              //       const SizedBox(width: 5),
-                              //       Checkbox(
-                              //           value: _checknotifi,
-                              //           onChanged: (value) {
-                              //             if (value) {
-                              //               setState(() {
-                              //                 _checknotifi = value;
-                              //               });
-                              //             } else {
-                              //               setState(() {
-                              //                 _checknotifi = value;
-                              //               });
-                              //             }
-                              //           }),
-                              //       const SizedBox(width: 5),
-                              //       const Text('Allow',
-                              //           style: TextStyle(
-                              //               color: kPrimaryColor,
-                              //               fontWeight: FontWeight.bold))
-                              //     ],
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      userType == 3
-                          ? bankDetailsWidget()
-                          : Column(children: [
-                              bankDetailsWidget(),
-                              businessDetailsWidget(),
-                            ]),
+                      // Card(
+                      //   elevation: 4.0,
+                      //   child:
+                      // ),
+
                       const SizedBox(height: 10),
                       InkWell(
                         onTap: () {
@@ -992,18 +1086,10 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                           // }
 
                           if (userType == 4) {
-                            if (gstNumber.text.isEmpty) {
-                              showToast("Please Enter gst Number");
-                            } else if (gstNumber.text.length < 15) {
-                              showToast("Gst number should be 15 digits");
-                            } else if (panNumber.text.length < 10) {
-                              showToast("Pan Number should be 10 Digits");
-                            } else if (gstNumber.text.length < 10) {
-                              showToast("PAN number should be 10 digits");
-                            } else if (gstDocumnet.isEmpty) {
-                              showToast("GST Documnet Required");
-                            } else if (panCardDocumnet.isEmpty) {
-                              showToast("PAN Documnet Required");
+                            if (profileimage.isEmpty ||
+                                profileimage == "" ||
+                                profileimage == null) {
+                              showToast("Please Select Your Profile Image");
                             } else {
                               uploadBasicDetails();
                             }
@@ -1012,16 +1098,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                 profileimage == "" ||
                                 profileimage == null) {
                               showToast("Please Select Your Profile Image");
-                            } else if (bankName.text.isEmpty) {
-                              showToast("Please Enter Bank name");
-                            } else if (branchName.text.isEmpty) {
-                              showToast("Please Enter Branch Name");
-                            } else if (accountNo.text.isEmpty) {
-                              showToast("Please Enter Bank Account Number");
-                            } else if (dropdownvalue == "Select") {
-                              showToast("Please Select Account Type");
-                            } else if (iFSCCode.text.isEmpty) {
-                              showToast("Please Enter IFSC Code Number");
                             } else {
                               uploadBasicDetails();
                             }
@@ -1214,7 +1290,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                                       Image.asset(
                                                           'assets/images/no_image.jpg'),
                                                   fit: BoxFit.cover,
-                                                  imageUrl: sliderpath +
+                                                  imageUrl: devImage +
                                                       adviseradslist[index][
                                                               'upload_base_path']
                                                           .toString() +
@@ -1500,7 +1576,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                   child: TextField(
                     controller: businessName,
                     decoration: InputDecoration(
-                      hintText: "",
+                      hintText: businessNameOfUser,
                       border: InputBorder.none,
                     ),
                     onChanged: (value) {
@@ -1525,7 +1601,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                   padding: const EdgeInsets.only(left: 10.0),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: "GST No.(must be 15 digit)",
+                        hintText: gstNo,
                         border: InputBorder.none,
                         counterText: ""),
                     maxLength: 15,
@@ -1555,7 +1631,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                   padding: const EdgeInsets.only(left: 10.0),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: "PAN No.(must be 10 digit)",
+                        hintText: panNo,
                         border: InputBorder.none,
                         counterText: ""),
                     maxLength: 10,
@@ -1603,6 +1679,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                       InkWell(
                         onTap: () {
                           gstDoc();
+                          setState(() {});
                         },
                         child: Container(
                           height: 45,
@@ -1703,7 +1780,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           const SizedBox(height: 10)
         ],
       );
-
+  String businessNameOfUser = '';
+  String aacountType = '';
   Future _getprofileData() async {
     setState(() {
       _loading = true;
@@ -1724,7 +1802,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       setState(() {
         _loading = false;
         userType = data['User']['user_type'];
-        profileimage = sliderpath + data['User']['avatar_path'].toString();
+        profileimage = devImage + data['User']['avatar_path'].toString();
         myads = data['My Ads'].toString();
         mobile.text = data['User']['mobile'].toString();
         name.text = data['User']['name'].toString();
@@ -1761,8 +1839,24 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         bankDName = data['User']['bank_name'].toString();
         bankDbranchName = data['User']['branch_name'].toString();
         accountDNumebr = data['User']['account_no'].toString();
-        accountType = data['User']['account_type'].toString();
+        // accountType = data['User']['account_type'].toString();
         iFSCCODE = data['User']['ifsc'].toString();
+        businessNameOfUser = data['User']['business_name'].toString();
+        gstNo = data['User']['gst_no'].toString();
+        panNo = data['User']['pan_no'].toString();
+        accountType = data['User']['account_type'].toString();
+        log("accountType--->$accountType");
+        businessName.text = businessNameOfUser;
+        log("businnes name--->${businessName.text}");
+        gstNumber.text = gstNo;
+        panNumber.text = panNo;
+        dropdownvalue = accountType;
+        bankName.text = bankDName;
+        branchName.text = bankDbranchName;
+        accountNo.text = accountDNumebr;
+        iFSCCode.text = iFSCCODE;
+        log("d val--->$dropdownvalue");
+
         List selectedList = data['User']['preferences'].toString().split(",");
         for (var element in selectedList) {
           commprefs.add(int.parse(element));
@@ -1806,12 +1900,11 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     final body = {
       "id": int.parse(id),
     };
-    var response = await http.post(Uri.parse(BASE_URL + getState),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + getState), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+    });
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body)['Response']['states'];
       setState(() {
@@ -2115,9 +2208,9 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     var bodyMap = {
       "id": userId.toString(),
       "address": address.text.toString(),
-      "country": initialcountryname.toString(),
-      "state": initialstatename.toString(),
-      "city": initialcityname.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
       "pincode": pincode.text.toString(),
       "com_prefs": commprefs.join(","),
       "instagram_url": instragramurl.text.toString(),
@@ -2131,12 +2224,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": dropdownvalue.toString(),
-      "adhaar_no": aadharNumber.text.toString(),
+      "account_type": accountType.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
     };
+
     try {
       final request = http.MultipartRequest(
         'POST',
@@ -2146,7 +2240,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       request.headers.addAll({
         'Authorization': 'Bearer ${prefs.getString("token")}',
       });
-
       if (gstDocumnet.isNotEmpty) {
         var pic = await http.MultipartFile.fromPath(
           'gst_doc',
@@ -2162,6 +2255,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         request.files.add(pic);
         log("Done====>  $pic");
       } else {
+        bodyMap = {"pan_doc": ""};
         log("ENTETED====>ss$panCardDocumnet");
       }
       if (profileimage.toString().isNotEmpty) {
@@ -2214,6 +2308,10 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         );
       }
     } on Exception catch (e) {
+      Fluttertoast.showToast(msg: "Something went wrong");
+      setState(() {
+        buttonLoading = false;
+      });
       return NullThrownError();
     }
     setState(() {
@@ -2230,7 +2328,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];

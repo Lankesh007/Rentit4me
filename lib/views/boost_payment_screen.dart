@@ -223,6 +223,8 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
   }
 
   Future<void> _getboostpplan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       _loading = true;
     });
@@ -230,7 +232,9 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
         //body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     print(response.body);
     if (response.statusCode == 200) {

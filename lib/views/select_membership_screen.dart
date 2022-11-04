@@ -356,15 +356,16 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
       });
 
       if (jsonDecode(response.body)['ErrorCode'] == 0) {
-        packageId = jsonDecode(response.body)['Response']['package_id'];
-        log("package Id--->$packageId");
-
-        if (jsonDecode(response.body)['redirection'] == "profile") {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => Dashboard()));
+        if (jsonDecode(response.body)['Response'] == null) {
+          if (jsonDecode(response.body)['redirection'] == "profile") {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => Dashboard()));
+          }
         } else {
           // Navigator.of(context).pushReplacement(MaterialPageRoute(
           //     builder: (context) => const MakePaymentScreen()));
+          packageId = jsonDecode(response.body)['Response']['package_id'];
+          log("package Id--->$packageId");
           Navigator.push(
               context,
               MaterialPageRoute(
