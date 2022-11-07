@@ -85,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
             padding: const EdgeInsets.only(left: 10),
             child: Image.asset('assets/images/logo.png'),
           ),
-          title: const Text("Sign up Business",
+          title: const Text("Business Signup",
               style: TextStyle(color: kPrimaryColor)),
           centerTitle: true,
           /*actions: [
@@ -161,7 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-                  child: _mobileTextbox("Mobile"),
+                  child: _mobileTextbox(),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
@@ -212,6 +212,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       } else if (pwdController.text.toString().trim().isEmpty) {
                         showToast("Please enter password");
                         return;
+                      } else if (mobileController.text.length < 10) {
+                        showToast("Mobile No should be 10 digits");
                       } else {
                         _register(
                             nameController.text.toString(),
@@ -327,30 +329,46 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _mobileTextbox(_initialValue) {
+  Widget _mobileTextbox() {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        controller: mobileController,
         keyboardType: TextInputType.number,
         maxLength: 10,
-        validator: (value) {
-          return null;
-        },
-        onSaved: (String value) {
-          mobileController.text = value;
-        },
-        onChanged: (value) {
-          mobileController.text = value;
-        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-          hintText: _initialValue.toString(),
+          hintText: "Mobile",
           labelText: 'Mobile*',
           counterText: "",
         ),
       ),
     );
   }
+  // Widget _mobileTextbox(_initialValue) {
+  //   return Container(
+  //     margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+  //     child: TextFormField(
+  //       keyboardType: TextInputType.number,
+  //       maxLength: 10,
+  //       validator: (value) {
+  //         return null;
+  //       },
+  //       onSaved: (String value) {
+  //         mobileController.text = value;
+  //       },
+  //       onChanged: (value) {
+  //         mobileController.text = value;
+  //       },
+  //       cursorColor: kPrimaryColor,
+  //       decoration: InputDecoration(
+  //         hintText: _initialValue.toString(),
+  //         labelText: 'Mobile*',
+  //         counterText: "",
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _alternamemobileTextbox(_initialValue) {
     return Container(
@@ -381,6 +399,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        obscureText: showPassword,
         textCapitalization: TextCapitalization.sentences,
         validator: (value) {
           return null;
@@ -393,15 +412,29 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: _initialValue.toString(), labelText: 'Password*'),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  showPassword = !showPassword;
+                });
+              },
+              icon: showPassword == false
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
+            ),
+            hintText: _initialValue.toString(),
+            labelText: 'Password*'),
       ),
     );
   }
 
+  bool showPassword = true;
+  bool showConfirmPassword=true;
   Widget _confirmpwdTextbox(_initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        obscureText: showConfirmPassword,
         textCapitalization: TextCapitalization.sentences,
         validator: (value) {
           return null;
@@ -414,6 +447,16 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
+           suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  showConfirmPassword = !showConfirmPassword;
+                });
+              },
+              icon: showConfirmPassword == false
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
+            ),
             hintText: _initialValue.toString(), labelText: 'Confirm Password*'),
       ),
     );
@@ -492,9 +535,7 @@ class _SignupScreenState extends State<SignupScreen> {
         prefs.setString('userid',
             jsonDecode(response.body)['Response']['user']['id'].toString());
         prefs.setString(
-            'token',
-            jsonDecode(response.body)['Response']['token']
-                .toString());
+            'token', jsonDecode(response.body)['Response']['token'].toString());
         log("token---->${prefs.getString('token')}");
         prefs.setString('businessName', businessController.text.toString());
         _sendotp(mobile);
@@ -516,6 +557,8 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         _loading = false;
       });
+      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+
       log(response.body.toString());
       throw Exception('Failed to get data due to ${response.body}');
     }

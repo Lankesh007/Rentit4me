@@ -892,17 +892,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
-                            } else if (bankName.text.isEmpty) {
-                              showToast("Please Enter Bank Name");
-                            } else if (branchName.text.isEmpty) {
-                              showToast("Please Enter Branch Name");
-                            } else if (iFSCCode.text.isEmpty) {
-                              showToast("Please Enter IFSC Code");
-                            } else if (accountNo.text.isEmpty) {
-                              showToast("Please enter Account number");
-                            } else if (dropdownvalue == "Select") {
-                              showToast("Please  Select Account Type");
-                            } else if (key.currentState.validate()) {
+                            } else {
                               submitDetailsOfConsumer();
                             }
                           },
@@ -1031,7 +1021,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Bank Name*",
+                child: Text("Bank Name",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1060,7 +1050,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Branch Name*",
+                child: Text("Branch Name",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1089,7 +1079,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Account Number*",
+                child: Text("Account Number",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1120,7 +1110,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Account Type*",
+                child: Text("Account Type",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1177,7 +1167,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("IFSC Code*",
+                child: Text("IFSC Code",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1268,6 +1258,10 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
+      prefs.setString("selectedCountry", data['User']['country_name']);
+      prefs.setString("selectedState", data['User']['state_name']);
+      prefs.setString("selectedState", data['User']['city_name']);
+      prefs.setString("selectedAddress", data['User']['address']);
       if (data['User']['package_id'] != null &&
           data['User']['package_id'] != 1) {
         if (data['User']['payment_status'].toString() == "1") {
@@ -2001,7 +1995,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       "trusted_badge": trustedBadge.toString(),
       "adhaar_no": adharnum.text.toString(),
       "adhaar_doc": adharcarddoc.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type":
+          dropdownvalue.toString() == "Select" ? "" : dropdownvalue.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "ifsc": iFSCCode.text.toString(),
@@ -2016,20 +2011,28 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     if (result['ErrorCode'] == 0) {
       if (initialtrustedbadge == "No") {
         showToast(result['ErrorMessage']);
+        // _getprofileData();
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => SelectMemberShipScreen()));
+        setState(() {
+          buttonLoading = false;
+        });
       } else {
+        setState(() {
+          buttonLoading = false;
+        });
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => SelectMemberShipScreen()));
         showToast(result['ErrorMessage']);
       }
     } else {
       showToast(result['ErrorMessage']);
+      setState(() {
+        buttonLoading = false;
+      });
     }
     setState(() {
       buttonLoading = false;
     });
   }
-
-  
 }

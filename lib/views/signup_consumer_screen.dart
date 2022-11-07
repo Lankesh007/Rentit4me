@@ -142,7 +142,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-                  child: _mobileTextbox("Mobile"),
+                  child: _mobileTextbox(),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
@@ -187,6 +187,8 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                       } else if (pwdController.text.toString().trim().isEmpty) {
                         showToast("Please enter password");
                         return;
+                      } else if (mobileController.text.length < 10) {
+                        showToast("Mobile No should be 10 digits");
                       } else {
                         _register(
                             nameController.text.toString(),
@@ -283,25 +285,41 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
     );
   }
 
-  Widget _mobileTextbox(initialValue) {
+  // Widget _mobileTextbox(initialValue) {
+  //   return Container(
+  //     margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+  //     child: TextFormField(
+  //       keyboardType: TextInputType.number,
+  //       controller: mobileController,
+  //       maxLength: 10,
+  //       validator: (value) {
+  //         return null;
+  //       },
+  //       onSaved: (String value) {
+  //         mobileController.text = value;
+  //       },
+  //       onChanged: (value) {
+  //         mobileController.text = value;
+  //       },
+  //       cursorColor: kPrimaryColor,
+  //       decoration: InputDecoration(
+  //         hintText: initialValue.toString(),
+  //         labelText: 'Mobile*',
+  //         counterText: "",
+  //       ),
+  //     ),
+  //   );
+  // }
+  Widget _mobileTextbox() {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
-        keyboardType: TextInputType.number,
         controller: mobileController,
+        keyboardType: TextInputType.number,
         maxLength: 10,
-        validator: (value) {
-          return null;
-        },
-        onSaved: (String value) {
-          mobileController.text = value;
-        },
-        onChanged: (value) {
-          mobileController.text = value;
-        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-          hintText: initialValue.toString(),
+          hintText: "Mobile",
           labelText: 'Mobile*',
           counterText: "",
         ),
@@ -334,13 +352,12 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
       ),
     );
   }
-
-  Widget _passwordTextbox(initialValue) {
+    Widget _passwordTextbox(_initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        obscureText: showPassword,
         textCapitalization: TextCapitalization.sentences,
-        //controller: pwdController,
         validator: (value) {
           return null;
         },
@@ -352,17 +369,30 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: initialValue.toString(), labelText: 'Password*'),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  showPassword = !showPassword;
+                });
+              },
+              icon: showPassword == false
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
+            ),
+            hintText: _initialValue.toString(),
+            labelText: 'Password*'),
       ),
     );
   }
 
-  Widget _confirmpwdTextbox(initialValue) {
+  bool showPassword = true;
+  bool showConfirmPassword=true;
+  Widget _confirmpwdTextbox(_initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        obscureText: showConfirmPassword,
         textCapitalization: TextCapitalization.sentences,
-        //controller: confirmpwdController,
         validator: (value) {
           return null;
         },
@@ -374,10 +404,65 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: initialValue.toString(), labelText: 'Confirm Password*'),
+           suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  showConfirmPassword = !showConfirmPassword;
+                });
+              },
+              icon: showConfirmPassword == false
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
+            ),
+            hintText: _initialValue.toString(), labelText: 'Confirm Password*'),
       ),
     );
   }
+
+
+  // Widget _passwordTextbox(initialValue) {
+  //   return Container(
+  //     margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+  //     child: TextFormField(
+  //       textCapitalization: TextCapitalization.sentences,
+  //       //controller: pwdController,
+  //       validator: (value) {
+  //         return null;
+  //       },
+  //       onSaved: (String value) {
+  //         pwdController.text = value;
+  //       },
+  //       onChanged: (value) {
+  //         pwdController.text = value;
+  //       },
+  //       cursorColor: kPrimaryColor,
+  //       decoration: InputDecoration(
+  //           hintText: initialValue.toString(), labelText: 'Password*'),
+  //     ),
+  //   );
+  // }
+
+  // Widget _confirmpwdTextbox(initialValue) {
+  //   return Container(
+  //     margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+  //     child: TextFormField(
+  //       textCapitalization: TextCapitalization.sentences,
+  //       //controller: confirmpwdController,
+  //       validator: (value) {
+  //         return null;
+  //       },
+  //       onSaved: (String value) {
+  //         confirmpwdController.text = value;
+  //       },
+  //       onChanged: (value) {
+  //         confirmpwdController.text = value;
+  //       },
+  //       cursorColor: kPrimaryColor,
+  //       decoration: InputDecoration(
+  //           hintText: initialValue.toString(), labelText: 'Confirm Password*'),
+  //     ),
+  //   );
+  // }
 
   Future _getCountryData() async {
     var response = await http.get(Uri.parse(BASE_URL + countrycodeUrl));

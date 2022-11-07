@@ -3,9 +3,9 @@ class PeopleAlsoMayLikeModel {
   String adId;
   int userId;
   int userType;
-  String boostPackageId;
+  int boostPackageId;
   String boostPackagePosition;
-  String boostPackageStatus;
+  int boostPackageStatus;
   String boostPackageFromDate;
   String boostPackageToDate;
   String title;
@@ -20,7 +20,7 @@ class PeopleAlsoMayLikeModel {
   String email;
   String mobileHidden;
   int review;
-  String tags;
+  Null tags;
   int country;
   int state;
   Null city;
@@ -30,25 +30,24 @@ class PeopleAlsoMayLikeModel {
   int outOfStock;
   String termCondition;
   String productFor;
-  String rentType;
+  Null rentType;
   String startDate;
   String endDate;
-  String expiryDate;
-  String featuredExpiryDate;
+  Null expiryDate;
+  Null featuredExpiryDate;
   int status;
   String latitude;
   String longitude;
   String adType;
-  String paymentStatus;
+  Null paymentStatus;
   String productType;
   String payment;
   String createdAt;
   String updatedAt;
-  String deletedAt;
+  Null deletedAt;
   int createdBy;
   int updatedBy;
   int startingPrice;
-  Pivot pivot;
   List<Images> images;
 
   PeopleAlsoMayLikeModel(
@@ -101,7 +100,6 @@ class PeopleAlsoMayLikeModel {
       this.createdBy,
       this.updatedBy,
       this.startingPrice,
-      this.pivot,
       this.images});
 
   PeopleAlsoMayLikeModel.fromJson(Map<String, dynamic> json) {
@@ -154,14 +152,12 @@ class PeopleAlsoMayLikeModel {
     createdBy = json['created_by'];
     updatedBy = json['updated_by'];
     startingPrice = json['starting_price'];
-     pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images.add(new Images.fromJson(v));
+        images.add(Images.fromJson(v));
       });
     }
-  
   }
 
   Map<String, dynamic> toJson() {
@@ -215,31 +211,9 @@ class PeopleAlsoMayLikeModel {
     data['created_by'] = createdBy;
     data['updated_by'] = updatedBy;
     data['starting_price'] = startingPrice;
-    if (pivot != null) {
-      data['pivot'] = pivot.toJson();
-    }
     if (images != null) {
       data['images'] = images.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class Pivot {
-  int categoryId;
-  int postAdId;
-
-  Pivot({this.categoryId, this.postAdId});
-
-  Pivot.fromJson(Map<String, dynamic> json) {
-    categoryId = json['category_id'];
-    postAdId = json['post_ad_id'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['category_id'] = categoryId;
-    data['post_ad_id'] = postAdId;
     return data;
   }
 }
@@ -258,8 +232,8 @@ class Images {
   int isMain;
   String createdAt;
   String updatedAt;
-  String createdBy;
-  String updatedBy;
+  Null createdBy;
+  Null updatedBy;
 
   Images(
       {this.id,

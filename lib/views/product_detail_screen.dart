@@ -277,7 +277,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           productname,
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 22  ,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold),
                         ),
 
@@ -378,6 +378,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Align(
                             alignment: Alignment.topLeft,
                             child: boostpack == "null" ||
@@ -407,7 +410,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   ? SizedBox()
                                   : Text(description,
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 12))),
+                                          color: Colors.black, fontSize: 14))),
                         ),
                         Divider(
                           thickness: 0.9,
@@ -683,7 +686,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   )
                                 ],
                               ),
-                              SizedBox(height: 30,),
+                              SizedBox(
+                                height: 30,
+                              ),
                               Container(
                                 alignment: Alignment.center,
                                 width: width * 0.98,
@@ -1783,10 +1788,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     var url = Apis.adViewApi;
     var body = {
       "id": widget.productid,
-      "user_id": userId.toString(),
+
       "country": countryID.toString(),
       // "city": "",cityId.toString(),
-      "city": ""
+      "city": cityId.toString(),
     };
     log(body.toString());
     var response = await APIHelper.apiPostRequest(url, body);

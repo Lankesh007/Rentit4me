@@ -50,7 +50,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   bool panFile = false;
 
   var items = [
-    'Select',
+    'select',
     'current',
     'saving',
   ];
@@ -1085,23 +1085,37 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                           // else {
                           // }
 
-                          if (userType == 4) {
-                            if (profileimage.isEmpty ||
-                                profileimage == "" ||
-                                profileimage == null) {
-                              showToast("Please Select Your Profile Image");
-                            } else {
-                              uploadBasicDetails();
-                            }
+                          if (profilepicbool == true &&
+                              gstDocumentBool == true &&
+                              panDocumentBool == true) {
+                            uploadBasicDetails();
+                          } else if (profilepicbool == true) {
+                            uploadBasicDetailsWithProfileImage();
+                          } else if (gstDocumentBool == true) {
+                            uploadBasicDetailsWithGstImage();
+                          } else if (panDocumentBool == true) {
+                            uploadBasicDetailsWithPanImage();
                           } else {
-                            if (profileimage.isEmpty ||
-                                profileimage == "" ||
-                                profileimage == null) {
-                              showToast("Please Select Your Profile Image");
-                            } else {
-                              uploadBasicDetails();
-                            }
+                            uploadBasicDetailsWitoutImage();
                           }
+
+                          // if (userType == 4) {
+                          //   if (profileimage.isEmpty ||
+                          //       profileimage == "" ||
+                          //       profileimage == null) {
+                          //     showToast("Please Select Your Profile Image");
+                          //   } else {
+                          //     uploadBasicDetails();
+                          //   }
+                          // } else {
+                          //   if (profileimage.isEmpty ||
+                          //       profileimage == "" ||
+                          //       profileimage == null) {
+                          //     showToast("Please Select Your Profile Image");
+                          //   } else {
+                          //     uploadBasicDetails();
+                          //   }
+                          // }
                         },
                         child: SizedBox(
                           width: double.infinity,
@@ -1375,7 +1389,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Bank Name*",
+                child: Text("Bank Name",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1402,7 +1416,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Branch Name*",
+                child: Text("Branch Name",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1429,7 +1443,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Account Number*",
+                child: Text("Account Number",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1460,7 +1474,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Account Type*",
+                child: Text("Account Type",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1479,6 +1493,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                               borderRadius: BorderRadius.circular(15)),
                           filled: true,
                           // labelText: "Select",
+
                           isDense: true,
                           contentPadding: EdgeInsets.all(10),
                           border: OutlineInputBorder(
@@ -1517,7 +1532,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("IFSC Code*",
+                child: Text("IFSC Code",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -1561,7 +1576,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             const SizedBox(height: 20),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("Business Name*",
+              child: Text("Business Name",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -1587,7 +1602,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("GST Number*",
+              child: Text("GST Number",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -1617,7 +1632,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
-              child: Text("PAN Number*",
+              child: Text("PAN Number",
                   style: TextStyle(
                       color: kPrimaryColor, fontWeight: FontWeight.w500)),
             ),
@@ -1650,7 +1665,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               alignment: Alignment.centerLeft,
               child: const Text("GST Doc",
                   style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.w600)),
+                    color: kPrimaryColor,
+                  )),
             ),
             const SizedBox(height: 8.0),
             Container(
@@ -1850,7 +1866,11 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         log("businnes name--->${businessName.text}");
         gstNumber.text = gstNo;
         panNumber.text = panNo;
-        dropdownvalue = accountType;
+        if (accountType == null || accountType == "") {
+          dropdownvalue = "select";
+        } else {
+          dropdownvalue = accountType;
+        }
         bankName.text = bankDName;
         branchName.text = bankDbranchName;
         accountNo.text = accountDNumebr;
@@ -1985,6 +2005,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                               setState(() {
                                 profileimage = result.path.toString();
                                 profilepicbool = true;
+                                log("pro====>$profilepicbool");
                               });
                             }
                             Navigator.of(context).pop();
@@ -2012,6 +2033,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                               setState(() {
                                 profileimage = result.path.toString();
                                 profilepicbool = true;
+                                log("pro====>$profilepicbool");
                               });
                             }
                             Navigator.of(context).pop();
@@ -2197,7 +2219,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 ])));
   }
 
-  Future uploadBasicDetails() async {
+  Future uploadBasicDetailsWithProfileImage() async {
     setState(() {
       buttonLoading = true;
     });
@@ -2224,7 +2246,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": accountType.toString(),
+      "account_type": dropdownvalue.toString(),
       // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
@@ -2255,7 +2277,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         request.files.add(pic);
         log("Done====>  $pic");
       } else {
-        bodyMap = {"pan_doc": ""};
+        // bodyMap = {"pan_doc": ""};
         log("ENTETED====>ss$panCardDocumnet");
       }
       if (profileimage.toString().isNotEmpty) {
@@ -2285,30 +2307,476 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         log("StatusCodePost11---->${response.statusCode}");
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => AccountViewScreen()));
-        Fluttertoast.showToast(
-          msg: "Profile Updtaed Successfully !!:",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green.shade700,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      } else {
-        Fluttertoast.showToast(
-          msg: result['ErrorMessage'].toString(),
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green.shade700,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        var result = jsonDecode(responseString);
+
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
       }
     } on Exception catch (e) {
-      Fluttertoast.showToast(msg: "Something went wrong");
+      Fluttertoast.showToast(msg: "Profile pic required ");
+      setState(() {
+        buttonLoading = false;
+      });
+      return NullThrownError();
+    }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future uploadBasicDetailsWithGstImage() async {
+    setState(() {
+      buttonLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userid');
+    var url = Apis.basicProfileUpdateApi;
+
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
+      "pincode": pincode.text.toString(),
+      "com_prefs": commprefs.join(","),
+      "instagram_url": instragramurl.text.toString(),
+      "google_plus_url": googleplusurl.text.toString(),
+      "facebook_url": fburl.text.toString(),
+      "name": name.text.toString(),
+      "twitter_url": twitterurl.text.toString(),
+      "linkedin_url": linkdinurl.text.toString(),
+      "youtube_url": youtubeurl.text.toString(),
+      "account_no": accountNo.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "account_type": dropdownvalue.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "business_name": businessName.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+    };
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (gstDocumnet.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+          'gst_doc',
+          gstDocumnet,
+        );
+        request.files.add(pic);
+        log("Done====>  $pic");
+      } else {
+        log("ENTETED====> aa $gstDocumnet");
+      }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      var result = jsonDecode(responseData.toString());
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      }
+    } on Exception catch (e) {
+      Fluttertoast.showToast(msg: "Profile pic required ");
+      setState(() {
+        buttonLoading = false;
+      });
+      return NullThrownError();
+    }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future uploadBasicDetailsWithPanImage() async {
+    setState(() {
+      buttonLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userid');
+    var url = Apis.basicProfileUpdateApi;
+
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
+      "pincode": pincode.text.toString(),
+      "com_prefs": commprefs.join(","),
+      "instagram_url": instragramurl.text.toString(),
+      "google_plus_url": googleplusurl.text.toString(),
+      "facebook_url": fburl.text.toString(),
+      "name": name.text.toString(),
+      "twitter_url": twitterurl.text.toString(),
+      "linkedin_url": linkdinurl.text.toString(),
+      "youtube_url": youtubeurl.text.toString(),
+      "account_no": accountNo.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "account_type": dropdownvalue.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "business_name": businessName.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+    };
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (panCardDocumnet.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath('pan_doc', panCardDocumnet);
+        request.files.add(pic);
+        log("Done====>  $pic");
+      } else {
+        // bodyMap = {"pan_doc": ""};
+        log("ENTETED====>ss$panCardDocumnet");
+      }
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      var result = jsonDecode(responseData.toString());
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      }
+    } on Exception catch (e) {
+      Fluttertoast.showToast(msg: "Profile pic required ");
+      setState(() {
+        buttonLoading = false;
+      });
+      return NullThrownError();
+    }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future uploadBasicDetailsWitoutImage() async {
+    setState(() {
+      buttonLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userid');
+    var url = Apis.basicProfileUpdateApi;
+
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
+      "pincode": pincode.text.toString(),
+      "com_prefs": commprefs.join(","),
+      "instagram_url": instragramurl.text.toString(),
+      "google_plus_url": googleplusurl.text.toString(),
+      "facebook_url": fburl.text.toString(),
+      "name": name.text.toString(),
+      "twitter_url": twitterurl.text.toString(),
+      "linkedin_url": linkdinurl.text.toString(),
+      "youtube_url": youtubeurl.text.toString(),
+      "account_no": accountNo.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "account_type": dropdownvalue.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "business_name": businessName.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+      // "pan_doc": "",
+      // "gst_doc": "",
+      // "avatar": ""
+    };
+
+    var response = await APIHelper.apiPostRequest(url, bodyMap);
+    var result = jsonDecode(response);
+
+    if (result['ErrorCode'] == 0) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => AccountViewScreen()));
+      Fluttertoast.showToast(
+        msg: result['ErrorMessage'],
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green.shade700,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      setState(() {
+        buttonLoading = false;
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: result['ErrorMessage'],
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green.shade700,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      setState(() {
+        buttonLoading = false;
+      });
+    }
+
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future uploadBasicDetails() async {
+    setState(() {
+      buttonLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userid');
+    var url = Apis.basicProfileUpdateApi;
+
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
+      "pincode": pincode.text.toString(),
+      "com_prefs": commprefs.join(","),
+      "instagram_url": instragramurl.text.toString(),
+      "google_plus_url": googleplusurl.text.toString(),
+      "facebook_url": fburl.text.toString(),
+      "name": name.text.toString(),
+      "twitter_url": twitterurl.text.toString(),
+      "linkedin_url": linkdinurl.text.toString(),
+      "youtube_url": youtubeurl.text.toString(),
+      "account_no": accountNo.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "account_type": dropdownvalue.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "business_name": businessName.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+    };
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (gstDocumnet.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+          'gst_doc',
+          gstDocumnet,
+        );
+        request.files.add(pic);
+        log("Done====>  $pic");
+      } else {
+        log("ENTETED====> aa $gstDocumnet");
+      }
+      if (panCardDocumnet.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath('pan_doc', panCardDocumnet);
+        request.files.add(pic);
+        log("Done====>  $pic");
+      } else {
+        // bodyMap = {"pan_doc": ""};
+        log("ENTETED====>ss$panCardDocumnet");
+      }
+      if (profileimage.toString().isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+            'avatar', profileimage.toString());
+        request.files.add(pic);
+        log("Done====>aa  $pic");
+      } else {
+        log("ENTETED====>dd  $profileimage");
+      }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      var result = jsonDecode(responseData.toString());
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      }
+    } on Exception catch (e) {
+      Fluttertoast.showToast(msg: "Profile pic required ");
       setState(() {
         buttonLoading = false;
       });

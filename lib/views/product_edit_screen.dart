@@ -45,7 +45,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
   List<int> communicationprefs = [];
 
-  String mainimage = "Main Image (Minimum Aspect Ration - 648px X 480px)*";
+  String mainimage = "Main Image (Minimum Aspect Ration - 600px X 600px)*";
   TextEditingController productname = TextEditingController();
   String productimage;
   String boostpack;
@@ -263,7 +263,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Listings ADS", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Edit Listing Ad", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -315,7 +315,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                     width: 45,
                                     alignment: Alignment.topLeft,
                                     child: mainimage ==
-                                            "Main Image (Minimum Aspect Ration - 648px X 480px)*"
+                                            "Main Image (Minimum Aspect Ration - 600px X 600px)*"
                                         ? Text(mainimage,
                                             style: TextStyle(
                                                 color: Colors.black,
@@ -591,7 +591,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                           const Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Refundable Security Deposit (XCD)",
+                              "Location Availability *",
                               style: TextStyle(
                                   color: kPrimaryColor,
                                   fontWeight: FontWeight.bold),
@@ -607,7 +607,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 5.0),
                               child: TextFormField(
-                                controller: securityamount,
+                                // controller: securityamount,
+                                readOnly: true,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Required Field';
@@ -617,8 +618,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.start,
                                 decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                ),
+                                    border: InputBorder.none,
+                                    hintText: locationAviablity),
                               ),
                             ),
                           ),
@@ -637,7 +638,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                         children: [
                           const Align(
                               alignment: Alignment.topLeft,
-                              child: Text("Additional",
+                              child: Text("Pricing Details",
                                   style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 21,
@@ -683,316 +684,281 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                   },
                                 ),
                               ))),
-                          SizedBox(height: 10),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Mobile*",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                          SizedBox(
+                            height: 10,
                           ),
-                          SizedBox(height: 10),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey, width: 1.0),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0))),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Required Field';
-                                    }
-                                    return null;
-                                  },
-                                  keyboardType: TextInputType.phone,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  controller: mobile,
-                                  maxLength: 10,
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      counterText: ""),
-                                ),
-                              )),
-                          SizedBox(height: 10),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Email*",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey, width: 1.0),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0))),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Required Field';
-                                    }
-                                    return null;
-                                  },
-                                  controller: email,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              )),
-                          Center(
-                            child: TextButton.icon(
-                                onPressed: () {
-                                  setState(() {
-                                    sameAddress = !sameAddress;
-                                  });
-                                  if (sameAddress) {
-                                    _getprofileData();
-                                  } else {
-                                    _getOldAddressDetails(productid);
-                                  }
-                                },
-                                icon: sameAddress
-                                    ? Icon(Icons.check_box_outlined)
-                                    : Icon(Icons.check_box_outline_blank),
-                                label: Text("Same Address")),
-                          ),
-                          AbsorbPointer(
-                            absorbing: sameAddress,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text("Country*",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 8.0),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                                  child: DropdownSearch(
-                                    selectedItem: selectedCountry,
-                                    mode: Mode.DIALOG,
-                                    showSelectedItem: true,
-                                    autoFocusSearchBox: true,
-                                    showSearchBox: true,
-                                    showFavoriteItems: true,
-                                    favoriteItems: (val) {
-                                      return ["India"];
-                                    },
-                                    hint: 'Select Country',
-                                    dropdownSearchDecoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: Colors.grey, width: 1)),
-                                        contentPadding:
-                                            EdgeInsets.only(left: 10)),
-                                    items: countrylistData.map((e) {
-                                      return e['name'].toString();
-                                    }).toList(),
-                                    onChanged: (value) {
-                                      if (value != "Select Country") {
-                                        for (var element in countrylistData) {
-                                          if (element['name'].toString() ==
-                                              value) {
-                                            setState(() {
-                                              initialcountryname =
-                                                  value.toString();
-                                              initialstatename = null;
-                                              initialcityname = null;
-                                              country_id =
-                                                  element['id'].toString();
-                                              _getStateData(
-                                                  element['id'].toString());
-                                            });
-                                          }
-                                        }
-                                      } else {
-                                        showToast("Select Country");
-                                      }
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                const Text("State*",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 8.0),
-                                DropdownSearch(
-                                  selectedItem: selectedState,
-                                  mode: Mode.DIALOG,
-                                  showSelectedItem: true,
-                                  autoFocusSearchBox: true,
-                                  showSearchBox: true,
-                                  hint: 'Select State',
-                                  dropdownSearchDecoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          borderSide: BorderSide(
-                                              color: Colors.grey, width: 1)),
-                                      contentPadding:
-                                          EdgeInsets.only(left: 10)),
-                                  items: statelistData.map((e) {
-                                    return e['name'].toString();
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != "Select State") {
-                                      for (var element in statelistData) {
-                                        if (element['name'].toString() ==
-                                            value) {
-                                          setState(() {
-                                            initialstatename = value.toString();
-                                            initialstatename = null;
-                                            initialcityname = null;
-                                            state_id = element['id'].toString();
-                                            _getCityData(
-                                                element['id'].toString());
-                                          });
-                                        }
-                                      }
-                                    } else {
-                                      showToast("Select State");
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 10),
-                                const Text("City*",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 8.0),
-                                DropdownSearch(
-                                  selectedItem: selectedCity,
-                                  mode: Mode.DIALOG,
-                                  showSelectedItem: true,
-                                  autoFocusSearchBox: true,
-                                  showSearchBox: true,
-                                  hint: 'Select City',
-                                  dropdownSearchDecoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          borderSide: BorderSide(
-                                              color: Colors.grey, width: 1)),
-                                      contentPadding:
-                                          EdgeInsets.only(left: 10)),
-                                  items: citylistData.map((e) {
-                                    return e['name'].toString();
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != "Select City") {
-                                      for (var element in citylistData) {
-                                        if (element['name'].toString() ==
-                                            value) {
-                                          setState(() {
-                                            initialcityname = value.toString();
-                                            //initialstatename = null;
-                                            //initialcityname = null;
-                                            city_id = element['id'].toString();
-                                            //_getStateData(element['id'].toString());
-                                          });
-                                        }
-                                      }
-                                    } else {
-                                      showToast("Select City");
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 10),
-                                const Text("Address",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 8.0),
-                                Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1, color: Colors.grey),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
-                                      child: TextField(
-                                        controller: address,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    )),
-                                const SizedBox(height: 10),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Hide Mobile Number",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey, width: 1.0),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0))),
-                              child: DropdownButtonHideUnderline(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5.0, right: 5.0),
-                                child: DropdownButton(
-                                  value: hidemobilevalue,
-                                  icon:
-                                      const Icon(Icons.arrow_drop_down_rounded),
-                                  items: hidemobilelist.map((String items) {
-                                    return DropdownMenuItem(
-                                      value: items,
-                                      child: Text(items),
-                                    );
-                                  }).toList(),
-                                  isExpanded: true,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      hidemobilevalue = value;
-                                      if (hidemobilevalue == "Yes") {
-                                        mobilehiddenvalue = 1;
-                                      } else {
-                                        mobilehiddenvalue = 0;
-                                      }
-                                    });
-                                  },
-                                ),
-                              ))),
-                          SizedBox(height: 10),
+
+                          // const Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: Text(
+                          //     "Email*",
+                          //     style: TextStyle(
+                          //         color: kPrimaryColor,
+                          //         fontWeight: FontWeight.bold),
+                          //   ),
+                          // ),
+                          // SizedBox(height: 10),
+                          // Container(
+                          //     width: double.infinity,
+                          //     decoration: BoxDecoration(
+                          //         border: Border.all(
+                          //             color: Colors.grey, width: 1.0),
+                          //         borderRadius:
+                          //             BorderRadius.all(Radius.circular(8.0))),
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.only(left: 5.0),
+                          //       child: TextFormField(
+                          //         validator: (value) {
+                          //           if (value == null || value.isEmpty) {
+                          //             return 'Required Field';
+                          //           }
+                          //           return null;
+                          //         },
+                          //         controller: email,
+                          //         keyboardType: TextInputType.emailAddress,
+                          //         decoration: InputDecoration(
+                          //           border: InputBorder.none,
+                          //         ),
+                          //       ),
+                          //     )),
+                          // Center(
+                          //   child: TextButton.icon(
+                          //       onPressed: () {
+                          //         setState(() {
+                          //           sameAddress = !sameAddress;
+                          //         });
+                          //         if (sameAddress) {
+                          //           _getprofileData();
+                          //         } else {
+                          //           _getOldAddressDetails(productid);
+                          //         }
+                          //       },
+                          //       icon: sameAddress
+                          //           ? Icon(Icons.check_box_outlined)
+                          //           : Icon(Icons.check_box_outline_blank),
+                          //       label: Text("Same Address")),
+                          // ),
+                          // AbsorbPointer(
+                          //   absorbing: sameAddress,
+                          //   child: Column(
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: [
+                          //       const Text("Country*",
+                          //           style: TextStyle(
+                          //               color: kPrimaryColor,
+                          //               fontSize: 16,
+                          //               fontWeight: FontWeight.w500)),
+                          //       const SizedBox(height: 8.0),
+                          //       Padding(
+                          //         padding:
+                          //             const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                          //         child: DropdownSearch(
+                          //           selectedItem: selectedCountry,
+                          //           mode: Mode.DIALOG,
+                          //           showSelectedItem: true,
+                          //           autoFocusSearchBox: true,
+                          //           showSearchBox: true,
+                          //           showFavoriteItems: true,
+                          //           favoriteItems: (val) {
+                          //             return ["India"];
+                          //           },
+                          //           hint: 'Select Country',
+                          //           dropdownSearchDecoration: InputDecoration(
+                          //               enabledBorder: OutlineInputBorder(
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(8),
+                          //                   borderSide: BorderSide(
+                          //                       color: Colors.grey, width: 1)),
+                          //               contentPadding:
+                          //                   EdgeInsets.only(left: 10)),
+                          //           items: countrylistData.map((e) {
+                          //             return e['name'].toString();
+                          //           }).toList(),
+                          //           onChanged: (value) {
+                          //             if (value != "Select Country") {
+                          //               for (var element in countrylistData) {
+                          //                 if (element['name'].toString() ==
+                          //                     value) {
+                          //                   setState(() {
+                          //                     initialcountryname =
+                          //                         value.toString();
+                          //                     initialstatename = null;
+                          //                     initialcityname = null;
+                          //                     country_id =
+                          //                         element['id'].toString();
+                          //                     _getStateData(
+                          //                         element['id'].toString());
+                          //                   });
+                          //                 }
+                          //               }
+                          //             } else {
+                          //               showToast("Select Country");
+                          //             }
+                          //           },
+                          //         ),
+                          //       ),
+                          //       const SizedBox(height: 10),
+                          //       const Text("State*",
+                          //           style: TextStyle(
+                          //               color: kPrimaryColor,
+                          //               fontSize: 16,
+                          //               fontWeight: FontWeight.w500)),
+                          //       const SizedBox(height: 8.0),
+                          //       DropdownSearch(
+                          //         selectedItem: selectedState,
+                          //         mode: Mode.DIALOG,
+                          //         showSelectedItem: true,
+                          //         autoFocusSearchBox: true,
+                          //         showSearchBox: true,
+                          //         hint: 'Select State',
+                          //         dropdownSearchDecoration: InputDecoration(
+                          //             enabledBorder: OutlineInputBorder(
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(8),
+                          //                 borderSide: BorderSide(
+                          //                     color: Colors.grey, width: 1)),
+                          //             contentPadding:
+                          //                 EdgeInsets.only(left: 10)),
+                          //         items: statelistData.map((e) {
+                          //           return e['name'].toString();
+                          //         }).toList(),
+                          //         onChanged: (value) {
+                          //           if (value != "Select State") {
+                          //             for (var element in statelistData) {
+                          //               if (element['name'].toString() ==
+                          //                   value) {
+                          //                 setState(() {
+                          //                   initialstatename = value.toString();
+                          //                   initialstatename = null;
+                          //                   initialcityname = null;
+                          //                   state_id = element['id'].toString();
+                          //                   _getCityData(
+                          //                       element['id'].toString());
+                          //                 });
+                          //               }
+                          //             }
+                          //           } else {
+                          //             showToast("Select State");
+                          //           }
+                          //         },
+                          //       ),
+                          //       const SizedBox(height: 10),
+                          //       const Text("City*",
+                          //           style: TextStyle(
+                          //               color: kPrimaryColor,
+                          //               fontSize: 16,
+                          //               fontWeight: FontWeight.w500)),
+                          //       const SizedBox(height: 8.0),
+                          //       DropdownSearch(
+                          //         selectedItem: selectedCity,
+                          //         mode: Mode.DIALOG,
+                          //         showSelectedItem: true,
+                          //         autoFocusSearchBox: true,
+                          //         showSearchBox: true,
+                          //         hint: 'Select City',
+                          //         dropdownSearchDecoration: InputDecoration(
+                          //             enabledBorder: OutlineInputBorder(
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(8),
+                          //                 borderSide: BorderSide(
+                          //                     color: Colors.grey, width: 1)),
+                          //             contentPadding:
+                          //                 EdgeInsets.only(left: 10)),
+                          //         items: citylistData.map((e) {
+                          //           return e['name'].toString();
+                          //         }).toList(),
+                          //         onChanged: (value) {
+                          //           if (value != "Select City") {
+                          //             for (var element in citylistData) {
+                          //               if (element['name'].toString() ==
+                          //                   value) {
+                          //                 setState(() {
+                          //                   initialcityname = value.toString();
+                          //                   //initialstatename = null;
+                          //                   //initialcityname = null;
+                          //                   city_id = element['id'].toString();
+                          //                   //_getStateData(element['id'].toString());
+                          //                 });
+                          //               }
+                          //             }
+                          //           } else {
+                          //             showToast("Select City");
+                          //           }
+                          //         },
+                          //       ),
+                          //       const SizedBox(height: 10),
+                          //       const Text("Address",
+                          //           style: TextStyle(
+                          //               color: kPrimaryColor,
+                          //               fontSize: 16,
+                          //               fontWeight: FontWeight.w500)),
+                          //       const SizedBox(height: 8.0),
+                          //       Container(
+                          //           decoration: BoxDecoration(
+                          //               border: Border.all(
+                          //                   width: 1, color: Colors.grey),
+                          //               borderRadius: BorderRadius.all(
+                          //                   Radius.circular(8))),
+                          //           child: Padding(
+                          //             padding:
+                          //                 const EdgeInsets.only(left: 10.0),
+                          //             child: TextField(
+                          //               controller: address,
+                          //               decoration: InputDecoration(
+                          //                 border: InputBorder.none,
+                          //               ),
+                          //             ),
+                          //           )),
+                          //       const SizedBox(height: 10),
+                          //     ],
+                          //   ),
+                          // ),
+                          // SizedBox(height: 10),
+                          // const Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: Text(
+                          //     "Hide Mobile Number",
+                          //     style: TextStyle(
+                          //         color: kPrimaryColor,
+                          //         fontWeight: FontWeight.bold),
+                          //   ),
+                          // ),
+                          // // SizedBox(height: 10),
+                          // Container(
+                          //     width: double.infinity,
+                          //     decoration: BoxDecoration(
+                          //         border: Border.all(
+                          //             color: Colors.grey, width: 1.0),
+                          //         borderRadius:
+                          //             BorderRadius.all(Radius.circular(8.0))),
+                          //     child: DropdownButtonHideUnderline(
+                          //         child: Padding(
+                          //       padding: const EdgeInsets.only(
+                          //           left: 5.0, right: 5.0),
+                          //       child: DropdownButton(
+                          //         value: hidemobilevalue,
+                          //         icon:
+                          //             const Icon(Icons.arrow_drop_down_rounded),
+                          //         items: hidemobilelist.map((String items) {
+                          //           return DropdownMenuItem(
+                          //             value: items,
+                          //             child: Text(items),
+                          //           );
+                          //         }).toList(),
+                          //         isExpanded: true,
+                          //         onChanged: (value) {
+                          //           setState(() {
+                          //             hidemobilevalue = value;
+                          //             if (hidemobilevalue == "Yes") {
+                          //               mobilehiddenvalue = 1;
+                          //             } else {
+                          //               mobilehiddenvalue = 0;
+                          //             }
+                          //           });
+                          //         },
+                          //       ),
+                          //     ))),
+                          // SizedBox(height: 10),
                           const Align(
                             alignment: Alignment.topLeft,
                             child: Text(
@@ -1081,7 +1047,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               ? const Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    "Hourly Price(XCD)*",
+                                    "Hourly Price*",
                                     style: TextStyle(
                                         color: kPrimaryColor,
                                         fontWeight: FontWeight.bold),
@@ -1113,7 +1079,10 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                       ),
                                       controller: hourlyprice,
                                       onChanged: (value) {
-                                        if (value.toString().trim().isNotEmpty) {
+                                        if (value
+                                            .toString()
+                                            .trim()
+                                            .isNotEmpty) {
                                           setState(() {
                                             renttype[0]
                                                 ['amount'] = value..toString();
@@ -1161,7 +1130,10 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if (value.toString().trim().isNotEmpty) {
+                                        if (value
+                                            .toString()
+                                            .trim()
+                                            .isNotEmpty) {
                                           setState(() {
                                             renttype[1]['amount'] =
                                                 value.toString();
@@ -1213,7 +1185,10 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if (value.toString().trim().isNotEmpty) {
+                                        if (value
+                                            .toString()
+                                            .trim()
+                                            .isNotEmpty) {
                                           setState(() {
                                             renttype[2]['amount'] =
                                                 value.toString();
@@ -1233,7 +1208,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               ? const Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    "Yearly Price(XCD)*",
+                                    "Yearly Price*",
                                     style: TextStyle(
                                         color: kPrimaryColor,
                                         fontWeight: FontWeight.bold),
@@ -1265,7 +1240,10 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if (value.toString().trim().isNotEmpty) {
+                                        if (value
+                                            .toString()
+                                            .trim()
+                                            .isNotEmpty) {
                                           setState(() {
                                             renttype[3]['amount'] =
                                                 value.toString();
@@ -1277,87 +1255,184 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                     ),
                                   ),
                                 )
+                             
                               : SizedBox(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Refundable Security Deposit*",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey, width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 5.0),
+                                    child: TextFormField(
+                                      
+                                      keyboardType: TextInputType.number,
+                                      // controller: yearprice,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "500",
+                                      ),
+                                      
+                                      
+                                    
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                )
+                             ,
+                             SizedBox(
+                                height: 10,
+                              ),
+                              Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Quantity *",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey, width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 5.0),
+                                    child: TextFormField(
+                                      
+                                      keyboardType: TextInputType.number,
+                                      // controller: yearprice,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "1",
+                                      ),
+                                      
+                                      
+                                    
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                )
+                             ,
                           SizedBox(height: 10),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Communication Preferences*",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
+                          // const Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: Text(
+                          //     "Communication Preferences*",
+                          //     style: TextStyle(
+                          //         color: kPrimaryColor,
+                          //         fontWeight: FontWeight.bold),
+                          //   ),
+                          // ),
                           SizedBox(height: 10),
-                          SizedBox(
-                            width: size.width * 0.60,
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                          // SizedBox(
+                          //   width: size.width * 0.60,
+                          //   child: Row(
+                          //       mainAxisAlignment:
+                          //           MainAxisAlignment.spaceBetween,
+                          //       children: [
+                          //         Checkbox(
+                          //             value: _email,
+                          //             onChanged: (value) {
+                          //               if (value) {
+                          //                 setState(() {
+                          //                   _email = value;
+                          //                   communicationprefs.add(1);
+                          //                 });
+                          //               } else {
+                          //                 setState(() {
+                          //                   _email = value;
+                          //                   communicationprefs.removeWhere(
+                          //                       (element) =>
+                          //                           element.toString() == "1");
+                          //                 });
+                          //               }
+                          //             }),
+                          //         const Text("Email",
+                          //             style: TextStyle(
+                          //                 color: kPrimaryColor,
+                          //                 fontWeight: FontWeight.bold)),
+                          //         SizedBox(width: 8.0),
+                          //         Checkbox(
+                          //             value: _sms,
+                          //             onChanged: (value) {
+                          //               if (value) {
+                          //                 setState(() {
+                          //                   _sms = value;
+                          //                   communicationprefs.add(2);
+                          //                 });
+                          //               } else {
+                          //                 setState(() {
+                          //                   _sms = value;
+                          //                   communicationprefs.removeWhere(
+                          //                       (element) =>
+                          //                           element.toString() == "2");
+                          //                 });
+                          //               }
+                          //             }),
+                          //         const Text("Sms",
+                          //             style: TextStyle(
+                          //                 color: kPrimaryColor,
+                          //                 fontWeight: FontWeight.bold)),
+                          //       ]),
+                          // ),
+                          // SizedBox(height: 10),
+                          // Row(
+                          //   children: [
+                          //     Text("Out Of Stock",
+                          //         style: TextStyle(
+                          //             color: kPrimaryColor,
+                          //             fontWeight: FontWeight.bold)),
+                          //     SizedBox(width: 10),
+                          //     Checkbox(
+                          //         value: _checkstock,
+                          //         onChanged: (value) {
+                          //           setState(() {
+                          //             _checkstock = value;
+                          //           });
+                          //         })
+                          //   ],
+                          // ),
+                          // SizedBox(height: 10),
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Row(
                                 children: [
-                                  Checkbox(
-                                      value: _email,
-                                      onChanged: (value) {
-                                        if (value) {
-                                          setState(() {
-                                            _email = value;
-                                            communicationprefs.add(1);
-                                          });
-                                        } else {
-                                          setState(() {
-                                            _email = value;
-                                            communicationprefs.removeWhere(
-                                                (element) =>
-                                                    element.toString() == "1");
-                                          });
-                                        }
-                                      }),
-                                  const Text("Email",
+                                  const Text("Out Of Stock",
                                       style: TextStyle(
                                           color: kPrimaryColor,
                                           fontWeight: FontWeight.bold)),
-                                  SizedBox(width: 8.0),
+                                  SizedBox(width: 4.0),
                                   Checkbox(
-                                      value: _sms,
+                                      value: _termcondition,
                                       onChanged: (value) {
-                                        if (value) {
-                                          setState(() {
-                                            _sms = value;
-                                            communicationprefs.add(2);
-                                          });
-                                        } else {
-                                          setState(() {
-                                            _sms = value;
-                                            communicationprefs.removeWhere(
-                                                (element) =>
-                                                    element.toString() == "2");
-                                          });
-                                        }
-                                      }),
-                                  const Text("Sms",
-                                      style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.bold)),
-                                ]),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Text("Out Of Stock",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(width: 10),
-                              Checkbox(
-                                  value: _checkstock,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _checkstock = value;
-                                    });
-                                  })
-                            ],
-                          ),
-                          SizedBox(height: 10),
+                                        setState(() {
+                                          _termcondition = value;
+                                        });
+                                      })
+                                ],
+                              )),
                           const Align(
                             alignment: Alignment.topLeft,
                             child: Text(
@@ -1422,24 +1497,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         ),
                                       ))),
                           SizedBox(height: 10),
-                          Align(
-                              alignment: Alignment.topLeft,
-                              child: Row(
-                                children: [
-                                  const Text("Term and Condition*",
-                                      style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(width: 4.0),
-                                  Checkbox(
-                                      value: _termcondition,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _termcondition = value;
-                                        });
-                                      })
-                                ],
-                              )),
                         ],
                       ),
                     ),
@@ -1476,10 +1533,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                             color: Colors.deepOrangeAccent,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.0))),
-                        child: const Text("Post",
+                        child: const Text("Update",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500)),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600)),
                       ),
                     ),
                   )
@@ -1492,39 +1550,42 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     );
   }
 
+String locationAviablity="";
   Future _getpreproductedit(String productid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final body = {"id": productid, "userid": prefs.get('userid').toString()};
+    final body = {"id": productid,};
     var response = await http.post(Uri.parse(BASE_URL + editviewpost),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
       setState(() {
-        productname.text = data['posted_ad'][0]['title'].toString();
+        productname.text = data['posted_ad']['title'].toString();
+        locationAviablity=data['posted_ad']['location_availability'].toString();
 
-        final document = parse(data['posted_ad'][0]['description'].toString());
+        final document = parse(data['posted_ad']['description'].toString());
         description.text =
             parse(document.body.text).documentElement.text.toString();
-        mobile.text = data['posted_ad'][0]['mobile'].toString();
-        email.text = data['posted_ad'][0]['email'].toString();
-        securityamount.text = data['posted_ad'][0]['security'].toString();
+        mobile.text = data['posted_ad']['mobile'].toString();
+        email.text = data['posted_ad']['email'].toString();
+        securityamount.text = data['posted_ad']['security'].toString();
 
-        categoryhint =
-            data['posted_ad'][0]['categories'][0]['title'].toString();
-        subcategoryhint =
-            data['posted_ad'][0]['categories'][1]['title'].toString();
+        // categoryhint =
+        //     data['posted_ad'][0]['categories'][0]['title'].toString();
+        // subcategoryhint =
+        //     data['posted_ad'][0]['categories'][1]['title'].toString();
 
-        initiacatlvalue =
-            data['posted_ad'][0]['categories'][0]['id'].toString();
+        // initiacatlvalue =
+        //     data['posted_ad'][0]['categories'][0]['id'].toString();
 
         _getSubCategories(initiacatlvalue).then((value) {
-          initialsubcatvalue =
-              data['posted_ad'][0]['categories'][1]['id'].toString();
+          // initialsubcatvalue =
+          //     data['posted_ad'][0]['categories'][1]['id'].toString();
         });
 
         categoryid = data['posted_ad'][0]['categories'][0]['id'].toString();
@@ -1559,11 +1620,13 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
         data['Images'].forEach((element) {
           if (element['is_main'] == 1) {
-            mainimage = "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}";
+            mainimage =
+                "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}";
           } else {
             additionalimage.add({
               "update": false,
-              "image": "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}",
+              "image":
+                  "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}",
               "id": element['id'].toString()
             });
           }
@@ -1626,7 +1689,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(jsonEncode(body));
     print(BASE_URL + editviewpost);
@@ -1652,12 +1716,15 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   }
 
   Future<void> _getCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       _loading = true;
     });
     var response = await http.get(Uri.parse(BASE_URL + categoryUrl), headers: {
       "Accept": "application/json",
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
     });
     setState(() {
       _loading = false;
@@ -1672,6 +1739,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   }
 
   Future<void> _getSubCategories(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       _loading = true;
     });
@@ -1679,7 +1748,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         body: jsonEncode({"category_id": id}),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       _loading = false;
@@ -1756,7 +1826,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               }
                             }
                             Navigator.of(context).pop();
-                            print(".........................2${jsonEncode(additionalimage)}");
+                            print(
+                                ".........................2${jsonEncode(additionalimage)}");
                           },
                           style: ButtonStyle(
                               backgroundColor:
@@ -1804,7 +1875,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               }
                             }
                             Navigator.of(context).pop();
-                            print(".........................${jsonEncode(additionalimage)}");
+                            print(
+                                ".........................${jsonEncode(additionalimage)}");
                           },
                           style: ButtonStyle(
                               backgroundColor:

@@ -324,11 +324,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int countryId = 0;
   String countryName = '';
+  String userId = '';
   @override
   void initState() {
     super.initState();
+    _getinitPref();
     getCounrtyId();
     searchController.clear();
+  }
+
+  _getinitPref() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    userId = preferences.getString("userid");
+    log("userId---==->$userId");
   }
 
   @override
@@ -408,15 +416,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         String userID = prefs.getString("userid");
-                        userID != "" || userID != null
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddlistingScreen()))
-                            : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
+                        log("userId--->$userID");
+
+                        if (userID == null || userID == "") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddlistingScreen()));
+                        }
                       },
                       child: Container(
                           alignment: Alignment.center,
@@ -738,6 +750,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       latestAdditionList.isEmpty
                           ? Center(
                               child: Text("No Record Found !!"),
@@ -748,8 +763,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                               : SizedBox(
                                   height: latestAdditionList.length <= 2
-                                      ? height * 0.23
-                                      : height * 0.47,
+                                      ? height * 0.25
+                                      : height * 0.48,
                                   width: width,
                                   child: GridView.builder(
                                       physics: NeverScrollableScrollPhysics(),
@@ -1335,8 +1350,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(
                               height: 10,
                             ),
-                            loggedIn == true
+                            userId == null || userId == ""
                                 ? InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginScreen()));
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.45,
+                                      decoration: BoxDecoration(
+                                          color: Colors.deepOrangeAccent,
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                      child: const Text("Login",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18)),
+                                    ),
+                                  )
+                                : InkWell(
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -1364,32 +1405,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           borderRadius:
                                               BorderRadius.circular(50)),
                                       child: const Text("Upload",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                    ),
-                                  )
-                                : InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginScreen()));
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.45,
-                                      decoration: BoxDecoration(
-                                          color: Colors.deepOrangeAccent,
-                                          borderRadius:
-                                              BorderRadius.circular(50)),
-                                      child: const Text("Login",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,

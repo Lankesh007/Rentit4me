@@ -56,6 +56,8 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     Navigator.pop(context);
   }
 
+  bool pickedpanImage = false;
+  bool pickedgstImage = false;
   // List of items in our dropdown menu
   var items = [
     'Select',
@@ -71,6 +73,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
       _pickedImage = pickedImageFile;
       final path = _pickedImage.readAsBytesSync();
       this.singleImageDecoded = base64Encode(path);
+      pickedgstImage == true;
     });
     Navigator.pop(context);
   }
@@ -83,6 +86,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
       _pickedImage = pickedImageFile;
       final path = pickedImageFile.readAsBytesSync();
       this.singleImageDecoded = base64Encode(path);
+      pickedgstImage = true;
     });
     Navigator.pop(context);
   }
@@ -121,6 +125,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
       panImage = pickedImageFile;
       final path = panImage.readAsBytesSync();
       this.singleImageDecoded = base64Encode(path);
+      pickedpanImage = true;
     });
     Navigator.pop(context);
   }
@@ -133,6 +138,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
       panImage = pickedImageFile;
       final path = pickedImageFile.readAsBytesSync();
       this.singleImageDecoded = base64Encode(path);
+      pickedpanImage = true;
     });
     Navigator.pop(context);
   }
@@ -216,7 +222,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Bank Name*",
+                child: Text("Bank Name",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -244,7 +250,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Branch Name*",
+                child: Text("Branch Name",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -272,7 +278,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Account Number*",
+                child: Text("Account Number",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -302,7 +308,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("Account Type*",
+                child: Text("Account Type",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -359,7 +365,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
-                child: Text("IFSC Code*",
+                child: Text("IFSC Code",
                     style: TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.w500)),
               ),
@@ -688,23 +694,42 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
   Widget submitButtonWidgetBusiness() {
     return InkWell(
+      // onTap: () {
+      //   if (bankName.text.isEmpty &&
+      //       branchName.text.isEmpty &&
+      //       accountNo.text.isEmpty &&
+      //       dropdownvalue == "Select" &&
+      //       iFSCCode.text.isEmpty) {
+      //     if (_pickedImage.path == null) {
+      //       submitBillingAndTaxationwithoutFile();
+      //     } else {
+      //       submitBillingAndTaxation();
+      //     }
+      //   } else {
+      //     if (bankName.text.isNotEmpty &&
+      //             branchName.text.isNotEmpty &&
+      //             accountNo.text.isNotEmpty &&
+      //             dropdownvalue == "Current" ||
+      //         dropdownvalue == "Saving" && iFSCCode.text.isNotEmpty) {
+      //       if (_pickedImage.path == null) {
+      //         submitBillingAndTaxationwithoutFile();
+      //       } else {
+      //         submitBillingAndTaxation();
+      //       }
+      //     } else {
+      //       showToast("please fill all bank Details !!");
+      //     }
+      //   }
+      // },
       onTap: () {
-        if (bankName.text.isEmpty &&
-            branchName.text.isEmpty &&
-            accountNo.text.isEmpty &&
-            dropdownvalue == "Select" &&
-            iFSCCode.text.isEmpty) {
+        if (pickedgstImage == true && pickedpanImage) {
           submitBillingAndTaxation();
+        } else if (pickedgstImage == true) {
+          submitBillingAndTaxationWithGstDocument();
+        } else if (pickedpanImage == true) {
+          submitBillingAndTaxationWithPanDocument();
         } else {
-          if (bankName.text.isNotEmpty &&
-                  branchName.text.isNotEmpty &&
-                  accountNo.text.isNotEmpty &&
-                  dropdownvalue == "Current" ||
-              dropdownvalue == "Saving" && iFSCCode.text.isNotEmpty) {
-            submitBillingAndTaxation();
-          } else {
-            showToast("please fill all bank Details !!");
-          }
+          submitBillingAndTaxationwithoutFile();
         }
       },
       child: Container(
@@ -1020,6 +1045,340 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     }
   }
 
+  Future submitBillingAndTaxationwithoutFile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String userId = prefs.getString('userid');
+    setState(() {
+      buttonLoading = true;
+    });
+    var url = Apis.billingAndTaxationApi;
+    var bodyMap = {
+      "id": userId.toString(),
+      "business_name": businessName.toString(),
+      "account_type":
+          dropdownvalue.toString() == "Select" ? "" : dropdownvalue.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "account_no": accountNo.text.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "gst_doc": "",
+      "pan_doc": ""
+    };
+    // try {
+    //   final request = http.MultipartRequest('POST', Uri.parse(url));
+
+    //   request.headers.addAll({
+    //     'Authorization': 'Bearer ${prefs.getString("token")}',
+    //   });
+    //   if (_pickedImage.path.isNotEmpty) {
+    //     var pic =
+    //         await http.MultipartFile.fromPath('gst_doc', _pickedImage.path);
+    //     request.files.add(pic);
+    //     log("ENTETED====>  $pic");
+    //   } else {
+    //     log("ENTETED====>  $_pickedImage");
+    //     setState(() {
+    //       buttonLoading = false;
+    //     });
+    //   }
+    //   if (panImage.path.isNotEmpty) {
+    //     var pic = await http.MultipartFile.fromPath('pan_doc', panImage.path);
+    //     request.files.add(pic);
+    //     log("ENTETED====>  $pic");
+    //   } else {
+    //     log("ENTETED====>  $panImage");
+    //     setState(() {
+    //       buttonLoading = false;
+    //     });
+    //   }
+    //   // if (aadharImage.path.isNotEmpty) {
+    //   //   var pic =
+    //   //       await http.MultipartFile.fromPath('adhaar_doc', aadharImage.path);
+    //   //   request.files.add(pic);
+    //   //   log("ENTETED====>  $pic");
+    //   // } else {
+    //   //   log("ENTETED====>  $aadharImage");
+    //   // }
+
+    // request.fields.addAll(bodyMap);
+    // var response = await request.send();
+
+    // log("body=====>$bodyMap");
+
+    // var responseData = await response.stream.toBytes();
+    // var responseString = String.fromCharCodes(responseData);
+
+    // log("Requests--->$request");
+    // log("PostResponse----> $responseString");
+    // log("StatusCodePost---->${response.statusCode}");
+    // log("response---->$response");
+    // log("responseData---->$responseData");
+
+    // if (response.statusCode >= 200 && response.statusCode <= 299) {
+    //   log("StatusCodePost11---->${response.statusCode}");
+    //   var result = jsonDecode(responseString);
+    var response = await APIHelper.apiPostRequest(url, bodyMap);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => SelectMemberShipScreen()));
+      Fluttertoast.showToast(
+        msg: result['ErrorMessage'],
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green.shade700,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      setState(() {
+        buttonLoading = false;
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: result['ErrorMessage'],
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green.shade700,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      setState(() {
+        buttonLoading = false;
+      });
+    }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future submitBillingAndTaxationWithGstDocument() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String userId = prefs.getString('userid');
+    setState(() {
+      buttonLoading = true;
+    });
+    var url = Apis.billingAndTaxationApi;
+    var bodyMap = {
+      "id": userId.toString(),
+      "business_name": businessName.toString(),
+      "account_type":
+          dropdownvalue.toString() == "Select" ? "" : dropdownvalue.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "account_no": accountNo.text.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+    };
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (_pickedImage.path.isNotEmpty) {
+        var pic =
+            await http.MultipartFile.fromPath('gst_doc', _pickedImage.path);
+        request.files.add(pic);
+        log("ENTETED====>  $pic");
+      } else {
+        log("ENTETED====>  $_pickedImage");
+        setState(() {
+          buttonLoading = false;
+        });
+      }
+
+      // if (aadharImage.path.isNotEmpty) {
+      //   var pic =
+      //       await http.MultipartFile.fromPath('adhaar_doc', aadharImage.path);
+      //   request.files.add(pic);
+      //   log("ENTETED====>  $pic");
+      // } else {
+      //   log("ENTETED====>  $aadharImage");
+      // }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SelectMemberShipScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Something Went Wrong !!:",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green.shade700,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        setState(() {
+          buttonLoading = false;
+        });
+      }
+    } on Exception catch (e) {}
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future submitBillingAndTaxationWithPanDocument() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String userId = prefs.getString('userid');
+    setState(() {
+      buttonLoading = true;
+    });
+    var url = Apis.billingAndTaxationApi;
+    var bodyMap = {
+      "id": userId.toString(),
+      "business_name": businessName.toString(),
+      "account_type":
+          dropdownvalue.toString() == "Select" ? "" : dropdownvalue.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "account_no": accountNo.text.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+    };
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (panImage.path.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath('pan_doc', panImage.path);
+        request.files.add(pic);
+        log("ENTETED====>  $pic");
+      } else {
+        log("ENTETED====>  $panImage");
+        setState(() {
+          buttonLoading = false;
+        });
+      }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SelectMemberShipScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Something Went Wrong !!:",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green.shade700,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        setState(() {
+          buttonLoading = false;
+        });
+      }
+    } on Exception catch (e) {}
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
   Future submitBillingAndTaxation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -1031,7 +1390,8 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     var bodyMap = {
       "id": userId.toString(),
       "business_name": businessName.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type":
+          dropdownvalue.toString() == "Select" ? "" : dropdownvalue.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "ifsc": iFSCCode.text.toString(),

@@ -449,9 +449,8 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.start,
                               decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "  ALL Cities"
-                              ),
+                                  border: InputBorder.none,
+                                  hintText: "  ALL Cities"),
                               onChanged: (value) {
                                 securityamount = value.toString();
                               },
@@ -1418,8 +1417,6 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                     } else if (!sameAddress &&
                         address.text.toString().isEmpty) {
                       showToast("Please entere address");
-                    } else if (dropdownvalue == "Select Location") {
-                      showToast("Please Select Location ");
                     } else {
                       print("object");
                       submitpostaddData(additionalimage);

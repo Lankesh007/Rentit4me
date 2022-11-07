@@ -623,6 +623,10 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     });
   }
 
+Future getDataBySearching()async{
+  var url=Apis.browseAdsApi;
+  var body={};
+}
   @override
   void dispose() {
     _scrollController.dispose();

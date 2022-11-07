@@ -67,7 +67,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       temp.then((value) {
         if (value != null) {
           setState(() {
-            urlImage = sliderpath + value['User']['avatar_path'].toString();
+            urlImage = devImage + value['User']['avatar_path'].toString();
             name = value['User']['name'].toString() == null
                 ? "Hi Guest"
                 : prefs.getString('name');
@@ -92,7 +92,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       String profilepicurl, String name, String email, String mobile) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      prefs.setString('profile', sliderpath + profilepicurl);
+      prefs.setString('profile', devImage + profilepicurl);
       prefs.setString('name', name);
       prefs.setString('email', email);
       prefs.setString('mobile', mobile);
@@ -116,7 +116,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 email: email,
                 onClicked: () => Navigator.of(context).pop()),
             Container(
-              width: MediaQuery.of(context).size.width*0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: Column(
                 children: [
                   const SizedBox(height: 20),
@@ -176,11 +176,15 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           child: const Align(
                               alignment: Alignment.topLeft,
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 3),
                                 child: Text("Membership & Subscriptions",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
                               )),
+                        ),
+                        SizedBox(
+                          height: 10,
                         ),
                         InkWell(
                           onTap: () async {
@@ -226,8 +230,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           child: const Align(
                               alignment: Alignment.topLeft,
                               child: Padding(
-                                                               padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 3),
                                 child: Text("Payment",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
@@ -287,13 +291,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Create New Listing",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -337,8 +344,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("All Listing",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -548,13 +555,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Chat",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -598,13 +608,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Notifications",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -648,13 +661,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Offers Made",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -698,8 +714,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Offers Received",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -760,13 +776,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("My Orders",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -810,12 +829,15 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                             padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 3),
                               child: Text("Active Orders",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16))),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -859,13 +881,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Completed Orders",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -909,8 +934,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Orders Received",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -974,13 +999,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Basic Detail",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -1006,8 +1034,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                                                           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 3),
                             child: Text("Security",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
@@ -1070,12 +1098,15 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                                                             padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 3),
                               child: Text("Create New Ticket",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16)),
                             )),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () async {
@@ -1116,8 +1147,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         child: const Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                                                             padding: EdgeInsets.symmetric(horizontal: 20,vertical: 3),
-
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 3),
                               child: Text("My Ticket",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16)),

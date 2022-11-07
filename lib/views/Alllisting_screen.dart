@@ -306,7 +306,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                         alignment: Alignment.topRight,
                         children: [
                           Card(
-                            elevation: 4.0,
+                            elevation: 5.0,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 12.0),
@@ -315,32 +315,58 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Container(
-                                        height: 55,
-                                        width: 55,
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(28)),
-                                          child: Image.network(
-                                              devImage +
-                                                  alllist[index]
-                                                          ['upload_base_path']
-                                                      .toString() +
-                                                  alllist[index]['file_name']
-                                                      .toString(),
-                                              fit: BoxFit.fill),
-                                        ),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            height: 55,
+                                            width: 55,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(28)),
+                                              child: Image.network(
+                                                  devImage +
+                                                      alllist[index][
+                                                              'upload_base_path']
+                                                          .toString() +
+                                                      alllist[index]
+                                                              ['file_name']
+                                                          .toString(),
+                                                  fit: BoxFit.fill),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          SizedBox(
+                                            child: Text(
+                                                alllist[index]['title']
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: size.width * 0.65,
-                                        child: Text(
-                                            alllist[index]['title'].toString(),
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600)),
-                                      ),
+                                      alllist[index]["deletion"]
+                                          ? Checkbox(
+                                              value: alllist[index]['selected'],
+                                              onChanged: (bool value) {
+                                                setState(() {
+                                                  alllist[index]['selected'] =
+                                                      value;
+                                                });
+                                              },
+                                            )
+                                          : SizedBox()
                                     ]),
+                                Divider(
+                                  thickness: 0.9,
+                                  height: 20,
+                                ),
+                                Text("Ad id : ${alllist[index]['ad_id']}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),),
                                 Divider(
                                   thickness: 0.9,
                                   height: 20,
@@ -362,6 +388,9 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               children: [
+                                                SizedBox(
+                                                  height: 3,
+                                                ),
                                                 const Text("Price",
                                                     style: TextStyle(
                                                         color: Colors.black,
@@ -398,6 +427,9 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
+                                              SizedBox(
+                                                height: 20,
+                                              ),
                                               const Text("Negotiable",
                                                   style: TextStyle(
                                                       color: Colors.black,
@@ -416,192 +448,165 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                               SizedBox(
                                                 height: 10,
                                               ),
-                                              InkWell(
-                                                onTap: () {
-                                                  if (alllist[index]['offers']
-                                                          .length >
-                                                      0) {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                OffersScreen(
-                                                                    productid: alllist[index]
-                                                                            [
-                                                                            'id']
-                                                                        .toString())));
-                                                  } else {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                            const SnackBar(
-                                                      content: Text(
-                                                          "Sorry, no offer for this product"),
-                                                      backgroundColor:
-                                                          Colors.red,
-                                                    ));
-                                                  }
-                                                },
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      const Text("Offer",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      const SizedBox(
-                                                          height: 4.0),
-                                                      Container(
-                                                        width: 80,
-                                                        height: 30,
-                                                        padding:
-                                                            EdgeInsets.all(5),
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        decoration: BoxDecoration(
-                                                            border:
-                                                                Border.all(),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5)),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            alllist[index]['offers']
-                                                                        .length ==
-                                                                    0
-                                                                ? Text(
-                                                                    alllist[index]
-                                                                            [
-                                                                            'offers']
-                                                                        .length
-                                                                        .toString(),
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black))
-                                                                : Text(
-                                                                    alllist[index]
-                                                                            [
-                                                                            'offers']
-                                                                        .length
-                                                                        .toString(),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black)),
-                                                            Icon(
-                                                              Icons
-                                                                  .arrow_forward_ios,
-                                                              size: 16,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ]),
-                                              ),
+                                              Column(children: [
+                                                const Text("Created At",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                Text(alllist[index]
+                                                        ['created_at']
+                                                    .toString()
+                                                    .split("T")[0]
+                                                    .toString())
+                                              ]),
                                             ]),
                                       ),
                                     ]),
                                 const SizedBox(height: 10.0),
+                                Divider(thickness: 0.9),
+                                Text(
+                                  "Status :${alllist[index]['status'] == 3 ? " Pending" : alllist[index]['status'] == 4 ? "  InActive" : alllist[index]['status'] == 6 ? " Active" : ""}",
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                                Divider(thickness: 0.9),
                                 Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(children: [
+                                      const Text("Boost Status",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(height: 4.0),
+                                      alllist[index]['boost_package_status']
+                                                  .toString() ==
+                                              "1"
+                                          ? Container(
+                                              height: 25,
+                                              width: 65,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.green[400],
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              8.0))),
+                                              child: const Text("Boosted",
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            )
+                                          : InkWell(
+                                              onTap: () {
+                                                _postboost(alllist[index]['id']
+                                                    .toString());
+                                              },
+                                              child: Container(
+                                                height: 25,
+                                                width: 65,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red[400],
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                8.0))),
+                                                alignment: Alignment.center,
+                                                child: const Text("Boost",
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
+                                              ),
+                                            )
+                                    ]),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        if (alllist[index]['offers'].length >
+                                            0) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OffersScreen(
+                                                          productid: alllist[
+                                                                  index]['id']
+                                                              .toString())));
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                "Sorry, no offer for this product"),
+                                            backgroundColor: Colors.red,
+                                          ));
+                                        }
+                                      },
+                                      child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
-                                            Column(children: [
-                                              const Text("Boost Status",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              const SizedBox(height: 4.0),
-                                              alllist[index]['boost_package_status']
-                                                          .toString() ==
-                                                      "1"
-                                                  ? Container(
-                                                      height: 25,
-                                                      width: 65,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      decoration: BoxDecoration(
-                                                          color:
-                                                              Colors.green[400],
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          8.0))),
-                                                      child: const Text(
-                                                          "Boosted",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white)),
-                                                    )
-                                                  : InkWell(
-                                                      onTap: () {
-                                                        _postboost(
-                                                            alllist[index]['id']
-                                                                .toString());
-                                                      },
-                                                      child: Container(
-                                                        height: 25,
-                                                        width: 65,
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                Colors.red[400],
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                        .all(
-                                                                    Radius.circular(
-                                                                        8.0))),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: const Text(
-                                                            "Boost",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white)),
-                                                      ),
-                                                    )
-                                            ]),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Column(children: [
-                                              const Text("Created At",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              Text(alllist[index]['created_at']
-                                                  .toString()
-                                                  .split("T")[0]
-                                                  .toString())
-                                            ]),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
+                                            const Text("Offer",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            const SizedBox(height: 4.0),
+                                            Container(
+                                              width: 80,
+                                              height: 30,
+                                              padding: EdgeInsets.all(5),
+                                              alignment: Alignment.centerLeft,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  alllist[index]['offers']
+                                                              .length ==
+                                                          0
+                                                      ? Text(
+                                                          alllist[index]
+                                                                  ['offers']
+                                                              .length
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black))
+                                                      : Text(
+                                                          alllist[index]
+                                                                  ['offers']
+                                                              .length
+                                                              .toString(),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black)),
+                                                  Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    size: 16,
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ]),
+                                    ),
+                                    Container(
+                                      height: 45,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.3,
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
                                         child: alllist[index]['deletion'] ==
                                                 true
                                             ? Container(
@@ -721,21 +726,16 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                                   ),
                                                 ),
                                               ),
-                                      )
-                                    ]),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Divider(
+                                  thickness: 0.9,
+                                ),
                               ]),
                             ),
                           ),
-                          alllist[index]["deletion"]
-                              ? Checkbox(
-                                  value: alllist[index]['selected'],
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      alllist[index]['selected'] = value;
-                                    });
-                                  },
-                                )
-                              : SizedBox()
                         ],
                       ));
                 },
@@ -757,7 +757,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
     final body = {
       "id": prefs.getString('userid'),
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -797,7 +797,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
       "from_date": startdate,
       "to_date": enddate
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -834,7 +834,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
       "id": prefs.getString('userid'),
       "search": searchvalue,
     };
-    var response = await http.post(Uri.parse(BASE_URL + "listings"),
+    var response = await http.post(Uri.parse("${BASE_URL}listings"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",

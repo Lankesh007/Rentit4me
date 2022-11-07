@@ -1120,7 +1120,9 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+          
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];

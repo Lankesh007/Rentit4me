@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,6 +11,9 @@ import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/views/advertiser_profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'add_list_screen.dart';
+import 'login_screen.dart';
 
 class PreviewProductScreen extends StatefulWidget {
   String productid;
@@ -56,16 +63,56 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2.0,
-        leading: InkWell(
-            onTap: () {
-              Navigator.of(context).pop();
+        title: Row(children: [
+          Image.asset('assets/images/logo.png', scale: 25),
+          const SizedBox(
+            width: 10,
+          ),
+          SizedBox(
+            width: 30,
+          ),
+          InkWell(
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String userID = prefs.getString("userid");
+              log("userId--->$userID");
+
+              if (userID == null || userID == "") {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddlistingScreen()));
+              }
             },
-            child: const Icon(
-              Icons.arrow_back,
-              color: kPrimaryColor,
-            )),
-        title: const Text("Preview", style: TextStyle(color: kPrimaryColor)),
+            child: Container(
+                alignment: Alignment.center,
+                height: 40,
+                width: 100,
+                decoration: BoxDecoration(
+                  color: Colors.orange[600],
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text("Post An Ad", style: TextStyle(fontSize: 15))),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ]),
         centerTitle: true,
+        leading: Row(
+          children: [
+            IconButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.arrow_back_ios, color: kPrimaryColor)),
+            //SizedBox(width: 2),
+            //Image.asset('assets/images/logo.png', scale: 45),
+          ],
+        ),
       ),
       body: _checkData == false
           ? const Center(
@@ -78,12 +125,12 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                 child: Column(
                   children: [
                     productimage == null
-                        ? Container(
+                        ? SizedBox(
                             height: 150,
                             width: double.infinity,
                             child: Image.asset('assets/images/no_image.jpg'),
                           )
-                        : Container(
+                        : SizedBox(
                             height: 300,
                             width: double.infinity,
                             child: CachedNetworkImage(
@@ -94,10 +141,10 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                                   fit: BoxFit.fill),
                             ),
                           ),
-                    const SizedBox(height: 0.0),
+                    const SizedBox(height: 10.0),
                     Padding(
                       padding: EdgeInsets.zero,
-                      child: Container(
+                      child: SizedBox(
                         height: 80,
                         width: size.width,
                         child: GridView.count(
@@ -134,15 +181,38 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                             })),
                       ),
                     ),
+                    const SizedBox(height: 10.0),
+                    Divider(
+                      thickness: 0.9,
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text("Ad Id : $adId",
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 20)),
+                    ),
+                    Divider(
+                      thickness: 0.9,
+                    ),
+                    const SizedBox(height: 10.0),
+
                     Align(
                         alignment: Alignment.topLeft,
                         child: productname == "null" || productname == null
                             ? const SizedBox()
-                            : Text(productname,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold))),
+                            : Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(productname,
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold)),
+                              )),
+                    Divider(
+                      thickness: 0.9,
+                    ),
                     const SizedBox(height: 4.0),
                     Align(
                         alignment: Alignment.topLeft,
@@ -159,132 +229,184 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 16)))),
                     const SizedBox(height: 15.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: description == "null" || description == null
-                            ? const SizedBox()
-                            : Text(description,
-                                style: const TextStyle(
-                                    color: Colors.black, fontSize: 12))),
-                    const SizedBox(height: 35.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: renttype == null || renttype == "null"
-                            ? Text(productprice,
-                                style: const TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500))
-                            : Text("INR $productprice $renttype",
-                                style: const TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500))),
-                    const SizedBox(height: 15.0),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Security Deposit : INR $securitydeposit",
-                            style: const TextStyle(
-                                color: kPrimaryColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500))),
-                    const SizedBox(height: 15.0),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AdvertiserProfileScreen(
-                                    advertiserid: addedbyid)));
-                      },
+
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
                       child: Align(
                           alignment: Alignment.topLeft,
-                          child: Text("Added By : $addedby",
-                              style: const TextStyle(
-                                  color: kPrimaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500))),
+                          child: renttype == null || renttype == "null"
+                              ? Text(productprice,
+                                  style: TextStyle(
+                                      color: Colors.blue[900],
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600))
+                              : Text("INR $productprice $renttype",
+                                  style: const TextStyle(
+                                      color: kPrimaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500))),
+                    ),
+                    const SizedBox(height: 15.0),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            children: [
+                              Text("Security Deposit : ",
+                                  style: TextStyle(
+                                      color: Colors.deepOrange,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600)),
+                              Text(" INR $securitydeposit",
+                                  style: TextStyle(
+                                      color: Colors.blue[900],
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          )),
+                    ),
+                    const SizedBox(height: 15.0),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdvertiserProfileScreen(
+                                      advertiserid: addedbyid)));
+                        },
+                        child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Text("Listed By :",
+                                    style: TextStyle(
+                                        color: Colors.deepOrange,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                                Text(" $addedby",
+                                    style: TextStyle(
+                                        color: Colors.blue[900],
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600)),
+                              ],
+                            )),
+                      ),
                     ),
                     const SizedBox(height: 35.0),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Address : ",
-                            style: TextStyle(
-                                color: kPrimaryColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(
-                          width: size.width * 0.70,
-                          child: address == null || address == "null"
-                              ? const SizedBox()
-                              : Text(address,
-                                  maxLines: 3,
-                                  style: const TextStyle(
-                                      color: kPrimaryColor, fontSize: 18)),
-                        )
-                      ],
+                    Container(
+                      height: 40,
+                      color: Colors.grey[200],
+                      alignment: Alignment.centerLeft,
+                      child: Text("  Description",style: TextStyle(fontSize: 16 ,fontWeight: FontWeight.w600),),
                     ),
-                    // const SizedBox(height: 20),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: description == "null" || description == null
+                              ? const SizedBox()
+                              : Text(description,
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 14))),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Divider(thickness: 0.9),
+                    // const SizedBox(height: 20.0),
                     // Row(
                     //   crossAxisAlignment: CrossAxisAlignment.start,
                     //   children: [
-                    //     const Text("Price : ",
+                    //     const Text("Address : ",
                     //         style: TextStyle(
-                    //             color: kPrimaryColor,
+                    //             color: Colors.deepOrange,
                     //             fontSize: 18,
                     //             fontWeight: FontWeight.bold)),
                     //     SizedBox(
                     //       width: size.width * 0.70,
-                    //       child: negotiate == "0" ? const Text("Fixed", maxLines: 2, style: TextStyle(color: kPrimaryColor, fontSize: 18)) : const Text("Negotiable", maxLines: 2, style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    //       child: address == null || address == "null"
+                    //           ? const SizedBox()
+                    //           : Text(address,
+                    //               maxLines: 3,
+                    //               style:  TextStyle(
+                    //                   color: Colors.blue[900], fontSize: 18)),
                     //     )
                     //   ],
                     // ),
-                    mobile_hidden == "1"
-                        ? const SizedBox()
-                        : const SizedBox(height: 20),
-                    mobile_hidden == "1"
-                        ? const SizedBox()
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text("Mobile : ",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(
-                                width: size.width * 0.70,
-                                child: mobile == null || mobile == "null"
-                                    ? const SizedBox()
-                                    : Text(mobile,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 18)),
-                              )
-                            ],
-                          ),
-                    const SizedBox(height: 20),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Email : ",
-                            style: TextStyle(
-                                color: kPrimaryColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(
-                          width: size.width * 0.75,
-                          child: email == null || email == "null"
-                              ? const SizedBox()
-                              : Text(email,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                      color: kPrimaryColor, fontSize: 18)),
-                        )
-                      ],
-                    ),
+                    // Divider(thickness: 0.9),
+                    
+                    // // const SizedBox(height: 20),
+                    // // Row(
+                    // //   crossAxisAlignment: CrossAxisAlignment.start,
+                    // //   children: [
+                    // //     const Text("Price : ",
+                    // //         style: TextStyle(
+                    // //             color: kPrimaryColor,
+                    // //             fontSize: 18,
+                    // //             fontWeight: FontWeight.bold)),
+                    // //     SizedBox(
+                    // //       width: size.width * 0.70,
+                    // //       child: negotiate == "0" ? const Text("Fixed", maxLines: 2, style: TextStyle(color: kPrimaryColor, fontSize: 18)) : const Text("Negotiable", maxLines: 2, style: TextStyle(color: kPrimaryColor, fontSize: 18)),
+                    // //     )
+                    // //   ],
+                    // // ),
+                    // mobile_hidden == "1"
+                    //     ? const SizedBox()
+                    //     : const SizedBox(height: 20),
+                    // mobile_hidden == "1"
+                    //     ? const SizedBox()
+                    //     : Row(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           const Text("Mobile : ",
+                    //               style: TextStyle(
+                    //                   color: Colors.deepOrange,
+                    //                   fontSize: 18,
+                    //                   fontWeight: FontWeight.bold)),
+                    //           SizedBox(
+                    //             width: size.width * 0.70,
+                    //             child: mobile == null || mobile == "null"
+                    //                 ? const SizedBox()
+                    //                 : Text(mobile,
+                    //                     maxLines: 1,
+                    //                     style:  TextStyle(
+                    //                         color: Colors.blue[900],
+                    //                         fontSize: 18)),
+                    //           )
+                    //         ],
+                    //       ),
+                    // Divider(thickness: 0.9),
+
+                    // const SizedBox(height: 20),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     const Text("Email : ",
+                    //         style: TextStyle(
+                    //             color: Colors.deepOrange,
+                    //             fontSize: 18,
+                    //             fontWeight: FontWeight.bold)),
+                    //     SizedBox(
+                    //       width: size.width * 0.75,
+                    //       child: email == null || email == "null"
+                    //           ? const SizedBox()
+                    //           : Text(email,
+                    //               maxLines: 1,
+                    //               style:  TextStyle(
+                    //                   color: Colors.blue[900], fontSize: 18)),
+                    //     )
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 20),
+                    Divider(thickness: 0.9),
+
+
                   ],
                 ),
               ),
@@ -292,18 +414,21 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
     );
   }
 
+  String adId = "";
+
   Future _getpreproductDetail(String productid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("User ID " + prefs.getString('userid'));
-    print("Preview ID " + productid);
-    final body = {"id": productid, "userid": prefs.getString('userid')};
+    print("User ID ${prefs.getString('userid')}");
+    print("Preview ID $productid");
+    final body = {
+      "id": productid,
+    };
     var response = await http.post(Uri.parse(BASE_URL + previewpost),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
-
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
@@ -318,6 +443,7 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
         description = parse(document.body.text).documentElement.text.toString();
         boostpack = data['posted_ad']['boost_package_status'].toString();
         renttype = data['posted_ad']['rent_type'].toString();
+        adId = data['posted_ad']['ad_id'].toString();
 
         List temp = [];
         data['Pricing'].forEach((element) {
