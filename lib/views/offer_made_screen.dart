@@ -9,6 +9,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
+import 'package:rentit4me_new/views/make_edit_offer.dart';
 import 'package:rentit4me_new/views/offer_made_product_detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -474,9 +475,23 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                             "3"
                                         ? InkWell(
                                             onTap: () {
-                                              _getmakeoffer(offermadelist[index]
-                                                      ["post_ad_id"]
-                                                  .toString());
+                                              // _getmakeoffer(offermadelist[index]
+                                              //         ["post_ad_id"]
+                                              //     .toString());
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MakeEditOfferScreen(
+                                                          pageFor: "Edit Offer",
+                                                          productid:
+                                                              offermadelist[
+                                                                  index],
+                                                          nego: int.parse(
+                                                              negotiable),
+                                                          editable: true,
+                                                        )),
+                                              );
                                             },
                                             child: Container(
                                               width: 80,

@@ -43,10 +43,7 @@ class _MakeEditOfferScreenState extends State<MakeEditOfferScreen> {
   Future _getmakeoffer(String productid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final body = {
-      "user_id": prefs.getString('userid'),
-      "post_ad_id": productid
-    };
+    final body = {"post_ad_id": productid};
     var response = await http.post(Uri.parse(BASE_URL + createoffer),
         body: jsonEncode(body),
         headers: {
