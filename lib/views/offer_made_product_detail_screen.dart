@@ -406,17 +406,18 @@ class _OfferMadeProductDetailScreenState
                                     const Text("Start Date",
                                         style: TextStyle(
                                             color: Colors.black, fontSize: 14)),
-                                    startdate == null
-                                        ? const SizedBox()
-                                        : Text(
-                                            DateFormat("d/MMM/yy")
-                                                .add_jm()
-                                                .format(DateTime.parse(startdate
-                                                    .toString()
-                                                    .replaceAll("/", "-"))),
+                                    startdate != null
+                                        ? Text(
+                                            // DateFormat("d/MMM/yy")
+                                            //     .add_jm()
+                                            //     .format(DateTime.parse(startdate
+                                            //         .toString()
+                                            //         .replaceAll("/", "-"))),
+                                            startdate,
                                             style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 14))
+                                        : const SizedBox(),
                                   ],
                                 ),
                                 const SizedBox(height: 10),
@@ -430,10 +431,11 @@ class _OfferMadeProductDetailScreenState
                                     enddate == null
                                         ? const SizedBox()
                                         : Text(
-                                            DateFormat("d/MMM/yy")
-                                                .add_jm()
-                                                .format(DateTime.parse(
-                                                    enddate.toString())),
+                                            // DateFormat("d/MMM/yy")
+                                            //     .add_jm()
+                                            //     .format(DateTime.parse(
+                                            //         enddate.toString())),
+                                            enddate,
                                             style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 14))
@@ -674,22 +676,18 @@ class _OfferMadeProductDetailScreenState
       _loading = true;
     });
     print(jsonEncode({
-      "id": postadid,
-      "offer_request_id": offerid,
-      "userid": prefs.getString('userid')
+      "offer_request_id": postadid,
     }));
     print(BASE_URL + offerdetail);
-    final body = {
-      "id": postadid,
-      "offer_request_id": offerid,
-      "userid": prefs.getString('userid')
-    };
+    final body = {"offer_request_id": postadid};
     var response = await http.post(Uri.parse(BASE_URL + offerdetail),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}'
         });
+
     setState(() {
       _loading = false;
     });

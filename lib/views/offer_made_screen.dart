@@ -320,112 +320,111 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                title: const Text('Detail Information'),
-                                content: SingleChildScrollView(
-                                    child: Column(children: [
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Rentee"),
-                                      subtitle: Text(offermadelist[index]
-                                              ['name']
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Product Name"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["title"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Product Quantity"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["quantity"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Rent Type"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["rent_type_name"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Period"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["period"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Product Price(INR)"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["product_price"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Offer Amount(INR)"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["renter_amount"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Total Rent(INR)"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["total_rent"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Total Security(INR)"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["total_security"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Total Rent(INR)"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["total_rent"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                  Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                      title: const Text("Final Amount(INR)"),
-                                      subtitle: Text(offermadelist[index]
-                                              ["final_amount"]
-                                          .toString()),
-                                    ),
-                                  ),
-                                ]))));
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (_) => AlertDialog(
+                        //     title: const Text('Detail Information'),
+                        //     content: SingleChildScrollView(
+                        //         child: Column(children: [
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Rentee"),
+                        //           subtitle: Text(
+                        //               offermadelist[index]['name'].toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Product Name"),
+                        //           subtitle: Text(
+                        //               offermadelist[index]["title"].toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Product Quantity"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["quantity"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Rent Type"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["rent_type_name"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Period"),
+                        //           subtitle: Text(offermadelist[index]["period"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Product Price(INR)"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["product_price"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Offer Amount(INR)"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["renter_amount"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Total Rent(INR)"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["total_rent"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Total Security(INR)"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["total_security"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Total Rent(INR)"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["total_rent"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //       Card(
+                        //         color: Colors.grey[100],
+                        //         child: ListTile(
+                        //           title: const Text("Final Amount(INR)"),
+                        //           subtitle: Text(offermadelist[index]
+                        //                   ["final_amount"]
+                        //               .toString()),
+                        //         ),
+                        //       ),
+                        //     ])),
+                        //   ),
+                        // );
                       },
                       child: Card(
                         elevation: 4.0,
@@ -1005,18 +1004,20 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
       _loading = true;
     });
     final body = {
-      "user_id": prefs.getString('userid'),
+      // "user_id": prefs.getString('userid'),
       "search": searchvalue,
     };
     var response = await http.post(Uri.parse(BASE_URL + offermade),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       _loading = false;
     });
+
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
