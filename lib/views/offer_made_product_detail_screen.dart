@@ -36,7 +36,7 @@ class _OfferMadeProductDetailScreenState
   String currency;
   String productprice;
   String name;
-  String email;
+  String businessname;
   String address;
   String negotiable;
   String securitydeposit;
@@ -199,53 +199,71 @@ class _OfferMadeProductDetailScreenState
                                         color: kPrimaryColor,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w700)),
-                                const SizedBox(height: 5),
-                                const Divider(
-                                    height: 5,
-                                    color: kPrimaryColor,
-                                    thickness: 2),
-                                const Text("Offer Info",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const Divider(
-                                    height: 5,
-                                    color: kPrimaryColor,
-                                    thickness: 2),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Quantity",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    quantity == null || quantity == ""
-                                        ? const SizedBox()
-                                        : Text(quantity,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                // const Divider(
+                                //     height: 5,
+                                //     color: kPrimaryColor,
+                                //     thickness: 2),
+                                Container(
+                                  color: Color(0xFF012060),
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    children: [
+                                      Text("Offer Info",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                    ],
+                                  ),
+                                ),
+                                // const Divider(
+                                //     height: 5,
+                                //     color: kPrimaryColor,
+                                //     thickness: 2),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Quantity",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      quantity == null || quantity == ""
+                                          ? const SizedBox()
+                                          : Text(quantity,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Duration",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    period == "" || period == null
-                                        ? const SizedBox()
-                                        : Text(
-                                            "$period ${_getrenttype(period.toString(), renttype.toString())}",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14)),
-                                    //Text(period+" "+_getrenttype(renttypeid), style: TextStyle(color: Colors.black, fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Duration",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      period == "" || period == null
+                                          ? const SizedBox()
+                                          : Text(
+                                              "$period ${_getrenttype(period.toString(), renttype.toString())}",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14)),
+                                      //Text(period+" "+_getrenttype(renttypeid), style: TextStyle(color: Colors.black, fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 // const SizedBox(height: 10),
                                 // Row(
@@ -274,84 +292,109 @@ class _OfferMadeProductDetailScreenState
                                 //   ],
                                 // ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Product Price",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    productpeice == null
-                                        ? const SizedBox()
-                                        : Text(productpeice,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Product Price",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      productpeice == null
+                                          ? const SizedBox()
+                                          : Text(productpeice,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Product Security",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    productsecurity == null
-                                        ? const SizedBox()
-                                        : Text(productsecurity,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Product Security",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      productsecurity == null
+                                          ? const SizedBox()
+                                          : Text(productsecurity,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Offer Amount",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    offerammount == null
-                                        ? const SizedBox()
-                                        : Text(offerammount,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Offer Amount",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      offerammount == null
+                                          ? const SizedBox()
+                                          : Text(offerammount,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Total Rent",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    totalrent == null
-                                        ? const SizedBox()
-                                        : Text(totalrent,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Total Rent",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      totalrent == null
+                                          ? const SizedBox()
+                                          : Text(totalrent,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Total Security",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    totalsecurity == null
-                                        ? const SizedBox()
-                                        : Text(totalsecurity,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Total Security",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      totalsecurity == null
+                                          ? const SizedBox()
+                                          : Text(totalsecurity,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 showConversionCharges
                                     ? Column(
@@ -359,23 +402,29 @@ class _OfferMadeProductDetailScreenState
                                           SizedBox(
                                             height: 10,
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                  "Convenience Charge (" +
-                                                      convenience_charge
-                                                          .toString() +
-                                                      "%)",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14)),
-                                              Text(convenience_chargeValue,
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14))
-                                            ],
+                                          Container(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.only(
+                                                left: 8, right: 8),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    "Convenience Charge (" +
+                                                        convenience_charge
+                                                            .toString() +
+                                                        "%)",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 14)),
+                                                Text(convenience_chargeValue,
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 14))
+                                              ],
+                                            ),
                                           ),
                                           SizedBox(
                                             height: 10,
@@ -383,188 +432,240 @@ class _OfferMadeProductDetailScreenState
                                         ],
                                       )
                                     : SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Final Amount",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    finalamount == null
-                                        ? const SizedBox()
-                                        : Text(finalamount,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Start Date",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    startdate != null
-                                        ? Text(
-                                            // DateFormat("d/MMM/yy")
-                                            //     .add_jm()
-                                            //     .format(DateTime.parse(startdate
-                                            //         .toString()
-                                            //         .replaceAll("/", "-"))),
-                                            startdate,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                        : const SizedBox(),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("End Date",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    enddate == null
-                                        ? const SizedBox()
-                                        : Text(
-                                            // DateFormat("d/MMM/yy")
-                                            //     .add_jm()
-                                            //     .format(DateTime.parse(
-                                            //         enddate.toString())),
-                                            enddate,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Status",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    status == null
-                                        ? const SizedBox()
-                                        : Text(_getStatus(status),
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Created At",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    createdAt == null
-                                        ? const SizedBox()
-                                        : Text(
-                                            DateFormat("d/MMM/yy")
-                                                // .add_jm()
-                                                .format(DateTime.parse(
-                                                    createdAt.toString())),
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                const Divider(
-                                    height: 5,
-                                    color: kPrimaryColor,
-                                    thickness: 2),
-                                const Text("Product Info",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const Divider(
-                                    height: 5,
-                                    color: kPrimaryColor,
-                                    thickness: 2),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Security (INR)",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    securitydeposit == null
-                                        ? const SizedBox()
-                                        : Text(securitydeposit,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Quantity",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    productqty == null || productqty == "null"
-                                        ? const Text("N/A",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                        : Text(productqty.toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Currency",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    currency == null
-                                        ? const SizedBox()
-                                        : Text(currency,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: const Text("Rent\nPrices",
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Final Amount",
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 14)),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: productprice == null
-                                          ? SizedBox()
-                                          : Text(productprice,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.right,
+                                      finalamount == null
+                                          ? const SizedBox()
+                                          : Text(finalamount,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Start Date",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      startdate != null
+                                          ? Text(
+                                              // DateFormat("d/MMM/yy")
+                                              //     .add_jm()
+                                              //     .format(DateTime.parse(startdate
+                                              //         .toString()
+                                              //         .replaceAll("/", "-"))),
+                                              startdate,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                          : const SizedBox(),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("End Date",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      enddate == null
+                                          ? const SizedBox()
+                                          : Text(
+                                              // DateFormat("d/MMM/yy")
+                                              //     .add_jm()
+                                              //     .format(DateTime.parse(
+                                              //         enddate.toString())),
+                                              enddate,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Status",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      status == null
+                                          ? const SizedBox()
+                                          : Text(_getStatus(status),
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Created At",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      createdAt == null
+                                          ? const SizedBox()
+                                          : Text(
+                                              DateFormat("d/MMM/yy")
+                                                  // .add_jm()
+                                                  .format(DateTime.parse(
+                                                      createdAt.toString())),
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                // const Divider(
+                                //     height: 5,
+                                //     color: kPrimaryColor,
+                                //     thickness: 2),
+                                Container(
+                                  color: Color(0xFF012060),
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    children: [
+                                      Text("Product Info",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                    ],
+                                  ),
+                                ),
+                                // const Divider(
+                                //     height: 5,
+                                //     color: kPrimaryColor,
+                                //     thickness: 2),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Security (INR)",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      securitydeposit == null
+                                          ? const SizedBox()
+                                          : Text(securitydeposit,
                                               style: TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 14)),
-                                    )
-                                  ],
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Quantity",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      productqty == null || productqty == "null"
+                                          ? const Text("N/A",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                          : Text(productqty.toString(),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Currency",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      currency == null
+                                          ? const SizedBox()
+                                          : Text(currency,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: const Text("Rent\nPrices",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14)),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: productprice == null
+                                            ? SizedBox()
+                                            : Text(productprice,
+                                                maxLines: 2,
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14)),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 // const SizedBox(height: 10),
                                 // Row(
@@ -593,71 +694,89 @@ class _OfferMadeProductDetailScreenState
                                 //   ],
                                 // ),
                                 const SizedBox(height: 10),
-                                const Divider(
-                                    height: 5,
-                                    color: kPrimaryColor,
-                                    thickness: 2),
-                                const Text("Rentee Information",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                const Divider(
-                                    height: 5,
-                                    color: kPrimaryColor,
-                                    thickness: 2),
+                                // const Divider(
+                                //     height: 5,
+                                //     color: kPrimaryColor,
+                                //     thickness: 2),
+                                Container(
+                                  color: Color(0xFF012060),
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    children: [
+                                      Text("Rentee Info",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                    ],
+                                  ),
+                                ),
+                                // const Divider(
+                                //     height: 5,
+                                //     color: kPrimaryColor,
+                                //     thickness: 2),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Rentee Name",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    name == null
-                                        ? const SizedBox()
-                                        : Text(name,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.grey[200],
+                                  padding: EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Rentee",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      name == null
+                                          ? const SizedBox()
+                                          : Text(name,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Email",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    email == null
-                                        ? const SizedBox()
-                                        : Text(email,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14))
-                                  ],
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text("Business Name",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14)),
+                                      businessname == null
+                                          ? const SizedBox()
+                                          : Text(businessname,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Address",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    SizedBox(
-                                        width: size.width * 0.60,
-                                        child: address == null
-                                            ? SizedBox()
-                                            : Text(address,
-                                                textAlign: TextAlign.end,
-                                                maxLines: 2,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14)))
-                                  ],
-                                ),
+                                // Row(
+                                //   mainAxisAlignment:
+                                //       MainAxisAlignment.spaceBetween,
+                                //   children: [
+                                //     const Text("Address",
+                                //         style: TextStyle(
+                                //             color: Colors.black, fontSize: 14)),
+                                //     SizedBox(
+                                //         width: size.width * 0.60,
+                                //         child: address == null
+                                //             ? SizedBox()
+                                //             : Text(address,
+                                //                 textAlign: TextAlign.end,
+                                //                 maxLines: 2,
+                                //                 style: TextStyle(
+                                //                     color: Colors.black,
+                                //                     fontSize: 14)))
+                                //   ],
+                                // ),
                                 const SizedBox(height: 5),
                               ],
                             ),
@@ -737,7 +856,8 @@ class _OfferMadeProductDetailScreenState
 
         //Rentee Detail
         name = data['Advertiser Information']['name'].toString();
-        email = data['Advertiser Information']['email'].toString();
+        businessname =
+            data['Advertiser Information']['business_name'].toString();
         address =
             "${data['Advertiser Information']['address']}, ${data['Advertiser Information']['city_name']}, ${data['Advertiser Information']['state_name']}, ${data['Advertiser Information']['pincode']}";
 

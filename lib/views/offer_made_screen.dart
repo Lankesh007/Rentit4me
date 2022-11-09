@@ -435,13 +435,6 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                      "Rentee : ${offermadelist[index]['name']}",
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500))),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -468,7 +461,57 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                             child: Text(
                                                 "Product Name : ${offermadelist[index]['title']}"))),
                                   ),
-
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OfferMadeProductDetailScreen(
+                                                      postadid:
+                                                          offermadelist[index]
+                                                                  ['post_ad_id']
+                                                              .toString(),
+                                                      offerid: offermadelist[
+                                                                  index][
+                                                              'offer_request_id']
+                                                          .toString())),
+                                        );
+                                      },
+                                      child: Container(
+                                        width: 80,
+                                        height: 30,
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(4.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(4.0)),
+                                            border:
+                                                Border.all(color: Colors.blue)),
+                                        child: const Text("View",
+                                            style:
+                                                TextStyle(color: Colors.blue)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: SizedBox(
+                                        width: size.width * 0.60,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0, right: 8.0),
+                                          child: Text(
+                                              "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
+                                        )),
+                                  ),
                                   Expanded(
                                     child: offermadelist[index]["offer_status"]
                                                 .toString() ==
@@ -710,113 +753,13 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                         border: Border.all(
                                                             color:
                                                                 Colors.grey)),
-                                                    child: const Text("N/A",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.grey)),
+                                                    child: const Text(
+                                                      "N/A",
+                                                      style: TextStyle(
+                                                          color: Colors.grey),
+                                                    ),
                                                   ),
-                                  )
-
-                                  // offermadelist[index]["offer_status"]
-                                  //                 .toString() ==
-                                  //             "1" &&
-                                  //         offermadelist[index]
-                                  //                     ["pay_status"]
-                                  //                 .toString() ==
-                                  //             "0"
-                                  //     ? InkWell(
-                                  //         onTap: () {
-                                  //           // setState(() {
-                                  //           //   post_id = offermadelist[index]
-                                  //           //           ["post_ad_id"]
-                                  //           //       .toString();
-                                  //           //   userid = offermadelist[index]
-                                  //           //           ["user_id"]
-                                  //           //       .toString();
-                                  //           //   request_id = offermadelist[index]
-                                  //           //           ["offer_request_id"]
-                                  //           //       .toString();
-                                  //           //   amount = offermadelist[index]
-                                  //           //           ["final_amount"]
-                                  //           //       .toString()
-                                  //           //       .split('.')[0];
-                                  //           // });
-                                  //           // startPayment(offermadelist[index]
-                                  //           //         ["final_amount"]
-                                  //           //     .toString());
-                                  //         },
-                                  //         child: Container(
-                                  //           height: 35,
-                                  //           width: 80,
-                                  //           decoration: BoxDecoration(
-                                  //               borderRadius: BorderRadius.all(
-                                  //                   Radius.circular(8.0)),
-                                  //               border: Border.all(
-                                  //                   color: Colors.grey,
-                                  //                   width: 1)),
-                                  //           child: DropdownButtonHideUnderline(
-                                  //             child: Padding(
-                                  //               padding: const EdgeInsets.only(
-                                  //                   left: 4.0),
-                                  //               child: DropdownButton(
-                                  //                 hint: const Text("Action",
-                                  //                     style: TextStyle(
-                                  //                         color: Colors.black)),
-                                  //                 value: initialvalue,
-                                  //                 icon: const Icon(Icons
-                                  //                     .arrow_drop_down_rounded),
-                                  //                 items: allaction
-                                  //                     .map((String items) {
-                                  //                   return DropdownMenuItem(
-                                  //                     value: items,
-                                  //                     child: Text(items),
-                                  //                   );
-                                  //                 }).toList(),
-                                  //                 isExpanded: true,
-                                  //                 onChanged: (value) {
-                                  //                   if (value == "Pay") {
-                                  //                     setState(() {
-                                  //                       post_id = offermadelist[
-                                  //                                   index]
-                                  //                               ["post_ad_id"]
-                                  //                           .toString();
-                                  //                       userid =
-                                  //                           offermadelist[index]
-                                  //                                   ["user_id"]
-                                  //                               .toString();
-                                  //                       request_id = offermadelist[
-                                  //                                   index][
-                                  //                               "offer_request_id"]
-                                  //                           .toString();
-                                  //                       amount = offermadelist[
-                                  //                                   index]
-                                  //                               ["final_amount"]
-                                  //                           .toString()
-                                  //                           .split('.')[0];
-                                  //                     });
-                                  //                     startPayment(offermadelist[
-                                  //                                 index]
-                                  //                             ["final_amount"]
-                                  //                         .toString());
-                                  //                     //_postboost(alllist[index]['id'].toString());
-                                  //                   } else if (value ==
-                                  //                       "Edit") {
-                                  //                     //Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditScreen(productid: alllist[index]['id'].toString())));
-                                  //                   } else {
-                                  //                     //Navigator.push(context, MaterialPageRoute(builder: (context) => PreviewProductScreen(productid: alllist[index]['id'].toString())));
-                                  //                   }
-                                  //                 },
-                                  //               ),
-                                  //             ),
-                                  //           ),
-                                  //         ))
-                                  //     : _getaction(
-                                  //         offermadelist[index]["offer_status"]
-                                  //             .toString(),
-                                  //         offermadelist[index]["pay_status"]
-                                  //             .toString(),
-                                  //         index,
-                                  //         offermadelist)
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 10.0),
@@ -826,18 +769,9 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Text("Ad Id: "),
                                     Text(
-                                        "Quantity: ${offermadelist[index]['quantity']}"),
-                                    offermadelist[index]['period'].toString() ==
-                                                "" ||
-                                            offermadelist[index]['period'] ==
-                                                null
-                                        ? const SizedBox()
-                                        : Text(
-                                            "Duration: ${offermadelist[index]['period']}",
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14)),
+                                        "Product Price (INR): ${offermadelist[index]['product_price'].toString()}"),
                                   ],
                                 ),
                               ),
@@ -849,12 +783,62 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        "Rent type: ${offermadelist[index]['rent_type_name']}"),
+                                        "Security: ${offermadelist[index]['total_security']}"),
                                     Text(
-                                        "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
+                                        "Offer Price (INR): ${offermadelist[index]['final_product_selling_amount'].toString()}"),
                                   ],
                                 ),
-                              )
+                              ),
+                              const SizedBox(height: 5.0),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "Convenience Fee: ${offermadelist[index]['convenience_fee']}"),
+                                    Text(
+                                        "Quantity: ${offermadelist[index]['quantity']}"),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 5.0),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "Total Rent (INR): ${offermadelist[index]['final_amount']}"),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 5.0),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "Start Date: ${offermadelist[index]['start_date']}"),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 5.0),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "End Date: ${offermadelist[index]['end_date']}"),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
