@@ -447,10 +447,11 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       OfferMadeProductDetailScreen(
-                                                          postadid: offermadelist[
-                                                                      index]
-                                                                  ['post_ad_id']
-                                                              .toString(),
+                                                          postadid:
+                                                              offermadelist[
+                                                                          index]
+                                                                      ['id']
+                                                                  .toString(),
                                                           offerid: offermadelist[
                                                                       index][
                                                                   'offer_request_id']
@@ -462,314 +463,19 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                 "Product Name : ${offermadelist[index]['title']}"))),
                                   ),
                                   Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OfferMadeProductDetailScreen(
-                                                      postadid:
-                                                          offermadelist[index]
-                                                                  ['post_ad_id']
-                                                              .toString(),
-                                                      offerid: offermadelist[
-                                                                  index][
-                                                              'offer_request_id']
-                                                          .toString())),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 80,
-                                        height: 30,
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(4.0),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(4.0)),
-                                            border:
-                                                Border.all(color: Colors.blue)),
-                                        child: const Text("View",
-                                            style:
-                                                TextStyle(color: Colors.blue)),
-                                      ),
-                                    ),
-                                  ),
+                                      child: SizedBox(
+                                    width: 10,
+                                  )),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: SizedBox(
-                                        width: size.width * 0.60,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, right: 8.0),
-                                          child: Text(
-                                              "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
-                                        )),
-                                  ),
-                                  Expanded(
-                                    child: offermadelist[index]["offer_status"]
-                                                .toString() ==
-                                            "3"
-                                        ? InkWell(
-                                            onTap: () {
-                                              // _getmakeoffer(offermadelist[index]
-                                              //         ["post_ad_id"]
-                                              //     .toString());
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MakeEditOfferScreen(
-                                                          pageFor: "Edit Offer",
-                                                          productid:
-                                                              offermadelist[
-                                                                  index],
-                                                          nego: int.parse(
-                                                              negotiable),
-                                                          editable: true,
-                                                        )),
-                                              );
-                                            },
-                                            child: Container(
-                                              width: 80,
-                                              height: 30,
-                                              alignment: Alignment.center,
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(4.0)),
-                                                  border: Border.all(
-                                                      color: Colors.blue)),
-                                              child: const Text("Edit",
-                                                  style: TextStyle(
-                                                      color: Colors.blue)),
-                                            ),
-                                          )
-                                        : offermadelist[index]["offer_status"]
-                                                        .toString() ==
-                                                    "12" &&
-                                                offermadelist[index]
-                                                            ["pay_status"]
-                                                        .toString() ==
-                                                    "0"
-                                            ? Container(
-                                                height: 35,
-                                                width: 80,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                8.0)),
-                                                    border: Border.all(
-                                                        color: Colors.grey,
-                                                        width: 1)),
-                                                child:
-                                                    DropdownButtonHideUnderline(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 4.0),
-                                                    child: DropdownButton(
-                                                      hint: const Text("Action",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black)),
-                                                      value: initialvalue,
-                                                      icon: const Icon(Icons
-                                                          .arrow_drop_down_rounded),
-                                                      items: allaction
-                                                          .map((String items) {
-                                                        return DropdownMenuItem(
-                                                          value: items,
-                                                          child: Text(items),
-                                                        );
-                                                      }).toList(),
-                                                      isExpanded: true,
-                                                      onChanged: (value) {
-                                                        if (value ==
-                                                            "Accept & Pay") {
-                                                          setState(() {
-                                                            post_id = offermadelist[
-                                                                        index][
-                                                                    "post_ad_id"]
-                                                                .toString();
-                                                            userid = offermadelist[
-                                                                        index]
-                                                                    ["user_id"]
-                                                                .toString();
-                                                            request_id =
-                                                                offermadelist[
-                                                                            index]
-                                                                        [
-                                                                        "offer_request_id"]
-                                                                    .toString();
-                                                            amount = offermadelist[
-                                                                        index][
-                                                                    "final_amount"]
-                                                                .toString()
-                                                                .split('.')[0];
-                                                          });
-                                                          startPayment(
-                                                              offermadelist[
-                                                                          index]
-                                                                      [
-                                                                      "final_amount"]
-                                                                  .toString());
-                                                        } else if (value ==
-                                                            "Reject") {
-                                                          rejectOffer(
-                                                              offermadelist[
-                                                                          index]
-                                                                      [
-                                                                      'post_ad_id']
-                                                                  .toString(),
-                                                              offermadelist[
-                                                                          index]
-                                                                      [
-                                                                      'offer_request_id']
-                                                                  .toString());
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : offermadelist[index]
-                                                                ["offer_status"]
-                                                            .toString() ==
-                                                        "1" &&
-                                                    offermadelist[index]
-                                                                ["pay_status"]
-                                                            .toString() ==
-                                                        "0"
-                                                ? Container(
-                                                    height: 35,
-                                                    width: 80,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    8.0)),
-                                                        border: Border.all(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                                    child:
-                                                        DropdownButtonHideUnderline(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 4.0),
-                                                        child: DropdownButton(
-                                                          hint: const Text(
-                                                              "Action",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black)),
-                                                          value: initialvalue,
-                                                          icon: const Icon(Icons
-                                                              .arrow_drop_down_rounded),
-                                                          items: allaction2.map(
-                                                              (String items) {
-                                                            return DropdownMenuItem(
-                                                              value: items,
-                                                              child:
-                                                                  Text(items),
-                                                            );
-                                                          }).toList(),
-                                                          isExpanded: true,
-                                                          onChanged: (value) {
-                                                            if (value ==
-                                                                "Pay") {
-                                                              setState(() {
-                                                                post_id = offermadelist[
-                                                                            index]
-                                                                        [
-                                                                        "post_ad_id"]
-                                                                    .toString();
-                                                                userid = offermadelist[
-                                                                            index]
-                                                                        [
-                                                                        "user_id"]
-                                                                    .toString();
-                                                                request_id = offermadelist[
-                                                                            index]
-                                                                        [
-                                                                        "offer_request_id"]
-                                                                    .toString();
-                                                                amount = offermadelist[
-                                                                            index]
-                                                                        [
-                                                                        "final_amount"]
-                                                                    .toString()
-                                                                    .split(
-                                                                        '.')[0];
-                                                              });
-                                                              startPayment(offermadelist[
-                                                                          index]
-                                                                      [
-                                                                      "final_amount"]
-                                                                  .toString());
-                                                            } else if (value ==
-                                                                "Reject") {
-                                                              rejectOffer(
-                                                                  offermadelist[
-                                                                              index]
-                                                                          [
-                                                                          'post_ad_id']
-                                                                      .toString(),
-                                                                  offermadelist[
-                                                                              index]
-                                                                          [
-                                                                          'offer_request_id']
-                                                                      .toString());
-                                                            }
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    width: 80,
-                                                    height: 30,
-                                                    alignment: Alignment.center,
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            4.0),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                    .all(
-                                                                Radius.circular(
-                                                                    4.0)),
-                                                        border: Border.all(
-                                                            color:
-                                                                Colors.grey)),
-                                                    child: const Text(
-                                                      "N/A",
-                                                      style: TextStyle(
-                                                          color: Colors.grey),
-                                                    ),
-                                                  ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10.0),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Ad Id: "),
+                                    Text(
+                                        "Ad Id: ${offermadelist[index]['ad_id']}"),
                                     Text(
                                         "Product Price (INR): ${offermadelist[index]['product_price'].toString()}"),
                                   ],
@@ -812,6 +518,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                   children: [
                                     Text(
                                         "Total Rent (INR): ${offermadelist[index]['final_amount']}"),
+                                    Text(
+                                        "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
                                   ],
                                 ),
                               ),
@@ -836,6 +544,308 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                   children: [
                                     Text(
                                         "End Date: ${offermadelist[index]['end_date']}"),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 5.0),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OfferMadeProductDetailScreen(
+                                                        postadid:
+                                                            offermadelist[index]
+                                                                    ['id']
+                                                                .toString(),
+                                                        offerid: offermadelist[
+                                                                    index][
+                                                                'offer_request_id']
+                                                            .toString())),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 80,
+                                          height: 30,
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(4.0),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(4.0)),
+                                              border: Border.all(
+                                                  color: Colors.blue)),
+                                          child: const Text("View",
+                                              style: TextStyle(
+                                                  color: Colors.blue)),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 40),
+                                    Expanded(
+                                      child: offermadelist[index]
+                                                      ["offer_status"]
+                                                  .toString() ==
+                                              "3"
+                                          ? InkWell(
+                                              onTap: () {
+                                                // _getmakeoffer(offermadelist[index]
+                                                //         ["post_ad_id"]
+                                                //     .toString());
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          MakeEditOfferScreen(
+                                                            pageFor:
+                                                                "Edit Offer",
+                                                            productid:
+                                                                offermadelist[
+                                                                    index],
+                                                            nego: int.parse(
+                                                                negotiable),
+                                                            editable: true,
+                                                          )),
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 80,
+                                                height: 30,
+                                                alignment: Alignment.center,
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                4.0)),
+                                                    border: Border.all(
+                                                        color: Colors.blue)),
+                                                child: const Text("Edit",
+                                                    style: TextStyle(
+                                                        color: Colors.blue)),
+                                              ),
+                                            )
+                                          : offermadelist[index]["offer_status"]
+                                                          .toString() ==
+                                                      "12" &&
+                                                  offermadelist[index]
+                                                              ["pay_status"]
+                                                          .toString() ==
+                                                      "0"
+                                              ? Container(
+                                                  height: 35,
+                                                  width: 80,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.0)),
+                                                      border: Border.all(
+                                                          color: Colors.grey,
+                                                          width: 1)),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 4.0),
+                                                      child: DropdownButton(
+                                                        hint: const Text(
+                                                            "Action",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black)),
+                                                        value: initialvalue,
+                                                        icon: const Icon(Icons
+                                                            .arrow_drop_down_rounded),
+                                                        items: allaction.map(
+                                                            (String items) {
+                                                          return DropdownMenuItem(
+                                                            value: items,
+                                                            child: Text(items),
+                                                          );
+                                                        }).toList(),
+                                                        isExpanded: true,
+                                                        onChanged: (value) {
+                                                          if (value ==
+                                                              "Accept & Pay") {
+                                                            setState(() {
+                                                              post_id = offermadelist[
+                                                                          index]
+                                                                      [
+                                                                      "post_ad_id"]
+                                                                  .toString();
+                                                              userid = offermadelist[
+                                                                          index]
+                                                                      [
+                                                                      "user_id"]
+                                                                  .toString();
+                                                              request_id = offermadelist[
+                                                                          index]
+                                                                      [
+                                                                      "offer_request_id"]
+                                                                  .toString();
+                                                              amount = offermadelist[
+                                                                          index]
+                                                                      [
+                                                                      "final_amount"]
+                                                                  .toString()
+                                                                  .split(
+                                                                      '.')[0];
+                                                            });
+                                                            startPayment(offermadelist[
+                                                                        index][
+                                                                    "final_amount"]
+                                                                .toString());
+                                                          } else if (value ==
+                                                              "Reject") {
+                                                            rejectOffer(
+                                                                offermadelist[
+                                                                            index]
+                                                                        [
+                                                                        'post_ad_id']
+                                                                    .toString(),
+                                                                offermadelist[
+                                                                            index]
+                                                                        [
+                                                                        'offer_request_id']
+                                                                    .toString());
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : offermadelist[index][
+                                                                  "offer_status"]
+                                                              .toString() ==
+                                                          "1" &&
+                                                      offermadelist[index]
+                                                                  ["pay_status"]
+                                                              .toString() ==
+                                                          "0"
+                                                  ? Container(
+                                                      height: 35,
+                                                      width: 80,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          8.0)),
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey,
+                                                              width: 1)),
+                                                      child:
+                                                          DropdownButtonHideUnderline(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 4.0),
+                                                          child: DropdownButton(
+                                                            hint: const Text(
+                                                                "Action",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black)),
+                                                            value: initialvalue,
+                                                            icon: const Icon(Icons
+                                                                .arrow_drop_down_rounded),
+                                                            items: allaction2
+                                                                .map((String
+                                                                    items) {
+                                                              return DropdownMenuItem(
+                                                                value: items,
+                                                                child:
+                                                                    Text(items),
+                                                              );
+                                                            }).toList(),
+                                                            isExpanded: true,
+                                                            onChanged: (value) {
+                                                              if (value ==
+                                                                  "Pay") {
+                                                                setState(() {
+                                                                  post_id = offermadelist[
+                                                                              index]
+                                                                          [
+                                                                          "post_ad_id"]
+                                                                      .toString();
+                                                                  userid = offermadelist[
+                                                                              index]
+                                                                          [
+                                                                          "user_id"]
+                                                                      .toString();
+                                                                  request_id = offermadelist[
+                                                                              index]
+                                                                          [
+                                                                          "offer_request_id"]
+                                                                      .toString();
+                                                                  amount = offermadelist[
+                                                                              index]
+                                                                          [
+                                                                          "final_amount"]
+                                                                      .toString()
+                                                                      .split(
+                                                                          '.')[0];
+                                                                });
+                                                                startPayment(offermadelist[
+                                                                            index]
+                                                                        [
+                                                                        "final_amount"]
+                                                                    .toString());
+                                                              } else if (value ==
+                                                                  "Reject") {
+                                                                rejectOffer(
+                                                                    offermadelist[index]
+                                                                            [
+                                                                            'post_ad_id']
+                                                                        .toString(),
+                                                                    offermadelist[index]
+                                                                            [
+                                                                            'offer_request_id']
+                                                                        .toString());
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Container(
+                                                      width: 80,
+                                                      height: 30,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4.0),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                      .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          4.0)),
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey)),
+                                                      child: const Text(
+                                                        "N/A",
+                                                        style: TextStyle(
+                                                            color: Colors.grey),
+                                                      ),
+                                                    ),
+                                    ),
                                   ],
                                 ),
                               ),

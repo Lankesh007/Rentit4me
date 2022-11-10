@@ -125,7 +125,7 @@ class _OfferMadeProductDetailScreenState
                                         height: 180,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
-                                          imageUrl: sliderpath + productimage,
+                                          imageUrl: devImage + productimage,
                                           fit: BoxFit.fill,
                                           errorWidget: (context, url, error) =>
                                               Image.asset(
