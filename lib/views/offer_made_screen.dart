@@ -607,11 +607,12 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                           MakeEditOfferScreen(
                                                             pageFor:
                                                                 "Edit Offer",
-                                                            productid:
-                                                                offermadelist[
-                                                                    index],
-                                                            nego: int.parse(
-                                                                negotiable),
+                                                            productid: offermadelist[
+                                                                        index][
+                                                                    'post_ad_id']
+                                                                .toString(),
+                                                            nego:
+                                                                int.parse("0"),
                                                             editable: true,
                                                           )),
                                                 );
