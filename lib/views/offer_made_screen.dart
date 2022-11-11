@@ -717,8 +717,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                                     .toString(),
                                                                 offermadelist[
                                                                             index]
-                                                                        [
-                                                                        'offer_request_id']
+                                                                        ['id']
                                                                     .toString());
                                                           }
                                                         },
@@ -814,7 +813,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                                         .toString(),
                                                                     offermadelist[index]
                                                                             [
-                                                                            'offer_request_id']
+                                                                            'id']
                                                                         .toString());
                                                               }
                                                             },
@@ -822,29 +821,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                         ),
                                                       ),
                                                     )
-                                                  : Container(
-                                                      width: 80,
-                                                      height: 30,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4.0),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4.0)),
-                                                          border: Border.all(
-                                                              color:
-                                                                  Colors.grey)),
-                                                      child: const Text(
-                                                        "N/A",
-                                                        style: TextStyle(
-                                                            color: Colors.grey),
-                                                      ),
+                                                  : SizedBox(
+                                                      width: 0,
                                                     ),
                                     ),
                                   ],
@@ -880,7 +858,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(jsonEncode(body));
     print(response.body);

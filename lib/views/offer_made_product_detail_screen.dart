@@ -556,117 +556,117 @@ class _OfferMadeProductDetailScreenState
                                 //     height: 5,
                                 //     color: kPrimaryColor,
                                 //     thickness: 2),
-                                Container(
-                                  color: Color(0xFF012060),
-                                  padding: EdgeInsets.all(8),
-                                  child: Row(
-                                    children: [
-                                      Text("Product Info",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500)),
-                                    ],
-                                  ),
-                                ),
+                                // Container(
+                                //   color: Color(0xFF012060),
+                                //   padding: EdgeInsets.all(8),
+                                //   child: Row(
+                                //     children: [
+                                //       Text("Product Info",
+                                //           style: TextStyle(
+                                //               color: Colors.white,
+                                //               fontSize: 16,
+                                //               fontWeight: FontWeight.w500)),
+                                //     ],
+                                //   ),
+                                // ),
                                 // const Divider(
                                 //     height: 5,
                                 //     color: kPrimaryColor,
                                 //     thickness: 2),
-                                const SizedBox(height: 10),
-                                Container(
-                                  color: Colors.grey[200],
-                                  padding: EdgeInsets.all(8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Security (INR)",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14)),
-                                      securitydeposit == null
-                                          ? const SizedBox()
-                                          : Text(securitydeposit,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14))
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Container(
-                                  color: Colors.white,
-                                  padding: EdgeInsets.only(left: 8, right: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Quantity",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14)),
-                                      productqty == null || productqty == "null"
-                                          ? const Text("N/A",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14))
-                                          : Text(productqty.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14))
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Container(
-                                  color: Colors.grey[200],
-                                  padding: EdgeInsets.all(8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Currency",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14)),
-                                      currency == null
-                                          ? const SizedBox()
-                                          : Text(currency,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14))
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Container(
-                                  color: Colors.white,
-                                  padding: EdgeInsets.only(left: 8, right: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: const Text("Rent\nPrices",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14)),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: productprice == null
-                                            ? SizedBox()
-                                            : Text(productprice,
-                                                maxLines: 2,
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14)),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                                // const SizedBox(height: 10),
+                                // Container(
+                                //   color: Colors.grey[200],
+                                //   padding: EdgeInsets.all(8),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text("Security (INR)",
+                                //           style: TextStyle(
+                                //               color: Colors.black,
+                                //               fontSize: 14)),
+                                //       securitydeposit == null
+                                //           ? const SizedBox()
+                                //           : Text(securitydeposit,
+                                //               style: TextStyle(
+                                //                   color: Colors.black,
+                                //                   fontSize: 14))
+                                //     ],
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 10),
+                                // Container(
+                                //   color: Colors.white,
+                                //   padding: EdgeInsets.only(left: 8, right: 8),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text("Quantity",
+                                //           style: TextStyle(
+                                //               color: Colors.black,
+                                //               fontSize: 14)),
+                                //       productqty == null || productqty == "null"
+                                //           ? const Text("N/A",
+                                //               style: TextStyle(
+                                //                   color: Colors.black,
+                                //                   fontSize: 14))
+                                //           : Text(productqty.toString(),
+                                //               style: TextStyle(
+                                //                   color: Colors.black,
+                                //                   fontSize: 14))
+                                //     ],
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 10),
+                                // Container(
+                                //   color: Colors.grey[200],
+                                //   padding: EdgeInsets.all(8),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text("Currency",
+                                //           style: TextStyle(
+                                //               color: Colors.black,
+                                //               fontSize: 14)),
+                                //       currency == null
+                                //           ? const SizedBox()
+                                //           : Text(currency,
+                                //               style: TextStyle(
+                                //                   color: Colors.black,
+                                //                   fontSize: 14))
+                                //     ],
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 10),
+                                // Container(
+                                //   color: Colors.white,
+                                //   padding: EdgeInsets.only(left: 8, right: 8),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Expanded(
+                                //         child: const Text("Rent\nPrices",
+                                //             style: TextStyle(
+                                //                 color: Colors.black,
+                                //                 fontSize: 14)),
+                                //       ),
+                                //       Expanded(
+                                //         flex: 2,
+                                //         child: productprice == null
+                                //             ? SizedBox()
+                                //             : Text(productprice,
+                                //                 maxLines: 2,
+                                //                 textAlign: TextAlign.right,
+                                //                 style: TextStyle(
+                                //                     color: Colors.black,
+                                //                     fontSize: 14)),
+                                //       )
+                                //     ],
+                                //   ),
+                                // ),
                                 // const SizedBox(height: 10),
                                 // Row(
                                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -703,7 +703,7 @@ class _OfferMadeProductDetailScreenState
                                   padding: EdgeInsets.all(8),
                                   child: Row(
                                     children: [
-                                      Text("Rentee Info",
+                                      Text("Rentor Info",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,

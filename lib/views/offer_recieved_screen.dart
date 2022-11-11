@@ -517,7 +517,8 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                               onTap: () {
                                                 showGeneralDialog(
                                                   context: context,
-                                                  barrierDismissible: false,
+                                                  barrierDismissible: true,
+                                                  barrierLabel: "",
                                                   transitionBuilder: (context,
                                                       _animation,
                                                       _secondaryAnimation,
