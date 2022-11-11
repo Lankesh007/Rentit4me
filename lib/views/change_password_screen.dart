@@ -8,19 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/views/account.dart';
+import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/forget_password_screen.dart';
+import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
-  const ChangePasswordScreen({Key key}) : super(key: key);
+class ChangePasswordScreens extends StatefulWidget {
+  const ChangePasswordScreens({Key key}) : super(key: key);
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  State<ChangePasswordScreens> createState() => _ChangePasswordScreensState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
   bool _loading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -83,20 +86,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 2.0,
-      //   // leading: InkWell(
-      //   //     onTap: () {
-      //   //       Navigator.of(context).pop();
-      //   //     },
-      //   //     child: const Icon(
-      //   //       Icons.arrow_back,
-      //   //       color: kPrimaryColor,
-      //   //     )),
-      //   title: Text("Change Password", style: TextStyle(color: kPrimaryColor)),
-      //   centerTitle: true,
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2.0,
+        leading: InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: kPrimaryColor,
+            )),
+        title: Text("Change Password", style: TextStyle(color: kPrimaryColor)),
+        centerTitle: true,
+      ),
       body: ModalProgressHUD(
         inAsyncCall: _loading,
         color: kPrimaryColor,
@@ -315,7 +318,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     log(response.body.toString());
     if (response.statusCode == 200) {
@@ -323,15 +327,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
-        prefs.clear();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+
+        // prefs.clear();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AccountViewScreen()));
       } else {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

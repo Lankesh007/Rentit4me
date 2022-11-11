@@ -613,7 +613,6 @@ class _LoginScreenState extends State<LoginScreen> {
         //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
 
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => SignupUserScreen(name: name, email: email),
         ));
@@ -668,7 +667,6 @@ class _LoginScreenState extends State<LoginScreen> {
         //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
       } else {
         buttonLoading = false;
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

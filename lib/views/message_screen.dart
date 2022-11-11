@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:rentit4me_new/network/api.dart';
@@ -17,7 +18,6 @@ class MessageScreen extends StatefulWidget {
 }
 
 class _MessageScreenState extends State<MessageScreen> {
-  
   bool _loading = false;
   List<dynamic> messageslist = [];
   String searchvalue = "Search for Notification";
@@ -46,7 +46,8 @@ class _MessageScreenState extends State<MessageScreen> {
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: const Text("Notifications", style: TextStyle(color: kPrimaryColor)),
+        title:
+            const Text("Notifications", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -62,7 +63,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                    const  SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Padding(
                         padding: const EdgeInsets.only(left: 0.0),
                         child: TextFormField(
@@ -70,14 +71,14 @@ class _MessageScreenState extends State<MessageScreen> {
                             enabled: true,
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                   const BorderSide(color: Colors.deepOrangeAccent)),
+                                borderSide: const BorderSide(
+                                    color: Colors.deepOrangeAccent)),
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: const BorderSide(
                                   color: Colors.deepOrangeAccent,
                                 )),
-                            contentPadding:const EdgeInsets.only(left: 5),
+                            contentPadding: const EdgeInsets.only(left: 5),
                             hintText: searchvalue,
                             border: InputBorder.none,
                           ),
@@ -173,7 +174,6 @@ class _MessageScreenState extends State<MessageScreen> {
                                 "Please enter your search or select date");
                           } else {
                             if (searchvalue == "Search for Notification" ||
-                               
                                 searchvalue.isEmpty) {
                               _messageslistByDate();
                             } else {
@@ -254,18 +254,16 @@ class _MessageScreenState extends State<MessageScreen> {
                                     ],
                                   ),
                                 ]),
-                         const   SizedBox(height: 10.0),
+                            const SizedBox(height: 10.0),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                const Text("Title",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500)),
-                               const SizedBox(height: 5.0),
-                                Text(messageslist[index]['message'].toString(),
-                                    style: TextStyle(color: Colors.black))
+                                const SizedBox(height: 5.0),
+                                Html(
+                                    data: messageslist[index]['message']
+                                        .toString()),
+                                Text("", style: TextStyle(color: Colors.black))
                               ],
                             )
                           ]),
@@ -285,26 +283,23 @@ class _MessageScreenState extends State<MessageScreen> {
     setState(() {
       _loading = true;
     });
-    final body = {
-      "user_id": prefs.getString('userid'),
-    };
-    var response = await http.post(Uri.parse(BASE_URL + messagesurl),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+
+    var response = await http.get(Uri.parse(BASE_URL + messagesurl), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          messageslist.addAll(jsonDecode(response.body)['Response']['Data']);
+          messageslist
+              .addAll(jsonDecode(response.body)['Response']['Data']['data']);
           _loading = false;
         });
       } else {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -342,7 +337,6 @@ class _MessageScreenState extends State<MessageScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -379,7 +373,6 @@ class _MessageScreenState extends State<MessageScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

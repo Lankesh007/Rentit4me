@@ -8,10 +8,10 @@ import 'package:rentit4me_new/views/account.dart';
 import 'package:rentit4me_new/views/add_list_screen.dart';
 import 'package:rentit4me_new/views/bottomNavigation.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
-import 'package:rentit4me_new/views/offer_made_screen.dart';
 import 'package:rentit4me_new/views/offers_view.dart';
 import 'package:rentit4me_new/views/order_view.dart';
 import 'package:rentit4me_new/views/tab_item.dart';
+import 'package:rentit4me_new/views/user_detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
@@ -33,7 +33,7 @@ class DashboardState extends State<Dashboard> {
     TabItem(tabName: "Offer", icon: "offer.png", page: OffersViewScreen()),
     TabItem(tabName: "Orders", icon: "order.png", page: OrderViewScreen()),
     TabItem(tabName: "Listing", icon: "ads.png", page: AddlistingScreen()),
-    TabItem(tabName: "Account", icon: "account.png", page: AccountViewScreen()),
+    TabItem(tabName: "Account", icon: "account.png", page: UserDetailScreen()),
   ];
 
   DashboardState() {

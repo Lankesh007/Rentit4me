@@ -8,20 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:rentit4me_new/helper/dialog_helper.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/views/account.dart';
 import 'package:rentit4me_new/views/alllisting_screen.dart';
-import 'package:rentit4me_new/views/offer_recieved_screen.dart';
-import 'package:rentit4me_new/views/activeorders_screen.dart';
 import 'package:rentit4me_new/views/add_list_screen.dart';
-import 'package:rentit4me_new/views/change_password_screen.dart';
+import 'package:rentit4me_new/views/change_password.dart';
 import 'package:rentit4me_new/views/chat_screen.dart';
-import 'package:rentit4me_new/views/completed_order_screen.dart';
 import 'package:rentit4me_new/views/generate_ticket_screen.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/views/message_screen.dart';
-import 'package:rentit4me_new/views/myorders_screen.dart';
 import 'package:rentit4me_new/views/myticket_screen.dart';
-import 'package:rentit4me_new/views/offer_made_screen.dart';
-import 'package:rentit4me_new/views/order_recieved_screen.dart';
 import 'package:rentit4me_new/views/payment_screen.dart';
 import 'package:rentit4me_new/views/pending_status_screen.dart';
 import 'package:rentit4me_new/views/profile_screen.dart';
@@ -29,6 +24,10 @@ import 'package:rentit4me_new/views/select_membership_screen.dart';
 import 'package:rentit4me_new/views/user_detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import '../views/change_password_screen.dart';
+import '../views/offers_view.dart';
+import '../views/order_view.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
   final int isSignedUp;
@@ -45,6 +44,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   String email;
   String urlImage;
   String mobile;
+  bool profilebackButton = false;
 
   //Check Approval
   String usertype;
@@ -56,6 +56,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     super.initState();
     _getuserdetail();
     _getcheckapproveData();
+    _getprofileData();
   }
 
   Future _getuserdetail() async {
@@ -86,6 +87,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         mobile = prefs.getString('mobile');
       });
     }
+  }
+
+  getdata() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    preferences.setBool("profileBackButton", profilebackButton);
   }
 
   void _setUserdetail(
@@ -142,6 +149,73 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                             if (prefs.getString('userid') == null ||
                                 prefs.getString('userid') == "") {
                               Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginScreen()))
+                                  .then((value) => Navigator.of(context).pop());
+                            } else {
+                              if (trustedbadge == "1") {
+                                if (trustedbadgeapproval == "Pending" ||
+                                    trustedbadgeapproval == "pending") {
+                                  Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const PendingStatusScreen()))
+                                      .then((value) =>
+                                          Navigator.of(context).pop());
+                                } else {
+                                  if (profilebackButton == false) {
+                                    setState(() {
+                                      profilebackButton = true;
+                                    });
+                                    getdata();
+                                  }
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const UserDetailScreen())).then(
+                                      (value) => Navigator.of(context).pop());
+                                }
+                              } else {
+                                if (profilebackButton == false) {
+                                  setState(() {
+                                    profilebackButton = true;
+                                  });
+                                  getdata();
+                                }
+
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const UserDetailScreen())).then(
+                                    (value) => Navigator.of(context).pop());
+                              }
+                            }
+                          },
+                          child: const Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 3),
+                                child: Text("My Profile",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16)),
+                              )),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            if (prefs.getString('userid') == null ||
+                                prefs.getString('userid') == "") {
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
@@ -178,7 +252,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 3),
-                                child: Text("Membership & Subscriptions",
+                                child: Text("My Subscriptions",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
                               )),
@@ -232,7 +306,63 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 3),
-                                child: Text("Payment",
+                                child: Text("My Transactions",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16)),
+                              )),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            if (prefs.getString('userid') == null ||
+                                prefs.getString('userid') == "") {
+                              Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginScreen()))
+                                  .then((value) => Navigator.of(context).pop());
+                            } else {
+                              if (trustedbadge == "1") {
+                                if (trustedbadgeapproval == "Pending" ||
+                                    trustedbadgeapproval == "pending") {
+                                  Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const PendingStatusScreen()))
+                                      .then((value) =>
+                                          Navigator.of(context).pop());
+                                } else {
+                                  Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ChangePasswordScreens()))
+                                      .then((value) =>
+                                          Navigator.of(context).pop());
+                                }
+                              } else {
+                                Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ChangePasswordScreens()))
+                                    .then(
+                                        (value) => Navigator.of(context).pop());
+                              }
+                            }
+                          },
+                          child: const Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 3),
+                                child: Text("Change Password",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
                               )),
@@ -619,6 +749,121 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       SizedBox(
                         height: 10,
                       ),
+                      // InkWell(
+                      //   onTap: () async {
+                      //     SharedPreferences prefs =
+                      //         await SharedPreferences.getInstance();
+                      //     if (prefs.getString('userid') == null ||
+                      //         prefs.getString('userid') == "") {
+                      //       Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) => LoginScreen()))
+                      //           .then((value) => Navigator.of(context).pop());
+                      //     } else {
+                      //       if (trustedbadge == "1") {
+                      //         if (trustedbadgeapproval == "Pending" ||
+                      //             trustedbadgeapproval == "pending") {
+                      //           Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) =>
+                      //                       PendingStatusScreen())).then(
+                      //               (value) => Navigator.of(context).pop());
+                      //         } else {
+                      //           Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) =>
+                      //                       OfferMadeScreen())).then(
+                      //               (value) => Navigator.of(context).pop());
+                      //         }
+                      //       } else {
+                      //         Navigator.push(
+                      //                 context,
+                      //                 MaterialPageRoute(
+                      //                     builder: (context) =>
+                      //                         OfferMadeScreen()))
+                      //             .then((value) => Navigator.of(context).pop());
+                      //       }
+                      //     }
+                      //   },
+                      //   child: const Align(
+                      //     alignment: Alignment.topLeft,
+                      //     child: Padding(
+                      //       padding: EdgeInsets.symmetric(
+                      //           horizontal: 20, vertical: 3),
+                      //       child: Text("Offers Made",
+                      //           style: TextStyle(
+                      //               color: Colors.white, fontSize: 16)),
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // InkWell(
+                      //   onTap: () async {
+                      //     SharedPreferences prefs =
+                      //         await SharedPreferences.getInstance();
+                      //     if (prefs.getString('userid') == null ||
+                      //         prefs.getString('userid') == "") {
+                      //       Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) => LoginScreen()))
+                      //           .then((value) => Navigator.of(context).pop());
+                      //     } else {
+                      //       if (trustedbadge == "1") {
+                      //         if (trustedbadgeapproval == "Pending" ||
+                      //             trustedbadgeapproval == "pending") {
+                      //           Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) =>
+                      //                       PendingStatusScreen())).then(
+                      //               (value) => Navigator.of(context).pop());
+                      //         } else {
+                      //           Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) =>
+                      //                       OfferRecievedScreen())).then(
+                      //               (value) => Navigator.of(context).pop());
+                      //         }
+                      //       } else {
+                      //         Navigator.push(
+                      //                 context,
+                      //                 MaterialPageRoute(
+                      //                     builder: (context) =>
+                      //                         OfferRecievedScreen()))
+                      //             .then((value) => Navigator.of(context).pop());
+                      //       }
+                      //     }
+                      //   },
+                      //   child: const Align(
+                      //     alignment: Alignment.topLeft,
+                      //     child: Padding(
+                      //       padding: EdgeInsets.symmetric(
+                      //           horizontal: 20, vertical: 3),
+                      //       child: Text("Offers Received",
+                      //           style: TextStyle(
+                      //               color: Colors.white, fontSize: 16)),
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                  const Divider(color: Colors.white70),
+                  ExpansionTile(
+                    collapsedIconColor: Colors.white,
+                    iconColor: Colors.white,
+                    title: const Text("ORDERS",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700)),
+                    children: <Widget>[
                       InkWell(
                         onTap: () async {
                           SharedPreferences prefs =
@@ -645,7 +890,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            OfferMadeScreen())).then(
+                                            OffersViewScreen())).then(
                                     (value) => Navigator.of(context).pop());
                               }
                             } else {
@@ -653,7 +898,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              OfferMadeScreen()))
+                                              OffersViewScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             }
                           }
@@ -698,7 +943,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            OfferRecievedScreen())).then(
+                                            OffersViewScreen())).then(
                                     (value) => Navigator.of(context).pop());
                               }
                             } else {
@@ -706,122 +951,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              OfferRecievedScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
-                          }
-                        },
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 3),
-                            child: Text("Offers Received",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Divider(color: Colors.white70),
-                  ExpansionTile(
-                    collapsedIconColor: Colors.white,
-                    iconColor: Colors.white,
-                    title: const Text("MY ORDERS",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700)),
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          if (prefs.getString('userid') == null ||
-                              prefs.getString('userid') == "") {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginScreen()))
-                                .then((value) => Navigator.of(context).pop());
-                          } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MyOrdersScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MyOrdersScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
-                          }
-                        },
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 3),
-                            child: Text("My Orders",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      InkWell(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          if (prefs.getString('userid') == null ||
-                              prefs.getString('userid') == "") {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginScreen()))
-                                .then((value) => Navigator.of(context).pop());
-                          } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ActiveOrderScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ActiveOrderScreen()))
+                                              OffersViewScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             }
                           }
@@ -831,7 +961,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 3),
-                              child: Text("Active Orders",
+                              child: Text("Offers Received",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16))),
                         ),
@@ -865,7 +995,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            CompletedOrderScreen())).then(
+                                            OrderViewScreen())).then(
                                     (value) => Navigator.of(context).pop());
                               }
                             } else {
@@ -873,7 +1003,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CompletedOrderScreen()))
+                                              OrderViewScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             }
                           }
@@ -883,7 +1013,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 3),
-                            child: Text("Completed Orders",
+                            child: Text("Orders Made",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16)),
                           ),
@@ -918,7 +1048,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const OrderRecievedScreen())).then(
+                                            const OrderViewScreen())).then(
                                     (value) => Navigator.of(context).pop());
                               }
                             } else {
@@ -926,7 +1056,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const OrderRecievedScreen()))
+                                              const OrderViewScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             }
                           }
@@ -945,105 +1075,106 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     ],
                   ),
                   const Divider(color: Colors.white70),
-                  ExpansionTile(
-                    iconColor: Colors.white,
-                    collapsedIconColor: Colors.white,
-                    title: const Text("MANAGE PROFILE",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700)),
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          if (prefs.getString('userid') == null ||
-                              prefs.getString('userid') == "") {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginScreen()))
-                                .then((value) => Navigator.of(context).pop());
-                          } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == null ||
-                                  trustedbadgeapproval == "null" ||
-                                  trustedbadgeapproval == "" ||
-                                  trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const UserDetailScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const UserDetailScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
-                          }
-                        },
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 3),
-                            child: Text("Basic Detail",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      InkWell(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          if (prefs.getString('userid') == null ||
-                              prefs.getString('userid') == "") {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginScreen()))
-                                .then((value) => Navigator.of(context).pop());
-                          } else {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ChangePasswordScreen()))
-                                .then((value) => Navigator.of(context).pop());
-                          }
-                        },
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 3),
-                            child: Text("Security",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   iconColor: Colors.white,
+                  //   collapsedIconColor: Colors.white,
+                  //   title: const Text("MANAGE PROFILE",
+                  //       style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w700)),
+                  //   children: <Widget>[
+                  //     InkWell(
+                  //       onTap: () async {
+                  //         SharedPreferences prefs =
+                  //             await SharedPreferences.getInstance();
+                  //         if (prefs.getString('userid') == null ||
+                  //             prefs.getString('userid') == "") {
+                  //           Navigator.push(
+                  //                   context,
+                  //                   MaterialPageRoute(
+                  //                       builder: (context) => LoginScreen()))
+                  //               .then((value) => Navigator.of(context).pop());
+                  //         } else {
+                  //           if (trustedbadge == "1") {
+                  //             if (trustedbadgeapproval == null ||
+                  //                 trustedbadgeapproval == "null" ||
+                  //                 trustedbadgeapproval == "" ||
+                  //                 trustedbadgeapproval == "Pending" ||
+                  //                 trustedbadgeapproval == "pending") {
+                  //               Navigator.push(
+                  //                   context,
+                  //                   MaterialPageRoute(
+                  //                       builder: (context) =>
+                  //                           const PendingStatusScreen())).then(
+                  //                   (value) => Navigator.of(context).pop());
+                  //             } else {
+                  //               Navigator.push(
+                  //                   context,
+                  //                   MaterialPageRoute(
+                  //                       builder: (context) =>
+                  //                           const UserDetailScreen())).then(
+                  //                   (value) => Navigator.of(context).pop());
+                  //             }
+                  //           } else {
+                  //             Navigator.push(
+                  //                     context,
+                  //                     MaterialPageRoute(
+                  //                         builder: (context) =>
+                  //                             const UserDetailScreen()))
+                  //                 .then((value) => Navigator.of(context).pop());
+                  //           }
+                  //         }
+                  //       },
+                  //       child: const Align(
+                  //         alignment: Alignment.topLeft,
+                  //         child: Padding(
+                  //           padding: EdgeInsets.symmetric(
+                  //               horizontal: 20, vertical: 3),
+                  //           child: Text("Basic Detail",
+                  //               style: TextStyle(
+                  //                   color: Colors.white, fontSize: 16)),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     SizedBox(
+                  //       height: 10,
+                  //     ),
+                  //     InkWell(
+                  //       onTap: () async {
+                  //         SharedPreferences prefs =
+                  //             await SharedPreferences.getInstance();
+                  //         if (prefs.getString('userid') == null ||
+                  //             prefs.getString('userid') == "") {
+                  //           Navigator.push(
+                  //                   context,
+                  //                   MaterialPageRoute(
+                  //                       builder: (context) =>
+                  //                           const LoginScreen()))
+                  //               .then((value) => Navigator.of(context).pop());
+                  //         } else {
+                  //           Navigator.push(
+                  //                   context,
+                  //                   MaterialPageRoute(
+                  //                       builder: (context) =>
+                  //                           const ChangePasswordScreen()))
+                  //               .then((value) => Navigator.of(context).pop());
+                  //         }
+                  //       },
+                  //       child: const Align(
+                  //         alignment: Alignment.topLeft,
+                  //         child: Padding(
+                  //           padding: EdgeInsets.symmetric(
+                  //               horizontal: 20, vertical: 3),
+                  //           child: Text("Security",
+                  //               style: TextStyle(
+                  //                   color: Colors.white, fontSize: 16)),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+
                   ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
@@ -1279,10 +1410,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
+      setState(() {
+        urlImage = devImage + data['User']['avatar_path'];
+        log("image url----->$urlImage");
+      });
+
       return data;
     } else {
       throw Exception('Failed to get data due to ${response.body}');

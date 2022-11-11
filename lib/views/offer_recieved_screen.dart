@@ -1037,7 +1037,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
             MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
         //_offerrecievedlist();
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       print(response.body);

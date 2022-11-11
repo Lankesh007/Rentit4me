@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _getAddress(value) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(value.latitude, value.longitude);
-    print(placemarks);
+    // print(placemarks);
     Placemark place = placemarks[0];
     setState(() {
       _loading = false;
@@ -383,24 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        drawer: isSignedUp == 1 &&
-                trustedBadge == 1 &&
-                trustedBadgeApproval != "approved"
-            ? Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width * 0.6,
-                color: kContentColorDarkTheme,
-                child: const Text(
-                  "Verification Under Process",
-                  style: TextStyle(
-                    color: Colors.brown,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              )
-            : const NavigationDrawerWidget(),
+        drawer: const NavigationDrawerWidget(),
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 2.0,
@@ -654,9 +637,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           setState(() {
                                             searchController.text = "";
                                           });
-                                          showToast(jsonDecode(
-                                                  response.body)['ErrorMessage']
-                                              .toString());
+                                          // showToast(jsonDecode(
+                                          //         response.body)['ErrorMessage']
+                                          //     .toString());
 
                                           log("error1--->${jsonDecode(response.body)['ErrorMessage']}");
                                         }
@@ -664,9 +647,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         setState(() {
                                           searchController.text = "";
                                         });
-                                        showToast(jsonDecode(
-                                                response.body)['ErrorMessage']
-                                            .toString());
+                                        // showToast(jsonDecode(
+                                        //         response.body)['ErrorMessage']
+                                        //     .toString());
 
                                         log("error2--->${jsonDecode(response.body)['ErrorMessage']}");
                                       }
@@ -769,7 +752,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: GridView.builder(
                                       physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
-                                      itemCount: latestAdditionList.length,
+                                      itemCount: 4,
                                       itemBuilder:
                                           (BuildContext context, int index) =>
                                               latestAdditionWidget(
@@ -1069,42 +1052,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      isSignedUp == 1 &&
-                              trustedBadge == 1 &&
-                              trustedBadgeApproval != "approved" &&
-                              packageId != null
-                          ? SizedBox(
-                              height: size.height * 0.2,
-                              width: size.width * 0.98,
-                              child: Card(
-                                elevation: 5,
-                                child: Column(
-                                  children: const [
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      "Hi, User",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      "Your Verification is Under process \nOur technical team contact you soon\n                    Happy Renting !!",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : SizedBox(
-                              height: 10,
-                            ),
+                      // isSignedUp == 1 &&
+                      //         trustedBadge == 1 &&
+                      //         trustedBadgeApproval != "approved" &&
+                      //         packageId != null
+                      //     ? SizedBox(
+                      //         height: size.height * 0.2,
+                      //         width: size.width * 0.98,
+                      //         child: Card(
+                      //           elevation: 5,
+                      //           child: Column(
+                      //             children: const [
+                      //               SizedBox(
+                      //                 height: 10,
+                      //               ),
+                      //               Text(
+                      //                 "Hi, User",
+                      //                 style: TextStyle(
+                      //                     fontSize: 20,
+                      //                     fontWeight: FontWeight.bold),
+                      //               ),
+                      //               SizedBox(
+                      //                 height: 10,
+                      //               ),
+                      //               Text(
+                      //                 "Your Verification is Under process \nOur technical team contact you soon\n                    Happy Renting !!",
+                      //                 style: TextStyle(
+                      //                     fontSize: 20,
+                      //                     fontWeight: FontWeight.bold),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       )
+                      //     : SizedBox(
+                      //         height: 10,
+                      //       ),
                       SizedBox(
                         height: 10,
                       ),
@@ -1208,7 +1191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           : Padding(
                               padding:
                                   EdgeInsets.only(left: 15, top: 10, right: 15),
-                              child: likedadproductlist.length == 0
+                              child: likedadproductlist.isEmpty
                                   ? SizedBox(height: 0)
                                   : GridView.builder(
                                       shrinkWrap: true,
@@ -1504,12 +1487,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 });
                                               }
                                             });
-                                            print(jsonEncode({
-                                              "city_name": locationvalue,
-                                              "category": categoryslugname,
-                                              "exclude": "1",
-                                              "search": ""
-                                            }));
+                                            // print(jsonEncode({
+                                            //   "city_name": locationvalue,
+                                            //   "category": categoryslugname,
+                                            //   "exclude": "1",
+                                            //   "search": ""
+                                            // }));
                                             var response = await http.post(
                                                 Uri.parse(BASE_URL + filterUrl),
                                                 body: jsonEncode({
@@ -1893,7 +1876,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             itemBuilder: (context, gindex) {
                                               return InkWell(
                                                 onTap: () {
-                                                  print(e);
+                                                  // print(e);
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -2223,7 +2206,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // likedadproductlist
         //     .addAll(jsonDecode(response.body)['Response']['You_may_also_like']);
 
-        print(jsonDecode(response.body)['Response']['today_special_deals']);
+        // print(jsonDecode(response.body)['Response']['today_special_deals']);
         todaydealsimage1 = sliderpath +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_1']['value']
@@ -2315,7 +2298,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         locationvalue = prefs.getString('city');
         log("Location Value" + locationvalue.toString());
-
         currentCity = locationvalue;
       });
     }

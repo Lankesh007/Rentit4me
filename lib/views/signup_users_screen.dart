@@ -529,7 +529,6 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
           showToast('Mobile number already exists');
           return;
         } else {
-          showToast(jsonDecode(response.body)['ErrorMessage'].toString());
           return;
         }
       }

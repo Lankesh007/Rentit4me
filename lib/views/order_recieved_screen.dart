@@ -770,7 +770,6 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
               .toString());
         });
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -804,7 +803,6 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
               .addAll(jsonDecode(response.body)['Response']['Orders']);
         });
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -843,7 +841,6 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
         setState(() {
           _progress = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -958,11 +955,9 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         _myrecievedorderslist();
       } else {
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

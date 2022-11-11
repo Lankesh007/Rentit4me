@@ -211,6 +211,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   for (var element in countrylistData) {
                                     if (element['name'].toString() == value) {
                                       setState(() {
+                                        statelistData.clear();
+                                        citylistData.clear();
                                         selectedCountry = value;
                                         log("selected-->$selectedCountry");
                                         country_id = element['id'];
@@ -236,7 +238,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 8.0),
                           DropdownSearch(
-                            selectedItem: "Select State",
+                            selectedItem: selectedState,
                             mode: Mode.DIALOG,
                             showSelectedItem: true,
                             autoFocusSearchBox: true,
@@ -280,7 +282,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 8.0),
                           DropdownSearch(
-                            selectedItem: "Select City",
+                            selectedItem: selectedCity,
                             mode: Mode.DIALOG,
                             showSelectedItem: true,
                             autoFocusSearchBox: true,
@@ -301,6 +303,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                 for (var element in citylistData) {
                                   if (element['name'].toString() == value) {
                                     setState(() {
+                                      selectedCity = '';
                                       selectedCity = value;
                                       city_id = element['id'];
                                     });
@@ -892,6 +895,10 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
+                            } else if (pincode == null ||
+                                pincode == "null" ||
+                                pincode.text.isEmpty) {
+                              showToast("Please Enter Your Pincode");
                             } else {
                               submitDetailsOfConsumer();
                             }
@@ -947,6 +954,10 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
+                            } else if (pincode == null ||
+                                pincode == "null" ||
+                                pincode.text.isEmpty) {
+                              showToast("Please Enter Your Pincode");
                             } else if (key.currentState.validate()) {
                               submitPersonalDetails();
                             }

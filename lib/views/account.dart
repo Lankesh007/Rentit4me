@@ -31,7 +31,7 @@ class _AccountViewScreenState extends State<AccountViewScreen> {
         ],
         views: const [
           UserDetailScreen(),
-          ChangePasswordScreen(),
+          ChangePasswordScreens(),
         ],
         onChange: (index) => log(index.toString()),
       ),

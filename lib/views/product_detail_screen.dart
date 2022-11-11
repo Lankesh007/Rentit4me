@@ -109,14 +109,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     _getData();
-    super.initState();
     getPeopleAlsoLike();
+
+    super.initState();
+    _getPrefData();
     initializeDateFormatting();
     _getproductDetail(productid);
     _getcheckapproveData();
     _getmakeoffer(productid);
 
     // _getgooglelocation();
+  }
+
+  int loggedUserId = 0;
+
+  _getPrefData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String userid = preferences.getString("userid");
+
+    loggedUserId = int.parse(userid);
+    log("userid-==-->$loggedUserId");
   }
 
   _getgooglelocation() async {
@@ -555,101 +567,111 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                               )
                             : userid != ""
-                                ? SizedBox(
-                                    height: 60,
-                                    width: double.infinity,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            log(queryId);
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             Conversation(
-                                            //                 queryId: queryId)));
-                                          },
-                                          child: Container(
-                                            height: 45,
-                                            width: size.width * 0.45,
-                                            alignment: Alignment.center,
-                                            decoration: const BoxDecoration(
-                                                color: kPrimaryColor,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(22.0))),
-                                            child: Text("START DISCUSSION",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w700)),
-                                          ),
+                                ? usrid != loggedUserId
+                                    ? SizedBox(
+                                        height: 60,
+                                        width: double.infinity,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                log(queryId);
+                                                // Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             Conversation(
+                                                //                 queryId: queryId)));
+                                              },
+                                              child: Container(
+                                                height: 45,
+                                                width: size.width * 0.45,
+                                                alignment: Alignment.center,
+                                                decoration: const BoxDecoration(
+                                                    color: kPrimaryColor,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                22.0))),
+                                                child: Text("START DISCUSSION",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w700)),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                if (trustedbadge == 1 &&
+                                                    trustedbadgeapproval
+                                                            .toLowerCase() ==
+                                                        "pending") {
+                                                  showToast(
+                                                      "Your verification is under process.");
+                                                } else {
+                                                  if (actionbtn ==
+                                                      "Make An Offer") {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MakeEditOfferScreen(
+                                                                  pageFor:
+                                                                      "Make an offer",
+                                                                  productid:
+                                                                      productid,
+                                                                  nego: int.parse(
+                                                                      negotiable),
+                                                                  editable:
+                                                                      false,
+                                                                )));
+                                                  } else {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MakeEditOfferScreen(
+                                                                  pageFor:
+                                                                      "Edit Offer",
+                                                                  productid:
+                                                                      productid,
+                                                                  nego: int.parse(
+                                                                      negotiable),
+                                                                  editable:
+                                                                      true,
+                                                                )));
+                                                  }
+                                                }
+                                              },
+                                              child: Container(
+                                                height: 45,
+                                                width: size.width * 0.45,
+                                                alignment: Alignment.center,
+                                                decoration: const BoxDecoration(
+                                                    color:
+                                                        Colors.deepOrangeAccent,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                22.0))),
+                                                child: Text(
+                                                    actionbtn
+                                                        .toString()
+                                                        .toUpperCase(),
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w700)),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        InkWell(
-                                          onTap: () {
-                                            if (trustedbadge == 1 &&
-                                                trustedbadgeapproval
-                                                        .toLowerCase() ==
-                                                    "pending") {
-                                              showToast(
-                                                  "Your verification is under process.");
-                                            } else {
-                                              if (actionbtn ==
-                                                  "Make An Offer") {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MakeEditOfferScreen(
-                                                              pageFor:
-                                                                  "Make an offer",
-                                                              productid:
-                                                                  productid,
-                                                              nego: int.parse(
-                                                                  negotiable),
-                                                              editable: false,
-                                                            )));
-                                              } else {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MakeEditOfferScreen(
-                                                              pageFor:
-                                                                  "Edit Offer",
-                                                              productid:
-                                                                  productid,
-                                                              nego: int.parse(
-                                                                  negotiable),
-                                                              editable: true,
-                                                            )));
-                                              }
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 45,
-                                            width: size.width * 0.45,
-                                            alignment: Alignment.center,
-                                            decoration: const BoxDecoration(
-                                                color: Colors.deepOrangeAccent,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(22.0))),
-                                            child: Text(
-                                                actionbtn
-                                                    .toString()
-                                                    .toUpperCase(),
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w700)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
+                                      )
+                                    : SizedBox()
                                 : SizedBox(),
+
                         Divider(
                           thickness: 0.9,
                           height: 30,
@@ -1768,6 +1790,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<PeopleAlsoMayLikeModel> peopleAlsoLikeList = [];
   bool pageLodaing = false;
 
+  int usrid = 0;
+
   Future getPeopleAlsoLike() async {
     setState(() {
       pageLodaing = true;
@@ -1799,7 +1823,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     var result = jsonDecode(response);
     if (result['ErrorCode'] == 0) {
       var list = result['Response']['liked_ads'] as List;
+
       setState(() {
+        usrid = result['Response']['posted_ad']['user_id'];
+        log("userID---=>" + usrid.toString());
+
         peopleAlsoLikeList.clear();
         var listdata =
             list.map((e) => PeopleAlsoMayLikeModel.fromJson(e)).toList();

@@ -492,7 +492,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         setState(() {
           _progress = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -531,7 +530,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         setState(() {
           _progress = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -573,7 +571,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         setState(() {
           _progress = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -735,10 +732,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     });
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         _myorderslist();
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

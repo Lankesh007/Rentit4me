@@ -1,10 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
-import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/myticket_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -136,43 +137,7 @@ class _GenerateTicketScreenState extends State<GenerateTicketScreen> {
                               ),
                             )),
                         const SizedBox(height: 10),
-                        const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text("Priority",
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500))),
-                        const SizedBox(height: 10),
-                        Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1, color: Colors.deepOrangeAccent),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, right: 10.0),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  hint: const Text("Select"),
-                                  isExpanded: true,
-                                  value: initialpriority,
-                                  icon: const Icon(Icons.arrow_drop_down_sharp),
-                                  items: prioritylist.map((String items) {
-                                    return DropdownMenuItem(
-                                        value: items.toString(),
-                                        child: Text(items));
-                                  }).toList(),
-                                  onChanged: (String changevalue) {
-                                    setState(() {
-                                      initialpriority = changevalue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         const Align(
                             alignment: Alignment.topLeft,
                             child: Text("Message",
@@ -245,10 +210,8 @@ class _GenerateTicketScreenState extends State<GenerateTicketScreen> {
       _loading = true;
     });
     final body = {
-      "id": prefs.getString('userid'),
       "type": initialtype,
       "title": title.text.toString(),
-      "priority": initialpriority,
       "message": message.text.toString()
     };
     print(jsonEncode(body));
@@ -256,14 +219,16 @@ class _GenerateTicketScreenState extends State<GenerateTicketScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
       setState(() {
         _loading = false;
       });
-      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+      showToast(jsonDecode(response.body)['ErrorMessage']).toString();
+
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -271,6 +236,8 @@ class _GenerateTicketScreenState extends State<GenerateTicketScreen> {
       //prefs.setString('userid', jsonDecode(response.body)['Response']['id'].toString());
       //prefs.setBool('logged_in', true);
 
+    } else {
+      showToast(jsonDecode(response.body)['ErrorMessage']).toString();
     }
   }
 }

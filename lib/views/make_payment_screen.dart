@@ -10,12 +10,15 @@ import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
+import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MakePaymentScreen extends StatefulWidget {
   final String packageId;
-  const MakePaymentScreen({this.packageId, Key key}) : super(key: key);
+  final String totalAmount;
+  const MakePaymentScreen({this.packageId, this.totalAmount, Key key})
+      : super(key: key);
 
   @override
   State<MakePaymentScreen> createState() => _MakePaymentScreenState();
@@ -41,9 +44,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
   @override
   void initState() {
     super.initState();
-    _getmakepayment();
-    initializeRazorpay();
-    removeCouponDetails();
+    _getprofileData();
   }
 
   void initializeRazorpay() {
@@ -56,8 +57,10 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print("success");
     //print(response.orderId.toString());
-    print(response.paymentId.toString());
-    _payformembership(package_id, response.paymentId.toString());
+    log("payment id-->" + response.paymentId.toString());
+    _payformembership(
+      response.paymentId,
+    );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -356,6 +359,57 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                                     .w300))
                                               ],
                                             ),
+                                              Column(
+                                              children: [
+                                                couponApplied == false
+                                                    ? SizedBox()
+                                                    : Column(
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              const Text(
+                                                                  "Sub Total Amount",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          kPrimaryColor,
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400)),
+                                                              Container(
+                                                                  height: 25,
+                                                                  width: 60,
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                      color: Colors
+                                                                          .green),
+                                                                  child: Text(
+                                                                      appliedSubTotal
+                                                                          .toString(),
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.w500)))
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                              ],
+                                            ),
+                                           
                                             Column(
                                               children: [
                                                 couponApplied == false
@@ -406,57 +460,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                       ),
                                               ],
                                             ),
-                                            Column(
-                                              children: [
-                                                couponApplied == false
-                                                    ? SizedBox()
-                                                    : Column(
-                                                        children: [
-                                                          SizedBox(height: 10),
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              const Text(
-                                                                  "Sub Total Amount",
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          kPrimaryColor,
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400)),
-                                                              Container(
-                                                                  height: 25,
-                                                                  width: 60,
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  decoration: BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                      color: Colors
-                                                                          .green),
-                                                                  child: Text(
-                                                                      appliedSubTotal
-                                                                          .toString(),
-                                                                      style: TextStyle(
-                                                                          color: Colors
-                                                                              .white,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.w500)))
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 10),
+                                           SizedBox(height: 10),
                                             Divider(
                                               thickness: 0.9,
                                             ),
@@ -598,48 +602,44 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     });
   }
 
-  Future _payformembership(String package_id, String paymentid) async {
+  Future _payformembership(String paymentid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
-    final body = {
-      "user_id": prefs.getString('userid'),
-      "package_id": package_id,
-      "razorpay_payment_id": paymentid,
+
+    var url = BASE_URL + "signup-membership";
+    var body = {
+      "id": widget.packageId,
+      "razorpay_payment_id": paymentid.toString(),
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : planAmount.toString(),
     };
-    var response = await http.post(Uri.parse(BASE_URL + payformembership),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        });
-    print(response.body);
-    setState(() {
-      _loading = false;
-    });
-    if (response.statusCode == 200) {
-      if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-        setState(() {
-          _loading = false;
-        });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result["ErrorCode"] == 0) {
+      setState(() {
+        _loading = false;
+      });
+      if (isSignup == 1 && paymentStatus == 1) {
+        showToast("Your Payment is Sucessfull !!");
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomeScreen()));
+      } else {
+        showToast("Your Payment is Sucessfull !!");
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => Dashboard()));
-      } else {
-        setState(() {
-          _loading = false;
-        });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
         _loading = false;
       });
-      print(response.body);
-      throw Exception('Failed to get data due to ${response.body}');
     }
+    setState(() {
+      _loading = false;
+    });
   }
 
   Future removeCouponDetails() async {
@@ -657,7 +657,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
         applyCouponController.clear();
       });
 
-      Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
+      // Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
     } else {
       Fluttertoast.showToast(msg: result['ErrorMessage'].toString());
       setState(() {
@@ -749,5 +749,41 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     setState(() {
       getFreeMem = false;
     });
+  }
+
+  int isSignup = 0;
+  int paymentStatus = 0;
+
+  Future _getprofileData() async {
+    setState(() {
+      _loading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final body = {
+      "id": prefs.getString('userid'),
+    };
+    var response = await http.post(Uri.parse(BASE_URL + profileUrl),
+        body: jsonEncode(body),
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+        });
+    log('Bearer ${prefs.getString("token")}');
+    print(response.body);
+    setState(() {
+      _loading = false;
+    });
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body)['Response'];
+      isSignup = data['User']['is_signup_complete'];
+      paymentStatus = data['User']['payment_status'];
+
+      _getmakepayment();
+      initializeRazorpay();
+      removeCouponDetails();
+    } else {
+      throw Exception('Failed to get data due to ${response.body}');
+    }
   }
 }

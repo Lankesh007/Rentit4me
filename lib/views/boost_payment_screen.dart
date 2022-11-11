@@ -247,7 +247,7 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
       }
     } else {
       setState(() {
@@ -290,13 +290,13 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
         Navigator.of(context).pop();
       } else {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
       }
     } else {
       setState(() {

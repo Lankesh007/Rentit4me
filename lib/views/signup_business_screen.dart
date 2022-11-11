@@ -549,7 +549,6 @@ class _SignupScreenState extends State<SignupScreen> {
           showToast('Mobile number already exists');
           return;
         } else {
-          showToast(jsonDecode(response.body)['ErrorMessage'].toString());
           return;
         }
       }
@@ -557,7 +556,6 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         _loading = false;
       });
-      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
 
       log(response.body.toString());
       throw Exception('Failed to get data due to ${response.body}');

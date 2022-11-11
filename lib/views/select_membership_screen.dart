@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -105,6 +106,14 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
             title: const Text("Membership",
                 style: TextStyle(color: kPrimaryColor)),
             centerTitle: true,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                )),
           ),
           body: ModalProgressHUD(
             inAsyncCall: _loading,
@@ -133,13 +142,18 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 10.0),
-                                Text(
-                                    membershipplanlist[index]['name']
-                                        .toString(),
-                                    style: const TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w500)),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        membershipplanlist[index]['name']
+                                            .toString(),
+                                        style: const TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
                                 const SizedBox(height: 10.0),
                                 Container(
                                   height: size.height * 0.14,
@@ -189,9 +203,8 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 14)),
                                 const SizedBox(height: 5.0),
-                                membershipplanlist[index]['name'].toString() ==
-                                            "Free" &&
-                                        selectedPack_id != "null"
+                                membershipplanlist[index]['current_plan'] ==
+                                        true
                                     ? Container(
                                         width: size.width * 0.25,
                                         height: 35,
@@ -228,7 +241,14 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                                                             ['id']
                                                         .toString();
                                               });
-                                              startPayment(
+                                              // startPayment(
+                                              //     membershipplanlist[index]
+                                              //             ['amount']
+                                              //         .toString());
+                                              _selectmembership(
+                                                  membershipplanlist[index]
+                                                          ['id']
+                                                      .toString(),
                                                   membershipplanlist[index]
                                                           ['amount']
                                                       .toString());
@@ -243,20 +263,53 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                                           }
                                         },
                                         child: Container(
-                                          width: size.width * 0.25,
-                                          height: 35,
-                                          alignment:
-                                              AlignmentDirectional.center,
-                                          decoration: const BoxDecoration(
-                                              color: kPrimaryColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0))),
-                                          child: const Text("Get Plan",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 14)),
-                                        ),
+                                            width: size.width * 0.25,
+                                            height: 35,
+                                            alignment:
+                                                AlignmentDirectional.center,
+                                            decoration: const BoxDecoration(
+                                                color: kPrimaryColor,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.0))),
+                                            child: membershipplanlist[index]
+                                                        ['current_plan'] ==
+                                                    true
+                                                ? Text("Get Plan",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14))
+                                                : Text("Upgrade Plan",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14))),
+                                      ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                membershipplanlist[index]['current_plan'] ==
+                                        true
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Badge(
+                                              toAnimate: false,
+                                              shape: BadgeShape.square,
+                                              badgeColor: Colors.blue[900],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              badgeContent: Text('Current Plan',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            ),
+                                          ),
+                                        ],
                                       )
+                                    : SizedBox(),
                               ],
                             ),
                           ),
@@ -320,7 +373,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
     // response.headers.addAll({
     //   'Authorization': 'Bearer ${prefs.getString("token")}',
     // });
-    print(response.body);
+    log(response.body);
     if (response.statusCode == 200) {
       setState(() {
         membershipplanlist.addAll(json.decode(response.body)['Response']);
@@ -371,11 +424,10 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
               MaterialPageRoute(
                   builder: (context) => MakePaymentScreen(
                         packageId: packageId.toString(),
+                        
                       )));
         }
-      } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
-      }
+      } else {}
     } else {
       setState(() {
         _loading = false;
@@ -396,14 +448,14 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
       "razorpay_payment_id": paymentid,
     };
     var response = await http.post(Uri.parse(BASE_URL + payformembership),
-        body: jsonEncode(body),
+        body: body,
         headers: {
           "Accept": "application/json",
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
 
-    print(response.body);
+    log(response.body);
     setState(() {
       _loading = false;
     });
@@ -412,14 +464,12 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => Dashboard()));
       } else {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

@@ -20,6 +20,8 @@ class ViewAllLatestAddition extends StatefulWidget {
 
 class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
   List<ViewAllLatestAdditiionModel> latestAdditionList = [];
+  List<ViewAllLatestAdditiionModel> latestAdditionListBySearch = [];
+
   ScrollController _scrollController = ScrollController();
 
   final searchController = TextEditingController();
@@ -82,14 +84,14 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
             )),
         centerTitle: true,
         actions: [
-          IconButton(
-              onPressed: () {
-                filterModelSheet();
-              },
-              icon: Icon(
-                Icons.filter_alt,
-                color: Colors.black,
-              )),
+          // IconButton(
+          //     onPressed: () {
+          //       filterModelSheet();
+          //     },
+          //     icon: Icon(
+          //       Icons.filter_alt,
+          //       color: Colors.black,
+          //     )),
         ],
       ),
       body: RefreshIndicator(
@@ -111,32 +113,61 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
               height: 10,
             ),
             Divider(),
-            latestAdditionList.isEmpty
-                ? Center(
-                    child: Text("No Record Found !!"),
-                  )
-                : loader == true
+            getSearchData == true
+                ? latestAdditionListBySearch.isEmpty
                     ? Center(
-                        child: CircularProgressIndicator(),
+                        child: Text("No Record Found !!"),
                       )
-                    : SizedBox(
-                        height: height * 0.68,
-                        width: width,
-                        child: GridView.builder(
-                            controller: _scrollController,
-                            physics: BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: latestAdditionList.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                latestAdditionWidget(
-                                  latestAdditionList[index],
-                                ),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 1.0,
-                                    mainAxisSpacing: 1.0)),
-                      ),
+                    : searchLoader == true
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : SizedBox(
+                            height: height * 0.68,
+                            width: width,
+                            child: GridView.builder(
+                                controller: _scrollController,
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: latestAdditionListBySearch.length,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        latestAdditionWidget(
+                                          latestAdditionListBySearch[index],
+                                        ),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 1.0,
+                                        mainAxisSpacing: 1.0)),
+                          )
+                : latestAdditionList.isEmpty
+                    ? Center(
+                        child: Text("No Record Found !!"),
+                      )
+                    : loader == true
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : SizedBox(
+                            height: height * 0.68,
+                            width: width,
+                            child: GridView.builder(
+                                controller: _scrollController,
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: latestAdditionList.length,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        latestAdditionWidget(
+                                          latestAdditionList[index],
+                                        ),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 1.0,
+                                        mainAxisSpacing: 1.0)),
+                          ),
           ],
         ),
       ),
@@ -157,6 +188,13 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
             children: <Widget>[
               Expanded(
                 child: TextFormField(
+                  onChanged: (value) {
+                    if (searchController.text.isEmpty) {
+                      setState(() {
+                        getUpdtaeSearchLocation();
+                      });
+                    }
+                  },
                   controller: searchController,
                   decoration: const InputDecoration(
                     hintText: "Search Rentit4me",
@@ -169,7 +207,9 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  getDataBySearching();
+                },
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
@@ -623,10 +663,56 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     });
   }
 
-Future getDataBySearching()async{
-  var url=Apis.browseAdsApi;
-  var body={};
-}
+  bool searchLoader = false;
+  bool getSearchData = false;
+  Future getDataBySearching() async {
+    setState(() {
+      searchLoader = true;
+    });
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    int countryId = preferences.getInt('countryId');
+    String cityId = preferences.getString('cityId');
+    log("cityId---->$cityId");
+    var url = Apis.browseAdsApi;
+    var body = cityId == "" || cityId == null || cityId == "null"
+        ? {
+            "country": countryId.toString(),
+            // "city": cityId.toString(),
+            "search": "",
+            "q": searchController.text.toString(),
+            // "page": getLastPage.toString(),
+          }
+        : {
+            "country": countryId.toString(),
+            "city": cityId.toString(),
+            "search": "",
+            "q": searchController.text.toString(),
+            // "page": getLastPage.toString(),
+          };
+    log("body-->$body");
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      var list = result['Response']['leads']['data'] as List;
+      setState(() {
+        latestAdditionList.clear();
+        latestAdditionListBySearch.clear();
+        var listdata =
+            list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
+        latestAdditionListBySearch.addAll(listdata);
+        getSearchData = true;
+      });
+      setState(() {
+        searchLoader = false;
+      });
+    }
+    setState(() {
+      searchLoader = false;
+    });
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();

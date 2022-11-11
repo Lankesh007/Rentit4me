@@ -1,4 +1,3 @@
-
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -346,13 +345,14 @@ class _MyticketScreenState extends State<MyticketScreen> {
       _progress = true;
     });
     final body = {
-      "id": prefs.getString('userid'),
+      // "id": prefs.getString('userid'),
     };
     var response = await http.post(Uri.parse(BASE_URL + ticketlist),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -392,7 +392,9 @@ class _MyticketScreenState extends State<MyticketScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -431,7 +433,9 @@ class _MyticketScreenState extends State<MyticketScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     print(response.body);
     if (response.statusCode == 200) {

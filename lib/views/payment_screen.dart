@@ -340,7 +340,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {

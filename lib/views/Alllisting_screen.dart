@@ -366,7 +366,12 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                   thickness: 0.9,
                                   height: 20,
                                 ),
-                                Text("Ad id : ${alllist[index]['ad_id']}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),),
+                                Text(
+                                  "Ad id : ${alllist[index]['ad_id']}",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600),
+                                ),
                                 Divider(
                                   thickness: 0.9,
                                   height: 20,
@@ -475,53 +480,54 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Column(children: [
-                                      const Text("Boost Status",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold)),
-                                      const SizedBox(height: 4.0),
-                                      alllist[index]['boost_package_status']
-                                                  .toString() ==
-                                              "1"
-                                          ? Container(
-                                              height: 25,
-                                              width: 65,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.green[400],
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(
-                                                              8.0))),
-                                              child: const Text("Boosted",
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                _postboost(alllist[index]['id']
-                                                    .toString());
-                                              },
-                                              child: Container(
-                                                height: 25,
-                                                width: 65,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.red[400],
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                8.0))),
-                                                alignment: Alignment.center,
-                                                child: const Text("Boost",
-                                                    style: TextStyle(
-                                                        color: Colors.white)),
-                                              ),
-                                            )
-                                    ]),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
+                                    // Column(children: [
+                                    //   const Text("Boost Status",
+                                    //       style: TextStyle(
+                                    //           color: Colors.black,
+                                    //           fontWeight: FontWeight.bold)),
+                                    //   const SizedBox(height: 4.0),
+                                    //   alllist[index]['boost_package_status']
+                                    //               .toString() ==
+                                    //           "1"
+                                    //       ? Container(
+                                    //           height: 25,
+                                    //           width: 65,
+                                    //           alignment: Alignment.center,
+                                    //           decoration: BoxDecoration(
+                                    //             color: Colors.green[400],
+                                    //             borderRadius:
+                                    //                 const BorderRadius.all(
+                                    //               Radius.circular(8.0),
+                                    //             ),
+                                    //           ),
+                                    //           child: const Text("Boosted",
+                                    //               style: TextStyle(
+                                    //                   color: Colors.white)),
+                                    //         )
+                                    //       : InkWell(
+                                    //           onTap: () {
+                                    //             _postboost(alllist[index]['id']
+                                    //                 .toString());
+                                    //           },
+                                    //           child: Container(
+                                    //             height: 25,
+                                    //             width: 65,
+                                    //             decoration: BoxDecoration(
+                                    //                 color: Colors.red[400],
+                                    //                 borderRadius:
+                                    //                     const BorderRadius.all(
+                                    //                         Radius.circular(
+                                    //                             8.0))),
+                                    //             alignment: Alignment.center,
+                                    //             child: const Text("Boost",
+                                    //                 style: TextStyle(
+                                    //                     color: Colors.white)),
+                                    //           ),
+                                    //         )
+                                    // ]),
+                                    // SizedBox(
+                                    //   width: 20,
+                                    // ),
                                     InkWell(
                                       onTap: () {
                                         if (alllist[index]['offers'].length >
@@ -779,7 +785,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
           alllist.addAll(te);
         });
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
       }
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -813,7 +819,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
       }
     } else {
       setState(() {
@@ -850,7 +856,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
       }
     } else {
       setState(() {
@@ -953,7 +959,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         setState(() {
           _loading = false;
         });
-        //showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        //.toString());
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -962,7 +968,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // .toString());
       }
     } else {
       setState(() {
@@ -1013,6 +1019,8 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
   }
 
   Future<void> deleteProduct(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     print(id);
     setState(() {
       _loading = true;
@@ -1024,7 +1032,8 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {

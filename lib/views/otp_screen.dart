@@ -303,7 +303,6 @@ class _OtpScreenState extends State<OtpScreen> {
         });
     log(response.body);
     if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       prefs.setString(
           'userid', jsonDecode(response.body)['Response']['id'].toString());
       prefs.setBool('logged_in', true);
@@ -312,7 +311,6 @@ class _OtpScreenState extends State<OtpScreen> {
           MaterialPageRoute(
               builder: (BuildContext context) => const PersonalDetailScreen()));
     } else {
-      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
     }
   }
 }

@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key key}) : super(key: key);
@@ -56,32 +57,32 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                height: height * 0.055,
-                width: width * 0.9,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                ),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: emailController,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: "Enter your Mobile Number",
-                    hintStyle:
-                        TextStyle(color: Color.fromARGB(137, 131, 122, 122)),
-                    border: InputBorder.none,
-                    counterText: "",
-                  ),
-                  maxLength: 10,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
+              // Container(
+              //   height: height * 0.055,
+              //   width: width * 0.9,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(5),
+              //     border: Border.all(
+              //       color: Colors.grey,
+              //     ),
+              //   ),
+              //   child: TextFormField(
+              //     keyboardType: TextInputType.number,
+              //     controller: emailController,
+              //     textAlign: TextAlign.center,
+              //     decoration: InputDecoration(
+              //       hintText: "Enter your Mobile Number",
+              //       hintStyle:
+              //           TextStyle(color: Color.fromARGB(137, 131, 122, 122)),
+              //       border: InputBorder.none,
+              //       counterText: "",
+              //     ),
+              //     maxLength: 10,
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
               Container(
                 height: height * 0.055,
                 width: width * 0.9,
@@ -137,9 +138,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               InkWell(
                 onTap: () {
-                  if (emailController.text.isEmpty) {
-                    Fluttertoast.showToast(msg: "Please enter mobile number");
-                  } else if (passwordController.text.isEmpty) {
+                 if (passwordController.text.isEmpty) {
                     Fluttertoast.showToast(msg: "Please enter password");
                   } else if (confirmPasswordController.text.isEmpty) {
                     Fluttertoast.showToast(
@@ -181,12 +180,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   //--------------API CALL----------------//
   bool buttonLoader = false;
   Future getforgetPasswordDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String emailOrPhone = prefs.getString('resetNumber');
+
     setState(() {
       buttonLoader = true;
     });
     var url = "${BASE_URL}forget-password/reset";
     var body = {
-      "email": emailController.text.toString(),
+      "email": emailOrPhone.toString(),
       "new_password": passwordController.text.toString(),
       "confirm_password": confirmPasswordController.text.toString(),
     };

@@ -14,6 +14,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/views/account.dart';
+import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -108,8 +109,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   List adviseradslist = [];
   String gstNo = '';
   String panNo = '';
+  bool backbutton = false;
 
-  _setData() async {}
+  _setData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    backbutton = preferences.getBool('profileBackButton');
+    log("backButton---->$backbutton");
+  }
 
   @override
   void initState() {
@@ -128,1247 +134,1285 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 2.0,
-      //   // leading: InkWell(
-      //       // onTap: () {
-      //       //   Navigator.of(context).pop();
-      //       // },
-      //       // child: const Icon(
-      //       //   Icons.arrow_back,
-      //       //   color: kPrimaryColor,
-      //       // )),
-      //   title: const Text("Profile", style: TextStyle(color: kPrimaryColor)),
-      //   centerTitle: true,
-      // ),
-      body: Form(
-        key: form,
-        child: IndexedStack(
-          index: stackindex,
-          children: [
-            ModalProgressHUD(
-              inAsyncCall: _loading,
-              color: kPrimaryColor,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Card(
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 8.0),
-                          child: Row(
-                            children: [
-                              profileimage == null || profileimage == ""
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Container(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2.0,
+        leading: backbutton == true
+            ? InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: kPrimaryColor,
+                ))
+            : SizedBox(),
+        title: const Text("Profile", style: TextStyle(color: kPrimaryColor)),
+        centerTitle: true,
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _setData();
+          _getprofileData();
+          _getcountryData();
+          _getAdviserAdProducts();
+        },
+        child: Form(
+          key: form,
+          child: IndexedStack(
+            index: stackindex,
+            children: [
+              ModalProgressHUD(
+                inAsyncCall: _loading,
+                color: kPrimaryColor,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Card(
+                          elevation: 2.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 8.0),
+                            child: Row(
+                              children: [
+                                profileimage == null || profileimage == ""
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Container(
+                                            height: 45,
+                                            width: 45,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: CircleAvatar(
+                                                child: Image.asset(
+                                                    'assets/images/no_image.jpg'))),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(22),
+                                        child: Container(
                                           height: 45,
                                           width: 45,
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: CircleAvatar(
-                                              child: Image.asset(
-                                                  'assets/images/no_image.jpg'))),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(22),
-                                      child: Container(
-                                        height: 45,
-                                        width: 45,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(22)),
-                                        child: CachedNetworkImage(
-                                          imageUrl: profileimage.toString(),
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(),
-                                          errorWidget: (context, url, error) =>
-                                              Image.asset(
-                                                  'assets/images/no_image.jpg'),
-                                        ),
-                                      )),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  name == null || name == ''
-                                      ? const Text("Hi! Guest",
-                                          style: TextStyle(
-                                              color: Colors.deepOrangeAccent,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500))
-                                      : Text(name.text,
-                                          style: const TextStyle(
-                                              color: Colors.deepOrangeAccent,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500)),
-                                  membership == "" ||
-                                          membership == null ||
-                                          membership == "null"
-                                      ? const SizedBox()
-                                      : membership == "1"
-                                          ? const Text("Membership: Free",
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize: 16))
-                                          : const Text("Membership: Paid",
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize: 16))
-                                ],
-                              )),
-                              Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        stackindex = 1;
-                                      });
-                                    },
+                                                  BorderRadius.circular(22)),
+                                          child: CachedNetworkImage(
+                                            imageUrl: profileimage.toString(),
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(
+                                                    'assets/images/no_image.jpg'),
+                                          ),
+                                        )),
+                                const SizedBox(width: 10),
+                                Expanded(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        myads == null || myads == ""
-                                            ? SizedBox()
-                                            : Text(myads,
-                                                style: TextStyle(
-                                                    color: kPrimaryColor,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                        const Text("My Ads",
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    name == null || name == ''
+                                        ? const Text("Hi! Guest",
                                             style: TextStyle(
                                                 color: Colors.deepOrangeAccent,
-                                                fontSize: 16))
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Card(
-                      //   elevation: 4.0,
-                      //   child:
-                      // ),
-                      const SizedBox(height: 20),
-                      Card(
-                        elevation: 4.0,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Align(
-                                alignment: Alignment.center,
-                                child: Text("Basic Detail",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w700)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 0.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500))
+                                        : Text(name.text,
+                                            style: const TextStyle(
+                                                color: Colors.deepOrangeAccent,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500)),
+                                    membership == "" ||
+                                            membership == null ||
+                                            membership == "null"
+                                        ? const SizedBox()
+                                        : membership == "1"
+                                            ? const Text("Membership: Free",
+                                                style: TextStyle(
+                                                    color: kPrimaryColor,
+                                                    fontSize: 16))
+                                            : const Text("Membership: Paid",
+                                                style: TextStyle(
+                                                    color: kPrimaryColor,
+                                                    fontSize: 16))
+                                  ],
+                                )),
+                                Row(
                                   children: [
-                                    const Text("Email*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(12))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: TextFormField(
-                                            controller: email,
-                                            readOnly: true,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                          ),
-                                        )),
-                                    const SizedBox(height: 20),
-                                    const Text("Phone Number*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: Padding(
-                                          padding: EdgeInsets.only(left: 8.0),
-                                          child: TextFormField(
-                                            controller: mobile,
-                                            readOnly: true,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                          ),
-                                        )),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        // Container(
-                                        //   width: size.width * 0.40,
-                                        //   child: Row(
-                                        //     children: [
-                                        //       const Text("Hide Mobile",
-                                        //           style: TextStyle(
-                                        //               color: kPrimaryColor,
-                                        //               fontWeight: FontWeight.bold)),
-                                        //       const SizedBox(width: 5),
-                                        //       Checkbox(
-                                        //           value: _hidemob,
-                                        //           onChanged: (value) {
-                                        //             if (value) {
-                                        //               setState(() {
-                                        //                 _hidemob = value;
-                                        //               });
-                                        //             } else {
-                                        //               setState(() {
-                                        //                 _hidemob = value;
-                                        //               });
-                                        //             }
-                                        //           })
-                                        //     ],
-                                        //   ),
-                                        // ),
-                                      ],
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          stackindex = 1;
+                                        });
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          myads == null || myads == ""
+                                              ? SizedBox()
+                                              : Text(myads,
+                                                  style: TextStyle(
+                                                      color: kPrimaryColor,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                          const Text("My Ads",
+                                              style: TextStyle(
+                                                  color:
+                                                      Colors.deepOrangeAccent,
+                                                  fontSize: 16))
+                                        ],
+                                      ),
                                     )
                                   ],
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              const Text("Full Name",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Required Field';
-                                        }
-                                        return null;
-                                      },
-                                      controller: name,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Picture",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 5.0, horizontal: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        profileimage.toString() == "" ||
-                                                profileimage.toString() ==
-                                                    "null"
-                                            ? SizedBox()
-                                            : profileimage.startsWith("http")
-                                                ? CircleAvatar(
-                                                    radius: 25,
-                                                    backgroundImage:
-                                                        NetworkImage(
-                                                            profileimage),
-                                                  )
-                                                : CircleAvatar(
-                                                    radius: 25,
-                                                    backgroundImage: FileImage(
-                                                        File(profileimage)),
-                                                  ),
-                                        InkWell(
-                                          onTap: () {
-                                            showPhotoCaptureOptions();
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                            height: 45,
-                                            width: 120,
-                                            alignment: Alignment.center,
-                                            decoration: const BoxDecoration(
-                                                color: Colors.deepOrangeAccent,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.0))),
-                                            child: const Text("Choose file",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16)),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 10),
-                                    const Text("Country*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: TextField(
-                                            readOnly: true,
-                                            decoration: InputDecoration(
-                                              hintText:
-                                                  selectedCountry.toString(),
-                                              border: InputBorder.none,
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {});
-                                            },
-                                          ),
-                                        )),
-
-                                    // Padding(
-                                    //   padding:
-                                    //       const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                                    //   child: DropdownSearch(
-                                    //     selectedItem: "Select Country",
-                                    //     mode: Mode.DIALOG,
-                                    //     showSelectedItem: true,
-                                    //     autoFocusSearchBox: true,
-                                    //     showSearchBox: true,
-                                    //     showFavoriteItems: true,
-                                    //     favoriteItems: (val) {
-                                    //       return [selectedCountry];
-                                    //     },
-                                    //     hint: 'Select Country',
-                                    //     dropdownSearchDecoration: InputDecoration(
-                                    //         enabledBorder: OutlineInputBorder(
-                                    //             borderRadius:
-                                    //                 BorderRadius.circular(12),
-                                    //             borderSide: BorderSide(
-                                    //                 color:
-                                    //                     Colors.deepOrangeAccent,
-                                    //                 width: 1)),
-                                    //         contentPadding:
-                                    //             EdgeInsets.only(left: 10)),
-                                    //     items: countrylistData.map((e) {
-                                    //       return e['name'].toString();
-                                    //     }).toList(),
-                                    //     onChanged: (value) {
-                                    //       if (value != "Select Country") {
-                                    //         for (var element
-                                    //             in countrylistData) {
-                                    //           if (element['name'].toString() ==
-                                    //               value) {
-                                    //             setState(() {
-                                    //               initialcountryname =
-                                    //                   value.toString();
-                                    //               initialstatename = null;
-                                    //               initialcityname = null;
-                                    //               countryId =
-                                    //                   element['id'].toString();
-                                    //               _getStateData(
-                                    //                   element['id'].toString());
-                                    //             });
-                                    //           }
-                                    //         }
-                                    //       } else {
-                                    //         showToast("Select Country");
-                                    //       }
-                                    //     },
-                                    //   ),
-                                    // ),
-
-                                    const SizedBox(height: 10),
-                                    const Text("State*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: TextField(
-                                            readOnly: true,
-                                            decoration: InputDecoration(
-                                              hintText:
-                                                  selectedState.toString(),
-                                              border: InputBorder.none,
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {});
-                                            },
-                                          ),
-                                        )),
-
-                                    // DropdownSearch(
-                                    //   selectedItem: "Select State",
-                                    //   mode: Mode.DIALOG,
-                                    //   showSelectedItem: true,
-                                    //   autoFocusSearchBox: true,
-                                    //   showSearchBox: true,
-                                    //   hint: 'Select State',
-                                    //   dropdownSearchDecoration: InputDecoration(
-                                    //       enabledBorder: OutlineInputBorder(
-                                    //           borderRadius:
-                                    //               BorderRadius.circular(12),
-                                    //           borderSide: BorderSide(
-                                    //               color:
-                                    //                   Colors.deepOrangeAccent,
-                                    //               width: 1)),
-                                    //       contentPadding:
-                                    //           EdgeInsets.only(left: 10)),
-                                    //   items: statelistData.map((e) {
-                                    //     return e['name'].toString();
-                                    //   }).toList(),
-                                    //   onChanged: (value) {
-                                    //     if (value != "Select State") {
-                                    //       for (var element in statelistData) {
-                                    //         if (element['name'].toString() ==
-                                    //             value) {
-                                    //           setState(() {
-                                    //             initialstatename =
-                                    //                 value.toString();
-                                    //             initialstatename = null;
-                                    //             initialcityname = null;
-                                    //             stateId =
-                                    //                 element['id'].toString();
-                                    //             _getCityData(
-                                    //                 element['id'].toString());
-                                    //           });
-                                    //         }
-                                    //       }
-                                    //     } else {
-                                    //       showToast("Select State");
-                                    //     }
-                                    //   },
-                                    // ),
-
-                                    const SizedBox(height: 10),
-                                    const Text("City*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    // DropdownSearch(
-                                    //   selectedItem: "Select City",
-                                    //   mode: Mode.DIALOG,
-                                    //   showSelectedItem: true,
-                                    //   autoFocusSearchBox: true,
-                                    //   showSearchBox: true,
-                                    //   hint: 'Select City',
-                                    //   dropdownSearchDecoration: InputDecoration(
-                                    //       enabledBorder: OutlineInputBorder(
-                                    //           borderRadius:
-                                    //               BorderRadius.circular(12),
-                                    //           borderSide: BorderSide(
-                                    //               color:
-                                    //                   Colors.deepOrangeAccent,
-                                    //               width: 1)),
-                                    //       contentPadding:
-                                    //           EdgeInsets.only(left: 10)),
-                                    //   items: citylistData.map((e) {
-                                    //     return e['name'].toString();
-                                    //   }).toList(),
-                                    //   onChanged: (value) {
-                                    //     if (value != "Select City") {
-                                    //       for (var element in citylistData) {
-                                    //         if (element['name'].toString() ==
-                                    //             value) {
-                                    //           setState(() {
-                                    //             initialcityname =
-                                    //                 value.toString();
-                                    //             //initialstatename = null;
-                                    //             //initialcityname = null;
-                                    //             cityId =
-                                    //                 element['id'].toString();
-                                    //             //_getStateData(element['id'].toString());
-                                    //           });
-                                    //         }
-                                    //       }
-                                    //     } else {
-                                    //       showToast("Select City");
-                                    //     }
-                                    //   },
-                                    // ),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: TextField(
-                                            readOnly: true,
-                                            decoration: InputDecoration(
-                                              hintText: selectedCity.toString(),
-                                              border: InputBorder.none,
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {});
-                                            },
-                                          ),
-                                        )),
-
-                                    const SizedBox(height: 10),
-                                    const Text("Address",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: TextFormField(
-                                            controller: address,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                          ),
-                                        )),
-                                    const SizedBox(height: 10),
-                                    const Text("Pincode",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.deepOrangeAccent),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: TextFormField(
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Required Field';
-                                              }
-                                              return null;
-                                            },
-                                            controller: pincode,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                          ),
-                                        )),
-                                    const SizedBox(height: 10),
-                                    const Text("Communication Preferences*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Checkbox(
-                                                value: _emailcheck,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _emailcheck = value;
-                                                    if (_emailcheck) {
-                                                      commprefs.add(1);
-                                                    } else {
-                                                      for (var element
-                                                          in commprefs) {
-                                                        if (element == 1) {
-                                                          commprefs.removeWhere(
-                                                              (element) =>
-                                                                  element == 1);
-                                                        }
-                                                      }
-                                                    }
-                                                  });
-                                                }),
-                                            const Text("Email",
-                                                style: TextStyle(
-                                                    color: kPrimaryColor,
-                                                    fontWeight:
-                                                        FontWeight.w700))
-                                          ],
-                                        ),
-                                        const SizedBox(width: 20),
-                                        Row(
-                                          children: [
-                                            Checkbox(
-                                                value: _smscheck,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _smscheck = value;
-                                                    if (_smscheck) {
-                                                      commprefs.add(2);
-                                                    } else {
-                                                      for (var element
-                                                          in commprefs) {
-                                                        if (element == 2) {
-                                                          commprefs.removeWhere(
-                                                              (element) =>
-                                                                  element == 2);
-                                                        }
-                                                      }
-                                                    }
-                                                  });
-                                                }),
-                                            const Text("SMS",
-                                                style: TextStyle(
-                                                    color: kPrimaryColor,
-                                                    fontWeight:
-                                                        FontWeight.w700))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-
-                                    // SizedBox(
-                                    //   width: double.infinity,
-                                    //   child: Row(
-                                    //     children: [
-                                    //       const Text("Push Notification",
-                                    //           style: TextStyle(
-                                    //               color: kPrimaryColor,
-                                    //               fontWeight: FontWeight.bold)),
-                                    //       const SizedBox(width: 5),
-                                    //       Checkbox(
-                                    //           value: _checknotifi,
-                                    //           onChanged: (value) {
-                                    //             if (value) {
-                                    //               setState(() {
-                                    //                 _checknotifi = value;
-                                    //               });
-                                    //             } else {
-                                    //               setState(() {
-                                    //                 _checknotifi = value;
-                                    //               });
-                                    //             }
-                                    //           }),
-                                    //       const SizedBox(width: 5),
-                                    //       const Text('Allow',
-                                    //           style: TextStyle(
-                                    //               color: kPrimaryColor,
-                                    //               fontWeight: FontWeight.bold))
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-
-                      userType == 3
-                          ? bankDetailsWidget()
-                          : Column(children: [
-                              businessDetailsWidget(),
-                              bankDetailsWidget(),
-                            ]),
-                      const SizedBox(height: 20),
-                      Card(
-                        elevation: 4.0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Align(
-                                alignment: Alignment.center,
-                                child: Text("Social Network",
+                        const SizedBox(height: 20),
+                        // Card(
+                        //   elevation: 4.0,
+                        //   child:
+                        // ),
+                        const SizedBox(height: 20),
+                        Card(
+                          elevation: 4.0,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Align(
+                                  alignment: Alignment.center,
+                                  child: Text("Basic Detail",
+                                      style: TextStyle(
+                                          color: kPrimaryColor,
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.w700)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 0.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Email*",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(12))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: TextFormField(
+                                              controller: email,
+                                              readOnly: true,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          )),
+                                      const SizedBox(height: 20),
+                                      const Text("Phone Number*",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          child: Padding(
+                                            padding: EdgeInsets.only(left: 8.0),
+                                            child: TextFormField(
+                                              controller: mobile,
+                                              readOnly: true,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          )),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: const [
+                                          // Container(
+                                          //   width: size.width * 0.40,
+                                          //   child: Row(
+                                          //     children: [
+                                          //       const Text("Hide Mobile",
+                                          //           style: TextStyle(
+                                          //               color: kPrimaryColor,
+                                          //               fontWeight: FontWeight.bold)),
+                                          //       const SizedBox(width: 5),
+                                          //       Checkbox(
+                                          //           value: _hidemob,
+                                          //           onChanged: (value) {
+                                          //             if (value) {
+                                          //               setState(() {
+                                          //                 _hidemob = value;
+                                          //               });
+                                          //             } else {
+                                          //               setState(() {
+                                          //                 _hidemob = value;
+                                          //               });
+                                          //             }
+                                          //           })
+                                          //     ],
+                                          //   ),
+                                          // ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text("Full Name",
                                     style: TextStyle(
                                         color: kPrimaryColor,
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w700)),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Required Field';
+                                          }
+                                          return null;
+                                        },
+                                        controller: name,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    )),
+                                const SizedBox(height: 10),
+                                const Text("Picture",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          profileimage.toString() == "" ||
+                                                  profileimage.toString() ==
+                                                      "null"
+                                              ? SizedBox()
+                                              : profileimage.startsWith("http")
+                                                  ? CircleAvatar(
+                                                      radius: 25,
+                                                      backgroundImage:
+                                                          NetworkImage(
+                                                              profileimage),
+                                                    )
+                                                  : CircleAvatar(
+                                                      radius: 25,
+                                                      backgroundImage:
+                                                          FileImage(File(
+                                                              profileimage)),
+                                                    ),
+                                          InkWell(
+                                            onTap: () {
+                                              showPhotoCaptureOptions();
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                              height: 45,
+                                              width: 120,
+                                              alignment: Alignment.center,
+                                              decoration: const BoxDecoration(
+                                                  color: Colors
+                                                      .deepOrangeAccent,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              8.0))),
+                                              child: const Text("Choose file",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      const Text("Country*",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: TextField(
+                                              readOnly: true,
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    selectedCountry.toString(),
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {});
+                                              },
+                                            ),
+                                          )),
+
+                                      // Padding(
+                                      //   padding:
+                                      //       const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                                      //   child: DropdownSearch(
+                                      //     selectedItem: "Select Country",
+                                      //     mode: Mode.DIALOG,
+                                      //     showSelectedItem: true,
+                                      //     autoFocusSearchBox: true,
+                                      //     showSearchBox: true,
+                                      //     showFavoriteItems: true,
+                                      //     favoriteItems: (val) {
+                                      //       return [selectedCountry];
+                                      //     },
+                                      //     hint: 'Select Country',
+                                      //     dropdownSearchDecoration: InputDecoration(
+                                      //         enabledBorder: OutlineInputBorder(
+                                      //             borderRadius:
+                                      //                 BorderRadius.circular(12),
+                                      //             borderSide: BorderSide(
+                                      //                 color:
+                                      //                     Colors.deepOrangeAccent,
+                                      //                 width: 1)),
+                                      //         contentPadding:
+                                      //             EdgeInsets.only(left: 10)),
+                                      //     items: countrylistData.map((e) {
+                                      //       return e['name'].toString();
+                                      //     }).toList(),
+                                      //     onChanged: (value) {
+                                      //       if (value != "Select Country") {
+                                      //         for (var element
+                                      //             in countrylistData) {
+                                      //           if (element['name'].toString() ==
+                                      //               value) {
+                                      //             setState(() {
+                                      //               initialcountryname =
+                                      //                   value.toString();
+                                      //               initialstatename = null;
+                                      //               initialcityname = null;
+                                      //               countryId =
+                                      //                   element['id'].toString();
+                                      //               _getStateData(
+                                      //                   element['id'].toString());
+                                      //             });
+                                      //           }
+                                      //         }
+                                      //       } else {
+                                      //         showToast("Select Country");
+                                      //       }
+                                      //     },
+                                      //   ),
+                                      // ),
+
+                                      const SizedBox(height: 10),
+                                      const Text("State*",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: TextField(
+                                              readOnly: true,
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    selectedState.toString(),
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {});
+                                              },
+                                            ),
+                                          )),
+
+                                      // DropdownSearch(
+                                      //   selectedItem: "Select State",
+                                      //   mode: Mode.DIALOG,
+                                      //   showSelectedItem: true,
+                                      //   autoFocusSearchBox: true,
+                                      //   showSearchBox: true,
+                                      //   hint: 'Select State',
+                                      //   dropdownSearchDecoration: InputDecoration(
+                                      //       enabledBorder: OutlineInputBorder(
+                                      //           borderRadius:
+                                      //               BorderRadius.circular(12),
+                                      //           borderSide: BorderSide(
+                                      //               color:
+                                      //                   Colors.deepOrangeAccent,
+                                      //               width: 1)),
+                                      //       contentPadding:
+                                      //           EdgeInsets.only(left: 10)),
+                                      //   items: statelistData.map((e) {
+                                      //     return e['name'].toString();
+                                      //   }).toList(),
+                                      //   onChanged: (value) {
+                                      //     if (value != "Select State") {
+                                      //       for (var element in statelistData) {
+                                      //         if (element['name'].toString() ==
+                                      //             value) {
+                                      //           setState(() {
+                                      //             initialstatename =
+                                      //                 value.toString();
+                                      //             initialstatename = null;
+                                      //             initialcityname = null;
+                                      //             stateId =
+                                      //                 element['id'].toString();
+                                      //             _getCityData(
+                                      //                 element['id'].toString());
+                                      //           });
+                                      //         }
+                                      //       }
+                                      //     } else {
+                                      //       showToast("Select State");
+                                      //     }
+                                      //   },
+                                      // ),
+
+                                      const SizedBox(height: 10),
+                                      const Text("City*",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      // DropdownSearch(
+                                      //   selectedItem: "Select City",
+                                      //   mode: Mode.DIALOG,
+                                      //   showSelectedItem: true,
+                                      //   autoFocusSearchBox: true,
+                                      //   showSearchBox: true,
+                                      //   hint: 'Select City',
+                                      //   dropdownSearchDecoration: InputDecoration(
+                                      //       enabledBorder: OutlineInputBorder(
+                                      //           borderRadius:
+                                      //               BorderRadius.circular(12),
+                                      //           borderSide: BorderSide(
+                                      //               color:
+                                      //                   Colors.deepOrangeAccent,
+                                      //               width: 1)),
+                                      //       contentPadding:
+                                      //           EdgeInsets.only(left: 10)),
+                                      //   items: citylistData.map((e) {
+                                      //     return e['name'].toString();
+                                      //   }).toList(),
+                                      //   onChanged: (value) {
+                                      //     if (value != "Select City") {
+                                      //       for (var element in citylistData) {
+                                      //         if (element['name'].toString() ==
+                                      //             value) {
+                                      //           setState(() {
+                                      //             initialcityname =
+                                      //                 value.toString();
+                                      //             //initialstatename = null;
+                                      //             //initialcityname = null;
+                                      //             cityId =
+                                      //                 element['id'].toString();
+                                      //             //_getStateData(element['id'].toString());
+                                      //           });
+                                      //         }
+                                      //       }
+                                      //     } else {
+                                      //       showToast("Select City");
+                                      //     }
+                                      //   },
+                                      // ),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: TextField(
+                                              readOnly: true,
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    selectedCity.toString(),
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {});
+                                              },
+                                            ),
+                                          )),
+
+                                      const SizedBox(height: 10),
+                                      const Text("Address",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: TextFormField(
+                                              controller: address,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          )),
+                                      const SizedBox(height: 10),
+                                      const Text("Pincode",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      Colors.deepOrangeAccent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: TextFormField(
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Required Field';
+                                                }
+                                                return null;
+                                              },
+                                              controller: pincode,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          )),
+                                      const SizedBox(height: 10),
+                                      const Text("Communication Preferences*",
+                                          style: TextStyle(
+                                              color: kPrimaryColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Checkbox(
+                                                  value: _emailcheck,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      _emailcheck = value;
+                                                      if (_emailcheck) {
+                                                        commprefs.add(1);
+                                                      } else {
+                                                        for (var element
+                                                            in commprefs) {
+                                                          if (element == 1) {
+                                                            commprefs.removeWhere(
+                                                                (element) =>
+                                                                    element ==
+                                                                    1);
+                                                          }
+                                                        }
+                                                      }
+                                                    });
+                                                  }),
+                                              const Text("Email",
+                                                  style: TextStyle(
+                                                      color: kPrimaryColor,
+                                                      fontWeight:
+                                                          FontWeight.w700))
+                                            ],
+                                          ),
+                                          const SizedBox(width: 20),
+                                          Row(
+                                            children: [
+                                              Checkbox(
+                                                  value: _smscheck,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      _smscheck = value;
+                                                      if (_smscheck) {
+                                                        commprefs.add(2);
+                                                      } else {
+                                                        for (var element
+                                                            in commprefs) {
+                                                          if (element == 2) {
+                                                            commprefs.removeWhere(
+                                                                (element) =>
+                                                                    element ==
+                                                                    2);
+                                                          }
+                                                        }
+                                                      }
+                                                    });
+                                                  }),
+                                              const Text("SMS",
+                                                  style: TextStyle(
+                                                      color: kPrimaryColor,
+                                                      fontWeight:
+                                                          FontWeight.w700))
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+
+                                      // SizedBox(
+                                      //   width: double.infinity,
+                                      //   child: Row(
+                                      //     children: [
+                                      //       const Text("Push Notification",
+                                      //           style: TextStyle(
+                                      //               color: kPrimaryColor,
+                                      //               fontWeight: FontWeight.bold)),
+                                      //       const SizedBox(width: 5),
+                                      //       Checkbox(
+                                      //           value: _checknotifi,
+                                      //           onChanged: (value) {
+                                      //             if (value) {
+                                      //               setState(() {
+                                      //                 _checknotifi = value;
+                                      //               });
+                                      //             } else {
+                                      //               setState(() {
+                                      //                 _checknotifi = value;
+                                      //               });
+                                      //             }
+                                      //           }),
+                                      //       const SizedBox(width: 5),
+                                      //       const Text('Allow',
+                                      //           style: TextStyle(
+                                      //               color: kPrimaryColor,
+                                      //               fontWeight: FontWeight.bold))
+                                      //     ],
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        userType == 3
+                            ? bankDetailsWidget()
+                            : Column(children: [
+                                businessDetailsWidget(),
+                                bankDetailsWidget(),
+                              ]),
+                        const SizedBox(height: 20),
+                        Card(
+                          elevation: 4.0,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Align(
+                                  alignment: Alignment.center,
+                                  child: Text("Social Network",
+                                      style: TextStyle(
+                                          color: kPrimaryColor,
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.w700)),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text("Facebook",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: fburl,
+                                      ),
+                                    )),
+                                const SizedBox(height: 10),
+                                const Text("Twitter",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: twitterurl,
+                                      ),
+                                    )),
+                                const SizedBox(height: 10),
+                                const Text("Google+",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: googleplusurl,
+                                      ),
+                                    )),
+                                const SizedBox(height: 10),
+                                const Text("Instagram",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: instragramurl,
+                                      ),
+                                    )),
+                                const SizedBox(height: 10),
+                                const Text("Linkedin",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        controller: linkdinurl,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    )),
+                                const SizedBox(height: 10),
+                                const Text("Youtube",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: youtubeurl,
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Card(
+                        //   elevation: 4.0,
+                        //   child:
+                        // ),
+
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: () {
+                            // if (name.text.isEmpty) {
+                            //   showToast("Please Enter Your Name");
+                            // } else if (commprefs.isEmpty) {
+                            //   showToast("Please Select Atleast One Prefs");
+                            // } else if (profileimage.isEmpty) {
+                            //   showToast("Please Select Profile Picture");
+                            // } else if (address.text.isEmpty) {
+                            //   showToast("Please Enter Your Address");
+                            // } else if (initialstatename.isEmpty) {
+                            //   showToast("Please Select State name");
+                            // } else if (initialcityname.isEmpty) {
+                            //   showToast("Please Select City name");
+                            // } else if (initialcountryname.isEmpty) {
+                            //   showToast("Please Select Country name");
+                            // }
+                            //  else if (pincode.text.isEmpty) {
+                            //   showToast("Please Enter PinCode ");
+                            // } else if (bankName.text.isEmpty) {
+                            //   showToast("Please Enter Bank name");
+                            // } else if (branchName.text.isEmpty) {
+                            //   showToast("Please Enter Branch Name");
+                            // } else if (accountNo.text.isEmpty) {
+                            //   showToast("Please Enter Bank Account Number");
+                            // } else if (dropdownvalue == "Select") {
+                            //   showToast("Please Select Account Type");
+                            // } else if (iFSCCode.text.isEmpty) {
+                            //   showToast("Please Enter IFSC Code Number");
+                            // }
+                            // } else {
+                            //   if (userType == 4) {
+                            //     if (businessName.text.isEmpty) {
+                            //       showToast("Please Enter Your BusinessName");
+                            //     } else if (gstNumber.text.isEmpty) {
+                            //       showToast("Please Enter Gst Number");
+                            //     } else if (panNumber.text.isEmpty) {
+                            //       showToast("Please Enter PAN Number");
+                            //     } else if (panCardDocumnet.isEmpty) {
+                            //       showToast("Please Choode pan doc");
+                            //     } else if (gstDocumnet.isEmpty) {
+                            //       showToast("Please Choose GST doc");
+                            //     } else if (bankName.text.isEmpty) {
+                            //       showToast("Please Enter Bank name");
+                            //     } else if (branchName.text.isEmpty) {
+                            //       showToast("Please Enter Branch Name");
+                            //     } else if (accountNo.text.isEmpty) {
+                            //       showToast("Please Enter Bank Account Number");
+                            //     } else if (dropdownvalue == "Select") {
+                            //       showToast("Please Select Account Type");
+                            //     } else if (iFSCCode.text.isEmpty) {
+                            //       showToast("Please Enter IFSC Code Number");
+                            //     } else {
+                            //       uploadBasicDetails();
+                            //     }
+                            // }
+                            // else {
+                            // }
+
+                            if (profilepicbool == true &&
+                                gstDocumentBool == true &&
+                                panDocumentBool == true) {
+                              uploadBasicDetails();
+                            } else if (profilepicbool == true) {
+                              uploadBasicDetailsWithProfileImage();
+                            } else if (gstDocumentBool == true) {
+                              uploadBasicDetailsWithGstImage();
+                            } else if (panDocumentBool == true) {
+                              uploadBasicDetailsWithPanImage();
+                            } else {
+                              uploadBasicDetailsWitoutImage();
+                            }
+
+                            // if (userType == 4) {
+                            //   if (profileimage.isEmpty ||
+                            //       profileimage == "" ||
+                            //       profileimage == null) {
+                            //     showToast("Please Select Your Profile Image");
+                            //   } else {
+                            //     uploadBasicDetails();
+                            //   }
+                            // } else {
+                            //   if (profileimage.isEmpty ||
+                            //       profileimage == "" ||
+                            //       profileimage == null) {
+                            //     showToast("Please Select Your Profile Image");
+                            //   } else {
+                            //     uploadBasicDetails();
+                            //   }
+                            // }
+                          },
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Card(
+                              elevation: 12.0,
+                              color: Colors.deepOrangeAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0),
                               ),
-                              const SizedBox(height: 10),
-                              const Text("Facebook",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      controller: fburl,
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Twitter",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      controller: twitterurl,
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Google+",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      controller: googleplusurl,
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Instagram",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      controller: instragramurl,
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Linkedin",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      controller: linkdinurl,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  )),
-                              const SizedBox(height: 10),
-                              const Text("Youtube",
-                                  style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 8.0),
-                              Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      controller: youtubeurl,
-                                    ),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Card(
-                      //   elevation: 4.0,
-                      //   child:
-                      // ),
-
-                      const SizedBox(height: 10),
-                      InkWell(
-                        onTap: () {
-                          // if (name.text.isEmpty) {
-                          //   showToast("Please Enter Your Name");
-                          // } else if (commprefs.isEmpty) {
-                          //   showToast("Please Select Atleast One Prefs");
-                          // } else if (profileimage.isEmpty) {
-                          //   showToast("Please Select Profile Picture");
-                          // } else if (address.text.isEmpty) {
-                          //   showToast("Please Enter Your Address");
-                          // } else if (initialstatename.isEmpty) {
-                          //   showToast("Please Select State name");
-                          // } else if (initialcityname.isEmpty) {
-                          //   showToast("Please Select City name");
-                          // } else if (initialcountryname.isEmpty) {
-                          //   showToast("Please Select Country name");
-                          // }
-                          //  else if (pincode.text.isEmpty) {
-                          //   showToast("Please Enter PinCode ");
-                          // } else if (bankName.text.isEmpty) {
-                          //   showToast("Please Enter Bank name");
-                          // } else if (branchName.text.isEmpty) {
-                          //   showToast("Please Enter Branch Name");
-                          // } else if (accountNo.text.isEmpty) {
-                          //   showToast("Please Enter Bank Account Number");
-                          // } else if (dropdownvalue == "Select") {
-                          //   showToast("Please Select Account Type");
-                          // } else if (iFSCCode.text.isEmpty) {
-                          //   showToast("Please Enter IFSC Code Number");
-                          // }
-                          // } else {
-                          //   if (userType == 4) {
-                          //     if (businessName.text.isEmpty) {
-                          //       showToast("Please Enter Your BusinessName");
-                          //     } else if (gstNumber.text.isEmpty) {
-                          //       showToast("Please Enter Gst Number");
-                          //     } else if (panNumber.text.isEmpty) {
-                          //       showToast("Please Enter PAN Number");
-                          //     } else if (panCardDocumnet.isEmpty) {
-                          //       showToast("Please Choode pan doc");
-                          //     } else if (gstDocumnet.isEmpty) {
-                          //       showToast("Please Choose GST doc");
-                          //     } else if (bankName.text.isEmpty) {
-                          //       showToast("Please Enter Bank name");
-                          //     } else if (branchName.text.isEmpty) {
-                          //       showToast("Please Enter Branch Name");
-                          //     } else if (accountNo.text.isEmpty) {
-                          //       showToast("Please Enter Bank Account Number");
-                          //     } else if (dropdownvalue == "Select") {
-                          //       showToast("Please Select Account Type");
-                          //     } else if (iFSCCode.text.isEmpty) {
-                          //       showToast("Please Enter IFSC Code Number");
-                          //     } else {
-                          //       uploadBasicDetails();
-                          //     }
-                          // }
-                          // else {
-                          // }
-
-                          if (profilepicbool == true &&
-                              gstDocumentBool == true &&
-                              panDocumentBool == true) {
-                            uploadBasicDetails();
-                          } else if (profilepicbool == true) {
-                            uploadBasicDetailsWithProfileImage();
-                          } else if (gstDocumentBool == true) {
-                            uploadBasicDetailsWithGstImage();
-                          } else if (panDocumentBool == true) {
-                            uploadBasicDetailsWithPanImage();
-                          } else {
-                            uploadBasicDetailsWitoutImage();
-                          }
-
-                          // if (userType == 4) {
-                          //   if (profileimage.isEmpty ||
-                          //       profileimage == "" ||
-                          //       profileimage == null) {
-                          //     showToast("Please Select Your Profile Image");
-                          //   } else {
-                          //     uploadBasicDetails();
-                          //   }
-                          // } else {
-                          //   if (profileimage.isEmpty ||
-                          //       profileimage == "" ||
-                          //       profileimage == null) {
-                          //     showToast("Please Select Your Profile Image");
-                          //   } else {
-                          //     uploadBasicDetails();
-                          //   }
-                          // }
-                        },
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Card(
-                            elevation: 12.0,
-                            color: Colors.deepOrangeAccent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 10),
-                              child: Text(
-                                  buttonLoading == true
-                                      ? "Please Wait..."
-                                      : "UPDATE",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 16)),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 10),
+                                child: Text(
+                                    buttonLoading == true
+                                        ? "Please Wait..."
+                                        : "UPDATE",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 16)),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Column(
-              children: [
-                const SizedBox(height: 10),
-                Expanded(
-                    child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Card(
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            children: [
-                              profileimage == null || profileimage == ""
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Container(
+              Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Expanded(
+                      child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Card(
+                          elevation: 2.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              children: [
+                                profileimage == null || profileimage == ""
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Container(
+                                            height: 45,
+                                            width: 45,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: CircleAvatar(
+                                                child: Image.asset(
+                                                    'assets/images/no_image.jpg'))),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(22),
+                                        child: Container(
                                           height: 45,
                                           width: 45,
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: CircleAvatar(
-                                              child: Image.asset(
-                                                  'assets/images/no_image.jpg'))),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(22),
-                                      child: Container(
-                                        height: 45,
-                                        width: 45,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(22)),
-                                        child: CachedNetworkImage(
-                                          imageUrl: profileimage,
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(),
-                                          errorWidget: (context, url, error) =>
-                                              Image.asset(
-                                                  'assets/images/no_image.jpg'),
-                                        ),
-                                      )),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  name == null
-                                      ? const SizedBox()
-                                      : Text(name.text,
-                                          style: const TextStyle(
-                                              color: Colors.deepOrangeAccent,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500)),
-                                  membership == "" ||
-                                          membership == null ||
-                                          membership == "null"
-                                      ? const SizedBox()
-                                      : membership == "1"
-                                          ? const Text("Membership: Free",
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize: 16))
-                                          : const Text("Membership: Paid",
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize: 16))
-                                ],
-                              )),
-                              Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        stackindex = 0;
-                                      });
-                                    },
+                                                  BorderRadius.circular(22)),
+                                          child: CachedNetworkImage(
+                                            imageUrl: profileimage,
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(
+                                                    'assets/images/no_image.jpg'),
+                                          ),
+                                        )),
+                                const SizedBox(width: 10),
+                                Expanded(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        myads == null
-                                            ? SizedBox()
-                                            : Text(myads,
-                                                style: const TextStyle(
-                                                    color: kPrimaryColor,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                        const Text("My Ads",
-                                            style: TextStyle(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    name == null
+                                        ? const SizedBox()
+                                        : Text(name.text,
+                                            style: const TextStyle(
                                                 color: Colors.deepOrangeAccent,
-                                                fontSize: 16))
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500)),
+                                    membership == "" ||
+                                            membership == null ||
+                                            membership == "null"
+                                        ? const SizedBox()
+                                        : membership == "1"
+                                            ? const Text("Membership: Free",
+                                                style: TextStyle(
+                                                    color: kPrimaryColor,
+                                                    fontSize: 16))
+                                            : const Text("Membership: Paid",
+                                                style: TextStyle(
+                                                    color: kPrimaryColor,
+                                                    fontSize: 16))
+                                  ],
+                                )),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          stackindex = 0;
+                                        });
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          myads == null
+                                              ? SizedBox()
+                                              : Text(myads,
+                                                  style: const TextStyle(
+                                                      color: kPrimaryColor,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                          const Text("My Ads",
+                                              style: TextStyle(
+                                                  color:
+                                                      Colors.deepOrangeAccent,
+                                                  fontSize: 16))
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      adviseradslist.isEmpty || adviseradslist.isEmpty
-                          ? SizedBox()
-                          : Padding(
-                              padding:
-                                  EdgeInsets.only(left: 15, top: 10, right: 15),
-                              child: adviseradslist.isEmpty
-                                  ? SizedBox(height: 0)
-                                  : GridView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: adviseradslist.length,
-                                      padding: EdgeInsets.zero,
-                                      physics: ClampingScrollPhysics(),
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              crossAxisSpacing: 4.0,
-                                              mainAxisSpacing: 4.0,
-                                              childAspectRatio: 1.0),
-                                      itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ProductDetailScreen(
-                                                            productid:
-                                                                adviseradslist[
-                                                                            index]
-                                                                        ['id']
-                                                                    .toString())));
-                                          },
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(4.0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                CachedNetworkImage(
-                                                  height: 80,
-                                                  width: double.infinity,
-                                                  placeholder: (context, url) =>
-                                                      Image.asset(
-                                                          'assets/images/no_image.jpg'),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      Image.asset(
-                                                          'assets/images/no_image.jpg'),
-                                                  fit: BoxFit.cover,
-                                                  imageUrl: devImage +
-                                                      adviseradslist[index][
-                                                              'upload_base_path']
-                                                          .toString() +
-                                                      adviseradslist[index]
-                                                              ['file_name']
-                                                          .toString(),
-                                                ),
-                                                const SizedBox(height: 5.0),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 5.0, right: 15.0),
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.topLeft,
-                                                    child: Text(
+                        const SizedBox(height: 5),
+                        adviseradslist.isEmpty || adviseradslist.isEmpty
+                            ? SizedBox()
+                            : Padding(
+                                padding: EdgeInsets.only(
+                                    left: 15, top: 10, right: 15),
+                                child: adviseradslist.isEmpty
+                                    ? SizedBox(height: 0)
+                                    : GridView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: adviseradslist.length,
+                                        padding: EdgeInsets.zero,
+                                        physics: ClampingScrollPhysics(),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                crossAxisSpacing: 4.0,
+                                                mainAxisSpacing: 4.0,
+                                                childAspectRatio: 1.0),
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ProductDetailScreen(
+                                                              productid: adviseradslist[
+                                                                          index]
+                                                                      ['id']
+                                                                  .toString())));
+                                            },
+                                            child: Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(4.0),
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  CachedNetworkImage(
+                                                    height: 80,
+                                                    width: double.infinity,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        Image.asset(
+                                                            'assets/images/no_image.jpg'),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        Image.asset(
+                                                            'assets/images/no_image.jpg'),
+                                                    fit: BoxFit.cover,
+                                                    imageUrl: devImage +
+                                                        adviseradslist[index][
+                                                                'upload_base_path']
+                                                            .toString() +
                                                         adviseradslist[index]
-                                                                ['title']
+                                                                ['file_name']
                                                             .toString(),
-                                                        maxLines: 2,
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            fontSize: 14)),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 5.0),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 4.0,
-                                                          right: 4.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      SizedBox(
-                                                        width:
-                                                            size.width * 0.23,
-                                                        child: Text(
-                                                            "Starting from ${adviseradslist[index]['currency'].toString()} ${adviseradslist[index]['prices'][0]['price'].toString()}",
-                                                            style: const TextStyle(
-                                                                color:
-                                                                    kPrimaryColor,
-                                                                fontSize: 12)),
-                                                      ),
-                                                      const Icon(
-                                                          Icons.add_box_rounded,
-                                                          color: kPrimaryColor)
-                                                    ],
+                                                  const SizedBox(height: 5.0),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 5.0, right: 15.0),
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.topLeft,
+                                                      child: Text(
+                                                          adviseradslist[index]
+                                                                  ['title']
+                                                              .toString(),
+                                                          maxLines: 2,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  fontSize:
+                                                                      14)),
+                                                    ),
                                                   ),
-                                                )
-                                              ],
+                                                  const SizedBox(height: 5.0),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 4.0,
+                                                            right: 4.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        SizedBox(
+                                                          width:
+                                                              size.width * 0.23,
+                                                          child: Text(
+                                                              "Starting from ${adviseradslist[index]['currency'].toString()} ${adviseradslist[index]['prices'][0]['price'].toString()}",
+                                                              style: const TextStyle(
+                                                                  color:
+                                                                      kPrimaryColor,
+                                                                  fontSize:
+                                                                      12)),
+                                                        ),
+                                                        const Icon(
+                                                            Icons
+                                                                .add_box_rounded,
+                                                            color:
+                                                                kPrimaryColor)
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      })),
-                    ],
-                  ),
-                )),
-              ],
-            ),
-          ],
+                                          );
+                                        })),
+                      ],
+                    ),
+                  )),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1772,6 +1816,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     );
   }
 
+  String basePath = "";
   Widget textField(TextEditingController controller) => Column(
         children: [
           TextFormField(
@@ -1864,18 +1909,56 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         log("accountType--->$accountType");
         businessName.text = businessNameOfUser;
         log("businnes name--->${businessName.text}");
-        gstNumber.text = gstNo;
-        panNumber.text = panNo;
-        if (accountType == null || accountType == "") {
+        if (gstNo == null || gstNo == "" || gstNo == "null") {
+          gstNumber.text = "";
+          gstNo = "";
+        } else {
+          gstNumber.text = gstNo;
+        }
+        if (panNo == null || panNo == "" || panNo == "null") {
+          panNumber.text = "";
+          panNo = "";
+        } else {
+          panNumber.text = panNo;
+        }
+        if (accountType == null || accountType == "" || accountType == "null") {
           dropdownvalue = "select";
         } else {
           dropdownvalue = accountType;
         }
-        bankName.text = bankDName;
-        branchName.text = bankDbranchName;
-        accountNo.text = accountDNumebr;
-        iFSCCode.text = iFSCCODE;
+        if (bankDName == null || bankDName == "" || bankDName == "null") {
+          bankName.text = "";
+          bankDName = "";
+        } else {
+          bankName.text = bankDName;
+        }
+        if (bankDbranchName == null ||
+            bankDbranchName == "" ||
+            bankDbranchName == "null") {
+          branchName.text = "";
+          bankDbranchName = "";
+        } else {
+          branchName.text = bankDbranchName;
+        }
+        if (accountDNumebr == null ||
+            accountDNumebr == "" ||
+            accountDNumebr == "null") {
+          accountDNumebr = "";
+        } else {
+          accountNo.text = accountDNumebr;
+        }
+        if (iFSCCODE == null || iFSCCODE == "" || iFSCCODE == "null") {
+          iFSCCode.text = "";
+          iFSCCODE = "";
+        } else {
+          iFSCCode.text = iFSCCODE;
+        }
         log("d val--->$dropdownvalue");
+        basePath = data['User']['base_path'];
+
+        panCardDocumnet =
+            devImage + basePath + data['User']['pan_doc'].toString();
+        gstDocumnet = devImage + basePath + data['User']['gst_doc'].toString();
 
         List selectedList = data['User']['preferences'].toString().split(",");
         for (var element in selectedList) {
@@ -2246,12 +2329,14 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
       // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
     };
+
+    log(bodyMap.toString());
 
     try {
       final request = http.MultipartRequest(
@@ -2262,24 +2347,24 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       request.headers.addAll({
         'Authorization': 'Bearer ${prefs.getString("token")}',
       });
-      if (gstDocumnet.isNotEmpty) {
-        var pic = await http.MultipartFile.fromPath(
-          'gst_doc',
-          gstDocumnet,
-        );
-        request.files.add(pic);
-        log("Done====>  $pic");
-      } else {
-        log("ENTETED====> aa $gstDocumnet");
-      }
-      if (panCardDocumnet.isNotEmpty) {
-        var pic = await http.MultipartFile.fromPath('pan_doc', panCardDocumnet);
-        request.files.add(pic);
-        log("Done====>  $pic");
-      } else {
-        // bodyMap = {"pan_doc": ""};
-        log("ENTETED====>ss$panCardDocumnet");
-      }
+      // if (gstDocumnet.isNotEmpty) {
+      //   var pic = await http.MultipartFile.fromPath(
+      //     'gst_doc',
+      //     gstDocumnet,
+      //   );
+      //   request.files.add(pic);
+      //   log("Done====>  $pic");
+      // } else {
+      //   log("ENTETED====> aa $gstDocumnet");
+      // }
+      // if (panCardDocumnet.isNotEmpty) {
+      //   var pic = await http.MultipartFile.fromPath('pan_doc', panCardDocumnet);
+      //   request.files.add(pic);
+      //   log("Done====>  $pic");
+      // } else {
+      //   // bodyMap = {"pan_doc": ""};
+      //   log("ENTETED====>ss$panCardDocumnet");
+      // }
       if (profileimage.toString().isNotEmpty) {
         var pic = await http.MultipartFile.fromPath(
             'avatar', profileimage.toString());
@@ -2311,7 +2396,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
         if (result['ErrorCode'] == 0) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+              MaterialPageRoute(builder: (context) => UserDetailScreen()));
           Fluttertoast.showToast(
             msg: result['ErrorMessage'],
             toastLength: Toast.LENGTH_LONG,
@@ -2378,7 +2463,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
+
       // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
@@ -2427,7 +2513,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
         if (result['ErrorCode'] == 0) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+              MaterialPageRoute(builder: (context) => UserDetailScreen()));
           Fluttertoast.showToast(
             msg: result['ErrorMessage'],
             toastLength: Toast.LENGTH_LONG,
@@ -2494,7 +2580,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
       // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
@@ -2540,7 +2626,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
         if (result['ErrorCode'] == 0) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+              MaterialPageRoute(builder: (context) => UserDetailScreen()));
           Fluttertoast.showToast(
             msg: result['ErrorMessage'],
             toastLength: Toast.LENGTH_LONG,
@@ -2607,7 +2693,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
+
       // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
@@ -2621,8 +2708,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     var result = jsonDecode(response);
 
     if (result['ErrorCode'] == 0) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => AccountViewScreen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => UserDetailScreen()));
       Fluttertoast.showToast(
         msg: result['ErrorMessage'],
         toastLength: Toast.LENGTH_LONG,
@@ -2682,7 +2769,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "ifsc": iFSCCode.text.toString(),
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
-      "account_type": dropdownvalue.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
+
       // "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
@@ -2747,7 +2835,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
         if (result['ErrorCode'] == 0) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => AccountViewScreen()));
+              MaterialPageRoute(builder: (context) => UserDetailScreen()));
           Fluttertoast.showToast(
             msg: result['ErrorMessage'],
             toastLength: Toast.LENGTH_LONG,

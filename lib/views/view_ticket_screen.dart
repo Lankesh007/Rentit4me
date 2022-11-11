@@ -605,7 +605,7 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
                                   alignment: Alignment.topRight,
                                   child: InkWell(
                                     onTap: () {
-                                      if (comment == null || comment == "") {
+                                      if (comment == null || comment == ""||comment=="null") {
                                         showToast(
                                             "Please enter your message as comment");
                                       } else if (comment != null &&
@@ -650,6 +650,7 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
   }
 
   Future _getViewTicket(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
@@ -658,7 +659,8 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       _loading = false;
@@ -686,7 +688,9 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     setState(() {
       _loading = false;
@@ -750,6 +754,9 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
     requestMulti.files
         .add(await http.MultipartFile.fromPath('attachment', doc));
 
+    requestMulti.headers.addAll({
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     requestMulti.send().then((response) {
       response.stream.toBytes().then((value) {
         try {
@@ -789,7 +796,8 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     if (response.statusCode == 200) {
       showToast(json.decode(response.body)['ErrorMessage'].toString());

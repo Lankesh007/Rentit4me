@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dropdown_search/dropdown_search.dart';
@@ -53,6 +54,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   String productprice;
   TextEditingController mobile = TextEditingController();
   TextEditingController email = TextEditingController();
+  final quantityController = TextEditingController();
 
   String categoryhint = "Select Category";
   String subcategoryhint = "Select Subcategory";
@@ -468,6 +470,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                   icon:
                                       const Icon(Icons.arrow_drop_down_rounded),
                                   items: _categorieslist.map((items) {
+                                    var id = items['id'];
                                     return DropdownMenuItem(
                                       value: items['id'].toString(),
                                       child: Text(items['title']),
@@ -475,6 +478,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                   }).toList(),
                                   onChanged: (data) {
                                     setState(() {
+                                      // _getCategories();
                                       _subcategorieslist.clear();
                                       initialsubcatvalue = null;
                                       initiacatlvalue = data.toString();
@@ -520,7 +524,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                     setState(() {
                                       initialsubcatvalue = data.toString();
                                       subcategoryid = data.toString();
-                                      //_getSubCategories(data);
+                                      _getSubCategories(data);
                                     });
                                   },
                                 ),
@@ -609,12 +613,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               child: TextFormField(
                                 // controller: securityamount,
                                 readOnly: true,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Required Field';
-                                  }
-                                  return null;
-                                },
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.start,
                                 decoration: InputDecoration(
@@ -1255,86 +1253,78 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                     ),
                                   ),
                                 )
-                             
                               : SizedBox(),
-                              SizedBox(
-                                height: 10,
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Refundable Security Deposit*",
+                              style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0))),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5.0),
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                // controller: yearprice,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "500",
+                                ),
+
+                                maxLines: 1,
                               ),
-                              Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Refundable Security Deposit*",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Quantity *",
+                              style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0))),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5.0),
+                              child: TextFormField(
+                                controller: quantityController,
+                                keyboardType: TextInputType.number,
+                                // controller: yearprice,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: qunatity.toString(),
                                 ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey, width: 1),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 5.0),
-                                    child: TextFormField(
-                                      
-                                      keyboardType: TextInputType.number,
-                                      // controller: yearprice,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "500",
-                                      ),
-                                      
-                                      
-                                    
-                                      maxLines: 1,
-                                    ),
-                                  ),
-                                )
-                             ,
-                             SizedBox(
-                                height: 10,
+
+                                maxLines: 1,
                               ),
-                              Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Quantity *",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey, width: 1),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 5.0),
-                                    child: TextFormField(
-                                      
-                                      keyboardType: TextInputType.number,
-                                      // controller: yearprice,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "1",
-                                      ),
-                                      
-                                      
-                                    
-                                      maxLines: 1,
-                                    ),
-                                  ),
-                                )
-                             ,
+                            ),
+                          ),
                           SizedBox(height: 10),
                           // const Align(
                           //   alignment: Alignment.topLeft,
@@ -1459,43 +1449,70 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     )
-                                  : Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey, width: 1.0),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.0))),
-                                      child: DropdownButtonHideUnderline(
-                                          child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 5.0, right: 5.0),
-                                        child: DropdownButton(
-                                          value: statusvalue,
-                                          icon: const Icon(
-                                              Icons.arrow_drop_down_rounded),
-                                          items: [
-                                            {"title": "Active", "id": "6"},
-                                            {"title": "Inctive", "id": "4"},
-                                            // {"title": "Pending", "id": "3"},
-                                            // {"title": "Rejected", "id": "2"}
-                                          ].map((items) {
-                                            return DropdownMenuItem(
-                                              value: int.parse(
-                                                  items['id'].toString()),
-                                              child: Text(
-                                                  items['title'].toString()),
-                                            );
-                                          }).toList(),
-                                          isExpanded: true,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              statusvalue =
-                                                  int.parse(value.toString());
-                                            });
-                                          },
-                                        ),
-                                      ))),
+                                  : statusvalue == 4
+                                      ? Text(
+                                          "InActive",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      : statusvalue == 6
+                                          ? Text(
+                                              "Active",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            )
+                                          : Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.grey,
+                                                      width: 1.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              8.0))),
+                                              child:
+                                                  DropdownButtonHideUnderline(
+                                                      child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5.0, right: 5.0),
+                                                child: DropdownButton(
+                                                  value: statusvalue,
+                                                  icon: const Icon(Icons
+                                                      .arrow_drop_down_rounded),
+                                                  items: [
+                                                    {
+                                                      "title": "Active",
+                                                      "id": "6"
+                                                    },
+                                                    {
+                                                      "title": "Inctive",
+                                                      "id": "4"
+                                                    },
+                                                    // {"title": "Pending", "id": "3"},
+                                                    // {"title": "Rejected", "id": "2"}
+                                                  ].map((items) {
+                                                    return DropdownMenuItem(
+                                                      value: int.parse(
+                                                          items['id']
+                                                              .toString()),
+                                                      child: Text(items['title']
+                                                          .toString()),
+                                                    );
+                                                  }).toList(),
+                                                  isExpanded: true,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      statusvalue = int.parse(
+                                                          value.toString());
+                                                    });
+                                                  },
+                                                ),
+                                              ))),
                           SizedBox(height: 10),
                         ],
                       ),
@@ -1508,13 +1525,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                         showToast("Please select sub category");
                       } else {
                         if (form.currentState.validate()) {
-                          if (_termcondition) {
-                            submitpostaddData(additionalimage);
-                          } else {
-                            Fluttertoast.showToast(
-                                msg:
-                                    "Please check Term and Condition checkbox");
-                          }
+                          submitpostaddData(additionalimage);
                         } else {
                           showToast("Please fill required fields");
                         }
@@ -1550,10 +1561,15 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     );
   }
 
-String locationAviablity="";
+  String locationAviablity = "";
+  String categoryTitle = '';
+
+  int qunatity = 0;
   Future _getpreproductedit(String productid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final body = {"id": productid,};
+    final body = {
+      "id": productid,
+    };
     var response = await http.post(Uri.parse(BASE_URL + editviewpost),
         body: jsonEncode(body),
         headers: {
@@ -1566,7 +1582,8 @@ String locationAviablity="";
       var data = json.decode(response.body)['Response'];
       setState(() {
         productname.text = data['posted_ad']['title'].toString();
-        locationAviablity=data['posted_ad']['location_availability'].toString();
+        locationAviablity =
+            data['posted_ad']['location_availability'].toString();
 
         final document = parse(data['posted_ad']['description'].toString());
         description.text =
@@ -1583,50 +1600,54 @@ String locationAviablity="";
         // initiacatlvalue =
         //     data['posted_ad'][0]['categories'][0]['id'].toString();
 
-        _getSubCategories(initiacatlvalue).then((value) {
-          // initialsubcatvalue =
-          //     data['posted_ad'][0]['categories'][1]['id'].toString();
-        });
+        categoryTitle = data['posted_ad']['categories'][0]['title'].toString();
+        log(categoryTitle);
+        // initiacatlvalue=categoryTitle;
+        // log(initiacatlvalue);
 
-        categoryid = data['posted_ad'][0]['categories'][0]['id'].toString();
-        subcategoryid = data['posted_ad'][0]['categories'][1]['id'].toString();
+        // _getSubCategories(initiacatlvalue).then((value) {
+        //   initialsubcatvalue = data['posted_ad']['category']['id'].toString();
+        // });
+
+        categoryid = data['posted_ad']['categories'][0]['id'].toString();
+        subcategoryid = data['posted_ad']['subcategory']['id'].toString();
 
         negotiablevalue =
-            data['posted_ad'][0]['negotiate'].toString() == "1" ? "Yes" : "No";
-        hidemobilevalue =
-            data['posted_ad'][0]['mobile_hidden'].toString() == "1"
-                ? "Yes"
-                : "No";
+            data['posted_ad']['negotiate'].toString() == "1" ? "Yes" : "No";
+        // hidemobilevalue =
+        //     data['posted_ad']['mobile_hidden'].toString() == "1"
+        //         ? "Yes"
+        //         : "No";
 
-        _checkstock = data['posted_ad'][0]['out_of_stock'].toString() == "0"
-            ? false
-            : true;
-
-        statusvalue = int.parse(data['posted_ad'][0]['status'].toString());
-        data['posted_ad'].forEach((element) {
-          if (element['preferences'].toString() == "1") {
-            communicationprefs.add(1);
-            _email = true;
-          } else if (element['preferences'].toString() == "2") {
-            communicationprefs.add(2);
-            _sms = true;
-          } else {
-            communicationprefs.add(1);
-            communicationprefs.add(2);
-            _sms = true;
-            _email = true;
-          }
-        });
+        _checkstock =
+            data['posted_ad']['out_of_stock'].toString() == "0" ? false : true;
+        qunatity = data['posted_ad']['quantity'];
+        quantityController.text = qunatity.toString();
+        statusvalue = data['posted_ad']['status'];
+        // data['posted_ad'].forEach((element) {
+        //   if (element['preferences'].toString() == "1") {
+        //     communicationprefs.add(1);
+        //     _email = true;
+        //   } else if (element['preferences'].toString() == "2") {
+        //     communicationprefs.add(2);
+        //     _sms = true;
+        //   } else {
+        //     communicationprefs.add(1);
+        //     communicationprefs.add(2);
+        //     _sms = true;
+        //     _email = true;
+        //   }
+        // });
 
         data['Images'].forEach((element) {
           if (element['is_main'] == 1) {
             mainimage =
-                "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}";
+                "$devImage${element['upload_base_path'].toString()}${element['file_name'].toString()}";
           } else {
             additionalimage.add({
               "update": false,
               "image":
-                  "$sliderpath${element['upload_base_path'].toString()}${element['file_name'].toString()}",
+                  "$devImage${element['upload_base_path'].toString()}${element['file_name'].toString()}",
               "id": element['id'].toString()
             });
           }
@@ -1662,20 +1683,20 @@ String locationAviablity="";
 
         checkData = true;
 
-        if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
-          sameAddress = true;
-          _getprofileData();
-        } else {
-          sameAddress = false;
-          selectedCountry =
-              data['posted_ad'][0]['get_country']['name'].toString();
-          selectedState = data['posted_ad'][0]['get_state']['name'].toString();
-          selectedCity = data['posted_ad'][0]['get_city']['name'].toString();
-          country_id = data['posted_ad'][0]['country'].toString();
-          state_id = data['posted_ad'][0]['state'].toString();
-          city_id = data['posted_ad'][0]['city'].toString();
-          address.text = data['posted_ad'][0]['address'].toString();
-        }
+        // if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
+        //   sameAddress = true;
+        //   _getprofileData();
+        // } else {
+        //   sameAddress = false;
+        //   selectedCountry =
+        //       data['posted_ad'][0]['get_country']['name'].toString();
+        //   selectedState = data['posted_ad'][0]['get_state']['name'].toString();
+        //   selectedCity = data['posted_ad'][0]['get_city']['name'].toString();
+        //   country_id = data['posted_ad'][0]['country'].toString();
+        //   state_id = data['posted_ad'][0]['state'].toString();
+        //   city_id = data['posted_ad'][0]['city'].toString();
+        //   address.text = data['posted_ad'][0]['address'].toString();
+        // }
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -1734,7 +1755,6 @@ String locationAviablity="";
         _categorieslist.addAll(jsonDecode(response.body)['Response']);
       });
     } else {
-      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
     }
   }
 
@@ -1754,15 +1774,12 @@ String locationAviablity="";
     setState(() {
       _loading = false;
     });
+
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
-      if (jsonDecode(response.body)['Response']['subcategories'].length > 0) {
-        setState(() {
-          _subcategorieslist
-              .addAll(jsonDecode(response.body)['Response']['subcategories']);
-        });
-      } else {
-        showToast("No Subcategory available");
-      }
+      setState(() {
+        _subcategorieslist
+            .addAll(jsonDecode(response.body)['Response']['subcategories']);
+      });
     }
   }
 
@@ -1927,6 +1944,8 @@ String locationAviablity="";
 
         requestMulti.fields["userid"] = prefs.get('userid').toString();
         requestMulti.fields["post_id"] = productid;
+        requestMulti.fields["quantity"] = qunatity.toString();
+
         requestMulti.fields["category[0]"] = categoryid;
         requestMulti.fields["category[1]"] = subcategoryid;
         requestMulti.fields["title"] = productname.text.toString();
@@ -1949,16 +1968,20 @@ String locationAviablity="";
         requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
         requestMulti.fields["files"] = renttype[3]['type'].toString();
         if (sameAddress) {
-          requestMulti.fields["address_type"] = "1";
+          requestMulti.fields["address_type"] = "all_cities";
         } else {
-          requestMulti.fields["address_type"] = "0";
-          requestMulti.fields["country"] = country_id.toString();
-          requestMulti.fields["state"] = state_id.toString();
-          requestMulti.fields["city"] = city_id.toString();
+          requestMulti.fields["address_type"] = "all_cities";
+          // requestMulti.fields["country"] = country_id.toString();
+          // requestMulti.fields["state"] = state_id.toString();
+          // requestMulti.fields["city"] = city_id.toString();
           requestMulti.fields["address"] = address.text.toString();
         }
         requestMulti.fields["old_images"] = oldImages.join(",").toString();
         print(jsonEncode(requestMulti.fields));
+
+        requestMulti.headers.addAll({
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+        });
 
         if (!mainimage.contains('http')) {
           requestMulti.files.add(http.MultipartFile("main_image",

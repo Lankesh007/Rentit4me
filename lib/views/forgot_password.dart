@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'verify_reset_otp.dart';
 
@@ -72,7 +73,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   controller: resetController,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
-                    hintText: "Enter your Email/Mobile to reset your password",hintStyle: TextStyle(color: Color.fromARGB(137, 131, 122, 122)),
+                    hintText: "Enter your Email/Mobile to reset your password",
+                    hintStyle:
+                        TextStyle(color: Color.fromARGB(137, 131, 122, 122)),
                     border: InputBorder.none,
                   ),
                 ),
@@ -116,6 +119,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   int otp = 0;
   bool buttonLoader = false;
   Future getOtpDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       buttonLoader = true;
     });
@@ -128,6 +132,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     if (result['ErrorCode'] == 0) {
       otp = result['Response'];
       log("otp-->$otp");
+
+      prefs.setString("resetNumber", resetController.text.toString());
+      log("reset number---->${prefs.getString("resetNumber")}");
       Navigator.push(
           context,
           MaterialPageRoute(

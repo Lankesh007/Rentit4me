@@ -483,7 +483,6 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -522,7 +521,6 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -560,7 +558,6 @@ class _CompletedOrderScreenState extends State<CompletedOrderScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

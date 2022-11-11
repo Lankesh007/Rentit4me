@@ -876,7 +876,7 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
         setState(() {
           _loading = false;
         });
-        //showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        //.toString());
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -885,7 +885,6 @@ class _InactivelsitingScreenState extends State<InactivelsitingScreen> {
         setState(() {
           _loading = false;
         });
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {

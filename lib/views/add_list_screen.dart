@@ -24,7 +24,7 @@ class AddlistingScreen extends StatefulWidget {
 class _AddlistingScreenState extends State<AddlistingScreen> {
   bool _loading = false;
 
-  String mainimage = "Main Image (Minimum Aspect Ration - 600px X 600px)*";
+  String mainimage = "";
 
   TextEditingController phoneController = TextEditingController();
   String phoneNumber = "";
@@ -167,7 +167,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                   width: 45,
                                   alignment: Alignment.topLeft,
                                   child: mainimage ==
-                                          "Main Image (Minimum Aspect Ration - 600px X 600px)*"
+                                          ""
                                       ? Text(mainimage,
                                           style: TextStyle(
                                               color: Colors.black,
@@ -427,36 +427,36 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Location Aviablity*",
-                            style: TextStyle(
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0))),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 5.0),
-                            child: TextField(
-                              readOnly: true,
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.start,
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "  ALL Cities"),
-                              onChanged: (value) {
-                                securityamount = value.toString();
-                              },
-                            ),
-                          ),
-                        ),
+                        // const Align(
+                        //   alignment: Alignment.topLeft,
+                        //   child: Text(
+                        //     "Location Aviablity*",
+                        //     style: TextStyle(
+                        //         color: kPrimaryColor,
+                        //         fontWeight: FontWeight.bold),
+                        //   ),
+                        // ),
+                        // SizedBox(height: 10),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //       border: Border.all(color: Colors.grey, width: 1),
+                        //       borderRadius:
+                        //           BorderRadius.all(Radius.circular(8.0))),
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.only(left: 5.0),
+                        //     child: TextField(
+                        //       readOnly: true,
+                        //       keyboardType: TextInputType.number,
+                        //       textAlign: TextAlign.start,
+                        //       decoration: InputDecoration(
+                        //           border: InputBorder.none,
+                        //           hintText: "  ALL Cities"),
+                        //       onChanged: (value) {
+                        //         securityamount = value.toString();
+                        //       },
+                        //     ),
+                        //   ),
+                        // ),
 
                         // Container(
                         //   height: 50,
@@ -1372,8 +1372,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                 SizedBox(height: 5),
                 InkWell(
                   onTap: () {
-                    if (mainimage ==
-                        "Main Image (Minimum Aspect Ration - 600px X 600px)*") {
+                    if (mainimage.isEmpty) {
                       showToast("Please choose main image");
                       return;
                     } else if (additionalimage.isEmpty) {
@@ -1468,7 +1467,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
         categorieslist.addAll(jsonDecode(response.body)['Response']);
       });
     } else {
-      showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+      // .toString());
     }
   }
 
@@ -1501,7 +1500,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
   Future<Map> submitpostaddData(List files) async {
     log(categoryid);
-    log(subcategoryid);
+    log("--->"+subcategoryid.toString());
     log(description);
     log(title);
     log(phoneNumber);
@@ -1535,11 +1534,14 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
       requestMulti.fields["id"] = prefs.getString('userid');
       requestMulti.fields["category"] = categoryid;
-      if (subcategoryid == null) {
-        requestMulti.fields["sub_category"] = "";
-      } else {
-        requestMulti.fields["sub_category"] = subcategoryid;
-      }
+
+      requestMulti.fields["sub_category"] = subcategoryid == null
+          ? ""
+          : subcategoryid == ""
+              ? ""
+              : subcategoryid == "null"
+                  ? ""
+                  : subcategoryid.toString();
       requestMulti.fields["title"] = title;
       requestMulti.fields["description"] = description;
       requestMulti.fields["negotiate"] =
