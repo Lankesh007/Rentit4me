@@ -326,32 +326,116 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ],
                             )),
                         SizedBox(height: 10.0),
-                        Align(
-                            alignment: Alignment.topLeft,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AdvertiserProfileScreen(
-                                                advertiserid: addedbyid)));
-                              },
-                              child: Row(
-                                children: [
-                                  Text("Listed By ",
-                                      style: TextStyle(
-                                          color: Colors.deepOrange,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500)),
-                                  Text(" : $addedby",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500)),
-                                ],
-                              ),
-                            )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Align(
+                                alignment: Alignment.topLeft,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AdvertiserProfileScreen(
+                                                    advertiserid: addedbyid)));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("Listed By ",
+                                          style: TextStyle(
+                                              color: Colors.deepOrange,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                      Text(" : $addedby",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500)),
+                                    ],
+                                  ),
+                                )),
+                                     kyc == 1
+                            ? SizedBox(
+                                height: 30,
+                                width: 100,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    kyc == 1
+                                        ? Expanded(
+                                            child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.green.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "kyc",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15),
+                                                  ),
+                                                  Image.asset(
+                                                    "assets/images/check-mark.png",
+                                                    scale: 16,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                        : SizedBox(),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                    trustedbadgeapproval == "approved" ?? ""
+                                        ? Expanded(
+                                            child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.green.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(40)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Trusted Badge",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18),
+                                                  ),
+                                                  Image.asset(
+                                                    "assets/images/check-mark.png",
+                                                    scale: 16,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                        : SizedBox(),
+                                  ],
+                                ),
+                              )
+                            : SizedBox(),
+                          ],
+                        ),
                         SizedBox(height: 10.0),
                         RatingBar.builder(
                           itemSize: 20,
@@ -428,84 +512,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           thickness: 0.9,
                           height: 30,
                         ),
-                        kyc == 1
-                            ? SizedBox(
-                                height: 100,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    kyc == 1
-                                        ? Expanded(
-                                            child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.green.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "KYC",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18),
-                                                  ),
-                                                  Image.asset(
-                                                    "assets/images/check-mark.png",
-                                                    scale: 16,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ))
-                                        : SizedBox(),
-                                    SizedBox(
-                                      width: 30,
-                                    ),
-                                    trustedbadgeapproval == "approved" ?? ""
-                                        ? Expanded(
-                                            child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.green.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(40)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Trusted Badge",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18),
-                                                  ),
-                                                  Image.asset(
-                                                    "assets/images/check-mark.png",
-                                                    scale: 16,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ))
-                                        : SizedBox(),
-                                  ],
-                                ),
-                              )
-                            : SizedBox(),
+                   
                         SizedBox(
                           height: 10,
                         ),
@@ -604,45 +611,35 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                if (trustedbadge == 1 &&
-                                                    trustedbadgeapproval
-                                                            .toLowerCase() ==
-                                                        "pending") {
-                                                  showToast(
-                                                      "Your verification is under process.");
+                                                if (actionbtn ==
+                                                    "Make An Offer") {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MakeEditOfferScreen(
+                                                                pageFor:
+                                                                    "Make an offer",
+                                                                productid:
+                                                                    productid,
+                                                                nego: int.parse(
+                                                                    negotiable),
+                                                                editable: false,
+                                                              )));
                                                 } else {
-                                                  if (actionbtn ==
-                                                      "Make An Offer") {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MakeEditOfferScreen(
-                                                                  pageFor:
-                                                                      "Make an offer",
-                                                                  productid:
-                                                                      productid,
-                                                                  nego: int.parse(
-                                                                      negotiable),
-                                                                  editable:
-                                                                      false,
-                                                                )));
-                                                  } else {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MakeEditOfferScreen(
-                                                                  pageFor:
-                                                                      "Edit Offer",
-                                                                  productid:
-                                                                      productid,
-                                                                  nego: int.parse(
-                                                                      negotiable),
-                                                                  editable:
-                                                                      true,
-                                                                )));
-                                                  }
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MakeEditOfferScreen(
+                                                                pageFor:
+                                                                    "Edit Offer",
+                                                                productid:
+                                                                    productid,
+                                                                nego: int.parse(
+                                                                    negotiable),
+                                                                editable: true,
+                                                              )));
                                                 }
                                               },
                                               child: Container(

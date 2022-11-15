@@ -469,7 +469,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                const Text("Membership Amount",
+                                                const Text("Payable Amount",
                                                     style: TextStyle(
                                                         color: kPrimaryColor,
                                                         fontSize: 16,
@@ -786,4 +786,5 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
+
 }

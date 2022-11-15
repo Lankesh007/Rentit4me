@@ -13,7 +13,10 @@
 
     <application android:label="Rentit4me" android:usesCleartextTraffic="true" android:name="${applicationName}" android:icon="@mipmap/launcher_icon">
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCbyuLLPBysP-hHBoX6fLnnm-5daOVDDZM" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAUr4dGAQi1XocxvHSQMh6SVVpT2jqU96o" />
+
+        <!-- android:value="AIzaSyCbyuLLPBysP-hHBoX6fLnnm-5daOVDDZM" /> -->
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token" />

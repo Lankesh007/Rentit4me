@@ -238,7 +238,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 8.0),
                           DropdownSearch(
-                            selectedItem: selectedState,
+                            selectedItem: selectedState == "null" ||
+                                    selectedState == null ||
+                                    selectedState == ""
+                                ? "Slelect State"
+                                : selectedState,
                             mode: Mode.DIALOG,
                             showSelectedItem: true,
                             autoFocusSearchBox: true,
@@ -282,7 +286,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 8.0),
                           DropdownSearch(
-                            selectedItem: selectedCity,
+                            selectedItem: selectedCity == "null" ||
+                                    selectedCity == null ||
+                                    selectedCity == ""
+                                ? "Select City"
+                                : selectedCity,
                             mode: Mode.DIALOG,
                             showSelectedItem: true,
                             autoFocusSearchBox: true,

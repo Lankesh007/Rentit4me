@@ -23,7 +23,7 @@ class PeopleAlsoMayLikeModel {
   Null tags;
   int country;
   int state;
-  Null city;
+  int city;
   String preferences;
   String locationAvailability;
   String address;

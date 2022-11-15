@@ -9,9 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:rentit4me_new/helper/loader.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
-import 'package:rentit4me_new/views/home_screen.dart';
+import 'package:rentit4me_new/views/offers_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
 
 class MakeEditOfferScreen extends StatefulWidget {
   String pageFor;
@@ -41,6 +42,9 @@ class _MakeEditOfferScreenState extends State<MakeEditOfferScreen> {
   bool isLoading = true;
   int rentTypeId = 0;
   Future _getmakeoffer(String productid) async {
+
+
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final body = {"post_ad_id": productid};
@@ -218,6 +222,7 @@ class _MakeEditOfferScreenState extends State<MakeEditOfferScreen> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Text(widget.productid),
                         Text("Rent Type",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600)),
@@ -342,6 +347,7 @@ class _MakeEditOfferScreenState extends State<MakeEditOfferScreen> {
                         SizedBox(
                           height: 15,
                         ),
+                        // Text(widget.nego.toString()),
                         widget.nego == 1
                             ? Column(
                                 children: [
@@ -591,8 +597,9 @@ class _MakeEditOfferScreenState extends State<MakeEditOfferScreen> {
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       showToast(data['ErrorMessage'].toString());
+      if(data['ErrorCode']==0){
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
+          MaterialPageRoute(builder: (BuildContext context) => OffersViewScreen()));}
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }

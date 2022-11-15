@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/offer_made_product_detail_screen.dart';
+import 'package:rentit4me_new/views/offers_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OfferRecievedScreen extends StatefulWidget {
@@ -66,800 +67,796 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
       //       style: TextStyle(color: kPrimaryColor)),
       //   centerTitle: true,
       // ),
-      body: ModalProgressHUD(
-        inAsyncCall: _loading,
-        color: kPrimaryColor,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Card(
-                elevation: 4.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 5),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(
-                                    color: Colors.deepOrangeAccent)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(
-                                  color: Colors.deepOrangeAccent,
-                                )),
-                            contentPadding: const EdgeInsets.only(left: 5),
-                            hintText: searchvalue,
-                            border: InputBorder.none,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              searchvalue = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  width: size.width * 0.42,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(startdate,
-                                            style: const TextStyle(
-                                                color: Colors.grey)),
-                                        IconButton(
-                                            onPressed: () {
-                                              _selectStartDate(context);
-                                            },
-                                            icon: const Icon(
-                                                Icons.calendar_today_sharp,
-                                                size: 16,
-                                                color: kPrimaryColor))
-                                      ],
-                                    ),
-                                  )),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  width: size.width * 0.42,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(enddate,
-                                            style: const TextStyle(
-                                                color: Colors.grey)),
-                                        IconButton(
-                                            onPressed: () {
-                                              _selectEndtDate(context);
-                                            },
-                                            icon: const Icon(
-                                                Icons.calendar_today_sharp,
-                                                size: 16,
-                                                color: kPrimaryColor))
-                                      ],
-                                    ),
-                                  )),
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      InkWell(
-                        onTap: () {
-                          if (searchvalue == "Search for product" &&
-                              startdate == "From Date") {
-                            showToast(
-                                'Please enter your search or select date');
-                          } else {
-                            if (searchvalue == "Search for product" ||
-                                searchvalue.trim().length == 0 ||
-                                searchvalue.trim().isEmpty) {
-                              _offerrecievedlistByDate();
-                            } else {
-                              _offerrecievedlistBySearch();
-                            }
-                          }
-                        },
-                        child: Card(
-                          elevation: 8.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Container(
-                            height: 40,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                                color: Colors.deepOrangeAccent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0))),
-                            child: const Text("Filter",
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _offerrecievedlist();
+        },
+        child: ModalProgressHUD(
+          inAsyncCall: _loading,
+          color: kPrimaryColor,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              Expanded(
-                  child: ListView.separated(
-                itemCount: offerrecievedlist.length,
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(),
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      // print(offerrecievedlist[index]);
-                      // double total = double.parse(offerrecievedlist[index]
-                      //             ["total_security"]
-                      //         .toString()) +
-                      //     double.parse(offerrecievedlist[index]["total_rent"]
-                      //         .toString());
-
-                      // double taxValue = (conPer / 100) * total;
-
-                      // showDialog(
-                      //   context: context,
-                      //   builder: (_) => AlertDialog(
-                      //     title: const Text('Detail Information'),
-                      //     content: SingleChildScrollView(
-                      //         child: Column(children: [
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Rentee"),
-                      //           subtitle: Text(offerrecievedlist[index]['name']
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Product Name"),
-                      //           subtitle: Text(offerrecievedlist[index]["title"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Product Quantity"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["quantity"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Rent Type"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["rent_type_name"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Duration"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["period"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Product Price(INR)"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["product_price"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Offer Amount(INR)"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["renter_amount"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Total Rent(INR)"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["total_rent"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //         color: Colors.grey[100],
-                      //         child: ListTile(
-                      //           title: const Text("Total Security(INR)"),
-                      //           subtitle: Text(offerrecievedlist[index]
-                      //                   ["total_security"]
-                      //               .toString()),
-                      //         ),
-                      //       ),
-                      //       Card(
-                      //           color: Colors.grey[100],
-                      //           child: ListTile(
-                      //               title: Text(
-                      //                   "Convenience Charges (${conPer.toStringAsFixed(0)}%)"),
-                      //               subtitle: Text(taxValue.toString()))),
-                      //       Card(
-                      //           color: Colors.grey[100],
-                      //           child: ListTile(
-                      //               title: const Text("Final Amount(INR)"),
-                      //               subtitle: Text((double.parse(
-                      //                           offerrecievedlist[index]
-                      //                                   ["final_amount"]
-                      //                               .toString()) -
-                      //                       taxValue)
-                      //                   .toString())))
-                      //     ])),
-                      //   ),
-                      // );
-                    },
-                    child: Card(
-                      elevation: 4.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                Card(
+                  elevation: 4.0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 5),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 0.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(
+                                      color: Colors.deepOrangeAccent)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(
+                                    color: Colors.deepOrangeAccent,
+                                  )),
+                              contentPadding: const EdgeInsets.only(left: 5),
+                              hintText: searchvalue,
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                searchvalue = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    OfferMadeProductDetailScreen(
-                                                        postadid:
-                                                            offerrecievedlist[
-                                                                    index]['id']
-                                                                .toString(),
-                                                        offerid: offerrecievedlist[
-                                                                    index][
-                                                                'offer_request_id']
-                                                            .toString())));
-                                      },
-                                      child: SizedBox(
-                                          width: size.width * 0.60,
-                                          child: Text(
-                                              "Product Name : ${offerrecievedlist[index]['title']}"))),
-                                ),
-                                Expanded(
-                                    child: SizedBox(
-                                  width: 10,
-                                )),
+                                Container(
+                                    width: size.width * 0.42,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(startdate,
+                                              style: const TextStyle(
+                                                  color: Colors.grey)),
+                                          IconButton(
+                                              onPressed: () {
+                                                _selectStartDate(context);
+                                              },
+                                              icon: const Icon(
+                                                  Icons.calendar_today_sharp,
+                                                  size: 16,
+                                                  color: kPrimaryColor))
+                                        ],
+                                      ),
+                                    )),
                               ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Ad Id: ${offerrecievedlist[index]['ad_id']}"),
-                                  Text(
-                                      "Product Price (INR): ${offerrecievedlist[index]['product_price'].toString()}"),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Security: ${offerrecievedlist[index]['total_security']}"),
-                                  Text(
-                                      "Offer Price (INR): ${offerrecievedlist[index]['final_product_selling_amount'].toString()}"),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Convenience Fee: ${offerrecievedlist[index]['convenience_fee']}"),
-                                  Text(
-                                      "Quantity: ${offerrecievedlist[index]['quantity']}"),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Total Rent (INR): ${offerrecievedlist[index]['final_amount']}"),
-                                  Text(
-                                      "Rent Type: ${offerrecievedlist[index]['rent_type_name']}"),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Start Date: ${offerrecievedlist[index]['start_date']}"),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "End Date: ${offerrecievedlist[index]['end_date']}"),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "Status: ",
+                                Container(
+                                    width: size.width * 0.42,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Colors.deepOrangeAccent),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(12))),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(enddate,
+                                              style: const TextStyle(
+                                                  color: Colors.grey)),
+                                          IconButton(
+                                              onPressed: () {
+                                                _selectEndtDate(context);
+                                              },
+                                              icon: const Icon(
+                                                  Icons.calendar_today_sharp,
+                                                  size: 16,
+                                                  color: kPrimaryColor))
+                                        ],
                                       ),
-                                      offerrecievedlist[index]
-                                                  ['offer_status'] ==
-                                              3
-                                          ? Text(
-                                              "Pending",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          : offerrecievedlist[index]
-                                                      ['offer_status'] ==
-                                                  2
-                                              ? Text("Rejected",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold))
-                                              : offerrecievedlist[index]
+                                    )),
+                              ],
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: () {
+                            if (searchvalue == "Search for product" &&
+                                startdate == "From Date") {
+                              showToast(
+                                  'Please enter your search or select date');
+                            } else {
+                              if (searchvalue == "Search for product" ||
+                                  searchvalue.trim().length == 0 ||
+                                  searchvalue.trim().isEmpty) {
+                                _offerrecievedlistByDate();
+                              } else {
+                                _offerrecievedlistBySearch();
+                              }
+                            }
+                          },
+                          child: Card(
+                            elevation: 8.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Container(
+                              height: 40,
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                  color: Colors.deepOrangeAccent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0))),
+                              child: const Text("Filter",
+                                  style: TextStyle(color: Colors.white)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                offerrecievedlist.isEmpty
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Text("No Products Found !!"),
+                          ),
+                        ],
+                      )
+                    : Expanded(
+                        child: ListView.separated(
+                        itemCount: offerrecievedlist.length,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              // print(offerrecievedlist[index]);
+                              // double total = double.parse(offerrecievedlist[index]
+                              //             ["total_security"]
+                              //         .toString()) +
+                              //     double.parse(offerrecievedlist[index]["total_rent"]
+                              //         .toString());
+
+                              // double taxValue = (conPer / 100) * total;
+
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (_) => AlertDialog(
+                              //     title: const Text('Detail Information'),
+                              //     content: SingleChildScrollView(
+                              //         child: Column(children: [
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Rentee"),
+                              //           subtitle: Text(offerrecievedlist[index]['name']
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Product Name"),
+                              //           subtitle: Text(offerrecievedlist[index]["title"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Product Quantity"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["quantity"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Rent Type"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["rent_type_name"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Duration"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["period"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Product Price(INR)"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["product_price"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Offer Amount(INR)"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["renter_amount"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Total Rent(INR)"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["total_rent"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //         color: Colors.grey[100],
+                              //         child: ListTile(
+                              //           title: const Text("Total Security(INR)"),
+                              //           subtitle: Text(offerrecievedlist[index]
+                              //                   ["total_security"]
+                              //               .toString()),
+                              //         ),
+                              //       ),
+                              //       Card(
+                              //           color: Colors.grey[100],
+                              //           child: ListTile(
+                              //               title: Text(
+                              //                   "Convenience Charges (${conPer.toStringAsFixed(0)}%)"),
+                              //               subtitle: Text(taxValue.toString()))),
+                              //       Card(
+                              //           color: Colors.grey[100],
+                              //           child: ListTile(
+                              //               title: const Text("Final Amount(INR)"),
+                              //               subtitle: Text((double.parse(
+                              //                           offerrecievedlist[index]
+                              //                                   ["final_amount"]
+                              //                               .toString()) -
+                              //                       taxValue)
+                              //                   .toString())))
+                              //     ])),
+                              //   ),
+                              // );
+                            },
+                            child: Card(
+                              elevation: 4.0,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: TextButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => OfferMadeProductDetailScreen(
+                                                            postadid:
+                                                                offerrecievedlist[
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString(),
+                                                            offerid: offerrecievedlist[
+                                                                        index][
+                                                                    'offer_request_id']
+                                                                .toString())));
+                                              },
+                                              child: SizedBox(
+                                                  width: size.width * 0.60,
+                                                  child: Text(
+                                                      "Product Name : ${offerrecievedlist[index]['title']}"))),
+                                        ),
+                                        Expanded(
+                                            child: SizedBox(
+                                          width: 10,
+                                        )),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "Ad Id: ${offerrecievedlist[index]['ad_id']}"),
+                                          Text(
+                                              "Product Price (INR): ${offerrecievedlist[index]['product_price'].toString()}"),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "Security: ${offerrecievedlist[index]['total_security']}"),
+                                          Text(
+                                              "Offer Price (INR): ${offerrecievedlist[index]['final_product_selling_amount'].toString()}"),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "Convenience Fee: ${offerrecievedlist[index]['convenience_fee']}"),
+                                          Text(
+                                              "Quantity: ${offerrecievedlist[index]['quantity']}"),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "Total Rent (INR): ${offerrecievedlist[index]['final_amount']}"),
+                                          Text(
+                                              "Rent Type: ${offerrecievedlist[index]['rent_type_name']}"),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "Start Date: ${offerrecievedlist[index]['start_date']}"),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "End Date: ${offerrecievedlist[index]['end_date']}"),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Status: ",
+                                              ),
+                                              offerrecievedlist[index]
                                                           ['offer_status'] ==
-                                                      1
-                                                  ? Text("Accepted",
+                                                      3
+                                                  ? Text(
+                                                      "Pending",
                                                       style: TextStyle(
                                                           fontWeight:
-                                                              FontWeight.bold))
+                                                              FontWeight.bold),
+                                                    )
                                                   : offerrecievedlist[index][
                                                               'offer_status'] ==
-                                                          12
-                                                      ? Text(
-                                                          "Final Amount Offered",
+                                                          2
+                                                      ? Text("Rejected",
                                                           style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold))
-                                                      : SizedBox(),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child:
-                                      offerrecievedlist[index]["offer_status"]
-                                                  .toString() ==
-                                              "3"
-                                          ? InkWell(
-                                              onTap: () {
-                                                showGeneralDialog(
-                                                  context: context,
-                                                  barrierDismissible: true,
-                                                  barrierLabel: "",
-                                                  transitionBuilder: (context,
-                                                      _animation,
-                                                      _secondaryAnimation,
-                                                      _child) {
-                                                    return Animations.fromTop(
-                                                        _animation,
-                                                        _secondaryAnimation,
-                                                        _child);
-                                                  },
-                                                  pageBuilder: (_animation,
-                                                      _secondaryAnimation,
-                                                      _child) {
-                                                    return StatefulBuilder(
-                                                        builder: (context,
-                                                            setState) {
-                                                      return AlertDialog(
-                                                        title: const Text(
-                                                            "Response",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .deepOrangeAccent)),
-                                                        content: SizedBox(
-                                                          child:
-                                                              SingleChildScrollView(
-                                                                  child: Column(
-                                                                      children: [
-                                                                DropdownButtonHideUnderline(
-                                                                  child:
-                                                                      DropdownButton<
-                                                                          String>(
-                                                                    hint: const Text(
-                                                                        "Select",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize: 18)),
-                                                                    value:
-                                                                        response,
-                                                                    elevation:
-                                                                        16,
-                                                                    isExpanded:
-                                                                        true,
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade700,
-                                                                        fontSize:
-                                                                            16),
-                                                                    onChanged:
-                                                                        (String
-                                                                            data) {
-                                                                      setState(
-                                                                          () {
-                                                                        if (data.toString() ==
-                                                                            "Reject") {
-                                                                          responsevalue =
-                                                                              "2";
-                                                                          response =
-                                                                              data.toString();
-                                                                          newamtcheck =
-                                                                              false;
-                                                                        } else if (data.toString() ==
-                                                                            "Accept") {
-                                                                          responsevalue =
-                                                                              "1";
-                                                                          response =
-                                                                              data.toString();
-                                                                          newamtcheck =
-                                                                              false;
-                                                                        } else {
-                                                                          responsevalue =
-                                                                              "12";
-                                                                          response =
-                                                                              data.toString();
-                                                                          newamtcheck =
-                                                                              true;
-                                                                        }
-                                                                      });
-                                                                    },
-                                                                    items: offerrecievedlist[index]["negotiate"].toString() ==
-                                                                            "1"
-                                                                        ? [
-                                                                            'Accept',
-                                                                            'Reject',
-                                                                            'Final Product Selling Amount'
-                                                                          ].map<
-                                                                            DropdownMenuItem<
-                                                                                String>>((String
-                                                                            value) {
-                                                                            return DropdownMenuItem<String>(
-                                                                              value: value,
-                                                                              child: Text(value),
-                                                                            );
-                                                                          }).toList()
-                                                                        : [
-                                                                            'Accept',
-                                                                            'Reject',
-                                                                          ].map<
-                                                                            DropdownMenuItem<
-                                                                                String>>((String
-                                                                            value) {
-                                                                            return DropdownMenuItem<String>(
-                                                                              value: value,
-                                                                              child: Text(value),
-                                                                            );
-                                                                          }).toList(),
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 2),
-                                                                const Divider(
-                                                                    height: 1,
+                                                      : offerrecievedlist[index]
+                                                                  [
+                                                                  'offer_status'] ==
+                                                              1
+                                                          ? Text("Accepted",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold))
+                                                          : offerrecievedlist[index]
+                                                                      ['offer_status'] ==
+                                                                  12
+                                                              ? Text("Final Amount Offered", style: TextStyle(fontWeight: FontWeight.bold))
+                                                              : SizedBox(),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: offerrecievedlist[index]
+                                                          ["offer_status"]
+                                                      .toString() ==
+                                                  "3"
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    showGeneralDialog(
+                                                      context: context,
+                                                      barrierDismissible: true,
+                                                      barrierLabel: "",
+                                                      transitionBuilder: (context,
+                                                          _animation,
+                                                          _secondaryAnimation,
+                                                          _child) {
+                                                        return Animations.fromTop(
+                                                            _animation,
+                                                            _secondaryAnimation,
+                                                            _child);
+                                                      },
+                                                      pageBuilder: (_animation,
+                                                          _secondaryAnimation,
+                                                          _child) {
+                                                        return StatefulBuilder(
+                                                            builder: (context,
+                                                                setState) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                "Response",
+                                                                style: TextStyle(
                                                                     color: Colors
-                                                                        .grey,
-                                                                    thickness:
-                                                                        1),
-                                                                const SizedBox(
-                                                                    height: 8),
-                                                                newamtcheck
-                                                                    ? Padding(
-                                                                        padding: EdgeInsets.only(
-                                                                            top:
-                                                                                5.0,
-                                                                            bottom:
-                                                                                5.0),
-                                                                        child:
-                                                                            TextField(
-                                                                          keyboardType:
-                                                                              TextInputType.number,
-                                                                          controller:
-                                                                              renteeAmount,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            border:
-                                                                                OutlineInputBorder(),
-                                                                            labelText:
-                                                                                'Your Amount',
-                                                                            hintText:
-                                                                                'Your Amount',
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    : const SizedBox(),
-                                                                const SizedBox(
-                                                                    height: 15),
-                                                                InkWell(
-                                                                  onTap: () {
-                                                                    if (responsevalue == null ||
-                                                                        responsevalue ==
-                                                                            "" ||
-                                                                        responsevalue ==
-                                                                            "null") {
-                                                                      showToast(
-                                                                          "Please select your response");
-                                                                    } else {
-                                                                      _offeraction(
-                                                                          offerrecievedlist[index]['post_ad_id']
-                                                                              .toString(),
-                                                                          responsevalue,
-                                                                          offerrecievedlist[index]['user_id']
-                                                                              .toString(),
-                                                                          renteeAmount,
-                                                                          offerrecievedlist[index]['offer_request_id']
-                                                                              .toString());
-                                                                    }
-                                                                  },
-                                                                  child:
-                                                                      Container(
-                                                                    height: 45,
-                                                                    width: double
-                                                                        .infinity,
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    decoration: const BoxDecoration(
-                                                                        color: Colors
-                                                                            .deepOrangeAccent,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(8.0))),
-                                                                    child: const Text(
-                                                                        "Submit",
+                                                                        .deepOrangeAccent)),
+                                                            content: SizedBox(
+                                                              child:
+                                                                  SingleChildScrollView(
+                                                                      child: Column(
+                                                                          children: [
+                                                                    DropdownButtonHideUnderline(
+                                                                      child: DropdownButton<
+                                                                          String>(
+                                                                        hint: const Text(
+                                                                            "Select",
+                                                                            style:
+                                                                                TextStyle(color: Colors.black, fontSize: 18)),
+                                                                        value:
+                                                                            response,
+                                                                        elevation:
+                                                                            16,
+                                                                        isExpanded:
+                                                                            true,
                                                                         style: TextStyle(
                                                                             color:
-                                                                                Colors.white)),
-                                                                  ),
-                                                                )
-                                                              ])),
-                                                        ),
-                                                      );
-                                                    });
+                                                                                Colors.grey.shade700,
+                                                                            fontSize: 16),
+                                                                        onChanged:
+                                                                            (String
+                                                                                data) {
+                                                                          setState(
+                                                                              () {
+                                                                            if (data.toString() ==
+                                                                                "Reject") {
+                                                                              responsevalue = "2";
+                                                                              response = data.toString();
+                                                                              newamtcheck = false;
+                                                                            } else if (data.toString() ==
+                                                                                "Accept") {
+                                                                              responsevalue = "1";
+                                                                              response = data.toString();
+                                                                              newamtcheck = false;
+                                                                            } else {
+                                                                              responsevalue = "12";
+                                                                              response = data.toString();
+                                                                              newamtcheck = true;
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        items: offerrecievedlist[index]["negotiate"].toString() ==
+                                                                                "1"
+                                                                            ? [
+                                                                                'Accept',
+                                                                                'Reject',
+                                                                                'Final Product Selling Amount'
+                                                                              ].map<DropdownMenuItem<String>>((String
+                                                                                value) {
+                                                                                return DropdownMenuItem<String>(
+                                                                                  value: value,
+                                                                                  child: Text(value),
+                                                                                );
+                                                                              }).toList()
+                                                                            : [
+                                                                                'Accept',
+                                                                                'Reject',
+                                                                              ].map<DropdownMenuItem<String>>((String
+                                                                                value) {
+                                                                                return DropdownMenuItem<String>(
+                                                                                  value: value,
+                                                                                  child: Text(value),
+                                                                                );
+                                                                              }).toList(),
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            2),
+                                                                    const Divider(
+                                                                        height:
+                                                                            1,
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        thickness:
+                                                                            1),
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            8),
+                                                                    newamtcheck
+                                                                        ? Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(top: 5.0, bottom: 5.0),
+                                                                            child:
+                                                                                TextField(
+                                                                              keyboardType: TextInputType.number,
+                                                                              controller: renteeAmount,
+                                                                              decoration: InputDecoration(
+                                                                                border: OutlineInputBorder(),
+                                                                                labelText: 'Your Amount',
+                                                                                hintText: 'Your Amount',
+                                                                              ),
+                                                                            ),
+                                                                          )
+                                                                        : const SizedBox(),
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            15),
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        if (responsevalue == null ||
+                                                                            responsevalue ==
+                                                                                "" ||
+                                                                            responsevalue ==
+                                                                                "null") {
+                                                                          showToast(
+                                                                              "Please select your response");
+                                                                        } else {
+                                                                          _offeraction(
+                                                                              offerrecievedlist[index]['post_ad_id'].toString(),
+                                                                              responsevalue,
+                                                                              offerrecievedlist[index]['user_id'].toString(),
+                                                                              renteeAmount,
+                                                                              offerrecievedlist[index]['id'].toString());
+                                                                        }
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        height:
+                                                                            45,
+                                                                        width: double
+                                                                            .infinity,
+                                                                        alignment:
+                                                                            Alignment.center,
+                                                                        decoration: const BoxDecoration(
+                                                                            color:
+                                                                                Colors.deepOrangeAccent,
+                                                                            borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                                                                        child: const Text(
+                                                                            "Submit",
+                                                                            style:
+                                                                                TextStyle(color: Colors.white)),
+                                                                      ),
+                                                                    )
+                                                                  ])),
+                                                            ),
+                                                          );
+                                                        });
+                                                      },
+                                                      // builder: (context)=> StatefulBuilder(
+                                                      //     builder: (context, setState){
+                                                      //       return AlertDialog(
+                                                      //         title: const Text("Response", style: TextStyle(color: Colors.deepOrangeAccent)),
+                                                      //         content: Container(
+                                                      //           child: SingleChildScrollView(
+                                                      //               child: Column(
+                                                      //                 children: [
+                                                      //                   DropdownButtonHideUnderline(
+                                                      //                      child: DropdownButton<String>(
+                                                      //                      hint: const Text("Select", style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                      //                      value: response,
+                                                      //                      elevation: 16,
+                                                      //                      isExpanded: true,
+                                                      //                      style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
+                                                      //                       onChanged: (String data) {
+                                                      //                       setState(() {
+                                                      //                         if(data.toString() == "Reject"){
+                                                      //                           responsevalue = "2";
+                                                      //                           response = data.toString();
+                                                      //                         }
+                                                      //                         else if(data.toString() == "Accept"){
+                                                      //                           responsevalue = "1";
+                                                      //                           response = data.toString();
+                                                      //                         }
+                                                      //                         else{
+                                                      //                            newamtcheck = true;
+                                                      //                         }
+                                                      //                       });
+                                                      //                     },
+                                                      //                     items: responselist.map<DropdownMenuItem<String>>((String value) {
+                                                      //                       return DropdownMenuItem<String>(
+                                                      //                         value: value,
+                                                      //                         child: Text(value),
+                                                      //                       );
+                                                      //                     }).toList(),
+                                                      //                   ),
+                                                      //                 ),
+                                                      //                   const SizedBox(height: 2),
+                                                      //                   const Divider(height: 1, color: Colors.grey, thickness: 1),
+                                                      //                   const SizedBox(height: 5),
+                                                      //                   newamtcheck ? const TextField(
+                                                      //                     decoration: InputDecoration(
+                                                      //                       border: OutlineInputBorder(),
+                                                      //                       labelText: 'Your Amount',
+                                                      //                       hintText: 'Your Amount',
+                                                      //                     ),
+                                                      //                   ) : const SizedBox(),
+                                                      //                   const SizedBox(height: 15),
+                                                      //                   InkWell(onTap:() {
+                                                      //                    if(responsevalue == null || responsevalue == "" || responsevalue == "null"){
+                                                      //                      showToast("Please select your response");
+                                                      //                    }
+                                                      //                    else{
+                                                      //                      print(offerrecievedlist[index]['user_id'].toString());
+                                                      //                      print(offerrecievedlist[index]['post_ad_id'].toString());
+                                                      //                      print(responsevalue);
+                                                      //                     _offeraction(offerrecievedlist[index]['post_ad_id'].toString(), responsevalue, offerrecievedlist[index]['user_id'].toString());
+                                                      //                    }
+                                                      //                   },
+                                                      //                   child: Container(
+                                                      //                     height: 45,
+                                                      //                     width: double.infinity,
+                                                      //                     alignment: Alignment.center,
+                                                      //                     decoration: const BoxDecoration(
+                                                      //                         color: Colors.deepOrangeAccent,
+                                                      //                         borderRadius: BorderRadius.all(Radius.circular(8.0))
+                                                      //                     ),
+                                                      //                     child: const Text("Submit", style: TextStyle(color: Colors.white)),
+                                                      //                   ),
+                                                      //                 )
+                                                      //               ])
+                                                      //           ),
+                                                      //         ),
+                                                      //
+                                                      //       );
+                                                      //     }
+                                                      // )
+                                                    );
                                                   },
-                                                  // builder: (context)=> StatefulBuilder(
-                                                  //     builder: (context, setState){
-                                                  //       return AlertDialog(
-                                                  //         title: const Text("Response", style: TextStyle(color: Colors.deepOrangeAccent)),
-                                                  //         content: Container(
-                                                  //           child: SingleChildScrollView(
-                                                  //               child: Column(
-                                                  //                 children: [
-                                                  //                   DropdownButtonHideUnderline(
-                                                  //                      child: DropdownButton<String>(
-                                                  //                      hint: const Text("Select", style: TextStyle(color: Colors.black, fontSize: 18)),
-                                                  //                      value: response,
-                                                  //                      elevation: 16,
-                                                  //                      isExpanded: true,
-                                                  //                      style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
-                                                  //                       onChanged: (String data) {
-                                                  //                       setState(() {
-                                                  //                         if(data.toString() == "Reject"){
-                                                  //                           responsevalue = "2";
-                                                  //                           response = data.toString();
-                                                  //                         }
-                                                  //                         else if(data.toString() == "Accept"){
-                                                  //                           responsevalue = "1";
-                                                  //                           response = data.toString();
-                                                  //                         }
-                                                  //                         else{
-                                                  //                            newamtcheck = true;
-                                                  //                         }
-                                                  //                       });
-                                                  //                     },
-                                                  //                     items: responselist.map<DropdownMenuItem<String>>((String value) {
-                                                  //                       return DropdownMenuItem<String>(
-                                                  //                         value: value,
-                                                  //                         child: Text(value),
-                                                  //                       );
-                                                  //                     }).toList(),
-                                                  //                   ),
-                                                  //                 ),
-                                                  //                   const SizedBox(height: 2),
-                                                  //                   const Divider(height: 1, color: Colors.grey, thickness: 1),
-                                                  //                   const SizedBox(height: 5),
-                                                  //                   newamtcheck ? const TextField(
-                                                  //                     decoration: InputDecoration(
-                                                  //                       border: OutlineInputBorder(),
-                                                  //                       labelText: 'Your Amount',
-                                                  //                       hintText: 'Your Amount',
-                                                  //                     ),
-                                                  //                   ) : const SizedBox(),
-                                                  //                   const SizedBox(height: 15),
-                                                  //                   InkWell(onTap:() {
-                                                  //                    if(responsevalue == null || responsevalue == "" || responsevalue == "null"){
-                                                  //                      showToast("Please select your response");
-                                                  //                    }
-                                                  //                    else{
-                                                  //                      print(offerrecievedlist[index]['user_id'].toString());
-                                                  //                      print(offerrecievedlist[index]['post_ad_id'].toString());
-                                                  //                      print(responsevalue);
-                                                  //                     _offeraction(offerrecievedlist[index]['post_ad_id'].toString(), responsevalue, offerrecievedlist[index]['user_id'].toString());
-                                                  //                    }
-                                                  //                   },
-                                                  //                   child: Container(
-                                                  //                     height: 45,
-                                                  //                     width: double.infinity,
-                                                  //                     alignment: Alignment.center,
-                                                  //                     decoration: const BoxDecoration(
-                                                  //                         color: Colors.deepOrangeAccent,
-                                                  //                         borderRadius: BorderRadius.all(Radius.circular(8.0))
-                                                  //                     ),
-                                                  //                     child: const Text("Submit", style: TextStyle(color: Colors.white)),
-                                                  //                   ),
-                                                  //                 )
-                                                  //               ])
-                                                  //           ),
-                                                  //         ),
-                                                  //
-                                                  //       );
-                                                  //     }
-                                                  // )
+                                                  child: Container(
+                                                      padding: const EdgeInsets.all(
+                                                          4.0),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      4.0)),
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.blue)),
+                                                      child: const Text("Respond",
+                                                          style: TextStyle(color: Colors.blue))))
+                                              : _getstatus(offerrecievedlist[index]["offer_status"].toString()),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => OfferMadeProductDetailScreen(
+                                                          postadid:
+                                                              offerrecievedlist[
+                                                                          index]
+                                                                      ['id']
+                                                                  .toString(),
+                                                          offerid:
+                                                              offerrecievedlist[
+                                                                          index]
+                                                                      [
+                                                                      'offer_request_id']
+                                                                  .toString())),
                                                 );
                                               },
                                               child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius: const BorderRadius.all(
-                                                          Radius.circular(4.0)),
-                                                      border: Border.all(
-                                                          color: Colors.blue)),
-                                                  child: const Text("Respond",
-                                                      style: TextStyle(
-                                                          color: Colors.blue))))
-                                          : _getstatus(offerrecievedlist[index]
-                                                  ["offer_status"]
-                                              .toString()),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OfferMadeProductDetailScreen(
-                                                      postadid:
-                                                          offerrecievedlist[
-                                                                  index]['id']
-                                                              .toString(),
-                                                      offerid: offerrecievedlist[
-                                                                  index][
-                                                              'offer_request_id']
-                                                          .toString())),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 80,
-                                        height: 30,
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(4.0),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(4.0)),
-                                            border:
-                                                Border.all(color: Colors.blue)),
-                                        child: const Text("View",
-                                            style:
-                                                TextStyle(color: Colors.blue)),
+                                                width: 80,
+                                                height: 30,
+                                                alignment: Alignment.center,
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                4.0)),
+                                                    border: Border.all(
+                                                        color: Colors.blue)),
+                                                child: const Text("View",
+                                                    style: TextStyle(
+                                                        color: Colors.blue)),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ))
-            ],
+                          );
+                        },
+                      ))
+              ],
+            ),
           ),
         ),
       ),
@@ -968,7 +965,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
           print(offerrecievedlist[0]);
         }
       } else {
-        showToast(jsonDecode(response.body)['ErrorMessage'].toString());
+        // showToast(jsonDecode(response.body)['ErrorMessage'].toString());
       }
     } else {
       setState(() {
@@ -1059,11 +1056,12 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
 
   Future<void> _offeraction(String postid, String offerstatus, String userid,
       TextEditingController renteeAmount, String offerrequestid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     print(jsonEncode({
       "post_ad_id": postid,
-      "user_id": userid,
       "offer_status": offerstatus,
-      "rentee_amount": renteeAmount.text.toString(),
+      // "rentee_amount": renteeAmount.text.toString(),
       "offer_request_id": offerrequestid.toString()
     }));
     final body = {
@@ -1077,15 +1075,18 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         showToast(jsonDecode(response.body)['Response'].toString());
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => OffersViewScreen()));
         //_offerrecievedlist();
       } else {
         // showToast(jsonDecode(response.body)['ErrorMessage'].toString());

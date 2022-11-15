@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:rentit4me_new/models/browse_all_category.dart';
 import 'package:rentit4me_new/network/api.dart';
+import 'package:rentit4me_new/views/product_detail_screen.dart';
+import 'package:rentit4me_new/views/top_selling_categories.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 
 class TopSellingCategoriesScreen extends StatefulWidget {
@@ -216,20 +218,31 @@ class _TopSellingCategoriesScreenState
                             return SizedBox(
                               child: Column(
                                 children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(0),
-                                            topRight: Radius.circular(0)),
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                              imagepath + i.image,
-                                            ),
-                                            fit: BoxFit.cover)),
-                                    height: height * 0.18,
-                                    width: width * 0.5,
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: ((context) =>
+                                                  TopSellingCategories(
+                                                    category: i.slug.toString(),
+                                                  ))));
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(0),
+                                              topRight: Radius.circular(0)),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                imagepath + i.image,
+                                              ),
+                                              fit: BoxFit.cover)),
+                                      height: height * 0.18,
+                                      width: width * 0.5,
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 10,

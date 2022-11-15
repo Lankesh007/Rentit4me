@@ -11,6 +11,8 @@ import 'package:rentit4me_new/views/order_detail_screen.dart';
 import 'package:rentit4me_new/views/shiprocket_place_order.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'offer_made_product_detail_screen.dart';
+
 class OrderRecievedScreen extends StatefulWidget {
   const OrderRecievedScreen({Key key}) : super(key: key);
 
@@ -29,7 +31,7 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
 
   String pickup;
 
-  List<String> responselist = ['Scheduler Pickup', 'Self Delivered', 'Cancel'];
+  List<String> responselist = ['Self Delivered', 'Cancel'];
   String responsevalue;
   String response;
   double conPer = 0;
@@ -57,631 +59,657 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
       //   title: Text("Orders Received", style: TextStyle(color: kPrimaryColor)),
       //   centerTitle: true,
       // ),
-      body: ModalProgressHUD(
-        inAsyncCall: _progress,
-        color: kPrimaryColor,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Card(
-                  elevation: 4.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              enabled: true,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: Colors.deepOrangeAccent)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.deepOrangeAccent,
-                                  )),
-                              contentPadding: EdgeInsets.only(left: 5),
-                              hintText: searchvalue,
-                              border: InputBorder.none,
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          _myrecievedorderslist();
+        },
+        child: ModalProgressHUD(
+          inAsyncCall: _progress,
+          color: kPrimaryColor,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Card(
+                    elevation: 4.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 5),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 0.0),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                enabled: true,
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: Colors.deepOrangeAccent)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Colors.deepOrangeAccent,
+                                    )),
+                                contentPadding: EdgeInsets.only(left: 5),
+                                hintText: searchvalue,
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (value) {
+                                searchvalue = value;
+                              },
                             ),
-                            onChanged: (value) {
-                              searchvalue = value;
-                            },
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //Text("From Date", style: TextStyle(color: kPrimaryColor, fontSize: 14, fontWeight: FontWeight.w500)),
-                                //SizedBox(height: 10),
-                                Container(
-                                    width: size.width * 0.42,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Colors.deepOrangeAccent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(startdate,
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                          IconButton(
-                                              onPressed: () {
-                                                _selectStartDate(context);
-                                              },
-                                              icon: Icon(
-                                                  Icons.calendar_today_sharp,
-                                                  size: 16,
-                                                  color: kPrimaryColor))
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //Text("To Date", style: TextStyle(color: kPrimaryColor, fontSize: 14, fontWeight: FontWeight.w500)),
-                                //SizedBox(height: 10),
-                                Container(
-                                    width: size.width * 0.42,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Colors.deepOrangeAccent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(enddate,
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                          IconButton(
-                                              onPressed: () {
-                                                _selectEndtDate(context);
-                                              },
-                                              icon: Icon(
-                                                  Icons.calendar_today_sharp,
-                                                  size: 16,
-                                                  color: kPrimaryColor))
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        InkWell(
-                          onTap: () {
-                            if (searchvalue == "Enter order id" &&
-                                startdate == "From Date") {
-                              showToast(
-                                  "Please enter your search or select date");
-                            } else {
-                              if (searchvalue == "Enter order id" ||
-                                  searchvalue.length == 0 ||
-                                  searchvalue.isEmpty) {
-                                _myrecievedorderslistByDate();
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Text("From Date", style: TextStyle(color: kPrimaryColor, fontSize: 14, fontWeight: FontWeight.w500)),
+                                  //SizedBox(height: 10),
+                                  Container(
+                                      width: size.width * 0.42,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1,
+                                              color: Colors.deepOrangeAccent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(startdate,
+                                                style: TextStyle(
+                                                    color: Colors.grey)),
+                                            IconButton(
+                                                onPressed: () {
+                                                  _selectStartDate(context);
+                                                },
+                                                icon: Icon(
+                                                    Icons.calendar_today_sharp,
+                                                    size: 16,
+                                                    color: kPrimaryColor))
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Text("To Date", style: TextStyle(color: kPrimaryColor, fontSize: 14, fontWeight: FontWeight.w500)),
+                                  //SizedBox(height: 10),
+                                  Container(
+                                      width: size.width * 0.42,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1,
+                                              color: Colors.deepOrangeAccent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(enddate,
+                                                style: TextStyle(
+                                                    color: Colors.grey)),
+                                            IconButton(
+                                                onPressed: () {
+                                                  _selectEndtDate(context);
+                                                },
+                                                icon: Icon(
+                                                    Icons.calendar_today_sharp,
+                                                    size: 16,
+                                                    color: kPrimaryColor))
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          InkWell(
+                            onTap: () {
+                              if (searchvalue == "Enter order id" &&
+                                  startdate == "From Date") {
+                                showToast(
+                                    "Please enter your search or select date");
                               } else {
-                                _myrecievedorderslistBySearch();
+                                if (searchvalue == "Enter order id" ||
+                                    searchvalue.length == 0 ||
+                                    searchvalue.isEmpty) {
+                                  _myrecievedorderslistByDate();
+                                } else {
+                                  _myrecievedorderslistBySearch();
+                                }
                               }
-                            }
-                          },
-                          child: Card(
-                            elevation: 8.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                            },
+                            child: Card(
+                              elevation: 8.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Container(
+                                height: 40,
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                    color: Colors.deepOrangeAccent,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0))),
+                                child: const Text("Filter",
+                                    style: TextStyle(color: Colors.white)),
+                              ),
                             ),
-                            child: Container(
-                              height: 40,
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                  color: Colors.deepOrangeAccent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0))),
-                              child: const Text("Filter",
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  height: size.height * 0.50,
-                  child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: myactiveorderslist.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          double total = double.parse(myactiveorderslist[index]
-                                      ["total_security"]
-                                  .toString()) +
-                              double.parse(myactiveorderslist[index]
-                                      ["total_rent"]
-                                  .toString());
-
-                          double taxValue = (conPer / 100) * total;
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                  title: const Text('Detail Information'),
-                                  content: SingleChildScrollView(
-                                      child: Column(children: [
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Order Id"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ['order_id']
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Product Name"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["title"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Product Quantity"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["quantity"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Rent Type"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["rent_type_name"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Period"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["period"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Product Price(INR)"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["product_price"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Offer Amount(INR)"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["renter_amount"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Total Rent(INR)"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["total_rent"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: Text("Total Security(INR)"),
-                                        subtitle: Text(myactiveorderslist[index]
-                                                ["total_security"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
+                  const SizedBox(height: 5),
+              myactiveorderslist.isEmpty?Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    child:Text("No Products Found !!"),
+                  ),
+                ],
+              ):    Container(
+                    height: size.height * 0.50,
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: myactiveorderslist.length,
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                      itemBuilder: (BuildContext context, int index) {
+                        double totalRent = double.parse(
+                                myactiveorderslist[index]["total_security"]) +
+                            double.parse(myactiveorderslist[index]["total_rent"]);
+                        return InkWell(
+                          onTap: () {
+                            double total = double.parse(myactiveorderslist[index]
+                                        ["total_security"]
+                                    .toString()) +
+                                double.parse(myactiveorderslist[index]
+                                        ["total_rent"]
+                                    .toString());
+      
+                            double taxValue = (conPer / 100) * total;
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    title: const Text('Detail Information'),
+                                    content: SingleChildScrollView(
+                                        child: Column(children: [
+                                      Card(
                                         color: Colors.grey[100],
                                         child: ListTile(
-                                            title: Text(
-                                                "Convenience Charges (" +
-                                                    conPer
-                                                        .toStringAsFixed(0)
-                                                        .toString() +
-                                                    "%)"),
-                                            subtitle:
-                                                Text(taxValue.toString()))),
-                                    Card(
+                                          title: Text("Order Id"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ['order_id']
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
                                         color: Colors.grey[100],
                                         child: ListTile(
-                                            title:
-                                                const Text("Final Amount(INR)"),
-                                            subtitle: Text((double.parse(
-                                                        myactiveorderslist[
-                                                                    index]
-                                                                ["final_amount"]
-                                                            .toString()) -
-                                                    taxValue)
-                                                .toString())))
-                                  ]))));
-                        },
-                        child: Card(
-                          elevation: 4.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    OrderDetailScreen(
-                                                        orderid:
-                                                            myactiveorderslist[
-                                                                    index]['id']
-                                                                .toString())));
-                                      },
-                                      child: Text(
-                                          "Order Id : ${myactiveorderslist[index]['order_id']}",
+                                          title: Text("Product Name"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["title"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Product Quantity"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["quantity"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Rent Type"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["rent_type_name"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Period"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["period"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Product Price(INR)"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["product_price"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Offer Amount(INR)"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["renter_amount"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Total Rent(INR)"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["total_rent"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.grey[100],
+                                        child: ListTile(
+                                          title: Text("Total Security(INR)"),
+                                          subtitle: Text(myactiveorderslist[index]
+                                                  ["total_security"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      Card(
+                                          color: Colors.grey[100],
+                                          child: ListTile(
+                                              title: Text(
+                                                  "Convenience Charges (" +
+                                                      conPer
+                                                          .toStringAsFixed(0)
+                                                          .toString() +
+                                                      "%)"),
+                                              subtitle:
+                                                  Text(taxValue.toString()))),
+                                      Card(
+                                          color: Colors.grey[100],
+                                          child: ListTile(
+                                              title:
+                                                  const Text("Final Amount(INR)"),
+                                              subtitle: Text((double.parse(
+                                                          myactiveorderslist[
+                                                                      index]
+                                                                  ["final_amount"]
+                                                              .toString()) -
+                                                      taxValue)
+                                                  .toString())))
+                                    ]))));
+                          },
+                          child: Card(
+                            elevation: 4.0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OrderDetailScreen(
+                                                          orderid:
+                                                              myactiveorderslist[
+                                                                      index]['id']
+                                                                  .toString())));
+                                        },
+                                        child: Text(
+                                            "Order Id : ${myactiveorderslist[index]['order_id']}",
+                                            style: TextStyle(
+                                                color: kPrimaryColor,
+                                                fontWeight: FontWeight.w500)),
+                                      ),
+                                      Text(
+                                          "Ad Id : ${myactiveorderslist[index]['ad_id']}",
                                           style: TextStyle(
                                               color: kPrimaryColor,
                                               fontWeight: FontWeight.w500)),
-                                    ),
-                                    myactiveorderslist[index]["offer_status"]
-                                                .toString() ==
-                                            "1"
-                                        ? InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              padding: EdgeInsets.all(4.0),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(4.0)),
-                                                  border: Border.all(
-                                                      color: Colors.blue)),
-                                              child: const Text("Action",
-                                                  style: TextStyle(
-                                                      color: Colors.blue)),
-                                            ),
-                                          )
-                                        : _getaction(
-                                            myactiveorderslist[index]["status"]
-                                                .toString(),
-                                          ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5.0),
-                                Text(
-                                    "Product : ${myactiveorderslist[index]['title']}"),
-                                const SizedBox(height: 5.0),
-                                Row(
+                                      // myactiveorderslist[index]["offer_status"]
+                                      //             .toString() ==
+                                      //         "1"
+                                      //     ? InkWell(
+                                      //         onTap: () {},
+                                      //         child: Container(
+                                      //           padding: EdgeInsets.all(4.0),
+                                      //           decoration: BoxDecoration(
+                                      //               borderRadius:
+                                      //                   BorderRadius.all(
+                                      //                       Radius.circular(4.0)),
+                                      //               border: Border.all(
+                                      //                   color: Colors.blue)),
+                                      //           child: const Text("Action",
+                                      //               style: TextStyle(
+                                      //                   color: Colors.blue)),
+                                      //         ),
+                                      //       )
+                                      //     : _getaction(
+                                      //         myactiveorderslist[index]["status"]
+                                      //             .toString(),
+                                      //       ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10.0),
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
+                                          "Product : ${myactiveorderslist[index]['title']}"),
+                                      Text(
                                           "Qty: ${myactiveorderslist[index]['quantity']}"),
-                                      Text(
-                                          "Duration: ${myactiveorderslist[index]['period']}"),
-                                      Text(
-                                          "Rent type: ${myactiveorderslist[index]['rent_type_name']}"),
-                                    ]),
-                                const SizedBox(height: 10.0),
-                                Row(
-                                  children: [
-                                    const Text("Delivery Type :",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 14)),
-                                    const SizedBox(width: 4.0),
-                                    myactiveorderslist[index]["status"]
-                                                    .toString() ==
-                                                "cancelled" ||
-                                            myactiveorderslist[index]["status"]
-                                                    .toString() ==
-                                                "pending"
-                                        ? const Text("N/A",
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                TextStyle(color: Colors.black))
-                                        : myactiveorderslist[index]
-                                                        ["scheduler_pickup"]
-                                                    .toString() ==
-                                                "0"
-                                            ? const Text("Self Deliver",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.black))
-                                            : const Text("Schedular Pickup",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                    const SizedBox(width: 12.0),
-                                    Expanded(
-                                        child: _getStatus(
-                                                    myactiveorderslist[index]
-                                                            ["status"]
-                                                        .toString()) ==
-                                                "Respond"
-                                            ? InkWell(
-                                                onTap: () {
-                                                  showDialog(
-                                                      context: context,
-                                                      barrierDismissible: false,
-                                                      builder: (context) =>
-                                                          StatefulBuilder(
-                                                              builder: (context,
-                                                                  setState) {
-                                                            return AlertDialog(
-                                                              title: const Text(
-                                                                  "Response",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .deepOrangeAccent)),
-                                                              content:
-                                                                  Container(
-                                                                child:
-                                                                    SingleChildScrollView(
-                                                                        child: Column(
-                                                                            children: [
-                                                                      DropdownButtonHideUnderline(
-                                                                        child: DropdownButton<
-                                                                            String>(
-                                                                          hint: const Text(
-                                                                              "Select",
-                                                                              style: TextStyle(color: Colors.black, fontSize: 18)),
-                                                                          value:
-                                                                              response,
-                                                                          elevation:
-                                                                              16,
-                                                                          isExpanded:
-                                                                              true,
-                                                                          style: TextStyle(
-                                                                              color: Colors.grey.shade700,
-                                                                              fontSize: 16),
-                                                                          onChanged:
-                                                                              (String data) {
-                                                                            setState(() {
-                                                                              if (data.toString() == "Cancel") {
-                                                                                responsevalue = "cancelled";
-                                                                                response = data.toString();
-                                                                              } else if (data.toString() == "Self Delivered") {
-                                                                                responsevalue = "delivered";
-                                                                                response = data.toString();
-                                                                              } else {
-                                                                                responsevalue = "scheduler pickup";
-                                                                                response = data.toString();
-                                                                              }
-                                                                            });
-                                                                          },
-                                                                          items:
-                                                                              responselist.map<DropdownMenuItem<String>>((String value) {
-                                                                            return DropdownMenuItem<String>(
-                                                                              value: value,
-                                                                              child: Text(value),
-                                                                            );
-                                                                          }).toList(),
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              2),
-                                                                      const Divider(
-                                                                          height:
-                                                                              1,
-                                                                          color: Colors
-                                                                              .grey,
-                                                                          thickness:
-                                                                              1),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              25),
-                                                                      InkWell(
-                                                                        onTap:
-                                                                            () {
-                                                                          if (responsevalue == null ||
-                                                                              responsevalue == "" ||
-                                                                              responsevalue == "null") {
-                                                                            showToast("Please select your response");
-                                                                          } else {
-                                                                            _submitrespond(myactiveorderslist[index]["id"].toString(),
-                                                                                responsevalue);
-                                                                          }
-                                                                        },
-                                                                        child:
-                                                                            Container(
-                                                                          height:
-                                                                              45,
-                                                                          width:
-                                                                              double.infinity,
-                                                                          alignment:
-                                                                              Alignment.center,
-                                                                          decoration: const BoxDecoration(
-                                                                              color: Colors.deepOrangeAccent,
-                                                                              borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                                                                          child: Text(
-                                                                              "Submit",
-                                                                              style: TextStyle(color: Colors.white)),
-                                                                        ),
-                                                                      )
-                                                                    ])),
-                                                              ),
-                                                            );
-                                                          }));
-                                                },
-                                                child: Container(
-                                                  height: 40,
-                                                  width: 80,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                      color: kPrimaryColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0)),
-                                                  child: Text(
-                                                      _getStatus(
-                                                          myactiveorderslist[
-                                                                      index]
-                                                                  ["status"]
-                                                              .toString()),
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
-                                                ),
-                                              )
-                                            : InkWell(
-                                                onTap: () {
-                                                  if (_getStatus(
-                                                          myactiveorderslist[
-                                                                      index]
-                                                                  ["status"]
-                                                              .toString()) ==
-                                                      "Recieved") {
-                                                    _confirmation(
-                                                        context,
-                                                        myactiveorderslist[
-                                                                index]["id"]
-                                                            .toString());
-                                                  }
-                                                },
-                                                child: Container(
-                                                  height: 40,
-                                                  width: 80,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.lightGreen,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0)),
-                                                  child: Text(
-                                                      _getStatus(
-                                                          myactiveorderslist[
-                                                                      index]
-                                                                  ["status"]
-                                                              .toString()),
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
-                                                ),
-                                              ))
-                                  ],
-                                ),
-                                TextButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            EdgeInsets.zero)),
-                                    onPressed: () async {
-                                      if (myactiveorderslist[index]['status']
-                                                  .toString() ==
-                                              "scheduler pickup" &&
-                                          myactiveorderslist[index]
-                                                      ['scheduler_pickup']
-                                                  .toString() ==
-                                              "1" &&
-                                          myactiveorderslist[index]
-                                                  ['shiprocket_id'] ==
-                                              null) {
-                                        Navigator.push(
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10.0),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                            "Duration: ${myactiveorderslist[index]['period']}"),
+                                        Text("Total Rent: $totalRent"),
+                                      ]),
+                                  const SizedBox(height: 10.0),
+                                  Text(
+                                      "Start Date: ${myactiveorderslist[index]['start_date']}"),
+                                  const SizedBox(height: 10.0),
+                                  Text(
+                                      "End Date: ${myactiveorderslist[index]['end_date']}"),
+                                  const SizedBox(height: 10.0),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ShipRocketPlaceOrder(
-                                                        id: myactiveorderslist[
-                                                                index]['id']
-                                                            .toString()))).then(
-                                            (value) {
-                                          _myrecievedorderslist();
-                                        });
-                                      } else if (myactiveorderslist[index]
-                                                      ['status']
-                                                  .toString() ==
-                                              "scheduler pickup" &&
-                                          myactiveorderslist[index]
-                                                      ['scheduler_pickup']
-                                                  .toString() ==
-                                              "1" &&
-                                          myactiveorderslist[index]
-                                                  ['shiprocket_id'] !=
-                                              null) {
-                                        print("del");
-
-                                        setState(() {
-                                          _progress = true;
-                                        });
-                                        final body = {
-                                          "orderid": myactiveorderslist[index]
-                                                  ['id']
-                                              .toString(),
-                                        };
-                                        var response = await http.post(
-                                            Uri.parse(BASE_URL +
-                                                "shiprocket-delivery-status"),
-                                            body: jsonEncode(body),
-                                            headers: {
-                                              "Accept": "application/json",
-                                              'Content-Type': 'application/json'
-                                            });
-                                        setState(() {
-                                          _progress = false;
-                                        });
-                                        if (jsonDecode(
-                                                response.body)['ErrorCode'] ==
-                                            0) {
-                                          showDeliveryStatus(jsonDecode(
-                                              response.body)['Response']);
-                                        } else {
-                                          showToast("No data found");
-                                        }
-                                      }
-                                    },
-                                    child: myactiveorderslist[index]['status']
+                                                    OfferMadeProductDetailScreen(
+                                                        postadid:
+                                                            myactiveorderslist[
+                                                                    index]['id']
+                                                                .toString(),
+                                                        offerid:
+                                                            myactiveorderslist[
+                                                                    index]['id']
+                                                                .toString())),
+                                          );
+                                        },
+                                        child: Container(
+                                            height: 30,
+                                            width: 150,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    color: Colors.orange[900])),
+                                            child: Text(
+                                              "View",
+                                              style: TextStyle(
+                                                  color: Colors.blue[900]),
+                                            )),
+                                      ),
+      
+                                      // const Text("Delivery Type :",
+                                      //     style: TextStyle(
+                                      //         color: Colors.black, fontSize: 14)),
+                                      // const SizedBox(width: 4.0),
+                                      // myactiveorderslist[index]["status"]
+                                      //                 .toString() ==
+                                      //             "cancelled" ||
+                                      //         myactiveorderslist[index]["status"]
+                                      //                 .toString() ==
+                                      //             "pending"
+                                      //     ? const Text("N/A",
+                                      //         textAlign: TextAlign.center,
+                                      //         style:
+                                      //             TextStyle(color: Colors.black))
+                                      //     : myactiveorderslist[index]
+                                      //                     ["scheduler_pickup"]
+                                      //                 .toString() ==
+                                      //             "0"
+                                      //         ? const Text("Self Deliver",
+                                      //             textAlign: TextAlign.center,
+                                      //             style: TextStyle(
+                                      //                 color: Colors.black))
+                                      //         : const Text("Schedular Pickup",
+                                      //             textAlign: TextAlign.center,
+                                      //             style: TextStyle(
+                                      //                 color: Colors.black)),
+                                      const SizedBox(width: 12.0),
+                                      Expanded(
+                                          child: _getStatus(
+                                                      myactiveorderslist[index]
+                                                              ["status"]
+                                                          .toString()) ==
+                                                  "Respond"
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        barrierDismissible: false,
+                                                        builder: (context) =>
+                                                            StatefulBuilder(
+                                                                builder: (context,
+                                                                    setState) {
+                                                              return AlertDialog(
+                                                                title: const Text(
+                                                                    "Response",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .deepOrangeAccent)),
+                                                                content:
+                                                                    Container(
+                                                                  child:
+                                                                      SingleChildScrollView(
+                                                                          child: Column(
+                                                                              children: [
+                                                                        DropdownButtonHideUnderline(
+                                                                          child: DropdownButton<
+                                                                              String>(
+                                                                            hint: const Text(
+                                                                                "Select",
+                                                                                style: TextStyle(color: Colors.black, fontSize: 18)),
+                                                                            value:
+                                                                                response,
+                                                                            elevation:
+                                                                                16,
+                                                                            isExpanded:
+                                                                                true,
+                                                                            style: TextStyle(
+                                                                                color: Colors.grey.shade700,
+                                                                                fontSize: 16),
+                                                                            onChanged:
+                                                                                (String data) {
+                                                                              setState(() {
+                                                                                if (data.toString() == "Cancel") {
+                                                                                  dataField = data.toString();
+                                                                                  responsevalue = "cancelled";
+                                                                                  response = data.toString();
+                                                                                } else if (data.toString() == "Self Delivered") {
+                                                                                  responsevalue = "delivered";
+                                                                                  response = data.toString();
+                                                                                } else {
+                                                                                  responsevalue = "scheduler pickup";
+                                                                                  response = data.toString();
+                                                                                }
+                                                                              });
+                                                                            },
+                                                                            items:
+                                                                                responselist.map<DropdownMenuItem<String>>((String value) {
+                                                                              return DropdownMenuItem<String>(
+                                                                                value: value,
+                                                                                child: Text(value),
+                                                                              );
+                                                                            }).toList(),
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                2),
+                                                                        const Divider(
+                                                                            height:
+                                                                                1,
+                                                                            color: Colors
+                                                                                .grey,
+                                                                            thickness:
+                                                                                1),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                25),
+                                                                        responsevalue ==
+                                                                                "cancelled"
+                                                                            ? Column(
+                                                                                children: [
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Container(
+                                                                                    child: TextField(
+                                                                                      controller: cancelController,
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            : Text(
+                                                                                ""),
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            if (responsevalue == null ||
+                                                                                responsevalue == "" ||
+                                                                                responsevalue == "null") {
+                                                                              showToast("Please select your response");
+                                                                            } else if (responsevalue ==
+                                                                                "cancelled") {
+                                                                              _submitrespondCancel(myactiveorderslist[index]["id"].toString(),
+                                                                                  responsevalue);
+                                                                            } else {
+                                                                              _submitrespond(myactiveorderslist[index]["id"].toString(),
+                                                                                  responsevalue);
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            height:
+                                                                                45,
+                                                                            width:
+                                                                                double.infinity,
+                                                                            alignment:
+                                                                                Alignment.center,
+                                                                            decoration: const BoxDecoration(
+                                                                                color: Colors.deepOrangeAccent,
+                                                                                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                                                                            child: Text(
+                                                                                "Submit",
+                                                                                style: TextStyle(color: Colors.white)),
+                                                                          ),
+                                                                        )
+                                                                      ])),
+                                                                ),
+                                                              );
+                                                            }));
+                                                  },
+                                                  child: Container(
+                                                    height: 40,
+                                                    width: 80,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        color: kPrimaryColor,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                8.0)),
+                                                    child: Text(
+                                                        _getStatus(
+                                                            myactiveorderslist[
+                                                                        index]
+                                                                    ["status"]
+                                                                .toString()),
+                                                        style: TextStyle(
+                                                            color: Colors.white)),
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: () {
+                                                    if (_getStatus(
+                                                            myactiveorderslist[
+                                                                        index]
+                                                                    ["status"]
+                                                                .toString()) ==
+                                                        "Recieved") {
+                                                      _confirmation(
+                                                          context,
+                                                          myactiveorderslist[
+                                                                  index]["id"]
+                                                              .toString());
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    height: 40,
+                                                    width: 80,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.lightGreen,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                8.0)),
+                                                    child: Text(
+                                                        _getStatus(
+                                                            myactiveorderslist[
+                                                                        index]
+                                                                    ["status"]
+                                                                .toString()),
+                                                        style: TextStyle(
+                                                            color: Colors.white)),
+                                                  ),
+                                                ))
+                                    ],
+                                  ),
+                                  TextButton(
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(
+                                              EdgeInsets.zero)),
+                                      onPressed: () async {
+                                        if (myactiveorderslist[index]['status']
                                                     .toString() ==
                                                 "scheduler pickup" &&
                                             myactiveorderslist[index]
@@ -690,28 +718,93 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
                                                 "1" &&
                                             myactiveorderslist[index]
                                                     ['shiprocket_id'] ==
-                                                null
-                                        ? Text("ShipRocket : Place Order")
-                                        : myactiveorderslist[index]['status'].toString() ==
-                                                    "scheduler pickup" &&
-                                                myactiveorderslist[index]
-                                                            ['scheduler_pickup']
-                                                        .toString() ==
-                                                    "1" &&
-                                                myactiveorderslist[index]
-                                                        ['shiprocket_id'] !=
-                                                    null
-                                            ? Text("ShipRocket : Delivery Status")
-                                            : Text("ShipRocket : N/A"))
-                              ],
+                                                null) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ShipRocketPlaceOrder(
+                                                          id: myactiveorderslist[
+                                                                  index]['id']
+                                                              .toString()))).then(
+                                              (value) {
+                                            _myrecievedorderslist();
+                                          });
+                                        } else if (myactiveorderslist[index]
+                                                        ['status']
+                                                    .toString() ==
+                                                "scheduler pickup" &&
+                                            myactiveorderslist[index]
+                                                        ['scheduler_pickup']
+                                                    .toString() ==
+                                                "1" &&
+                                            myactiveorderslist[index]
+                                                    ['shiprocket_id'] !=
+                                                null) {
+                                          print("del");
+      
+                                          setState(() {
+                                            _progress = true;
+                                          });
+                                          final body = {
+                                            "orderid": myactiveorderslist[index]
+                                                    ['id']
+                                                .toString(),
+                                          };
+                                          var response = await http.post(
+                                              Uri.parse(BASE_URL +
+                                                  "shiprocket-delivery-status"),
+                                              body: jsonEncode(body),
+                                              headers: {
+                                                "Accept": "application/json",
+                                                'Content-Type': 'application/json'
+                                              });
+                                          setState(() {
+                                            _progress = false;
+                                          });
+                                          if (jsonDecode(
+                                                  response.body)['ErrorCode'] ==
+                                              0) {
+                                            showDeliveryStatus(jsonDecode(
+                                                response.body)['Response']);
+                                          } else {
+                                            showToast("No data found");
+                                          }
+                                        }
+                                      },
+                                      child: myactiveorderslist[index]['status']
+                                                      .toString() ==
+                                                  "scheduler pickup" &&
+                                              myactiveorderslist[index]
+                                                          ['scheduler_pickup']
+                                                      .toString() ==
+                                                  "1" &&
+                                              myactiveorderslist[index]
+                                                      ['shiprocket_id'] ==
+                                                  null
+                                          ? Text("ShipRocket : Place Order")
+                                          : myactiveorderslist[index]['status'].toString() ==
+                                                      "scheduler pickup" &&
+                                                  myactiveorderslist[index]
+                                                              ['scheduler_pickup']
+                                                          .toString() ==
+                                                      "1" &&
+                                                  myactiveorderslist[index]
+                                                          ['shiprocket_id'] !=
+                                                      null
+                                              ? Text("ShipRocket : Delivery Status")
+                                              : Text("Status : ${ myactiveorderslist[index]
+                                                          ['status']}"))
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -764,17 +857,20 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
           myactiveorderslist
-              .addAll(jsonDecode(response.body)['Response']['Orders']);
+              .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           conPer = double.parse(jsonDecode(response.body)['Response']
                   ['convenience_charges']['charge']
               .toString());
         });
       } else {
+        // showToast(jsonDecode(response.body)['ErrorMessage']);
       }
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
+
+  final cancelController = TextEditingController();
 
   Future<void> _myrecievedorderslistByDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -791,7 +887,8 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}'
         });
     setState(() {
       _progress = false;
@@ -802,8 +899,7 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
           myactiveorderslist
               .addAll(jsonDecode(response.body)['Response']['Orders']);
         });
-      } else {
-      }
+      } else {}
     } else {
       setState(() {
         _progress = false;
@@ -812,6 +908,8 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
+
+  String dataField = "";
 
   Future<void> _myrecievedorderslistBySearch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -827,7 +925,8 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}'
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -935,7 +1034,44 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
     }
   }
 
+  Future<void> _submitrespondCancel(String orderid, String respond) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _progress = true;
+    });
+    final body = {
+      "order_id": orderid,
+      "status": respond,
+      "reason": cancelController.text.toString(),
+    };
+    var response = await http.post(Uri.parse(BASE_URL + orderrespond),
+        body: jsonEncode(body),
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}'
+        });
+    setState(() {
+      _progress = false;
+    });
+    if (response.statusCode == 200) {
+      if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+        _myrecievedorderslist();
+      } else {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+      }
+    } else {
+      setState(() {
+        _progress = false;
+      });
+      print(response.body);
+      throw Exception('Failed to get data due to ${response.body}');
+    }
+  }
+
   Future<void> _submitrespond(String orderid, String respond) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _progress = true;
     });
@@ -947,7 +1083,8 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}'
         });
     setState(() {
       _progress = false;

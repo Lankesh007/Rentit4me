@@ -214,6 +214,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         return;
                       } else if (mobileController.text.length < 10) {
                         showToast("Mobile No should be 10 digits");
+                      } else if (pwdController.text !=
+                          confirmpwdController.text) {
+                        showToast(
+                            "Your password & confirm password does not match");
                       } else {
                         _register(
                             nameController.text.toString(),
@@ -429,7 +433,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   bool showPassword = true;
-  bool showConfirmPassword=true;
+  bool showConfirmPassword = true;
   Widget _confirmpwdTextbox(_initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
@@ -447,7 +451,7 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-           suffixIcon: IconButton(
+            suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
                   showConfirmPassword = !showConfirmPassword;
@@ -457,7 +461,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   ? Icon(Icons.visibility)
                   : Icon(Icons.visibility_off),
             ),
-            hintText: _initialValue.toString(), labelText: 'Confirm Password*'),
+            hintText: _initialValue.toString(),
+            labelText: 'Confirm Password*'),
       ),
     );
   }

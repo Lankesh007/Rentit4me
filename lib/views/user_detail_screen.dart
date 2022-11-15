@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,7 +12,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
-import 'package:rentit4me_new/views/account.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
@@ -81,7 +79,10 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   final aadharNumber = TextEditingController();
   final businessName = TextEditingController();
   String dropdownvalue;
+  String aadharDocument = '';
+  bool aadhardocBool = false;
   String gstDocumnet = '';
+
   String panCardDocumnet = '';
   String aadharCardDocument = '';
   bool isLoading = false;
@@ -849,6 +850,296 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                           ),
                                         ],
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      kyc == 1 && kycApproval == "approved"
+                                          ? Column(
+                                              children: [
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: const Text(
+                                                      "Aadhar Number",
+                                                      style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                      )),
+                                                ),
+                                                SizedBox(height: 5),
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color: Colors
+                                                                .deepOrangeAccent),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    12))),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10.0),
+                                                      child: TextFormField(
+                                                        readOnly: true,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .digitsOnly
+                                                        ],
+                                                        controller:
+                                                            aadharNumber,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: aadharNumberApi ==
+                                                                  ""
+                                                              ? "Must be 12 digits"
+                                                              : aadharNumberApi,
+                                                          counterText: "",
+                                                        ),
+                                                        maxLength: 12,
+                                                      ),
+                                                    )),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: const Text(
+                                                      "Aadhar Doc",
+                                                      style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                      )),
+                                                ),
+                                                const SizedBox(height: 8.0),
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color: Colors
+                                                                .deepOrangeAccent),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                    .all(
+                                                                Radius.circular(
+                                                                    12))),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 5.0,
+                                                          horizontal: 8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          aadharDocument.toString() ==
+                                                                      "" ||
+                                                                  aadharDocument
+                                                                          .toString() ==
+                                                                      "null"
+                                                              ? SizedBox()
+                                                              : aadharDocument
+                                                                      .startsWith(
+                                                                          "http")
+                                                                  ? CircleAvatar(
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage:
+                                                                          NetworkImage(
+                                                                              aadharDocument),
+                                                                    )
+                                                                  : CircleAvatar(
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage:
+                                                                          FileImage(
+                                                                              File(aadharDocument)),
+                                                                    ),
+                                                          // InkWell(
+                                                          //   onTap: () {
+                                                          //     aadharDoc();
+                                                          //     setState(() {});
+                                                          //   },
+                                                          //   child: Container(
+                                                          //     height: 45,
+                                                          //     width: 120,
+                                                          //     alignment:
+                                                          //         Alignment
+                                                          //             .center,
+                                                          //     decoration: const BoxDecoration(
+                                                          //         color: Colors
+                                                          //             .deepOrangeAccent,
+                                                          //         borderRadius:
+                                                          //             BorderRadius.all(
+                                                          //                 Radius.circular(
+                                                          //                     8.0))),
+                                                          //     child: const Text(
+                                                          //         "Choose file",
+                                                          //         style: TextStyle(
+                                                          //             color: Colors
+                                                          //                 .white,
+                                                          //             fontSize:
+                                                          //                 16)),
+                                                          //   ),
+                                                          // )
+                                                        ],
+                                                      ),
+                                                    )),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                              ],
+                                            )
+                                          : SizedBox(),
+                                      kyc == 1 && kycApproval == "rejected"
+                                          ? Column(
+                                              children: [
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: const Text(
+                                                      "Aadhar Number",
+                                                      style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                      )),
+                                                ),
+                                                SizedBox(height: 5),
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color: Colors
+                                                                .deepOrangeAccent),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    12))),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10.0),
+                                                      child: TextFormField(
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .digitsOnly
+                                                        ],
+                                                        controller:
+                                                            aadharNumber,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: aadharNumberApi ==
+                                                                  ""
+                                                              ? "Must be 12 digits"
+                                                              : aadharNumberApi,
+                                                          counterText: "",
+                                                        ),
+                                                        maxLength: 12,
+                                                      ),
+                                                    )),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: const Text(
+                                                      "Aadhar Doc",
+                                                      style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                      )),
+                                                ),
+                                                const SizedBox(height: 8.0),
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color: Colors
+                                                                .deepOrangeAccent),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                    .all(
+                                                                Radius.circular(
+                                                                    12))),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 5.0,
+                                                          horizontal: 8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          aadharDocument.toString() ==
+                                                                      "" ||
+                                                                  aadharDocument
+                                                                          .toString() ==
+                                                                      "null"
+                                                              ? SizedBox()
+                                                              : aadharDocument
+                                                                      .startsWith(
+                                                                          "http")
+                                                                  ? CircleAvatar(
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage:
+                                                                          NetworkImage(
+                                                                              aadharDocument),
+                                                                    )
+                                                                  : CircleAvatar(
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage:
+                                                                          FileImage(
+                                                                              File(aadharDocument)),
+                                                                    ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              aadharDoc();
+                                                              setState(() {});
+                                                            },
+                                                            child: Container(
+                                                              height: 45,
+                                                              width: 120,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration: const BoxDecoration(
+                                                                  color: Colors
+                                                                      .deepOrangeAccent,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              8.0))),
+                                                              child: const Text(
+                                                                  "Choose file",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16)),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    )),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                              ],
+                                            )
+                                          : SizedBox(),
 
                                       // SizedBox(
                                       //   width: double.infinity,
@@ -1119,9 +1410,26 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                             // else {
                             // }
 
-                            if (profilepicbool == true &&
+                            if (kyc == 0 &&
+                                aadharNumber.text.isNotEmpty &&
+                                aadharNumber.text.length == 12 &&
+                                aadhardocBool == true) {
+                              uploadBasicDetailsWithAAdharImage();
+                            } else if (kyc == 0 && aadhardocBool == true) {
+                              uploadBasicDetailsWithAAdharImage();
+                            } else if (aadhardocBool == true) {
+                              uploadBasicDetailsWithAAdharImage();
+                            } else if (profilepicbool == true &&
                                 gstDocumentBool == true &&
-                                panDocumentBool == true) {
+                                panDocumentBool == true &&
+                                aadhardocBool == true &&
+                                kyc == 0) {
+                              uploadBasicDetailsWithKyc();
+                            } else if (profilepicbool == true &&
+                                gstDocumentBool == true &&
+                                panDocumentBool == true &&
+                                aadhardocBool == true &&
+                                kyc == 1) {
                               uploadBasicDetails();
                             } else if (profilepicbool == true) {
                               uploadBasicDetailsWithProfileImage();
@@ -1817,6 +2125,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   }
 
   String basePath = "";
+  String kycApproval = "";
+  int kyc = 0;
   Widget textField(TextEditingController controller) => Column(
         children: [
           TextFormField(
@@ -1843,6 +2153,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       );
   String businessNameOfUser = '';
   String aacountType = '';
+  String aadharNumberApi = '';
   Future _getprofileData() async {
     setState(() {
       _loading = true;
@@ -1908,7 +2219,22 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         accountType = data['User']['account_type'].toString();
         log("accountType--->$accountType");
         businessName.text = businessNameOfUser;
+        aadharNumberApi = data['User']['adhaar_no'].toString();
+        log(aadharNumberApi);
+
         log("businnes name--->${businessName.text}");
+        kycApproval = data['User']['kyc_approval'].toString();
+        if (aadharNumberApi == null ||
+            aadharNumberApi == "" ||
+            aadharNumberApi == "null") {
+          aadharNumber.text = "";
+          aadharNumberApi = "";
+        } else {
+          aadharNumber.text = aadharNumberApi;
+        }
+
+        kyc = data['User']['kyc'];
+        log("kyc--->$kyc");
         if (gstNo == null || gstNo == "" || gstNo == "null") {
           gstNumber.text = "";
           gstNo = "";
@@ -1955,7 +2281,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         }
         log("d val--->$dropdownvalue");
         basePath = data['User']['base_path'];
-
+        aadharDocument =
+            devImage + basePath + data['User']['adhaar_doc'].toString();
         panCardDocumnet =
             devImage + basePath + data['User']['pan_doc'].toString();
         gstDocumnet = devImage + basePath + data['User']['gst_doc'].toString();
@@ -2302,6 +2629,223 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 ])));
   }
 
+  Future<void> aadharDoc() async {
+    final ImagePicker picker = ImagePicker();
+    await showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))),
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(12, 0, 7, 0),
+                    child: Text(
+                      'Select',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                          onPressed: () async {
+                            final XFile result = await picker.pickImage(
+                              source: ImageSource.camera,
+                              imageQuality: 80,
+                              maxHeight: 480,
+                              maxWidth: 640,
+                            );
+                            if (result != null) {
+                              setState(() {
+                                aadharDocument = result.path.toString();
+                                aadhardocBool = true;
+                              });
+                            }
+                            Navigator.of(context).pop();
+                          },
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.grey)))),
+                          icon: const Icon(Icons.camera, color: Colors.black),
+                          label: const Text("Camera",
+                              style: TextStyle(color: Colors.black))),
+                      const SizedBox(width: 30),
+                      ElevatedButton.icon(
+                          onPressed: () async {
+                            final XFile result = await picker.pickImage(
+                              source: ImageSource.gallery,
+                              imageQuality: 80,
+                              maxHeight: 480,
+                              maxWidth: 640,
+                            );
+                            if (result != null) {
+                              setState(() {
+                                aadharDocument = result.path.toString();
+                                aadhardocBool = true;
+                              });
+                            }
+                            Navigator.of(context).pop();
+                          },
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.grey)))),
+                          icon: const Icon(Icons.photo, color: Colors.black),
+                          label: const Text("Gallery",
+                              style: TextStyle(color: Colors.black))),
+                    ],
+                  )
+                ])));
+  }
+
+  Future uploadBasicDetailsWithAAdharImage() async {
+    setState(() {
+      buttonLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userid');
+    var url = Apis.basicProfileUpdateApi;
+
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
+      "pincode": pincode.text.toString(),
+      "com_prefs": commprefs.join(","),
+      "instagram_url": instragramurl.text.toString(),
+      "google_plus_url": googleplusurl.text.toString(),
+      "facebook_url": fburl.text.toString(),
+      "name": name.text.toString(),
+      "twitter_url": twitterurl.text.toString(),
+      "linkedin_url": linkdinurl.text.toString(),
+      "youtube_url": youtubeurl.text.toString(),
+      "account_no": accountNo.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
+      "adhaar_no": aadharNumber.text.toString(),
+      "business_name": businessName.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+    };
+
+    log(bodyMap.toString());
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      // if (gstDocumnet.isNotEmpty) {
+      //   var pic = await http.MultipartFile.fromPath(
+      //     'gst_doc',
+      //     gstDocumnet,
+      //   );
+      //   request.files.add(pic);
+      //   log("Done====>  $pic");
+      // } else {
+      //   log("ENTETED====> aa $gstDocumnet");
+      // }
+      // if (panCardDocumnet.isNotEmpty) {
+      //   var pic = await http.MultipartFile.fromPath('pan_doc', panCardDocumnet);
+      //   request.files.add(pic);
+      //   log("Done====>  $pic");
+      // } else {
+      //   // bodyMap = {"pan_doc": ""};
+      //   log("ENTETED====>ss$panCardDocumnet");
+      // }
+      if (aadharDocument.toString().isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+            'adhaar_doc', aadharDocument.toString());
+        request.files.add(pic);
+        log("aadhar Imgae====>aa  $pic");
+      } else {
+        log("aadhar Image====>dd  $aadharDocument");
+      }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      var result = jsonDecode(responseData.toString());
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => UserDetailScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      }
+    } on Exception catch (e) {
+      Fluttertoast.showToast(msg: "Profile pic required ");
+      setState(() {
+        buttonLoading = false;
+      });
+      return NullThrownError();
+    }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
   Future uploadBasicDetailsWithProfileImage() async {
     setState(() {
       buttonLoading = true;
@@ -2330,7 +2874,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
-      // "adhaar_no": aadharNumber.text.toString(),
+      "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
@@ -2464,8 +3008,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
-
-      // "adhaar_no": aadharNumber.text.toString(),
+      "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
@@ -2581,7 +3124,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
-      // "adhaar_no": aadharNumber.text.toString(),
+      "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
@@ -2695,7 +3238,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "branch_name": branchName.text.toString(),
       "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
 
-      // "adhaar_no": aadharNumber.text.toString(),
+      "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
@@ -2742,6 +3285,146 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     });
   }
 
+  Future uploadBasicDetailsWithKyc() async {
+    setState(() {
+      buttonLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userid');
+    var url = Apis.basicProfileUpdateApi;
+
+    var bodyMap = {
+      "id": userId.toString(),
+      "address": address.text.toString(),
+      "country": selectedCountry.toString(),
+      "state": selectedState.toString(),
+      "city": selectedCity.toString(),
+      "pincode": pincode.text.toString(),
+      "com_prefs": commprefs.join(","),
+      "instagram_url": instragramurl.text.toString(),
+      "google_plus_url": googleplusurl.text.toString(),
+      "facebook_url": fburl.text.toString(),
+      "name": name.text.toString(),
+      "twitter_url": twitterurl.text.toString(),
+      "linkedin_url": linkdinurl.text.toString(),
+      "youtube_url": youtubeurl.text.toString(),
+      "account_no": accountNo.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
+      "adhaar_no": aadharNumber.text.toString(),
+      "business_name": businessName.text.toString(),
+      "gst_no": gstNumber.text.toString(),
+      "pan_no": panNumber.text.toString(),
+    };
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      if (gstDocumnet.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+          'gst_doc',
+          gstDocumnet,
+        );
+        request.files.add(pic);
+        log("Done====>  $pic");
+      } else {
+        log("ENTETED====> aa $gstDocumnet");
+      }
+      if (panCardDocumnet.isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath('pan_doc', panCardDocumnet);
+        request.files.add(pic);
+        log("Done====>  $pic");
+      } else {
+        // bodyMap = {"pan_doc": ""};
+        log("ENTETED====>ss$panCardDocumnet");
+      }
+      if (profileimage.toString().isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+            'avatar', profileimage.toString());
+        request.files.add(pic);
+        log("Done====>aa  $pic");
+      } else {
+        log("ENTETED====>dd  $profileimage");
+      }
+      if (aadharDocument.toString().isNotEmpty) {
+        var pic = await http.MultipartFile.fromPath(
+            'adhaar_doc', aadharDocument.toString());
+        request.files.add(pic);
+        log("Done====>aa  $pic");
+      } else {
+        log("ENTETED====>dd  $aadharDocument");
+      }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      var result = jsonDecode(responseData.toString());
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => UserDetailScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      }
+    } on Exception catch (e) {
+      Fluttertoast.showToast(msg: "Profile pic required ");
+      setState(() {
+        buttonLoading = false;
+      });
+      return NullThrownError();
+    }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
   Future uploadBasicDetails() async {
     setState(() {
       buttonLoading = true;
@@ -2770,8 +3453,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "bank_name": bankName.text.toString(),
       "branch_name": branchName.text.toString(),
       "account_type": dropdownvalue == "select" ? "" : dropdownvalue,
-
-      // "adhaar_no": aadharNumber.text.toString(),
+      "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),

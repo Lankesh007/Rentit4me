@@ -14,18 +14,17 @@ import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/make_payment_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SelectMemberShipScreen extends StatefulWidget {
+class UpgradeMemberShip extends StatefulWidget {
   String pageswitch;
-  SelectMemberShipScreen({Key key, this.pageswitch}) : super(key: key);
+  UpgradeMemberShip({Key key, this.pageswitch}) : super(key: key);
 
   @override
-  _SelectMemberShipScreenState createState() =>
-      _SelectMemberShipScreenState(pageswitch);
+  _UpgradeMemberShipState createState() => _UpgradeMemberShipState(pageswitch);
 }
 
-class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
+class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
   String pageswitch;
-  _SelectMemberShipScreenState(this.pageswitch);
+  _UpgradeMemberShipState(this.pageswitch);
 
   List<dynamic> membershipplanlist = [];
   bool _loading = false;
@@ -213,7 +212,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                                             color: Colors.grey.shade400,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(8.0))),
-                                        child: const Text("Get Plan",
+                                        child: const Text("Upgrade Plan",
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 14)),
@@ -271,7 +270,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                                                 color: kPrimaryColor,
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(8.0))),
-                                            child: Text("Get Plan",
+                                            child: Text("Upgrade Plan",
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 14))),

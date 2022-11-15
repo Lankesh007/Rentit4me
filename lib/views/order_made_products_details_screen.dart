@@ -11,21 +11,21 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class OfferMadeProductDetailScreen extends StatefulWidget {
-  String offerid;
-  String postadid;
-  OfferMadeProductDetailScreen({this.postadid, this.offerid});
+class OrderMadeProductsDetailsScreen extends StatefulWidget {
+  final String orderId;
+  const OrderMadeProductsDetailsScreen({this.orderId, Key key})
+      : super(key: key);
 
   @override
-  State<OfferMadeProductDetailScreen> createState() =>
-      _OfferMadeProductDetailScreenState(postadid, offerid);
+  State<OrderMadeProductsDetailsScreen> createState() =>
+      _OrderMadeProductsDetailsScreenState();
 }
 
-class _OfferMadeProductDetailScreenState
-    extends State<OfferMadeProductDetailScreen> {
+class _OrderMadeProductsDetailsScreenState
+    extends State<OrderMadeProductsDetailsScreen> {
+  @override
   String offerid;
   String postadid;
-  _OfferMadeProductDetailScreenState(this.postadid, this.offerid);
 
   bool _loading = false;
 
@@ -89,7 +89,7 @@ class _OfferMadeProductDetailScreenState
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Offer Detail", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Order Details", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -199,7 +199,7 @@ class _OfferMadeProductDetailScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 5.0),
-                                const Text("Offer Detail",
+                                const Text("Order Detail",
                                     style: TextStyle(
                                         color: kPrimaryColor,
                                         fontSize: 18,
@@ -214,7 +214,7 @@ class _OfferMadeProductDetailScreenState
                                   padding: EdgeInsets.all(8),
                                   child: Row(
                                     children: [
-                                      Text("Offer Info",
+                                      Text("Order Info",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
@@ -346,7 +346,7 @@ class _OfferMadeProductDetailScreenState
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text("Offer Amount",
+                                      const Text("Order Amount",
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 14)),
@@ -524,7 +524,7 @@ class _OfferMadeProductDetailScreenState
                                               fontSize: 14)),
                                       status == null
                                           ? const SizedBox()
-                                          : Text(_getStatus(status),
+                                          : Text((status),
                                               style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 14))
@@ -799,12 +799,10 @@ class _OfferMadeProductDetailScreenState
     setState(() {
       _loading = true;
     });
-    print(jsonEncode({
-      "offer_request_id--->": postadid,
-    }));
-    print(BASE_URL + offerdetail);
-    final body = {"offer_request_id": postadid};
-    var response = await http.post(Uri.parse(BASE_URL + offerdetail),
+
+    final body = {"order_id": widget.orderId};
+    var response = await http.post(
+        Uri.parse("${BASE_URL}order-details-by-orderid"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -818,7 +816,7 @@ class _OfferMadeProductDetailScreenState
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
-      // print(data['Offer Details']);
+      // print(data['Order Details']);
       setState(() {
         productimage = data['Image']['upload_base_path'] +
             data['Image']['file_name'].toString();
@@ -842,33 +840,33 @@ class _OfferMadeProductDetailScreenState
         productprice = temp.join("/").toString();
 
         //offer detail
-        quantity = data['Offer Details']['quantity'].toString();
-        period = data['Offer Details']['period'].toString();
-        renttype = data['Offer Details']['rent_type_name'].toString();
-        productpeice = data['Offer Details']['product_price'].toString();
-        productsecurity = data['Offer Details']['product_security'].toString();
+        quantity = data['Order Details']['quantity'].toString();
+        period = data['Order Details']['period'].toString();
+        renttype = data['Order Details']['rent_type_name'].toString();
+        productpeice = data['Order Details']['product_price'].toString();
+        productsecurity = data['Order Details']['product_security'].toString();
         offerammount =
-            data['Offer Details']['final_product_selling_amount'].toString();
-        totalrent = data['Offer Details']['total_rent'].toString();
-        totalsecurity = data['Offer Details']['total_security'].toString();
-        finalamount = data['Offer Details']['final_amount'].toString();
-        startdate = data['Offer Details']['start_date'].toString();
-        enddate = data['Offer Details']['end_date'].toString();
-        status = data['Offer Details']['offer_status'].toString();
-        renttypeid = data['Offer Details']['rent_type_id'].toString();
-        //createdAt = data['Offer Details']['created_at'].toString().split("T")[0].toString();
-        createdAt = data['Offer Details']['created_at'].toString();
+            data['Order Details']['final_product_selling_amount'].toString();
+        totalrent = data['Order Details']['total_rent'].toString();
+        totalsecurity = data['Order Details']['total_security'].toString();
+        finalamount = data['Order Details']['final_amount'].toString();
+        startdate = data['Order Details']['start_date'].toString();
+        enddate = data['Order Details']['end_date'].toString();
+        status = data['order']['status'].toString();
+        renttypeid = data['Order Details']['rent_type_id'].toString();
+        //createdAt = data['Order Details']['created_at'].toString().split("T")[0].toString();
+        createdAt = data['Order Details']['created_at'].toString();
 
         //Rentee Detail
-        name = data['Advertiser Information']['name'].toString();
+        name = data['Additional Information']['name'].toString();
         businessname =
-            data['Advertiser Information']['business_name'].toString();
+            data['Additional Information']['business_name'].toString();
         address =
-            "${data['Advertiser Information']['address']}, ${data['Advertiser Information']['city_name']}, ${data['Advertiser Information']['state_name']}, ${data['Advertiser Information']['pincode']}";
+            "${data['Additional Information']['address']}, ${data['Additional Information']['city_name']}, ${data['Additional Information']['state_name']}, ${data['Additional Information']['pincode']}";
 
         convenience_charge =
-            data['Offer Details']['convenience_charge'].toString();
-        if (data['Offer Details']['advertiser_id'].toString() ==
+            data['Order Details']['convenience_charge'].toString();
+        if (data['Order Details']['advertiser_id'].toString() ==
             prefs.getString('userid')) {
           showConversionCharges = false;
           var temp = (double.parse(convenience_charge) / 100) *
@@ -889,23 +887,23 @@ class _OfferMadeProductDetailScreenState
     }
   }
 
-  String _getStatus(String statusvalue) {
-    if (statusvalue == "13") {
-      return "Complete";
-    } else if (statusvalue == "1") {
-      return "Accepted";
-    } else if (statusvalue == "3") {
-      return "Pending";
-    } else if (statusvalue == "6") {
-      return "Active";
-    } else if (statusvalue == "4") {
-      return "Inactive";
-    } else if (statusvalue == "2") {
-      return "Rejected";
-    } else {
-      return "Approved";
-    }
-  }
+  // String _getStatus(String statusvalue) {
+  //   if (statusvalue == "13") {
+  //     return "Complete";
+  //   } else if (statusvalue == "1") {
+  //     return "Accepted";
+  //   } else if (statusvalue == "3") {
+  //     return "Pending";
+  //   } else if (statusvalue == "6") {
+  //     return "Active";
+  //   } else if (statusvalue == "4") {
+  //     return "Inactive";
+  //   } else if (statusvalue == "2") {
+  //     return "Rejected";
+  //   } else {
+  //     return "Approved";
+  //   }
+  // }
 
   String _getrenttype(String period, String renttypevalue) {
     if (renttypevalue.toLowerCase() == "hourly" && period == "1") {

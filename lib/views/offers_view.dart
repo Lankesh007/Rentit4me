@@ -21,12 +21,12 @@ class _OffersViewScreenState extends State<OffersViewScreen> {
       ),
       body: ContainedTabBarView(
         tabs: const [
-          Text('Offers Made ', style: TextStyle(color: Colors.black)),
-          Text('Offers Recived', style: TextStyle(color: Colors.black))
+          Text('Offers Recived ', style: TextStyle(color: Colors.black)),
+          Text('Offers Made', style: TextStyle(color: Colors.black))
         ],
-        views:const [
-         OfferMadeScreen(),
-         OfferRecievedScreen(),
+        views: const [
+          OfferRecievedScreen(),
+          OfferMadeScreen(),
         ],
         onChange: (index) => print(index),
       ),

@@ -28,6 +28,7 @@ import 'package:http/http.dart' as http;
 import '../views/change_password_screen.dart';
 import '../views/offers_view.dart';
 import '../views/order_view.dart';
+import '../views/upgrade_membership_screen.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
   final int isSignedUp;
@@ -59,8 +60,11 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     _getprofileData();
   }
 
+  String userId = '';
+
   Future _getuserdetail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userid');
     if (prefs.getString('name') == null ||
         prefs.getString('name') == "" ||
         prefs.getString('name') == "null") {
@@ -155,45 +159,19 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                               const LoginScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             } else {
-                              if (trustedbadge == "1") {
-                                if (trustedbadgeapproval == "Pending" ||
-                                    trustedbadgeapproval == "pending") {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const PendingStatusScreen()))
-                                      .then((value) =>
-                                          Navigator.of(context).pop());
-                                } else {
-                                  if (profilebackButton == false) {
-                                    setState(() {
-                                      profilebackButton = true;
-                                    });
-                                    getdata();
-                                  }
-                                  Navigator.push(
+                              if (profilebackButton == false) {
+                                setState(() {
+                                  profilebackButton = true;
+                                });
+                                getdata();
+                              }
+
+                              Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const UserDetailScreen())).then(
-                                      (value) => Navigator.of(context).pop());
-                                }
-                              } else {
-                                if (profilebackButton == false) {
-                                  setState(() {
-                                    profilebackButton = true;
-                                  });
-                                  getdata();
-                                }
-
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const UserDetailScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
+                                              const UserDetailScreen()))
+                                  .then((value) => Navigator.of(context).pop());
                             }
                           },
                           child: const Align(
@@ -221,30 +199,11 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                       builder: (context) =>
                                           const LoginScreen()));
                             } else {
-                              if (trustedbadge == "1") {
-                                if (trustedbadgeapproval == "Pending" ||
-                                    trustedbadgeapproval == "pending") {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const PendingStatusScreen()));
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SelectMemberShipScreen(
-                                                  pageswitch: "Home")));
-                                }
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SelectMemberShipScreen(
-                                                pageswitch: "Home")));
-                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UpgradeMemberShip(
+                                          pageswitch: "Home")));
                             }
                           },
                           child: const Align(
@@ -273,32 +232,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                               const LoginScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             } else {
-                              if (trustedbadge == "1") {
-                                if (trustedbadgeapproval == "Pending" ||
-                                    trustedbadgeapproval == "pending") {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const PendingStatusScreen()))
-                                      .then((value) =>
-                                          Navigator.of(context).pop());
-                                } else {
-                                  Navigator.push(
+                              Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const PaymentScreen())).then(
-                                      (value) => Navigator.of(context).pop());
-                                }
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PaymentScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
+                                              const PaymentScreen()))
+                                  .then((value) => Navigator.of(context).pop());
                             }
                           },
                           child: const Align(
@@ -327,34 +266,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                               const LoginScreen()))
                                   .then((value) => Navigator.of(context).pop());
                             } else {
-                              if (trustedbadge == "1") {
-                                if (trustedbadgeapproval == "Pending" ||
-                                    trustedbadgeapproval == "pending") {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const PendingStatusScreen()))
-                                      .then((value) =>
-                                          Navigator.of(context).pop());
-                                } else {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ChangePasswordScreens()))
-                                      .then((value) =>
-                                          Navigator.of(context).pop());
-                                }
-                              } else {
-                                Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ChangePasswordScreens()))
-                                    .then(
-                                        (value) => Navigator.of(context).pop());
-                              }
+                              Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ChangePasswordScreens()))
+                                  .then((value) => Navigator.of(context).pop());
                             }
                           },
                           child: const Align(
@@ -391,31 +308,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                 MaterialPageRoute(
                                     builder: (context) => LoginScreen()));
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddlistingScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddlistingScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                            AddlistingScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -444,31 +342,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AlllistingScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AlllistingScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                            AlllistingScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -656,30 +535,11 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ChatScreen()))
-                                    .then(
-                                        (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ChatScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                        builder: (context) => ChatScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -708,31 +568,11 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MessageScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MessageScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                        builder: (context) => MessageScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -876,31 +716,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            OffersViewScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              OffersViewScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                            OffersViewScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -929,31 +750,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            OffersViewScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              OffersViewScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                            OffersViewScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -981,31 +783,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            OrderViewScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              OrderViewScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                            OrderViewScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -1034,31 +817,12 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                                         builder: (context) => LoginScreen()))
                                 .then((value) => Navigator.of(context).pop());
                           } else {
-                            if (trustedbadge == "1") {
-                              if (trustedbadgeapproval == "Pending" ||
-                                  trustedbadgeapproval == "pending") {
-                                Navigator.push(
+                            Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PendingStatusScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const OrderViewScreen())).then(
-                                    (value) => Navigator.of(context).pop());
-                              }
-                            } else {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const OrderViewScreen()))
-                                  .then((value) => Navigator.of(context).pop());
-                            }
+                                            const OrderViewScreen()))
+                                .then((value) => Navigator.of(context).pop());
                           }
                         },
                         child: const Align(
@@ -1290,6 +1054,41 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 ],
               ),
             ),
+            Divider(
+              thickness: 0.9,
+              color: Colors.white,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            userId == "" || userId == null || userId == "null"
+                ? Text("")
+                : Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          DialogHelper.logout(context);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Logout",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Divider(
+                        thickness: 0.9,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
           ],
         ),
       ),

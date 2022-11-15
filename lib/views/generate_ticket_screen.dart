@@ -211,6 +211,7 @@ class _GenerateTicketScreenState extends State<GenerateTicketScreen> {
     });
     final body = {
       "type": initialtype,
+      "id": prefs.getString("userid"),
       "title": title.text.toString(),
       "message": message.text.toString()
     };

@@ -19,6 +19,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
+import 'package:rentit4me_new/views/top_selling_categories.dart';
 import 'package:rentit4me_new/views/top_selling_categories_screen.dart';
 import 'package:rentit4me_new/views/user_finder_data_screen.dart';
 import 'package:rentit4me_new/views/view_all_latest_edition.dart';
@@ -26,6 +27,7 @@ import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:rentit4me_new/widgets/navigation_drawer_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/top_selling_categories_model.dart';
 import 'add_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -53,11 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<dynamic> myProducts = [];
   final List<dynamic> mytopcategories = [];
+  final List<dynamic> mytopcategorieslug = [];
   List mytopcategorieslistData = [];
   final List<dynamic> featuredname = [];
   final List<dynamic> mytopcategoriesname = [];
   final List<dynamic> myfeaturedcategories = [];
   final List<dynamic> mysubfeaturedcategories = [];
+  List<TopSellingCatgegoriesModel> topsellingCategoreslist = [];
   bool loggedIn = false;
   bool autoDetectCity = false;
 
@@ -1400,7 +1404,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      mytopcategories.isEmpty || mytopcategories.isEmpty
+                      topsellingCategoreslist.isEmpty || topsellingCategoreslist.isEmpty
                           ? SizedBox()
                           : Container(
                               margin:
@@ -1453,13 +1457,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                      mytopcategories.isEmpty || mytopcategories.isEmpty
+                      topsellingCategoreslist.isEmpty ||
+                              topsellingCategoreslist.isEmpty
                           ? SizedBox()
                           : Padding(
                               padding:
                                   EdgeInsets.only(left: 15, top: 10, right: 15),
-                              child: mytopcategories.isEmpty ||
-                                      mytopcategories.isEmpty
+                              child: topsellingCategoreslist.isEmpty ||
+                                      topsellingCategoreslist.isEmpty
                                   ? Center(child: CircularProgressIndicator())
                                   : GridView.builder(
                                       shrinkWrap: true,
@@ -1470,122 +1475,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                               crossAxisCount: 2,
                                               crossAxisSpacing: 8.0,
                                               mainAxisSpacing: 8.0),
-                                      itemCount: mytopcategories.length,
-                                      itemBuilder: (BuildContext ctx, index) {
-                                        return InkWell(
-                                          onTap: () async {
-                                            showLaoding(context);
-                                            mytopcategorieslistData
-                                                .forEach((element) {
-                                              if (element['title'].toString() ==
-                                                  mytopcategoriesname[index]
-                                                      .toString()) {
-                                                setState(() {
-                                                  categoryslugname =
-                                                      element['slug']
-                                                          .toString();
-                                                });
-                                              }
-                                            });
-                                            // print(jsonEncode({
-                                            //   "city_name": locationvalue,
-                                            //   "category": categoryslugname,
-                                            //   "exclude": "1",
-                                            //   "search": ""
-                                            // }));
-                                            var response = await http.post(
-                                                Uri.parse(BASE_URL + filterUrl),
-                                                body: jsonEncode({
-                                                  "city_id": cityId,
-                                                  "category": categoryslugname,
-                                                  "country_id": "113",
-                                                  "search": ''
-                                                }),
-                                                headers: {
-                                                  "Accept": "application/json",
-                                                  'Content-Type':
-                                                      'application/json'
-                                                });
-                                            Navigator.of(context,
-                                                    rootNavigator: true)
-                                                .pop();
-                                            if (jsonDecode(response.body)[
-                                                    'ErrorCode'] ==
-                                                0) {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => UserfinderDataScreen(
-                                                          getlocation:
-                                                              locationvalue,
-                                                          getcategory:
-                                                              mytopcategoriesname[
-                                                                      index]
-                                                                  .toString(),
-                                                          getcategoryslug:
-                                                              categoryslugname,
-                                                          data: jsonDecode(
-                                                                      response
-                                                                          .body)[
-                                                                  'Response']
-                                                              ['leads'])));
-                                            } else {
-                                              Fluttertoast.showToast(
-                                                  msg: "No result found",
-                                                  gravity: ToastGravity.CENTER);
-                                            }
-                                          },
-                                          child: Card(
-                                            elevation: 8.0,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        12.0)),
-                                            child: GridTile(
-                                              footer: Container(
-                                                decoration: const BoxDecoration(
-                                                    color: Color(0xFFFCFBFD),
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            bottomLeft: Radius
-                                                                .circular(12),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    12))),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                      mytopcategoriesname[
-                                                          index],
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12)),
-                                                ),
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(12)),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: kPrimaryColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)),
-                                                  child: CachedNetworkImage(
-                                                      fit: BoxFit.cover,
-                                                      imageUrl: mytopcategories[
-                                                          index]),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                            ),
+                                      itemCount: topsellingCategoreslist.length,
+                                      itemBuilder: (BuildContext ctx, index) =>
+                                          topSellingCategoriesWidget(
+                                              topsellingCategoreslist[index]))),
+
                       const SizedBox(height: 10),
                       Container(
                         padding: const EdgeInsets.only(bottom: 5),
@@ -2017,6 +1911,111 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget topSellingCategoriesWidget(TopSellingCatgegoriesModel item) {
+    return InkWell(
+      onTap: () async {
+        // showLaoding(context);
+        // mytopcategorieslistData
+        //     .forEach((element) {
+        //   if (element['title'].toString() ==
+        //       mytopcategoriesname[index]
+        //           .toString()) {
+        //     setState(() {
+        //       categoryslugname =
+        //           element['slug']
+        //               .toString();
+        //     });
+        //   }
+        // });
+        // // print(jsonEncode({
+        // //   "city_name": locationvalue,
+        // //   "category": categoryslugname,
+        // //   "exclude": "1",
+        // //   "search": ""
+        // // }));
+        // var response = await http.post(
+        //     Uri.parse(BASE_URL + filterUrl),
+        //     body: jsonEncode({
+        //       "city_id": cityId,
+        //       "category": categoryslugname,
+        //       "country_id": "113",
+        //       "search": ''
+        //     }),
+        //     headers: {
+        //       "Accept": "application/json",
+        //       'Content-Type':
+        //           'application/json'
+        //     });
+        // Navigator.of(context,
+        //         rootNavigator: true)
+        //     .pop();
+        // if (jsonDecode(response.body)[
+        //         'ErrorCode'] ==
+        //     0) {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => UserfinderDataScreen(
+        //               getlocation:
+        //                   locationvalue,
+        //               getcategory:
+        //                   mytopcategoriesname[
+        //                           index]
+        //                       .toString(),
+        //               getcategoryslug:
+        //                   categoryslugname,
+        //               data: jsonDecode(
+        //                           response
+        //                               .body)[
+        //                       'Response']
+        //                   ['leads'])));
+        // } else {
+        //   Fluttertoast.showToast(
+        //       msg: "No result found",
+        //       gravity: ToastGravity.CENTER);
+        // }
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TopSellingCategories(
+                      category: item.slug.toString(),
+                    )));
+      },
+      child: Card(
+        elevation: 8.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        child: GridTile(
+          footer: Container(
+            decoration: const BoxDecoration(
+                color: Color(0xFFFCFBFD),
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12))),
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(item.title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.black, fontSize: 12)),
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                  borderRadius: BorderRadius.circular(15)),
+              child: CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl:  imagepath + item.image),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget latestAdditionWidget(LatestAdditionsModel item) {
     return InkWell(
       onTap: () {
@@ -2162,6 +2161,15 @@ class _HomeScreenState extends State<HomeScreen> {
       'Authorization': 'Bearer ${prefs.getString("token")}',
     });
     if (response.statusCode == 200) {
+      var list = jsonDecode(response.body)['Response']['top_selling_categories']
+          as List;
+      setState(() {
+        topsellingCategoreslist.clear();
+        var listdata =
+            list.map((e) => TopSellingCatgegoriesModel.fromJson(e)).toList();
+        topsellingCategoreslist.addAll(listdata);
+        loader = false;
+      });
       setState(() {
         images.clear();
         location.clear();
@@ -2186,13 +2194,15 @@ class _HomeScreenState extends State<HomeScreen> {
         //   myProducts.add(imagepath + element['image'].toString());
         // });
 
-        mytopcategorieslistData.addAll(
-            jsonDecode(response.body)['Response']['top_selling_categories']);
-        jsonDecode(response.body)['Response']['top_selling_categories']
-            .forEach((element) {
-          mytopcategoriesname.add(element['title'].toString());
-          mytopcategories.add(imagepath + element['image'].toString());
-        });
+        // mytopcategorieslistData.addAll(
+        //     jsonDecode(response.body)['Response']['top_selling_categories']);
+        // jsonDecode(response.body)['Response']['top_selling_categories']
+        //     .forEach((element) {
+        //   mytopcategoriesname.add(element['title'].toString());
+        //   mytopcategories.add(imagepath + element['image'].toString());
+        //   mytopcategorieslug.add(element['slug'].toString());
+
+        // });
 
         // myfeaturedcategories.addAll(
         //     jsonDecode(response.body)['Response']['featured_categories']);

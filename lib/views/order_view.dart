@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
@@ -22,24 +21,21 @@ class _OrderViewScreenState extends State<OrderViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text("Orders"),
+        title: const Text("Orders"),
       ),
-      body:ContainedTabBarView(
-       tabBarProperties: const TabBarProperties(), 
+      body: ContainedTabBarView(
+        tabBarProperties: const TabBarProperties(),
         tabs: const [
-          Text('My Orders', style: TextStyle(color: Colors.black,fontSize: 12)),
-          Text('Active Orders', style: TextStyle(color: Colors.black,fontSize: 12)),
-          Text('Complete Orders', style: TextStyle(color: Colors.black,fontSize: 12)),
-          Text('Recived Orders', style: TextStyle(color: Colors.black,fontSize: 12)),
+          Text('Orders Made',
+              style: TextStyle(color: Colors.black, fontSize: 12)),
+          Text('Orders Recived',
+              style: TextStyle(color: Colors.black, fontSize: 12)),
         ],
         views: const [
           MyOrdersScreen(),
-          ActiveOrderScreen(),
-          CompletedOrderScreen(),
           OrderRecievedScreen(),
         ],
-        onChange: (index) => log(index.toString()
-        ),
+        onChange: (index) => log(index.toString()),
       ),
     );
   }

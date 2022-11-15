@@ -8,7 +8,10 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
+import 'package:rentit4me_new/views/boost_payment_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widgets/api_helper.dart';
 
 class BoostPaymentScreen extends StatefulWidget {
   String postid;
@@ -54,7 +57,6 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
 
     print(amount);
     _payforboost(packageid, postid, amount, response.paymentId.toString());
-    
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -191,12 +193,31 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
                             InkWell(
                               onTap: () {
                                 setState(() {
-                                  packageid =
-                                      boostplanlist[index]['id'].toString();
-                                  amount =
-                                      boostplanlist[index]['amount'].toString();
+                                  // packageid =
+                                  //     boostplanlist[index]['id'].toString();
+                                  // amount =
+                                  //     boostplanlist[index]['amount'].toString();
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          BoostPaymentDetailsScreen(
+                                        postadid: boostplanlist[index]['id']
+                                            .toString(),
+                                        planName: boostplanlist[index]['name']
+                                            .toString(),
+                                        amount: boostplanlist[index]['amount']
+                                            .toString(),
+                                        duration: boostplanlist[index]
+                                                ['duration']
+                                            .toString(),
+                                        boostPackageId: widget.postid,
+                                      ),
+                                    ),
+                                  );
                                 });
-                                startPayment(amount);
+                                // startPayment(amount);
                               },
                               child: Container(
                                 width: size.width * 0.25,
@@ -228,33 +249,23 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
     setState(() {
       _loading = true;
     });
-    var response = await http.get(Uri.parse(BASE_URL + postboost),
-        //body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
+    var url = BASE_URL + postboost;
+    var body = {
+      "id": widget.postid.toString(),
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
 
-        });
-    print(response.body);
-    if (response.statusCode == 200) {
-      if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-        setState(() {
-          boostplanlist.addAll(jsonDecode(response.body)['Response']);
-          _loading = false;
-        });
-      } else {
-        setState(() {
-          _loading = false;
-        });
-        // .toString());
-      }
+    if (result['ErrorCode'].toString() == "0") {
+      setState(() {
+        boostplanlist.addAll(result['Response']);
+        _loading = false;
+      });
     } else {
       setState(() {
         _loading = false;
       });
-      print(response.body);
-      throw Exception('Failed to get data due to ${response.body}');
+      // .toString());
     }
   }
 

@@ -27,7 +27,7 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
   bool _loading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String currentpassword = "Enter your password";
+  String currentpassword = "Enter your current password";
   String newpassword = "Enter New Password";
   String confirmpassword = "Enter Confirm Password";
 
@@ -36,6 +36,8 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
 
   bool _currentobsecure = true;
   bool _newobsecure = true;
+  bool _newobsecureconfirm = true;
+
 
   @override
   void initState() {
@@ -215,9 +217,22 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
                               padding: const EdgeInsets.only(left: 10.0),
                               child: TextField(
                                 decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _newobsecureconfirm = !_newobsecureconfirm;
+                                      });
+                                    },
+                                    icon: _newobsecureconfirm == false
+                                        ? Icon(Icons.visibility_off,
+                                            color: kPrimaryColor)
+                                        : Icon(Icons.visibility,
+                                            color: kPrimaryColor),
+                                  ),
                                   hintText: confirmpassword,
                                   border: InputBorder.none,
                                 ),
+                                obscureText: _newobsecureconfirm,
                                 onChanged: (value) {
                                   setState(() {
                                     confirmpassword = value;
@@ -226,32 +241,32 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
                               ),
                             )),
                         SizedBox(height: 15),
-                        Padding(
-                          padding: EdgeInsets.only(left: size.width * 0.50),
-                          child: TextButton(
-                            onPressed: () {
-                              //_resetpassword();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ForgetPasswordScreen()));
-                            },
-                            child: Column(
-                              children: const [
-                                Text("Forget Password",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500)),
-                                Divider(
-                                    color: kPrimaryColor,
-                                    height: 2,
-                                    thickness: 1),
-                              ],
-                            ),
-                          ),
-                        )
+                        // Padding(
+                        //   padding: EdgeInsets.only(left: size.width * 0.50),
+                        //   child: TextButton(
+                        //     onPressed: () {
+                        //       //_resetpassword();
+                        //       Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (context) =>
+                        //                   ForgetPasswordScreen()));
+                        //     },
+                        //     child: Column(
+                        //       children: const [
+                        //         Text("Forget Password",
+                        //             style: TextStyle(
+                        //                 color: kPrimaryColor,
+                        //                 fontSize: 16,
+                        //                 fontWeight: FontWeight.w500)),
+                        //         Divider(
+                        //             color: kPrimaryColor,
+                        //             height: 2,
+                        //             thickness: 1),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
@@ -261,7 +276,7 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
                   onTap: () {
                     if (currentpassword == "" ||
                         currentpassword == null ||
-                        currentpassword == "Enter your password") {
+                        currentpassword == "Enter your current password") {
                       showToast("Please enter current password");
                       return;
                     } else if (newpassword == "" ||

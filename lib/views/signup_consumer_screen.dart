@@ -189,6 +189,9 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                         return;
                       } else if (mobileController.text.length < 10) {
                         showToast("Mobile No should be 10 digits");
+                      } else if (pwdController.text !=
+                          confirmpwdController.text) {
+                        showToast("Password Confirm Password did not match !!");
                       } else {
                         _register(
                             nameController.text.toString(),
@@ -352,7 +355,8 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
       ),
     );
   }
-    Widget _passwordTextbox(_initialValue) {
+
+  Widget _passwordTextbox(_initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -386,7 +390,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
   }
 
   bool showPassword = true;
-  bool showConfirmPassword=true;
+  bool showConfirmPassword = true;
   Widget _confirmpwdTextbox(_initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
@@ -404,7 +408,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-           suffixIcon: IconButton(
+            suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
                   showConfirmPassword = !showConfirmPassword;
@@ -414,11 +418,11 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                   ? Icon(Icons.visibility)
                   : Icon(Icons.visibility_off),
             ),
-            hintText: _initialValue.toString(), labelText: 'Confirm Password*'),
+            hintText: _initialValue.toString(),
+            labelText: 'Confirm Password*'),
       ),
     );
   }
-
 
   // Widget _passwordTextbox(initialValue) {
   //   return Container(

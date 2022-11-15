@@ -88,6 +88,7 @@ class _UserlocationScreenState extends State<UserlocationScreen> {
               SizedBox(
                 child: GoogleMap(
                   initialCameraPosition: initialCameraPosition,
+                  
                   markers: markers,
                   zoomControlsEnabled: false,
                   mapType: MapType.normal,

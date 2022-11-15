@@ -1,4 +1,4 @@
-class TopSellingCatgoriesModel {
+class TopSellingCatgegoriesModel {
   int id;
   int parentId;
   String title;
@@ -14,7 +14,7 @@ class TopSellingCatgoriesModel {
   String createdBy;
   String updatedBy;
 
-  TopSellingCatgoriesModel(
+  TopSellingCatgegoriesModel(
       {this.id,
       this.parentId,
       this.title,
@@ -30,7 +30,7 @@ class TopSellingCatgoriesModel {
       this.createdBy,
       this.updatedBy});
 
-  TopSellingCatgoriesModel.fromJson(Map<String, dynamic> json) {
+  TopSellingCatgegoriesModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     parentId = json['parent_id'];
     title = json['title'];
@@ -48,21 +48,21 @@ class TopSellingCatgoriesModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['parent_id'] = parentId;
-    data['title'] = title;
-    data['slug'] = slug;
-    data['description'] = description;
-    data['image'] = image;
-    data['top_selling'] = topSelling;
-    data['featured'] = featured;
-    data['order_by'] = orderBy;
-    data['status'] = status;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['created_by'] = createdBy;
-    data['updated_by'] = updatedBy;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['parent_id'] = this.parentId;
+    data['title'] = this.title;
+    data['slug'] = this.slug;
+    data['description'] = this.description;
+    data['image'] = this.image;
+    data['top_selling'] = this.topSelling;
+    data['featured'] = this.featured;
+    data['order_by'] = this.orderBy;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['created_by'] = this.createdBy;
+    data['updated_by'] = this.updatedBy;
     return data;
   }
 }

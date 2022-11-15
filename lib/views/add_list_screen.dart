@@ -1009,7 +1009,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                             renttype[1]['enable'] = _checkday;
                                           });
                                         }),
-                                    const Text("Days",
+                                    const Text("Daily",
                                         style: TextStyle(
                                             color: kPrimaryColor,
                                             fontWeight: FontWeight.bold))

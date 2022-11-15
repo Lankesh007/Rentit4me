@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -8,7 +10,10 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/order_detail_screen.dart';
+import 'package:rentit4me_new/views/order_made_products_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'offer_made_product_detail_screen.dart';
 
 class MyOrdersScreen extends StatefulWidget {
   const MyOrdersScreen({Key key}) : super(key: key);
@@ -64,405 +69,650 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       //   title: const Text("My Orders", style: TextStyle(color: kPrimaryColor)),
       //   centerTitle: true,
       // ),
-      body: ModalProgressHUD(
-        inAsyncCall: _progress,
-        color: kPrimaryColor,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Card(
-                  elevation: 4.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              enabled: true,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: Colors.deepOrangeAccent)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.deepOrangeAccent,
-                                  )),
-                              contentPadding: EdgeInsets.only(left: 5),
-                              hintText: searchvalue,
-                              border: InputBorder.none,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _myorderslist();
+        },
+        child: ModalProgressHUD(
+          inAsyncCall: _progress,
+          color: kPrimaryColor,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Card(
+                    elevation: 4.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 5),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 0.0),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                enabled: true,
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: Colors.deepOrangeAccent)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Colors.deepOrangeAccent,
+                                    )),
+                                contentPadding: EdgeInsets.only(left: 5),
+                                hintText: searchvalue,
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  searchvalue = value;
+                                });
+                              },
                             ),
-                            onChanged: (value) {
-                              setState(() {
-                                searchvalue = value;
-                              });
-                            },
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    width: size.width * 0.42,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Colors.deepOrangeAccent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(startdate,
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                          IconButton(
-                                              onPressed: () {
-                                                _selectStartDate(context);
-                                              },
-                                              icon: Icon(
-                                                  Icons.calendar_today_sharp,
-                                                  size: 16,
-                                                  color: kPrimaryColor))
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    width: size.width * 0.42,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Colors.deepOrangeAccent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(enddate,
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                          IconButton(
-                                              onPressed: () {
-                                                _selectEndtDate(context);
-                                              },
-                                              icon: Icon(
-                                                  Icons.calendar_today_sharp,
-                                                  size: 16,
-                                                  color: kPrimaryColor))
-                                        ],
-                                      ),
-                                    )),
-                              ],
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          onTap: () {
-                            if (searchvalue == "Enter order id" &&
-                                startdate == "From Date") {
-                              showToast("Please enter order id or select date");
-                            } else {
-                              if (searchvalue == "Enter order id" ||
-                                  searchvalue.isEmpty) {
-                                _myorderslistByDate();
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      width: size.width * 0.42,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1,
+                                              color: Colors.deepOrangeAccent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(startdate,
+                                                style: TextStyle(
+                                                    color: Colors.grey)),
+                                            IconButton(
+                                                onPressed: () {
+                                                  _selectStartDate(context);
+                                                },
+                                                icon: Icon(
+                                                    Icons.calendar_today_sharp,
+                                                    size: 16,
+                                                    color: kPrimaryColor))
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      width: size.width * 0.42,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1,
+                                              color: Colors.deepOrangeAccent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(enddate,
+                                                style: TextStyle(
+                                                    color: Colors.grey)),
+                                            IconButton(
+                                                onPressed: () {
+                                                  _selectEndtDate(context);
+                                                },
+                                                icon: Icon(
+                                                    Icons.calendar_today_sharp,
+                                                    size: 16,
+                                                    color: kPrimaryColor))
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          InkWell(
+                            onTap: () {
+                              if (searchvalue == "Enter order id" &&
+                                  startdate == "From Date") {
+                                showToast(
+                                    "Please enter order id or select date");
                               } else {
-                                _myorderslistBySearch();
+                                if (searchvalue == "Enter order id" ||
+                                    searchvalue.isEmpty) {
+                                  _myorderslistByDate();
+                                } else {
+                                  _myorderslistBySearch();
+                                }
                               }
-                            }
-                          },
-                          child: Card(
-                            elevation: 8.0,
-
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                            },
+                            child: Card(
+                              elevation: 8.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Container(
+                                height: 40,
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                    color: Colors.deepOrangeAccent,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0))),
+                                child: const Text("Filter",
+                                    style: TextStyle(color: Colors.white)),
+                              ),
                             ),
-                            child: Container(
-                              height: 40,
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                  color: Colors.deepOrangeAccent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0))),
-                              child: const Text("Filter",
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                SizedBox(
-                  height: size.height * 0.50,
-                  child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: myorderslist.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                  title: const Text('Detail Information'),
-                                  content: SingleChildScrollView(
-                                      child: Column(children: [
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Rentee"),
-                                        subtitle: Text(myorderslist[index]
-                                                ['name']
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Product Name"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["title"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Product Quantity"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["quantity"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Rent Type"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["rent_type_name"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Period"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["period"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Product Price(XCD)"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["product_price"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Offer Amount(XCD)"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["renter_amount"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Total Rent(XCD)"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["total_rent"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title:
-                                            const Text("Total Security(XCD)"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["total_security"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Total Rent(XCD)"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["total_rent"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.grey[100],
-                                      child: ListTile(
-                                        title: const Text("Final Amount(XCD)"),
-                                        subtitle: Text(myorderslist[index]
-                                                ["final_amount"]
-                                            .toString()),
-                                      ),
-                                    ),
-                                  ]))));
-                        },
-                        child: Card(
-                          elevation: 4.0,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                        "Order Id : ${myorderslist[index]['order_id']}",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500))),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      OrderDetailScreen(
-                                                          orderid: myorderslist[
-                                                                  index]['id']
-                                                              .toString())));
-                                        },
-                                        child: SizedBox(
-                                            width: size.width * 0.60,
-                                            child: Text("Product Name : ${myorderslist[index]['title']}"))),
-                                    SizedBox(width: 4.0),
-                                    myorderslist[index]["status"].toString() ==
-                                            "delivered"
-                                        ? InkWell(
-                                            onTap: () {
-                                              _confirmation(
-                                                  context,
-                                                  myorderslist[index]['id']
-                                                      .toString());
-                                            },
-                                            child: Container(
-                                                width: 80,
-                                                alignment: Alignment.center,
-                                                padding: EdgeInsets.all(4.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                4.0)),
-                                                    border: Border.all(
-                                                        color: Colors.blue)),
-                                                child: Text("Recieved",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.blue))))
-                                        : _getaction(myorderslist[index]
-                                                ["status"]
-                                            .toString())
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Quantity: ${myorderslist[index]['quantity']}"),
-                                      myorderslist[index]['period']
-                                                      .toString() ==
-                                                  "" ||
-                                              myorderslist[index]['period'] ==
-                                                  null
-                                          ? SizedBox()
-                                          : Text(
-                                              "Duration: ${myorderslist[index]['period']} ${_getrenttype(
-                                                      myorderslist[index]
-                                                              ['period']
-                                                          .toString(),
-                                                      myorderslist[index]
-                                                              ['rent_type_name']
-                                                          .toString())}",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14)),
-                                      //Text("Period: "+myorderslist[index]['period'].toString()),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 5.0),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Rent type: ${myorderslist[index]['rent_type_name']}"),
-                                      myorderslist[index]['status']
-                                                      .toString() ==
-                                                  "pending" ||
-                                              myorderslist[index]['status']
-                                                      .toString() ==
-                                                  "scheduler pickup"
-                                          ? Text("Status: Delivery Pending")
-                                          : Text("Status: ${myorderslist[index]['status']}"),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                  const SizedBox(height: 5),
+                  RefreshIndicator(
+                    onRefresh: () async {
+                      _myorderslist();
                     },
-                  ),
-                )
-              ],
+                    child: SizedBox(
+                      height: size.height * 0.50,
+                      child: myorderslist.isEmpty
+                          ? Column(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  child: Text("No Products Found !!"),
+                                ),
+                              ],
+                            )
+                          : ListView.separated(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              itemCount: myorderslist.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(),
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    // showDialog(
+                                    //     context: context,
+                                    //     builder: (_) => AlertDialog(
+                                    //         title: const Text('Detail Information'),
+                                    //         content: SingleChildScrollView(
+                                    //             child: Column(children: [
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Rentee"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ['name']
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Product Name"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["title"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Product Quantity"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["quantity"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Rent Type"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["rent_type_name"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Period"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["period"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Product Price(XCD)"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["product_price"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Offer Amount(XCD)"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["renter_amount"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Total Rent(XCD)"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["total_rent"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title:
+                                    //                   const Text("Total Security(XCD)"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["total_security"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Total Rent(XCD)"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["total_rent"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //           Card(
+                                    //             color: Colors.grey[100],
+                                    //             child: ListTile(
+                                    //               title: const Text("Final Amount(XCD)"),
+                                    //               subtitle: Text(myorderslist[index]
+                                    //                       ["final_amount"]
+                                    //                   .toString()),
+                                    //             ),
+                                    //           ),
+                                    //         ]))));
+                                  },
+                                  child: Card(
+                                    elevation: 4.0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 0.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                      "Order Id : ${myorderslist[index]['order_id']}",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                  Text(
+                                                      "Ad Id : ${myorderslist[index]['ad_id']}",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                ],
+                                              )),
+                                          Divider(
+                                            thickness: 0.9,
+                                          ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    "Product Name : ${myorderslist[index]['title']}",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                                Text(
+                                                    "Quantity: ${myorderslist[index]['quantity']}"),
+                                              ],
+                                            ),
+                                          ),
+
+                                          // Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.start,
+                                          //   children: [
+                                          //     TextButton(
+                                          //         onPressed: () {
+                                          //           Navigator.push(
+                                          //               context,
+                                          //               MaterialPageRoute(
+                                          //                   builder: (context) =>
+                                          //                       OrderDetailScreen(
+                                          //                           orderid: myorderslist[
+                                          //                                   index]['id']
+                                          //                               .toString())));
+                                          //         },
+                                          //         child: SizedBox(
+                                          //             width: size.width * 0.60,
+                                          //             child: Text("Product Name : ${myorderslist[index]['title']}"))),
+                                          //     SizedBox(width: 4.0),
+                                          //     myorderslist[index]["status"].toString() ==
+                                          //             "delivered"
+                                          //         ? InkWell(
+                                          //             onTap: () {
+                                          //               _confirmation(
+                                          //                   context,
+                                          //                   myorderslist[index]['id']
+                                          //                       .toString());
+                                          //             },
+                                          //             child: Container(
+                                          //                 width: 80,
+                                          //                 alignment: Alignment.center,
+                                          //                 padding: EdgeInsets.all(4.0),
+                                          //                 decoration: BoxDecoration(
+                                          //                     borderRadius:
+                                          //                         BorderRadius.all(
+                                          //                             Radius.circular(
+                                          //                                 4.0)),
+                                          //                     border: Border.all(
+                                          //                         color: Colors.blue)),
+                                          //                 child: Text("Recieved",
+                                          //                     textAlign: TextAlign.center,
+                                          //                     style: TextStyle(
+                                          //                         color: Colors.blue))))
+                                          //         : _getaction(myorderslist[index]
+                                          //                 ["status"]
+                                          //             .toString())
+                                          //   ],
+                                          // ),
+
+                                          SizedBox(height: 10.0),
+                                          Padding(
+                                            padding: const EdgeInsets.all(.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                myorderslist[index]['period']
+                                                                .toString() ==
+                                                            "" ||
+                                                        myorderslist[index]
+                                                                ['period'] ==
+                                                            null
+                                                    ? SizedBox()
+                                                    : Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.88,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                                "Duration: ${myorderslist[index]['period']} ${_getrenttype(myorderslist[index]['period'].toString(), myorderslist[index]['rent_type_name'].toString())}",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14)),
+                                                            Text(
+                                                                "Convenince Fee : ${myorderslist[index]['convenience_fee']}",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                //Text("Period: "+myorderslist[index]['period'].toString()),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    "Total Rent : ${myorderslist[index]['final_amount']}",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                                Text(
+                                                    "Security : ${myorderslist[index]['total_security']}",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    "Start Date : ${myorderslist[index]['start_date']}",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    "End Date : ${myorderslist[index]['end_date']}",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                              ],
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 10.0),
+                                          Padding(
+                                            padding: const EdgeInsets.all(0.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    "Status: ${myorderslist[index]['status']}"),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              OrderMadeProductsDetailsScreen(
+                                                                orderId: myorderslist[
+                                                                        index][
+                                                                    'order_id'],
+                                                              )));
+                                                },
+                                                child: Container(
+                                                    height: 30,
+                                                    width: 100,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        border: Border.all(
+                                                            color: Colors
+                                                                .orange[900])),
+                                                    child: Text(
+                                                      "View",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.blue[900]),
+                                                    )),
+                                              ),
+                                              myorderslist[index]['status'] ==
+                                                      "delivered"
+                                                  ? InkWell(
+                                                      onTap: () {
+                                                        _submitrespondCancel(
+                                                            myorderslist[index]
+                                                                    ['id']
+                                                                .toString(),
+                                                            myorderslist[index][
+                                                                        'status'] ==
+                                                                    "delivered"
+                                                                ? "active"
+                                                                : "");
+                                                      },
+                                                      child: Container(
+                                                          height: 30,
+                                                          width: 100,
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                          .orange[
+                                                                      900])),
+                                                          child: Text(
+                                                            "Mark Received",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .blue[900]),
+                                                          )),
+                                                    )
+                                                  : SizedBox(),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _submitrespondCancel(String orderid, String respond) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _progress = true;
+    });
+    final body = {
+      "order_id": orderid,
+      "status": respond,
+    };
+    var response = await http.post(Uri.parse(BASE_URL + orderrespond),
+        body: jsonEncode(body),
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}'
+        });
+    setState(() {
+      _progress = false;
+    });
+    if (response.statusCode == 200) {
+      log("response---${response.body}");
+
+      if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
+        // Navigator.of(context, rootNavigator: true).pop('dialog');
+        _myorderslist();
+      } else {
+        // Navigator.of(context, rootNavigator: true).pop('dialog');
+      }
+    } else {
+      setState(() {
+        _progress = false;
+      });
+      print(response.body);
+      throw Exception('Failed to get data due to ${response.body}');
+    }
   }
 
   Future<void> _myorderslist() async {
@@ -472,9 +722,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       _progress = true;
       myorderslist.clear();
     });
-    final body = {
-      "id": prefs.getString('userid'),
-    };
+    final body = {};
     var response = await http
         .post(Uri.parse(BASE_URL + myorders), body: jsonEncode(body), headers: {
       "Accept": "application/json",
@@ -485,7 +733,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']);
+          myorderslist
+              .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
+          log("orderList-->$myorderslist");
           _progress = false;
         });
       } else {
@@ -733,8 +983,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         _myorderslist();
-      } else {
-      }
+      } else {}
     } else {
       setState(() {
         _progress = false;

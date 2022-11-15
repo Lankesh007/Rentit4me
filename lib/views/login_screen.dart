@@ -668,11 +668,13 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         buttonLoading = false;
       }
+      showToast(jsonDecode(response.body)['ErrorMessage']);
     } else {
       setState(() {
         buttonLoading = false;
         _loading = false;
       });
+      showToast(jsonDecode(response.body)['ErrorMessage']);
       log(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
@@ -703,10 +705,8 @@ class _LoginScreenState extends State<LoginScreen> {
       if (data['package_id'] != null || data['package_id'] != 0) {
         if (data['is_signup_complete'] == 1) {
           if (data['payment_status'] == 1) {
-            prefs.setString(
-                'userquickid', data['quickblox_id'].toString());
-            prefs.setString(
-                'quicklogin', data['quickblox_email'].toString());
+            prefs.setString('userquickid', data['quickblox_id'].toString());
+            prefs.setString('quicklogin', data['quickblox_email'].toString());
             prefs.setString(
                 'quickpassword', data['quickblox_password'].toString());
             Navigator.pushReplacement(

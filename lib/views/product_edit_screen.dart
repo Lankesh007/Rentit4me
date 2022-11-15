@@ -591,36 +591,37 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Location Availability *",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.grey, width: 1),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.0))),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: TextFormField(
-                                // controller: securityamount,
-                                readOnly: true,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.start,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: locationAviablity),
-                              ),
-                            ),
-                          ),
+                          // SizedBox(height: 10),
+                          // const Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: Text(
+                          //     "Location Availability *",
+                          //     style: TextStyle(
+                          //         color: kPrimaryColor,
+                          //         fontWeight: FontWeight.bold),
+                          //   ),
+                          // ),
+                          // SizedBox(height: 10),
+                          // Container(
+                          //   decoration: BoxDecoration(
+                          //       border:
+                          //           Border.all(color: Colors.grey, width: 1),
+                          //       borderRadius:
+                          //           BorderRadius.all(Radius.circular(8.0))),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(left: 5.0),
+                          //     child: TextFormField(
+                          //       // controller: securityamount,
+                          //       readOnly: true,
+                          //       keyboardType: TextInputType.number,
+                          //       textAlign: TextAlign.start,
+                          //       decoration: InputDecoration(
+                          //           border: InputBorder.none,
+                          //           hintText: locationAviablity),
+                          //     ),
+                          //   ),
+                          // ),
+                      
                         ],
                       ),
                     ),
@@ -996,7 +997,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                             renttype[1]['enable'] = _checkday;
                                           });
                                         }),
-                                    const Text("Days",
+                                    const Text("Daily",
                                         style: TextStyle(
                                             color: kPrimaryColor,
                                             fontWeight: FontWeight.bold))
@@ -1098,7 +1099,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               ? const Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    "Days Price(XCD)*",
+                                    "Days Price*",
                                     style: TextStyle(
                                         color: kPrimaryColor,
                                         fontWeight: FontWeight.bold),
@@ -1151,7 +1152,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               ? const Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    "Monthly Price(XCD)*",
+                                    "Monthly Price*",
                                     style: TextStyle(
                                         color: kPrimaryColor,
                                         fontWeight: FontWeight.bold),
