@@ -11,7 +11,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <application android:label="Rentit4me" android:usesCleartextTraffic="true" android:name="${applicationName}" android:icon="@mipmap/launcher_icon">
+    <application android:label="Rentit4me" 
+    android:usesCleartextTraffic="true"
+    android:name="${applicationName}"
+    android:icon="@mipmap/launcher_icon">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAUr4dGAQi1XocxvHSQMh6SVVpT2jqU96o" />

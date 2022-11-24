@@ -127,7 +127,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userid = preferences.getString("userid");
 
-    loggedUserId = int.parse(userid);
+    userid == null || userid == "null" ? "" : loggedUserId = int.parse(userid);
     log("userid-==-->$loggedUserId");
   }
 
@@ -355,85 +355,89 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     ],
                                   ),
                                 )),
-                                     kyc == 1
-                            ? SizedBox(
-                                height: 30,
-                                width: 100,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    kyc == 1
-                                        ? Expanded(
-                                            child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.green.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "kyc",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 15),
+                            kyc == 1
+                                ? SizedBox(
+                                    height: 30,
+                                    width: 100,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        kyc == 1
+                                            ? Expanded(
+                                                child: Container(
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.green.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "kyc",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15),
+                                                      ),
+                                                      Image.asset(
+                                                        "assets/images/check-mark.png",
+                                                        scale: 16,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Image.asset(
-                                                    "assets/images/check-mark.png",
-                                                    scale: 16,
+                                                ),
+                                              ))
+                                            : SizedBox(),
+                                        SizedBox(
+                                          width: 30,
+                                        ),
+                                        trustedbadgeapproval == "approved" ?? ""
+                                            ? Expanded(
+                                                child: Container(
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.green.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            40)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Trusted Badge",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18),
+                                                      ),
+                                                      Image.asset(
+                                                        "assets/images/check-mark.png",
+                                                        scale: 16,
+                                                      )
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                          ))
-                                        : SizedBox(),
-                                    SizedBox(
-                                      width: 30,
+                                                ),
+                                              ))
+                                            : SizedBox(),
+                                      ],
                                     ),
-                                    trustedbadgeapproval == "approved" ?? ""
-                                        ? Expanded(
-                                            child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.green.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(40)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Trusted Badge",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18),
-                                                  ),
-                                                  Image.asset(
-                                                    "assets/images/check-mark.png",
-                                                    scale: 16,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ))
-                                        : SizedBox(),
-                                  ],
-                                ),
-                              )
-                            : SizedBox(),
+                                  )
+                                : SizedBox(),
                           ],
                         ),
                         SizedBox(height: 10.0),
@@ -512,7 +516,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           thickness: 0.9,
                           height: 30,
                         ),
-                   
+
                         SizedBox(
                           height: 10,
                         ),
@@ -1253,6 +1257,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.w600),
+                maxLines: 1,
               ),
             ),
             SizedBox(
@@ -1346,7 +1351,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     String userId = prefs.getString('userid');
     log("userid---->$userId");
-    final body = {"id": widget.productid, "user_id": userId};
+    final body = {
+      "id": widget.productid,
+      "country": prefs.getString("country"),
+      "user_id": userId
+    };
     log("test----" + body.toString());
 
     var response = await http.post(Uri.parse(BASE_URL + productdetail),
@@ -1703,7 +1712,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         mytopcategories.clear();
 
         jsonDecode(response.body)['Response']['slider'].forEach((element) {
-          images.add(sliderpath + element['value'].toString());
+          images.add(devImage + element['value'].toString());
         });
 
         // jsonDecode(response.body)['Response']['cities'].forEach((element) {
@@ -1740,41 +1749,41 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         //     .addAll(jsonDecode(response.body)['Response']['You_may_also_like']);
 
         print(jsonDecode(response.body)['Response']['today_special_deals']);
-        todaydealsimage1 = sliderpath +
+        todaydealsimage1 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_1']['value']
                 .toString();
-        todaydealsimage2 = sliderpath +
+        todaydealsimage2 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_2']['value']
                 .toString();
-        todaydealsimage3 = sliderpath +
+        todaydealsimage3 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_3']['value']
                 .toString();
-        todaydealsimage4 = sliderpath +
+        todaydealsimage4 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_4']['value']
                 .toString();
 
-        bottomimage1 = sliderpath +
+        bottomimage1 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_1']['value']
                 .toString();
-        bottomimage2 = sliderpath +
+        bottomimage2 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_2']['value']
                 .toString();
-        bottomimage3 = sliderpath +
+        bottomimage3 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_3']['value']
                 .toString();
-        bottomimage4 = sliderpath +
+        bottomimage4 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_4']['value']
                 .toString();
 
-        bottomsingleimage = sliderpath +
+        bottomsingleimage = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_single']['value']
                 .toString();
@@ -1799,20 +1808,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     int countryID = 0;
     String cityId = '';
     String userId = '';
+    String country;
+    String city;
+    String state;
 
     setState(() {
       countryID = prefs.getInt('countryId');
       cityId = prefs.getString('cityId');
       userId = prefs.getString('userid');
+      country = prefs.getString('country');
+      city = prefs.getString('city');
+      state = prefs.getString('state');
     });
 
     var url = Apis.adViewApi;
     var body = {
       "id": widget.productid,
-
-      "country": countryID.toString(),
+      "state": state == null || state == "null" ? "" : state,
+      "country": country.toString(),
       // "city": "",cityId.toString(),
-      "city": cityId.toString(),
+      "city": city == null || city == "null" ? "" : city,
     };
     log(body.toString());
     var response = await APIHelper.apiPostRequest(url, body);

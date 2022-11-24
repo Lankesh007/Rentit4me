@@ -31,6 +31,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   String productid;
   _ProductEditScreenState(this.productid);
 
+  bool changeCategory = false;
   bool checkData = false;
   bool _loading = false;
 
@@ -245,7 +246,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     super.initState();
     print("............productid$productid");
     _getpreproductedit(productid);
-    _getCategories();
     _getcountryData();
   }
 
@@ -444,91 +444,174 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           ))
                                       .toList())),
                           SizedBox(height: 10),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
-                            child: Text(
-                              "Category",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Category",
+                                  style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      changeCategory = !changeCategory;
+                                    });
+                                  },
+                                  child: Text(
+                                    "Change",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(height: 10),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0)),
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1)),
-                              child: DropdownButtonHideUnderline(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5.0, right: 5.0),
-                                child: DropdownButton(
-                                  value: initiacatlvalue,
-                                  icon:
-                                      const Icon(Icons.arrow_drop_down_rounded),
-                                  items: _categorieslist.map((items) {
-                                    var id = items['id'];
-                                    return DropdownMenuItem(
-                                      value: items['id'].toString(),
-                                      child: Text(items['title']),
-                                    );
-                                  }).toList(),
-                                  onChanged: (data) {
-                                    setState(() {
-                                      // _getCategories();
-                                      _subcategorieslist.clear();
-                                      initialsubcatvalue = null;
-                                      initiacatlvalue = data.toString();
-                                      categoryid = data.toString();
-                                      _getSubCategories(data);
-                                    });
-                                  },
+                          changeCategory != true
+                              ? Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: double.infinity,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Text(categoryTitle,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ))))
+                              : Column(
+                                  children: [
+                                    Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8.0)),
+                                            border: Border.all(
+                                                color: Colors.grey, width: 1)),
+                                        child: DropdownButtonHideUnderline(
+                                            child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5.0, right: 5.0),
+                                          child: DropdownButton(
+                                            // onTap: (){
+                                            //   _getCategories();
+                                            // },
+                                            value: initiacatlvalue,
+                                            // value: "askld",
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down_rounded),
+                                            items: _categorieslist.map((items) {
+                                              var id = items['id'];
+                                              return DropdownMenuItem(
+                                                value: items['id'].toString(),
+                                                child: Text(items['title']),
+                                              );
+                                            }).toList(),
+                                            onChanged: (data) {
+                                              setState(() {
+                                                _subcategorieslist.clear();
+                                                initialsubcatvalue = null;
+                                                initiacatlvalue =
+                                                    data.toString();
+                                                categoryid = data.toString();
+                                                _getSubCategories(data);
+                                              });
+                                            },
+                                          ),
+                                        ))),
+                                  ],
                                 ),
-                              ))),
                           SizedBox(height: 10),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
-                            child: Text(
-                              "Subcategory",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Subcategory",
+                                  style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                // InkWell(
+                                //   onTap: () {
+                                //     setState(() {
+                                //       changeSubCategory= !changeSubCategory;
+                                //     });
+                                //   },
+                                //   child: Text(
+                                //     "Change",
+                                //     style: TextStyle(
+                                //         color: kPrimaryColor,
+                                //         fontWeight: FontWeight.bold),
+                                //   ),
+                                // ),
+                              ],
                             ),
                           ),
                           SizedBox(height: 10),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0)),
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1)),
-                              child: DropdownButtonHideUnderline(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5.0, right: 5.0),
-                                child: DropdownButton(
-                                  value: initialsubcatvalue,
-                                  icon:
-                                      const Icon(Icons.arrow_drop_down_rounded),
-                                  items: _subcategorieslist.map((items) {
-                                    return DropdownMenuItem(
-                                      value: items['id'].toString(),
-                                      child: Text(items['title']),
-                                    );
-                                  }).toList(),
-                                  onChanged: (data) {
-                                    setState(() {
-                                      initialsubcatvalue = data.toString();
-                                      subcategoryid = data.toString();
-                                      _getSubCategories(data);
-                                    });
-                                  },
-                                ),
-                              ))),
+                          changeCategory == true
+                              ? Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0)),
+                                      border: Border.all(
+                                          color: Colors.grey, width: 1)),
+                                  child: DropdownButtonHideUnderline(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5.0),
+                                    child: DropdownButton(
+                                      value: initialsubcatvalue,
+                                      icon: const Icon(
+                                          Icons.arrow_drop_down_rounded),
+                                      items: _subcategorieslist.map((items) {
+                                        return DropdownMenuItem(
+                                          value: items['id'].toString(),
+                                          child: Text(items['title']),
+                                        );
+                                      }).toList(),
+                                      onChanged: (data) {
+                                        setState(() {
+                                          initialsubcatvalue = data.toString();
+                                          initialsubcatvalue=null;
+                                          initialsubcatvalue=data.toString();
+                                          subcategoryid = data.toString();
+                                          _getSubCategories(data);
+                                        });
+                                      },
+                                    ),
+                                  )))
+                              : Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: double.infinity,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Container(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(
+                                          subCategoryTitle.toString() == null ||
+                                                  subCategoryTitle.toString() ==
+                                                      "" ||
+                                                  subCategoryTitle.toString() ==
+                                                      "null"
+                                              ? "No Subcategory"
+                                              : subCategoryTitle.toString(),
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          )))),
                           const SizedBox(height: 10),
                           const Align(
                             alignment: Alignment.topLeft,
@@ -621,7 +704,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                           //     ),
                           //   ),
                           // ),
-                      
                         ],
                       ),
                     ),
@@ -1522,7 +1604,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                   SizedBox(height: 20),
                   InkWell(
                     onTap: () {
-                      if (initialsubcatvalue == null) {
+                      if (changeCategory == true &&
+                          initiacatlvalue == null||initiacatlvalue==""||initiacatlvalue=="null") {
+                        showToast("Please select  category");
+                      } else if (changeCategory == true &&
+                          initialsubcatvalue == null||initialsubcatvalue==""||initialsubcatvalue=="null") {
                         showToast("Please select sub category");
                       } else {
                         if (form.currentState.validate()) {
@@ -1564,6 +1650,9 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
   String locationAviablity = "";
   String categoryTitle = '';
+  String categoryId = '';
+  String subCategoryId;
+  String subCategoryTitle;
 
   int qunatity = 0;
   Future _getpreproductedit(String productid) async {
@@ -1571,6 +1660,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     final body = {
       "id": productid,
     };
+    log("id====>$body");
     var response = await http.post(Uri.parse(BASE_URL + editviewpost),
         body: jsonEncode(body),
         headers: {
@@ -1601,8 +1691,13 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         // initiacatlvalue =
         //     data['posted_ad'][0]['categories'][0]['id'].toString();
 
-        categoryTitle = data['posted_ad']['categories'][0]['title'].toString();
-        log(categoryTitle);
+        categoryTitle = data['posted_ad']['category']['title'].toString();
+        categoryId = data['posted_ad']['category']['id'].toString();
+
+        // initiacatlvalue = categoryTitle;
+        log("ini0----->$categoryTitle");
+        _getCategories();
+
         // initiacatlvalue=categoryTitle;
         // log(initiacatlvalue);
 
@@ -1610,11 +1705,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         //   initialsubcatvalue = data['posted_ad']['category']['id'].toString();
         // });
 
-        categoryid = data['posted_ad']['categories'][0]['id'].toString();
-        subcategoryid = data['posted_ad']['subcategory']['id'].toString();
-
-        negotiablevalue =
-            data['posted_ad']['negotiate'].toString() == "1" ? "Yes" : "No";
         // hidemobilevalue =
         //     data['posted_ad']['mobile_hidden'].toString() == "1"
         //         ? "Yes"
@@ -1681,8 +1771,15 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                 element['price'] == null ? "" : element['price'].toString();
           }
         });
+        negotiablevalue =
+            data['posted_ad']['negotiate'].toString() == "1" ? "Yes" : "No";
 
+        log("subcategory--->$subCategoryTitle");
         checkData = true;
+        categoryid = data['posted_ad']['categories'][0]['id'].toString();
+        subcategoryid = data['posted_ad']['subcategory']['id'].toString();
+        subCategoryId = data['posted_ad']['subcategory']['id'].toString();
+        subCategoryTitle = data['posted_ad']['subcategory']['title'].toString();
 
         // if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
         //   sameAddress = true;
@@ -1755,8 +1852,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       setState(() {
         _categorieslist.addAll(jsonDecode(response.body)['Response']);
       });
-    } else {
-    }
+    } else {}
   }
 
   Future<void> _getSubCategories(String id) async {
@@ -1911,6 +2007,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                 ])));
   }
 
+  bool changeSubCategory = false;
+
   Future<Map> submitpostaddData(List files) async {
     if (files.isEmpty) {
       showToast("Please add atleast one additonal image");
@@ -1947,8 +2045,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         requestMulti.fields["post_id"] = productid;
         requestMulti.fields["quantity"] = qunatity.toString();
 
-        requestMulti.fields["category[0]"] = categoryid;
-        requestMulti.fields["category[1]"] = subcategoryid;
+        requestMulti.fields["category[0]"] =
+            changeCategory == true ? categoryid : categoryId.toString();
+        requestMulti.fields["category[1]"] = changeSubCategory == true
+            ? changeCategory
+            : subcategoryid.toString();
         requestMulti.fields["title"] = productname.text.toString();
         requestMulti.fields["description"] = description.text.toString();
         requestMulti.fields["security"] = securityamount.text.toString();

@@ -26,21 +26,21 @@ class LatestAdditionsModel {
     if (json['prices'] != null) {
       prices = <Prices>[];
       json['prices'].forEach((v) {
-        prices.add(Prices.fromJson(v));
+        prices.add(new Prices.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['title'] = title;
-    data['slug'] = slug;
-    data['currency'] = currency;
-    data['file_name'] = fileName;
-    data['upload_base_path'] = uploadBasePath;
-    if (prices != null) {
-      data['prices'] = prices.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['slug'] = this.slug;
+    data['currency'] = this.currency;
+    data['file_name'] = this.fileName;
+    data['upload_base_path'] = this.uploadBasePath;
+    if (this.prices != null) {
+      data['prices'] = this.prices.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -81,16 +81,16 @@ class Prices {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['post_ad_id'] = postAdId;
-    data['rent_type_id'] = rentTypeId;
-    data['rent_type_name'] = rentTypeName;
-    data['rent_type_alias'] = rentTypeAlias;
-    data['price'] = price;
-    data['status'] = status;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['post_ad_id'] = this.postAdId;
+    data['rent_type_id'] = this.rentTypeId;
+    data['rent_type_name'] = this.rentTypeName;
+    data['rent_type_alias'] = this.rentTypeAlias;
+    data['price'] = this.price;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

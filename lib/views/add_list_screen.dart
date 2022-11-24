@@ -4,6 +4,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
@@ -22,6 +25,110 @@ class AddlistingScreen extends StatefulWidget {
 }
 
 class _AddlistingScreenState extends State<AddlistingScreen> {
+  String currentLattitude = "";
+  String currentLongitude = "";
+  TextEditingController currentPoint = TextEditingController();
+  // Destination Loctaion Controller
+  String destinationLattitude = "";
+  String destinationLongitude = "";
+  TextEditingController destinationPoint = TextEditingController();
+  bool showData = false;
+  bool getCurrentLocation = false;
+  List places;
+  var placecounts = 0;
+
+  LatLng _center;
+  Position currentLocation;
+  String location = 'Null, Press Button';
+  String lati = '';
+  String land = '';
+  LatLng pinPosition;
+
+  Future<Position> locateUser() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    } else if (permission == LocationPermission.whileInUse) {
+    } else if (permission == LocationPermission.always) {
+    } else if (permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    } else {
+      throw Exception('Error');
+    }
+    return Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  getUserLocation(BuildContext context) async {
+    currentLocation = await locateUser();
+    // onLoading(context);
+    setState(() {
+      _center = LatLng(currentLocation.latitude, currentLocation.longitude);
+      lati = currentLocation.latitude.toString();
+      land = currentLocation.longitude.toString();
+      pinPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
+      currentLattitude = lati.toString();
+      currentLongitude = land.toString();
+      getAddressFromLatLong();
+      getCurrentLocation = true;
+    });
+    // Navigator.pop(context);
+    // print('latitude${currentLocation.latitude}');
+    // print('longitude${currentLocation.longitude}');
+  }
+
+  getAddressFromLatLong() async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(double.parse(lati), double.parse(land));
+    // log("placemark==> $placemarks");
+    Placemark place = placemarks[0];
+    String name = place.name.toString();
+    String subLocality = place.subLocality.toString();
+    locality = place.locality.toString();
+    log("------>" + locality);
+    String administrativeArea = place.administrativeArea.toString();
+    String postalCode = place.postalCode.toString();
+    String country = place.country.toString();
+    String address =
+        "$name, $subLocality, $locality, $administrativeArea $postalCode, $country";
+
+    // log('Address ${Country.toString()}');
+    //setState(() {
+    currentPoint.text = address.toString();
+    // });
+  }
+
+  String locality = '';
+  String destilocality = "";
+  getAddressFromLatLongDesti(String latitude, longitude) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        double.parse(latitude), double.parse(longitude));
+    // log("placemark==> $placemarks");
+    Placemark place = placemarks[0];
+
+    destilocality = place.locality.toString();
+    log("=--->" + destilocality);
+  }
+
+  Future getLocations(String locationName) async {
+    var kGoogleApiKey = Apis.mapKey.toString();
+    var url = Uri.tryParse(
+        "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" +
+            locationName +
+            "&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=" +
+            kGoogleApiKey);
+
+    http.Response res = await http.get(url);
+    setState(() {
+      showData = true;
+      places = json.decode(res.body)['candidates'];
+      placecounts = places.length;
+    });
+  }
+
+  String locations = '';
+
   bool _loading = false;
 
   String mainimage = "";
@@ -35,13 +142,13 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
   String initiacatlvalue;
   String initialsubcatvalue;
-
+  bool addlocation = false;
   String categoryid;
   String subcategoryid;
   String dropdownvalue = 'Select Location';
 
   // List of items in our dropdown menu
-  var items = ['Select Location', 'All Cities', 'Same As Profile', 'Manually'];
+  var items = ['Select Location', 'Same As Profile', 'manually'];
 
   bool _termcondition = false;
   String category;
@@ -57,7 +164,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
   String yearlyprice;
   String quantity;
   String availabledate = "MM/dd/yyyy";
-
+  String locationUser;
   String negotiablevalue = "Select";
   String hidemobilevalue = "Yes";
   bool sameAddress = true;
@@ -102,6 +209,8 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
   ];
 
   List prices = [];
+
+  List locationAddList = [];
 
   @override
   void initState() {
@@ -166,8 +275,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                   height: 45,
                                   width: 45,
                                   alignment: Alignment.topLeft,
-                                  child: mainimage ==
-                                          ""
+                                  child: mainimage == ""
                                       ? Text(mainimage,
                                           style: TextStyle(
                                               color: Colors.black,
@@ -427,313 +535,491 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        // const Align(
-                        //   alignment: Alignment.topLeft,
-                        //   child: Text(
-                        //     "Location Aviablity*",
-                        //     style: TextStyle(
-                        //         color: kPrimaryColor,
-                        //         fontWeight: FontWeight.bold),
-                        //   ),
-                        // ),
+                        const Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Location *",
+                            style: TextStyle(
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15)),
+                          child: FormField(
+                            builder: (FormFieldState state) {
+                              return InputDecorator(
+                                decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    filled: true,
+                                    // labelText: "Select",
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.all(10),
+                                    border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.deepOrange),
+                                    )),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    // Initial Value
+
+                                    value: dropdownvalue,
+
+                                    // Down Arrow Icon
+                                    icon: const Icon(Icons.keyboard_arrow_down),
+
+                                    // Array list of items
+                                    items: items.map((String items) {
+                                      return DropdownMenuItem(
+                                        value: items,
+                                        child: Text(items),
+                                      );
+                                    }).toList(),
+                                    // After selecting the desired option,it will
+                                    // change button value to selected value
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        dropdownvalue = newValue;
+                                        log("====>$dropdownvalue");
+                                        if (dropdownvalue == "manually") {
+                                          sameAddress = false;
+                                          if (sameAddress == false) {
+                                            _getprofileData();
+                                          }
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                         // SizedBox(height: 10),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //       border: Border.all(color: Colors.grey, width: 1),
-                        //       borderRadius:
-                        //           BorderRadius.all(Radius.circular(8.0))),
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.only(left: 5.0),
-                        //     child: TextField(
-                        //       readOnly: true,
-                        //       keyboardType: TextInputType.number,
-                        //       textAlign: TextAlign.start,
-                        //       decoration: InputDecoration(
-                        //           border: InputBorder.none,
-                        //           hintText: "  ALL Cities"),
-                        //       onChanged: (value) {
-                        //         securityamount = value.toString();
-                        //       },
-                        //     ),
-                        //   ),
-                        // ),
+                        dropdownvalue == "manually"
+                            ? Column(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 50,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: TextFormField(
+                                        controller: destinationPoint,
+                                        autofocus: true,
+                                        keyboardType: TextInputType.text,
+                                        showCursor: true,
+                                        onChanged: (value) {
+                                          getLocations(value);
+                                        },
+                                        decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  locationAddList
+                                                      .add(locationUser);
+                                                  log(locationAddList
+                                                      .toString());
+                                                  showToast(
+                                                      "Added Sucessfully !!");
 
-                        // Container(
-                        //   height: 50,
-                        //   decoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(15)),
-                        //   child: FormField(
-                        //     builder: (FormFieldState state) {
-                        //       return InputDecorator(
-                        //         decoration: InputDecoration(
-                        //             fillColor: Colors.white,
-                        //             enabledBorder: OutlineInputBorder(
-                        //                 borderSide:
-                        //                     BorderSide(color: Colors.grey),
-                        //                 borderRadius:
-                        //                     BorderRadius.circular(10)),
-                        //             filled: true,
-                        //             // labelText: "Select",
-                        //             isDense: true,
-                        //             contentPadding: EdgeInsets.all(10),
-                        //             border: OutlineInputBorder(
-                        //               borderSide:
-                        //                   BorderSide(color: Colors.deepOrange),
-                        //             )),
-                        //         child: DropdownButtonHideUnderline(
-                        //           child: DropdownButton(
-                        //             // Initial Value
+                                                  destinationPoint.clear();
+                                                });
+                                              },
+                                              icon: Icon(Icons.add,
+                                                  color: Colors.blue)),
+                                          hintStyle: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                          border: InputBorder.none,
+                                          hintText: "Search Location",
+                                        ),
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  showData == false
+                                      ? SizedBox()
+                                      : SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.3,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.9,
+                                          child: ListView.builder(
+                                            itemCount: placecounts,
+                                            itemBuilder: (
+                                              BuildContext context,
+                                              int index,
+                                            ) {
+                                              return SizedBox(
+                                                height: 50,
+                                                child: ListTile(
+                                                  onTap: () {
+                                                    locations = places[index]
+                                                        ['formatted_address'];
+                                                    log("------>$places");
+                                                    var lattitude =
+                                                        places[index]
+                                                                ['geometry']
+                                                            ['location']['lat'];
+                                                    var longitude =
+                                                        places[index]
+                                                                ['geometry']
+                                                            ['location']['lng'];
+                                                    log("Destination Point Address : ${locations.toString()}");
+                                                    log("Destination Point Lattitude : ${lattitude.toString()}");
+                                                    log("Destination Point Longitude : ${longitude.toString()}");
+                                                    getAddressFromLatLongDesti(
+                                                        lattitude.toString(),
+                                                        longitude.toString());
+                                                    showData = false;
+                                                    destinationLattitude =
+                                                        lattitude.toString();
+                                                    destinationLongitude =
+                                                        longitude.toString();
+                                                    destinationPoint.text =
+                                                        locations.toString();
+                                                    setState(() {
+                                                      locationUser = places[
+                                                              index]
+                                                          ['formatted_address'];
+                                                      log("location user ---> $locationUser");
 
-                        //             value: dropdownvalue,
+                                                      places.clear();
+                                                    });
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            FocusNode());
+                                                    // _setLocation(locations, lattitude, longitude);
+                                                  },
+                                                  leading: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(
+                                                          100,
+                                                        ),
+                                                      ),
+                                                      color: Colors.grey,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons
+                                                          .location_on_outlined,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  title: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Text(
+                                                      places[index]
+                                                          ['formatted_address'],
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.2,
+                                    child: ListView.builder(
+                                        itemCount: locationAddList.length,
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  locationAddList[index],
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 16),
+                                                ),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        locationAddList.remove(
+                                                            locationAddList[
+                                                                index]);
+                                                        showToast(
+                                                            "Removed Sucessfully !!");
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.close,
+                                                      size: 18,
+                                                      color: Colors.red,
+                                                    ))
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                ],
+                              )
+                            : SizedBox(
+                                height: 20,
+                              ),
 
-                        //             // Down Arrow Icon
-                        //             icon: const Icon(Icons.keyboard_arrow_down),
-
-                        //             // Array list of items
-                        //             items: items.map((String items) {
-                        //               return DropdownMenuItem(
-                        //                 value: items,
-                        //                 child: Text(items),
-                        //               );
+                        // ), AbsorbPointer(
+                        //       absorbing: sameAddress,
+                        //       child: Column(
+                        //         crossAxisAlignment: CrossAxisAlignment.start,
+                        //         children: [
+                        //           const Text("Country*",
+                        //               style: TextStyle(
+                        //                   color: kPrimaryColor,
+                        //                   fontSize: 16,
+                        //                   fontWeight: FontWeight.w500)),
+                        //           const SizedBox(height: 8.0),
+                        //           Padding(
+                        //             padding:
+                        //                 const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                        //             child: DropdownSearch(
+                        //               selectedItem: "Select Country",
+                        //               mode: Mode.DIALOG,
+                        //               showSelectedItem: true,
+                        //               autoFocusSearchBox: true,
+                        //               showSearchBox: true,
+                        //               showFavoriteItems: true,
+                        //               favoriteItems: (val) {
+                        //                 return ["India"];
+                        //               },
+                        //               hint: 'Select Country',
+                        //               dropdownSearchDecoration:
+                        //                   InputDecoration(
+                        //                       enabledBorder:
+                        //                           OutlineInputBorder(
+                        //                               borderRadius:
+                        //                                   BorderRadius
+                        //                                       .circular(8),
+                        //                               borderSide: BorderSide(
+                        //                                   color: Colors.grey,
+                        //                                   width: 1)),
+                        //                       contentPadding:
+                        //                           EdgeInsets.only(left: 10)),
+                        //               items: countrylistData.map((e) {
+                        //                 return e['name'].toString();
+                        //               }).toList(),
+                        //               onChanged: (value) {
+                        //                 if (value != "Select Country") {
+                        //                   for (var element
+                        //                       in countrylistData) {
+                        //                     if (element['name'].toString() ==
+                        //                         value) {
+                        //                       setState(() {
+                        //                         initialcountryname =
+                        //                             value.toString();
+                        //                         initialstatename = null;
+                        //                         initialcityname = null;
+                        //                         country_id =
+                        //                             element['id'].toString();
+                        //                         _getStateData(
+                        //                             element['id'].toString());
+                        //                       });
+                        //                     }
+                        //                   }
+                        //                 } else {
+                        //                   showToast("Select Country");
+                        //                 }
+                        //               },
+                        //             ),
+                        //           ),
+                        //           const SizedBox(height: 10),
+                        //           const Text("State*",
+                        //               style: TextStyle(
+                        //                   color: kPrimaryColor,
+                        //                   fontSize: 16,
+                        //                   fontWeight: FontWeight.w500)),
+                        //           const SizedBox(height: 8.0),
+                        //           DropdownSearch(
+                        //             selectedItem: "Select State",
+                        //             mode: Mode.DIALOG,
+                        //             showSelectedItem: true,
+                        //             autoFocusSearchBox: true,
+                        //             showSearchBox: true,
+                        //             hint: 'Select State',
+                        //             dropdownSearchDecoration: InputDecoration(
+                        //                 enabledBorder: OutlineInputBorder(
+                        //                     borderRadius:
+                        //                         BorderRadius.circular(8),
+                        //                     borderSide: BorderSide(
+                        //                         color: Colors.grey,
+                        //                         width: 1)),
+                        //                 contentPadding:
+                        //                     EdgeInsets.only(left: 10)),
+                        //             items: statelistData.map((e) {
+                        //               return e['name'].toString();
                         //             }).toList(),
-                        //             // After selecting the desired option,it will
-                        //             // change button value to selected value
-                        //             onChanged: (String newValue) {
-                        //               setState(() {
-                        //                 dropdownvalue = newValue;
-                        //                 log("====>$dropdownvalue");
-                        //                 if (dropdownvalue == "Manually") {
-                        //                   sameAddress = false;
-                        //                   if (sameAddress == false) {
-                        //                     _getprofileData();
+                        //             onChanged: (value) {
+                        //               if (value != "Select State") {
+                        //                 for (var element in statelistData) {
+                        //                   if (element['name'].toString() ==
+                        //                       value) {
+                        //                     setState(() {
+                        //                       initialstatename =
+                        //                           value.toString();
+                        //                       initialstatename = null;
+                        //                       initialcityname = null;
+                        //                       state_id =
+                        //                           element['id'].toString();
+                        //                       _getCityData(
+                        //                           element['id'].toString());
+                        //                     });
                         //                   }
                         //                 }
-                        //               });
+                        //               } else {
+                        //                 showToast("Select State");
+                        //               }
                         //             },
                         //           ),
-                        //         ),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
-                        // SizedBox(height: 10),
-                        dropdownvalue == "Manually"
-                            ? AbsorbPointer(
-                                absorbing: sameAddress,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Country*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                                      child: DropdownSearch(
-                                        selectedItem: "Select Country",
-                                        mode: Mode.DIALOG,
-                                        showSelectedItem: true,
-                                        autoFocusSearchBox: true,
-                                        showSearchBox: true,
-                                        showFavoriteItems: true,
-                                        favoriteItems: (val) {
-                                          return ["India"];
-                                        },
-                                        hint: 'Select Country',
-                                        dropdownSearchDecoration:
-                                            InputDecoration(
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1)),
-                                                contentPadding:
-                                                    EdgeInsets.only(left: 10)),
-                                        items: countrylistData.map((e) {
-                                          return e['name'].toString();
-                                        }).toList(),
-                                        onChanged: (value) {
-                                          if (value != "Select Country") {
-                                            for (var element
-                                                in countrylistData) {
-                                              if (element['name'].toString() ==
-                                                  value) {
-                                                setState(() {
-                                                  initialcountryname =
-                                                      value.toString();
-                                                  initialstatename = null;
-                                                  initialcityname = null;
-                                                  country_id =
-                                                      element['id'].toString();
-                                                  _getStateData(
-                                                      element['id'].toString());
-                                                });
-                                              }
-                                            }
-                                          } else {
-                                            showToast("Select Country");
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text("State*",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    DropdownSearch(
-                                      selectedItem: "Select State",
-                                      mode: Mode.DIALOG,
-                                      showSelectedItem: true,
-                                      autoFocusSearchBox: true,
-                                      showSearchBox: true,
-                                      hint: 'Select State',
-                                      dropdownSearchDecoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1)),
-                                          contentPadding:
-                                              EdgeInsets.only(left: 10)),
-                                      items: statelistData.map((e) {
-                                        return e['name'].toString();
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        if (value != "Select State") {
-                                          for (var element in statelistData) {
-                                            if (element['name'].toString() ==
-                                                value) {
-                                              setState(() {
-                                                initialstatename =
-                                                    value.toString();
-                                                initialstatename = null;
-                                                initialcityname = null;
-                                                state_id =
-                                                    element['id'].toString();
-                                                _getCityData(
-                                                    element['id'].toString());
-                                              });
-                                            }
-                                          }
-                                        } else {
-                                          showToast("Select State");
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text(
-                                      "City*",
-                                      style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    DropdownSearch(
-                                      selectedItem: "Select City",
-                                      mode: Mode.DIALOG,
-                                      showSelectedItem: true,
-                                      autoFocusSearchBox: true,
-                                      showSearchBox: true,
-                                      hint: 'Select City',
-                                      dropdownSearchDecoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1)),
-                                          contentPadding:
-                                              EdgeInsets.only(left: 10)),
-                                      items: citylistData.map((e) {
-                                        return e['name'].toString();
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        if (value != "Select City") {
-                                          for (var element in citylistData) {
-                                            if (element['name'].toString() ==
-                                                value) {
-                                              setState(() {
-                                                initialcityname =
-                                                    value.toString();
-                                                //initialstatename = null;
-                                                //initialcityname = null;
-                                                city_id =
-                                                    element['id'].toString();
-                                                //_getStateData(element['id'].toString());
-                                              });
-                                            }
-                                          }
-                                        } else {
-                                          showToast("Select City");
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text("Address",
-                                        style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 8.0),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1, color: Colors.grey),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(8))),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: TextField(
-                                            controller: address,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                          ),
-                                        )),
-                                    const SizedBox(height: 10),
-                                    // const Text("Pincode",
-                                    //     style: TextStyle(
-                                    //         color: kPrimaryColor,
-                                    //         fontSize: 16,
-                                    //         fontWeight: FontWeight.w500)),
-                                    // Container(
-                                    //     decoration: BoxDecoration(
-                                    //         border: Border.all(
-                                    //             width: 1,
-                                    //             color: Colors.deepOrangeAccent),
-                                    //         borderRadius: BorderRadius.all(
-                                    //             Radius.circular(12))),
-                                    //     child: Padding(
-                                    //       padding: const EdgeInsets.only(left: 10.0),
-                                    //       child: TextField(
-                                    //         keyboardType: TextInputType.number,
-                                    //         inputFormatters: [
-                                    //           FilteringTextInputFormatter.digitsOnly
-                                    //         ],
-                                    //         controller: pincode,
-                                    //         maxLength: 6,
-                                    //         decoration: InputDecoration(
-                                    //             border: InputBorder.none,
-                                    //             counterText: ""),
-                                    //       ),
-                                    //     )),
-                                  ],
-                                ),
-                              )
-                            : const SizedBox(),
+                        //           const SizedBox(height: 10),
+                        //           const Text(
+                        //             "City*",
+                        //             style: TextStyle(
+                        //               color: kPrimaryColor,
+                        //               fontSize: 16,
+                        //               fontWeight: FontWeight.w500,
+                        //             ),
+                        //           ),
+                        //           const SizedBox(height: 8.0),
+                        //           DropdownSearch(
+                        //             selectedItem: "Select City",
+                        //             mode: Mode.DIALOG,
+                        //             showSelectedItem: true,
+                        //             autoFocusSearchBox: true,
+                        //             showSearchBox: true,
+                        //             hint: 'Select City',
+                        //             dropdownSearchDecoration: InputDecoration(
+                        //                 enabledBorder: OutlineInputBorder(
+                        //                     borderRadius:
+                        //                         BorderRadius.circular(8),
+                        //                     borderSide: BorderSide(
+                        //                         color: Colors.grey,
+                        //                         width: 1)),
+                        //                 contentPadding:
+                        //                     EdgeInsets.only(left: 10)),
+                        //             items: citylistData.map((e) {
+                        //               return e['name'].toString();
+                        //             }).toList(),
+                        //             onChanged: (value) {
+                        //               if (value != "Select City") {
+                        //                 for (var element in citylistData) {
+                        //                   if (element['name'].toString() ==
+                        //                       value) {
+                        //                     setState(() {
+                        //                       initialcityname =
+                        //                           value.toString();
+                        //                       //initialstatename = null;
+                        //                       //initialcityname = null;
+                        //                       city_id =
+                        //                           element['id'].toString();
+                        //                       //_getStateData(element['id'].toString());
+                        //                     });
+                        //                   }
+                        //                 }
+                        //               } else {
+                        //                 showToast("Select City");
+                        //               }
+                        //             },
+                        //           ),
+                        //           const SizedBox(height: 10),
+                        //           const Text("Address",
+                        //               style: TextStyle(
+                        //                   color: kPrimaryColor,
+                        //                   fontSize: 16,
+                        //                   fontWeight: FontWeight.w500)),
+                        //           const SizedBox(height: 8.0),
+                        //           Container(
+                        //               decoration: BoxDecoration(
+                        //                   border: Border.all(
+                        //                       width: 1, color: Colors.grey),
+                        //                   borderRadius: BorderRadius.all(
+                        //                       Radius.circular(8))),
+                        //               child: Padding(
+                        //                 padding:
+                        //                     const EdgeInsets.only(left: 10.0),
+                        //                 child: TextField(
+                        //                   controller: address,
+                        //                   decoration: InputDecoration(
+                        //                     border: InputBorder.none,
+                        //                   ),
+                        //                 ),
+                        //               )),
+                        //           const SizedBox(height: 10),
+                        //           // const Text("Pincode",
+                        //           //     style: TextStyle(
+                        //           //         color: kPrimaryColor,
+                        //           //         fontSize: 16,
+                        //           //         fontWeight: FontWeight.w500)),
+                        //           // Container(
+                        //           //     decoration: BoxDecoration(
+                        //           //         border: Border.all(
+                        //           //             width: 1,
+                        //           //             color: Colors.deepOrangeAccent),
+                        //           //         borderRadius: BorderRadius.all(
+                        //           //             Radius.circular(12))),
+                        //           //     child: Padding(
+                        //           //       padding: const EdgeInsets.only(left: 10.0),
+                        //           //       child: TextField(
+                        //           //         keyboardType: TextInputType.number,
+                        //           //         inputFormatters: [
+                        //           //           FilteringTextInputFormatter.digitsOnly
+                        //           //         ],
+                        //           //         controller: pincode,
+                        //           //         maxLength: 6,
+                        //           //         decoration: InputDecoration(
+                        //           //             border: InputBorder.none,
+                        //           //             counterText: ""),
+                        //           //       ),
+                        //           //     )),
+                        //         ],
+                        //       ),
+                        //     )
+                        //   : const SizedBox(),
                         const SizedBox(height: 10),
                         // const Align(
                         //   alignment: Alignment.topLeft,
@@ -1416,8 +1702,9 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                     } else if (!sameAddress &&
                         address.text.toString().isEmpty) {
                       showToast("Please entere address");
+                    } else if (dropdownvalue == "Select Location") {
+                      showToast("Please Choose Location");
                     } else {
-                      print("object");
                       submitpostaddData(additionalimage);
                     }
                   },
@@ -1500,7 +1787,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
   Future<Map> submitpostaddData(List files) async {
     log(categoryid);
-    log("--->"+subcategoryid.toString());
+    log("--->" + subcategoryid.toString());
     log(description);
     log(title);
     log(phoneNumber);
@@ -1525,6 +1812,8 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
       setState(() {
         _loading = true;
       });
+
+      print("--->" + locationAddList.toString());
       var requestMulti =
           http.MultipartRequest('POST', Uri.parse(BASE_URL + postadstore));
 
@@ -1561,12 +1850,17 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
       requestMulti.fields["rent_type[3]"] = renttype[2]['type'].toString();
       requestMulti.fields["price[4]"] = renttype[3]['amount'].toString();
       requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
-      requestMulti.fields["address_type"] = "all_cities".toString();
+      requestMulti.fields["address_type"] =
+          dropdownvalue.toString() == "manually"
+              ? dropdownvalue
+              : "same_as_profile";
+      requestMulti.fields["location_data[0]"] =
+          locationAddList.isEmpty ? "" : locationAddList.toString();
 
       // if (sameAddress) {
       //   requestMulti.fields["address_type"] = "same_as_profile";
       // } else {
-      //   requestMulti.fields["address_type"] = dropdownvalue == "Manually"
+      //   requestMulti.fields["address_type"] = dropdownvalue == "manually"
       //       ? "manually"
       //       : dropdownvalue == "All Cities"
       //           ? "all_cities"
@@ -1759,6 +2053,11 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                 ])));
   }
 
+  String userLocation;
+  String country;
+  String state;
+  String city;
+
   Future _getprofileData() async {
     setState(() {
       _loading = true;
@@ -1790,6 +2089,12 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
         state_id = data['User']['state'].toString();
         city_id = data['User']['city'].toString();
         address.text = data['User']['address'].toString();
+        country = data['User']['country'].toString();
+        state = data['User']['state'].toString();
+        city = data['User']['city'].toString();
+
+        userLocation = "$country,$state,$city";
+
         // pincode.text = data['User']['pincode'].toString();
       });
     } else {

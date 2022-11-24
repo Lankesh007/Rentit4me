@@ -47,8 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _pwdvisible = true;
   void getToken() async {
-    String token = await FirebaseMessaging.instance.getToken();
-    print(token);
+     fcmToken = await FirebaseMessaging.instance.getToken();
+    log("fcm token--->$fcmToken");
   }
 
   double height = 0;
@@ -635,7 +635,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final body = {
       "email": email,
       "password": password,
-      "login_type": logintype
+      "login_type": logintype,
+      "app_token":fcmToken.toString(),
     };
     print(jsonEncode(body));
     print(BASE_URL + login);
@@ -656,6 +657,7 @@ class _LoginScreenState extends State<LoginScreen> {
         userId = result['Response']['id'];
         log("userId---->$userId");
         prefs.setString('userid', userId.toString());
+        prefs.setString("fcm_token", fcmToken.toString());
         prefs.setString('usertype',
             jsonDecode(response.body)['Response']['user_type'].toString());
         setState(() {

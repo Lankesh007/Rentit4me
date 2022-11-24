@@ -1,12 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
-const String BASE_URL = "https://dev.techstreet.in/rentit4me/public/api/";
-const String BASE_URL1 = "https://rentit4me.com/api/";
-const String devImage = "https://dev.techstreet.in/rentit4me/public/";
+const String BASE_URL1 = "https://dev.techstreet.in/rentit4me/public/api/";
+const String BASE_URL = "https://rentit4me.com/api/";
+const String sliderpath = "https://dev.techstreet.in/rentit4me/public/";
 
 const String imagepath =
     "https://rentit4me.com/assets/frontend/images/category/";
-const String sliderpath = "https://rentit4me.com/";
+const String devImage = "https://rentit4me.com/";
 //const String bannerpath = "https://rentit4me.com/";
 const String register = "signup";
 const String login = "login";
@@ -84,8 +84,8 @@ const String deleteproductUrl = "posted-ads/delete";
 const String viewoffersUrl = "view-offers";
 
 class Apis {
-  static const String BASE_URL1 = "https://rentit4me.com/api/";
-  static const String BASE_URL =
+  static const String BASE_URL = "https://rentit4me.com/api/";
+  static const String BASE_URL1 =
       "https://dev.techstreet.in/rentit4me/public/api/";
 
   static const String countryByNameApi = "${BASE_URL}fetch-country-by-name";
@@ -96,5 +96,7 @@ class Apis {
   static const String updtaeSearchLocationApi="${BASE_URL}update-search-location";
   static const String adViewApi="${BASE_URL}adview";
   static const String browseAdsApi="${BASE_URL}browse-ads";
+  static const String mapKey = 'AIzaSyAUr4dGAQi1XocxvHSQMh6SVVpT2jqU96o';
+
   
 }

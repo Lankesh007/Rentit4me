@@ -240,11 +240,11 @@ class _UserlocationScreenState extends State<UserlocationScreen> {
     Placemark place = placemarks[0];
     prefs.setString('country', place.country.toString());
     log(prefs.getString('country'));
-    prefs.setString('state', place.administrativeArea.toString());
-    prefs.setString('city', place.locality.toString());
-    log(prefs.getString('city'));
-    prefs.setString('countryIsoCode', place.isoCountryCode.toString());
-    log(prefs.getString('countryIsoCode'));
+    // prefs.setString('state', place.administrativeArea.toString());
+    // prefs.setString('city', place.locality.toString());
+    // log(prefs.getString('city'));
+    // prefs.setString('countryIsoCode', place.isoCountryCode.toString());
+    // log(prefs.getString('countryIsoCode'));
     prefs.setString('pinCode', place.postalCode.toString());
   
 

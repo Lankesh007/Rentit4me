@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable, no_logic_in_create_state
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -10,6 +12,7 @@ import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/offer_made_product_detail_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OffersScreen extends StatefulWidget {
   String productid;
@@ -333,15 +336,15 @@ class _OffersScreenState extends State<OffersScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Text(
-                                    "Renter : ${offerrecievedlist[index]['name']}",
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500)),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(left: 10.0),
+                              //   child: Text(
+                              //       "Renter : ${offerrecievedlist[index]['name']}",
+                              //       style: const TextStyle(
+                              //           color: Colors.black,
+                              //           fontSize: 14,
+                              //           fontWeight: FontWeight.w500)),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 2.0, right: 10.0),
@@ -360,11 +363,11 @@ class _OffersScreenState extends State<OffersScreen> {
                                                         OfferMadeProductDetailScreen(
                                                             postadid: offerrecievedlist[
                                                                         index][
-                                                                    'post_ad_id']
+                                                                    'id']
                                                                 .toString(),
                                                             offerid: offerrecievedlist[
                                                                         index][
-                                                                    'offer_request_id']
+                                                                    'id']
                                                                 .toString())));
                                           },
                                           child: Text(
@@ -702,17 +705,22 @@ class _OffersScreenState extends State<OffersScreen> {
   }
 
   Future<void> _offerrecievedlist() async {
+    SharedPreferences prefs=await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
+
     final body = {
-      "postad_id": productid,
+      "postad_id": widget.productid,
     };
+    log("bidy---->$body");
     var response = await http.post(Uri.parse(BASE_URL + viewoffersUrl),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     setState(() {
       _loading = false;
@@ -723,7 +731,7 @@ class _OffersScreenState extends State<OffersScreen> {
           showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         } else {
           setState(() {
-            offerrecievedlist.addAll(jsonDecode(response.body)['Response']);
+            offerrecievedlist.addAll(jsonDecode(response.body)['Response']['data']);
           });
         }
       } else {
@@ -764,7 +772,7 @@ class _OffersScreenState extends State<OffersScreen> {
       } else {
         setState(() {
           _loading = false;
-          offerrecievedlist.addAll(jsonDecode(response.body)['Response']);
+          offerrecievedlist.addAll(jsonDecode(response.body)['Response']['data']);
         });
       }
     } else {
@@ -794,7 +802,7 @@ class _OffersScreenState extends State<OffersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          offerrecievedlist.addAll(jsonDecode(response.body)['Response']);
+          offerrecievedlist.addAll(jsonDecode(response.body)['Response']['data']);
           _loading = false;
         });
       } else {

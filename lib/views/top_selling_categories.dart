@@ -259,28 +259,39 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int countryId = preferences.getInt('countryId');
     String cityId = preferences.getString('cityId');
+    String country = preferences.getString('country');
+    String state = preferences.getString('state');
+    String city = preferences.getString('city');
     log("cityId---->$cityId");
 
     var url = Apis.browseAdsApi;
-    var body = cityId == null || cityId == ""
-        ? {
-            "country": countryId.toString(),
-            "city": "",
-            "search": "",
-            "q": searchController.text.toString(),
-            "category": widget.category,
-          }
-        : {
-            "country": countryId.toString(),
-            "city": cityId.toString() == null
-                ? ""
-                : cityId.toString() == ""
-                    ? ""
-                    : cityId.toString(),
-            "search": "",
-            "q": searchController.text.toString(),
-            "category": widget.category,
-          };
+    // var body = cityId == null || cityId == ""
+    //     ? {
+    //         "country": countryId.toString(),
+    //         "city": "",
+    //         "search": "",
+    //         "q": searchController.text.toString(),
+    //         "category": widget.category,
+    //       }
+    //     : {
+    //         "country": countryId.toString(),
+    //         "city": cityId.toString() == null
+    //             ? ""
+    //             : cityId.toString() == ""
+    //                 ? ""
+    //                 : cityId.toString(),
+    //         "search": "",
+    //         "q": searchController.text.toString(),
+    //         "category": widget.category,
+    //       };
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "search": "",
+      "q": searchController.text.toString(),
+      "category": widget.category.toString(),
+    };
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     log("=====>$result");
@@ -309,23 +320,19 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
 
     int countryId = preferences.getInt('countryId');
     String cityId = preferences.getString('cityId');
+     String country = preferences.getString('country');
+    String state = preferences.getString('state');
+    String city = preferences.getString('city');
     log("cityId---->$cityId");
     var url = Apis.browseAdsApi;
-    var body = cityId == "" || cityId == null || cityId == "null"
-        ? {
-            "country": countryId.toString(),
-            // "city": cityId.toString(),
-            "search": "",
-            "q": searchController.text.toString(),
-            "category": widget.category.toString(),
-          }
-        : {
-            "country": countryId.toString(),
-            "city": cityId.toString(),
-            "search": "",
-            "q": searchController.text.toString(),
-            "category": widget.category.toString(),
-          };
+      var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "search": "",
+      "q": searchController.text.toString(),
+      "category": widget.category.toString(),
+    };
     log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);

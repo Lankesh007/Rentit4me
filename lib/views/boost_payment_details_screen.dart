@@ -12,7 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../network/api.dart';
 import '../themes/constant.dart';
 import '../widgets/api_helper.dart';
-import 'dashboard.dart';
 import 'home_screen.dart';
 
 class BoostPaymentDetailsScreen extends StatefulWidget {
@@ -38,7 +37,6 @@ class BoostPaymentDetailsScreen extends StatefulWidget {
 
 class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
   bool _loading = false;
-
   String package_id;
   String package_name;
   String plan_id;
@@ -496,7 +494,7 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
                                     couponApplied == true
                                         ? Text(
                                             "Hurrey You : "
-                                            "You got $currencyType $appliedDiscount discount"
+                                            "You got $appliedDiscount discount"
                                             "",
                                             style: TextStyle(
                                                 color: Colors.deepOrange),

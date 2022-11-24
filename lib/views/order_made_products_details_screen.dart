@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:html/parser.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -9,11 +13,14 @@ import 'package:intl/intl.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderMadeProductsDetailsScreen extends StatefulWidget {
   final String orderId;
-  const OrderMadeProductsDetailsScreen({this.orderId, Key key})
+  final String orderIdForFeedback;
+  const OrderMadeProductsDetailsScreen(
+      {this.orderId, this.orderIdForFeedback, Key key})
       : super(key: key);
 
   @override
@@ -28,6 +35,7 @@ class _OrderMadeProductsDetailsScreenState
   String postadid;
 
   bool _loading = false;
+  bool buttonLoader = false;
 
   //Detail Information
   String productimage;
@@ -58,6 +66,7 @@ class _OrderMadeProductsDetailsScreenState
   String status;
   String createdAt;
   String renttypeid;
+  double userRating = 0;
 
   String commprefs;
   bool showConversionCharges = false;
@@ -66,10 +75,8 @@ class _OrderMadeProductsDetailsScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print(postadid);
-    print(offerid);
+
     _getofferdetailproduct();
   }
 
@@ -120,13 +127,13 @@ class _OrderMadeProductsDetailsScreenState
                                         fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 10),
                                 productimage == null
-                                    ? Container(
+                                    ? SizedBox(
                                         height: 180,
                                         width: double.infinity,
                                         child: Image.asset(
                                             'assets/images/no_image.jpg'),
                                       )
-                                    : Container(
+                                    : SizedBox(
                                         height: 180,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
@@ -185,7 +192,116 @@ class _OrderMadeProductsDetailsScreenState
                                         color: Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+
+                                Text("Product Rating",
+                                    style: const TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 5),
+
+                                Row(
+                                  children: [
+                                    RatingBar.builder(
+                                      initialRating: productRating,
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemSize: 20.0,
+                                      itemPadding:
+                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Divider(),
+                                Text("User Rating",
+                                    style: const TextStyle(
+                                        color: kPrimaryColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700)),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                  child: RatingBar.builder(
+                                    initialRating: 0,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    itemSize: 20.0,
+                                    itemPadding:
+                                        EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      userRating = rating;
+                                      print(userRating);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 40,
+                                  width: size.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                  child: TextField(
+                                    controller: feedbackController,
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText:
+                                            "Give Your Feedback (Optional)"),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        if (userRating == 0) {
+                                          showToast("Please Give Rating !!");
+                                        } else {
+                                          giveRatingOrder();
+                                        }
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 40,
+                                        width: size.width * 0.4,
+                                        decoration: BoxDecoration(
+                                            color: ksecondaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        child: Text(
+                                          buttonLoader == true
+                                              ? "Please wait..."
+                                              : "Submit",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -213,7 +329,7 @@ class _OrderMadeProductsDetailsScreenState
                                   color: Color(0xFF012060),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text("Order Info",
                                           style: TextStyle(
                                               color: Colors.white,
@@ -417,10 +533,7 @@ class _OrderMadeProductsDetailsScreenState
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                    "Convenience Charge (" +
-                                                        convenience_charge
-                                                            .toString() +
-                                                        "%)",
+                                                    "Convenience Charge ($convenience_charge%)",
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 14)),
@@ -707,7 +820,7 @@ class _OrderMadeProductsDetailsScreenState
                                   color: Color(0xFF012060),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text("Rentor Info",
                                           style: TextStyle(
                                               color: Colors.white,
@@ -794,11 +907,15 @@ class _OrderMadeProductsDetailsScreenState
     );
   }
 
+  double productRating = 0;
+  final feedbackController = TextEditingController();
+  int orderIdForFeedback = 0;
   Future<void> _getofferdetailproduct() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
+    log("orderID--->${widget.orderId}");
 
     final body = {"order_id": widget.orderId};
     var response = await http.post(
@@ -829,6 +946,8 @@ class _OrderMadeProductsDetailsScreenState
         negotiable = data['Product Details']['negotiate'].toString();
         productqty = data['Product Details']['quantity'].toString();
         currency = data['Product Details']['currency'].toString();
+        productRating = data['Product Details']['review'];
+        orderIdForFeedback = data['Product Details']['id'];
 
         List temp = [];
         data['Product Details']['prices'].forEach((element) {
@@ -873,20 +992,52 @@ class _OrderMadeProductsDetailsScreenState
               (double.parse(totalrent) + double.parse(totalsecurity));
           finalamount = (double.parse(finalamount) - temp).toString();
 
-          print(finalamount + "finalamount");
+          print("${finalamount}finalamount");
         } else {
           showConversionCharges = true;
           var temp = (double.parse(convenience_charge) / 100) *
               (double.parse(totalrent) + double.parse(totalsecurity));
           convenience_chargeValue = temp.toString();
         }
-        print("showConversionCharges---" + showConversionCharges.toString());
+        print("showConversionCharges---$showConversionCharges");
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
 
+  Future giveRatingOrder() async {
+    setState(() {
+      buttonLoader = true;
+    });
+    var url = "${BASE_URL}order-rating";
+    var body = {
+      "product_rating": productRating.toString(),
+      "user_rating": userRating.toString(),
+      "orderid": widget.orderIdForFeedback.toString(),
+      "feedback": feedbackController.text.toString()
+    };
+
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      setState(() {
+        Navigator.pop(context, true);
+      });
+      showToast(result['ErrorMessage']);
+      setState(() {
+        buttonLoader = false;
+      });
+    } else {
+      showToast(result['ErrorMessage']);
+      setState(() {
+        buttonLoader = false;
+      });
+      setState(() {
+        buttonLoader = false;
+      });
+    }
+  }
   // String _getStatus(String statusvalue) {
   //   if (statusvalue == "13") {
   //     return "Complete";

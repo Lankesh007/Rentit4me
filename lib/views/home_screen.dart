@@ -80,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> categoryslug = [];
   String categoryslugname;
   List<dynamic> images = [];
-
+  String destinationLattitude = "";
+  String destinationLongitude = "";
   bool loader = false;
 
   List<dynamic> likedadproductlist = [];
@@ -89,6 +90,16 @@ class _HomeScreenState extends State<HomeScreen> {
   String todaydealsimage2;
   String todaydealsimage3;
   String todaydealsimage4;
+  String destilocality = "";
+  getAddressFromLatLongDesti(String latitude, longitude) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        double.parse(latitude), double.parse(longitude));
+    // log("placemark==> $placemarks");
+    Placemark place = placemarks[0];
+
+    destilocality = place.locality.toString();
+    log("=--->" + destilocality);
+  }
 
   String bottomimage1;
   String bottomimage2;
@@ -139,186 +150,378 @@ class _HomeScreenState extends State<HomeScreen> {
     return await Geolocator.getCurrentPosition();
   }
 
+  String locations = '';
+
   Future<void> _getAddress(value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Placemark> placemarks =
         await placemarkFromCoordinates(value.latitude, value.longitude);
     // print(placemarks);
     Placemark place = placemarks[0];
+
     setState(() {
+      prefs.setString('state', place.administrativeArea);
+      prefs.setString('city', place.locality);
+
       _loading = false;
-      findCity = true;
+      selectCity = true;
       address.text = place.locality.toString();
-      log("===>" + address.text);
-      getUpdtaeSearchLocation();
+      log("===>address" + address.text);
+      locationvalue = place.locality;
+
+      getLatestAdditionByUserLocation(
+          place.country, place.administrativeArea, place.locality);
+
       var snackBar =
           const SnackBar(content: Text('City Detected Successfully !!'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
   }
 
+  TextEditingController currentPoint = TextEditingController();
+  String locationUser;
+
+  String lati = '';
+  String land = '';
+  String locality;
+  getAddressFromLatLong() async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(double.parse(lati), double.parse(land));
+    // log("placemark==> $placemarks");
+    Placemark place = placemarks[0];
+    String name = place.name.toString();
+    String subLocality = place.subLocality.toString();
+    locality = place.locality.toString();
+    log("------>" + locality);
+    String administrativeArea = place.administrativeArea.toString();
+    String postalCode = place.postalCode.toString();
+    String country = place.country.toString();
+    String address =
+        "$name, $subLocality, $locality, $administrativeArea $postalCode, $country";
+
+    // log('Address ${Country.toString()}');
+    //setState(() {
+    currentPoint.text = address.toString();
+    // });
+  }
+
+  TextEditingController destinationPoint = TextEditingController();
+
   bool _check = false;
   Future<void> showMyDialog() async {
     return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        context: context,
+        barrierDismissible: true,
+        // user must tap button!
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, StateSetter setState) {
+              return AlertDialog(
+                content: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: SingleChildScrollView(
+                    child: Column(
                       children: [
-                        const Text("Provide Location",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold)),
-                        IconButton(
-                            onPressed: () async {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(Icons.close, color: Colors.grey))
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () async {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(Icons.location_on_outlined,
-                                color: Colors.grey)),
                         SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.55,
-                            // height: MediaQuery.of(context).size.height*0.03,
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Provide Location",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold)),
+                              IconButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.grey))
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.location_on_outlined,
+                                      color: Colors.grey)),
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.55,
+                                  // height: MediaQuery.of(context).size.height*0.03,
 
-                            child: const Text(
-                              "Please provide your delivery location to see products at nearby store",
-                              maxLines: 3,
-                            )),
+                                  child: const Text(
+                                    "Please provide your delivery location to see products at nearby store",
+                                    maxLines: 3,
+                                  )),
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  autoDetectCity = true;
+                                  findCity = true;
+                                  log('=---->$currentCity');
+                                  _determinePosition()
+                                      .then((value) => _getAddress(value));
+                                });
+                                // _determinePosition();
+
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 40,
+                                width: 230,
+                                decoration: BoxDecoration(
+                                    color: Colors.deepOrangeAccent,
+                                    borderRadius: BorderRadius.circular(40)),
+                                child: const Text("Detect My City",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text("or"),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.deepOrange),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextFormField(
+                              controller: destinationPoint,
+                              autofocus: true,
+                              keyboardType: TextInputType.text,
+                              showCursor: true,
+                              onChanged: getLocations,
+                              decoration: const InputDecoration(
+                                hintStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                border: InputBorder.none,
+                                hintText: "Search Location",
+                              ),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                              ),
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(
+                          height: 20,
+                        ),
+                        showData == false
+                            ? SizedBox()
+                            : SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: ListView.builder(
+                                  itemCount: placecounts.bitLength,
+                                  itemBuilder: (context, int index) {
+                                    return SizedBox(
+                                      height: 50,
+                                      child: ListTile(
+                                        onTap: () {
+                                          locations = places[index]
+                                              ['formatted_address'];
+                                          log("------>" + places.toString());
+                                          var lattitude = places[index]
+                                              ['geometry']['location']['lat'];
+                                          var longitude = places[index]
+                                              ['geometry']['location']['lng'];
+                                          log("Destination Point Address : ${locations.toString()}");
+                                          log("Destination Point Lattitude : ${lattitude.toString()}");
+                                          log("Destination Point Longitude : ${longitude.toString()}");
+                                          getAddressFromLatLongDesti(
+                                              lattitude.toString(),
+                                              longitude.toString());
+                                          showData = false;
+                                          destinationLattitude =
+                                              lattitude.toString();
+                                          destinationLongitude =
+                                              longitude.toString();
+                                          destinationPoint.text =
+                                              locations.toString();
+                                          setState(() {
+                                            locationUser = places[index]
+                                                ['formatted_address'];
+                                            log("location user ---> $locationUser");
+                                            places.clear();
+                                          });
+
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
+
+                                          Navigator.pop(context);
+                                          _determinePosition().then(
+                                              (value) => _getAddress(value));
+                                          getLatestAddition();
+                                          // _setLocation(locations, lattitude, longitude);
+                                        },
+                                        leading: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                100,
+                                              ),
+                                            ),
+                                            color: Colors.grey,
+                                          ),
+                                          child: const Icon(
+                                            Icons.location_on_outlined,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        title: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            places[index]['formatted_address'],
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+
+                        // Container(
+                        //   height: 40,
+                        //   width: MediaQuery.of(context).size.width * 0.6,
+                        //   decoration:
+                        //       BoxDecoration(borderRadius: BorderRadius.circular(100)),
+                        //   alignment: Alignment.center,
+                        //   child: TypeAheadField(
+                        //     //hideOnLoading: false,
+                        //     textFieldConfiguration: TextFieldConfiguration(
+                        //       onChanged: (value) {
+                        //         getLocations(value);
+                        //       },
+                        //       onTap: () {
+                        //         Scrollable.ensureVisible(scrollKey.currentContext,
+                        //             duration: const Duration(milliseconds: 1300));
+                        //       },
+
+                        //       //autofocus: false,
+                        //       controller: typeAheadController,
+
+                        //       decoration: InputDecoration(
+                        //           contentPadding:
+                        //               const EdgeInsets.only(left: 5.0, top: 5.0),
+                        //           hintText: locationvalue ?? countryName,
+                        //           border: const OutlineInputBorder()),
+                        //     ),
+                        //     suggestionsCallback: (pattern) async {
+                        //       return await getLocations(pattern);
+                        //     },
+                        //     itemBuilder: (context, suggestion) {
+                        //       return ListTile(
+                        //         title: Text(places[suggestion]['formatted_address'].toString(),style: TextStyle(color: Colors.black),),
+                        //         onTap: () async {
+                        //           autoDetectCity = false;
+                        //           SharedPreferences preferences =
+                        //               await SharedPreferences.getInstance();
+                        //           preferences.setString(
+                        //               'cityName', suggestion['name'].toString());
+                        //           preferences.setString(
+                        //               'cityId', suggestion['id'].toString());
+                        //           cityId = preferences.getString('cityId');
+                        //           log("cityId--->$cityId");
+
+                        //           setState(() {
+                        //             locationvalue = suggestion['name'].toString();
+                        //             selectCity = true;
+                        //             findCity = false;
+                        //           });
+                        //           Navigator.pop(context);
+                        //           getLatestAddition();
+                        //         },
+                        //       );
+                        //     },
+                        //     onSuggestionSelected: (suggestion) {
+                        //       typeAheadController.text = suggestion;
+                        //       setState(() {
+                        //         locationvalue = suggestion['name'];
+                        //       });
+                        //     },
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Column(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            autoDetectCity = true;
-                            findCity = true;
-                            log('=---->$currentCity');
-                            _determinePosition()
-                                .then((value) => _getAddress(value));
-                          });
-                          // _determinePosition();
+                ),
+              );
+            },
+          );
+        });
+  }
 
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 40,
-                          width: 230,
-                          decoration: BoxDecoration(
-                              color: Colors.deepOrangeAccent,
-                              borderRadius: BorderRadius.circular(40)),
-                          child: const Text("Detect My City",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Text("or"),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    height: 40,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                    alignment: Alignment.center,
-                    child: TypeAheadField(
-                      //hideOnLoading: false,
-                      textFieldConfiguration: TextFieldConfiguration(
-                        onChanged: _getAllCity,
-                        onTap: () {
-                          Scrollable.ensureVisible(scrollKey.currentContext,
-                              duration: const Duration(milliseconds: 1300));
-                        },
+  Future getLatestAdditionByUserLocation(
+      String country, String state, String city) async {
+    var url = BASE_URL + homeUrl;
+    var body = {
+      "country": country.toString(),
+      "state": state,
+      "city": city,
+      // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
+    };
+    log('body---->$body');
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    log("=====>q" + result.toString());
 
-                        //autofocus: false,
-                        controller: typeAheadController,
-
-                        decoration: InputDecoration(
-                            contentPadding:
-                                const EdgeInsets.only(left: 5.0, top: 5.0),
-                            hintText: locationvalue ?? countryName,
-                            border: const OutlineInputBorder()),
-                      ),
-                      suggestionsCallback: (pattern) async {
-                        return await _getAllCity(pattern);
-                      },
-                      itemBuilder: (context, suggestion) {
-                        return ListTile(
-                          title: Text(suggestion['name'].toString()),
-                          onTap: () async {
-                            autoDetectCity = false;
-                            SharedPreferences preferences =
-                                await SharedPreferences.getInstance();
-                            preferences.setString(
-                                'cityName', suggestion['name'].toString());
-                            preferences.setString(
-                                'cityId', suggestion['id'].toString());
-                            cityId = preferences.getString('cityId');
-                            log("cityId--->$cityId");
-
-                            setState(() {
-                              locationvalue = suggestion['name'].toString();
-                              selectCity = true;
-                              findCity = false;
-                            });
-                            Navigator.pop(context);
-                            getLatestAddition();
-                          },
-                        );
-                      },
-                      onSuggestionSelected: (suggestion) {
-                        typeAheadController.text = suggestion;
-                        setState(() {
-                          locationvalue = suggestion['name'];
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    if (result['ErrorCode'] == 0) {
+      var list = result['Response']['latest_ads'] as List;
+      setState(() {
+        latestAdditionList.clear();
+        var listdata =
+            list.map((e) => LatestAdditionsModel.fromJson(e)).toList();
+        latestAdditionList.addAll(listdata);
+        loader = false;
+      });
+    }
+    setState(() {
+      loader = false;
+    });
   }
 
   TextEditingController searchController = TextEditingController();
@@ -517,14 +720,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(Duration(milliseconds: 1500));
+            await Future.delayed(Duration(milliseconds: 1000));
             searchHeader = false;
             searchController.clear();
-            _getData();
+            // _getinitPref();
             getCounrtyId();
-            _getprofileData();
-            getLatestAddition();
-            _getlocationbyUserlocation();
           },
           child: SingleChildScrollView(
             child: _check == false
@@ -564,6 +764,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onPressed: () async {
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
+                                    String country = prefs.getString('country');
+                                    String state = prefs.getString('state');
+                                    String city = prefs.getString('city');
                                     if (searchController.text.isEmpty) {
                                       showToast("Please enter your search");
                                     } else {
@@ -571,30 +774,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                       FocusScope.of(context).unfocus();
                                       var response = await http.post(
                                           Uri.parse(BASE_URL + filterUrl),
-                                          body: prefs.getString('cityId') != ""
-                                              ? jsonEncode({
-                                                  // "search": "",
-                                                  "country": prefs
-                                                      .getInt('countryId')
-                                                      .toString(),
-                                                  // "state": prefs.getString('state'),
-                                                  "city":
-                                                      prefs.getString('cityId'),
-                                                  "search": "",
-                                                  "q": searchController.text
-                                                      .toString()
-                                                })
-                                              : jsonEncode({
-                                                  // "search": "",
-                                                  "country": prefs
-                                                      .getInt('countryId')
-                                                      .toString(),
-                                                  // "state": prefs.getString('state'),
-                                                  // "city": prefs.getString('cityId'),
-                                                  "search": "",
-                                                  "q": searchController.text
-                                                      .toString()
-                                                }),
+                                          body: jsonEncode({
+                                            "country": country.toString(),
+                                            "city": city == null || city == ""
+                                                ? ""
+                                                : city,
+                                            "state":
+                                                state == null || state == ""
+                                                    ? ""
+                                                    : state,
+                                            "search": "",
+                                            "q": searchController.text
+                                                .toString(),
+                                          }),
                                           headers: {
                                             "Accept": "application/json",
                                             'Content-Type': 'application/json',
@@ -1239,7 +1431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       Image.asset(
                                                           'assets/images/no_image.jpg'),
                                                   fit: BoxFit.cover,
-                                                  imageUrl: sliderpath +
+                                                  imageUrl: devImage +
                                                       likedadproductlist[index][
                                                               'upload_base_path']
                                                           .toString() +
@@ -1404,7 +1596,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      topsellingCategoreslist.isEmpty || topsellingCategoreslist.isEmpty
+                      topsellingCategoreslist.isEmpty ||
+                              topsellingCategoreslist.isEmpty
                           ? SizedBox()
                           : Container(
                               margin:
@@ -1653,7 +1846,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             Image.asset(
                                                                 'assets/images/no_image.jpg'),
                                                         fit: BoxFit.cover,
-                                                        imageUrl: sliderpath +
+                                                        imageUrl: devImage +
                                                             e['ads'][gridindex][
                                                                         'images'][0]
                                                                     [
@@ -1802,7 +1995,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             Image.asset(
                                                                 'assets/images/no_image.jpg'),
                                                         fit: BoxFit.cover,
-                                                        imageUrl: sliderpath +
+                                                        imageUrl: devImage +
                                                             e['ads'][gindex][
                                                                         'images'][0]
                                                                     [
@@ -1914,67 +2107,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget topSellingCategoriesWidget(TopSellingCatgegoriesModel item) {
     return InkWell(
       onTap: () async {
-        // showLaoding(context);
-        // mytopcategorieslistData
-        //     .forEach((element) {
-        //   if (element['title'].toString() ==
-        //       mytopcategoriesname[index]
-        //           .toString()) {
-        //     setState(() {
-        //       categoryslugname =
-        //           element['slug']
-        //               .toString();
-        //     });
-        //   }
-        // });
-        // // print(jsonEncode({
-        // //   "city_name": locationvalue,
-        // //   "category": categoryslugname,
-        // //   "exclude": "1",
-        // //   "search": ""
-        // // }));
-        // var response = await http.post(
-        //     Uri.parse(BASE_URL + filterUrl),
-        //     body: jsonEncode({
-        //       "city_id": cityId,
-        //       "category": categoryslugname,
-        //       "country_id": "113",
-        //       "search": ''
-        //     }),
-        //     headers: {
-        //       "Accept": "application/json",
-        //       'Content-Type':
-        //           'application/json'
-        //     });
-        // Navigator.of(context,
-        //         rootNavigator: true)
-        //     .pop();
-        // if (jsonDecode(response.body)[
-        //         'ErrorCode'] ==
-        //     0) {
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => UserfinderDataScreen(
-        //               getlocation:
-        //                   locationvalue,
-        //               getcategory:
-        //                   mytopcategoriesname[
-        //                           index]
-        //                       .toString(),
-        //               getcategoryslug:
-        //                   categoryslugname,
-        //               data: jsonDecode(
-        //                           response
-        //                               .body)[
-        //                       'Response']
-        //                   ['leads'])));
-        // } else {
-        //   Fluttertoast.showToast(
-        //       msg: "No result found",
-        //       gravity: ToastGravity.CENTER);
-        // }
-
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -2007,8 +2139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: kPrimaryColor,
                   borderRadius: BorderRadius.circular(15)),
               child: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl:  imagepath + item.image),
+                  fit: BoxFit.cover, imageUrl: imagepath + item.image),
             ),
           ),
         ),
@@ -2054,6 +2185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   item.title,
                   style: TextStyle(fontWeight: FontWeight.w600),
+                  maxLines: 1,
                 )),
             SizedBox(
               height: 20,
@@ -2091,36 +2223,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future getLatestAddition() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    int countryid;
-    String cityid;
+    String country;
+    String city;
+    String state;
 
     setState(() {
-      countryid = preferences.getInt('countryId');
-      cityid = preferences.getString('cityId');
+      country = preferences.getString('country');
+      city = preferences.getString('city');
+      state = preferences.getString('state');
 
-      log('cityId--->$cityid');
+      log('cityId--->$city');
 
       loader = true;
     });
 
     var url = BASE_URL + homeUrl;
-    var body = autoDetectCity == true
-        ? {
-            "country": countryid.toString(),
-            "city": getCityId == 0 ? "" : getCityId.toString(),
-            // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
-          }
-        : {
-            "country": countryid.toString(),
-            "city": cityid == null ? "" : cityid.toString(),
-            // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
-          };
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
+    };
     log('body---->$body');
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     log("=====>q" + result.toString());
 
-    if (result['ErrorMessage'] == 'success') {
+    if (result['ErrorCode'] == 0) {
       var list = result['Response']['latest_ads'] as List;
       setState(() {
         latestAdditionList.clear();
@@ -2178,7 +2307,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mytopcategories.clear();
 
         jsonDecode(response.body)['Response']['slider'].forEach((element) {
-          images.add(sliderpath + element['value'].toString());
+          images.add(devImage + element['value'].toString());
         });
 
         // jsonDecode(response.body)['Response']['cities'].forEach((element) {
@@ -2217,41 +2346,41 @@ class _HomeScreenState extends State<HomeScreen> {
         //     .addAll(jsonDecode(response.body)['Response']['You_may_also_like']);
 
         // print(jsonDecode(response.body)['Response']['today_special_deals']);
-        todaydealsimage1 = sliderpath +
+        todaydealsimage1 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_1']['value']
                 .toString();
-        todaydealsimage2 = sliderpath +
+        todaydealsimage2 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_2']['value']
                 .toString();
-        todaydealsimage3 = sliderpath +
+        todaydealsimage3 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_3']['value']
                 .toString();
-        todaydealsimage4 = sliderpath +
+        todaydealsimage4 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['mid_banner_4']['value']
                 .toString();
 
-        bottomimage1 = sliderpath +
+        bottomimage1 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_1']['value']
                 .toString();
-        bottomimage2 = sliderpath +
+        bottomimage2 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_2']['value']
                 .toString();
-        bottomimage3 = sliderpath +
+        bottomimage3 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_3']['value']
                 .toString();
-        bottomimage4 = sliderpath +
+        bottomimage4 = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_4']['value']
                 .toString();
 
-        bottomsingleimage = sliderpath +
+        bottomsingleimage = devImage +
             jsonDecode(response.body)['Response']['today_special_deals']
                     ['bottom_banner_single']['value']
                 .toString();
@@ -2277,7 +2406,7 @@ class _HomeScreenState extends State<HomeScreen> {
       var data = json.decode(response.body)['Response'];
       if (json.decode(response.body)['Response'] != null) {
         prefs.setString(
-            'profile', sliderpath + data['User']['avatar_path'].toString());
+            'profile', devImage + data['User']['avatar_path'].toString());
         prefs.setString('name', data['User']['name'].toString());
         prefs.setString('email', data['User']['email'].toString());
         prefs.setString('mobile', data['User']['mobile'].toString());
@@ -2311,6 +2440,26 @@ class _HomeScreenState extends State<HomeScreen> {
         currentCity = locationvalue;
       });
     }
+  }
+
+  bool showData = false;
+  bool getCurrentLocation = false;
+  List places = [];
+  var placecounts = 0;
+  Future getLocations(String locationName) async {
+    var kGoogleApiKey = Apis.mapKey.toString();
+    var url = Uri.tryParse(
+        "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" +
+            locationName +
+            "&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=" +
+            kGoogleApiKey);
+
+    http.Response res = await http.get(url);
+    setState(() {
+      showData = true;
+      places = json.decode(res.body)['candidates'];
+      placecounts = places.length;
+    });
   }
 
   Future<List> _getAllCity(String pattern) async {

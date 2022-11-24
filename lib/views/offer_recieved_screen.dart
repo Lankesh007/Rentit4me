@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, no_leading_underscores_for_local_identifiers, missing_required_param
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -45,6 +47,13 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
     // TODO: implement initState
     super.initState();
     _offerrecievedlist();
+    _getPrefsValue();
+  }
+
+  String userId;
+  _getPrefsValue() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    userId = preferences.getString("userid");
   }
 
   @override
@@ -244,6 +253,30 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                         separatorBuilder: (BuildContext context, int index) =>
                             const Divider(),
                         itemBuilder: (BuildContext context, int index) {
+                          double finalAmount;
+                          if (userId ==
+                              offerrecievedlist[index]['advertiser_id']
+                                  .toString()) {
+                            finalAmount = double.parse(
+                                    offerrecievedlist[index]['final_amount']) -
+                                double.parse(offerrecievedlist[index]
+                                    ['convenience_fee']);
+                          } else {
+                            finalAmount =
+                                offerrecievedlist[index]['final_amount'];
+                          }
+                          // String startDate =
+                          //     offerrecievedlist[index]['start_date'].toString();
+
+                          // String startDateFormat =
+                          //     DateFormat("yyyy-MM-dd – kk:mm a")
+                          //         .format(DateTime.parse(startDate.toString()));
+                          // String endDate =
+                          //     offerrecievedlist[index]['end_date'].toString();
+
+                          // String endDateFormat =
+                          //     DateFormat("yyyy-MM-dd – kk:mm a")
+                          //         .format(DateTime.parse(endDate.toString()));
                           return InkWell(
                             onTap: () {
                               // print(offerrecievedlist[index]);
@@ -422,7 +455,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              "Security: ${offerrecievedlist[index]['total_security']}"),
+                                              "Security: ${offerrecievedlist[index]['product_security']}"),
                                           Text(
                                               "Offer Price (INR): ${offerrecievedlist[index]['final_product_selling_amount'].toString()}"),
                                         ],
@@ -436,7 +469,9 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              "Convenience Fee: ${offerrecievedlist[index]['convenience_fee']}"),
+                                              "Rent Type: ${offerrecievedlist[index]['rent_type_name']}"),
+                                          // Text(
+                                          //     "Convenience Fee: ${offerrecievedlist[index]['rent_type']}"),
                                           Text(
                                               "Quantity: ${offerrecievedlist[index]['quantity']}"),
                                         ],
@@ -450,9 +485,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              "Total Rent (INR): ${offerrecievedlist[index]['final_amount']}"),
-                                          Text(
-                                              "Rent Type: ${offerrecievedlist[index]['rent_type_name']}"),
+                                              "Total Rent (INR): $finalAmount"),
                                         ],
                                       ),
                                     ),

@@ -21,7 +21,7 @@ class SearchProductModel {
   SearchProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     currency = json['currency'];
-    boostPackageStatus = json['boost_package_status']??"";
+    boostPackageStatus = json['boost_package_status'];
     title = json['title'];
     price = json['price'];
     rentTypeName = json['rent_type_name'];

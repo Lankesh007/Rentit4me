@@ -282,7 +282,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                               width: size.width * 0.65,
                                               child: Text(paymentlist[index]
                                                       ['payment_for']
-                                                  .toString()))
+                                                  .toString())),
+                                          paymentlist[index]['discount'] ==
+                                                      null ||
+                                                  paymentlist[index]
+                                                          ['discount'] ==
+                                                      "" ||
+                                                  paymentlist[index]
+                                                          ['discount'] ==
+                                                      "null"
+                                              ? SizedBox()
+                                              : Column(
+                                                  children: [
+                                                    Text("Discount : ",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500)),
+                                                    SizedBox(height: 4.0),
+                                                    SizedBox(
+                                                        width:
+                                                            size.width * 0.65,
+                                                        child: Text(
+                                                            paymentlist[index]
+                                                                    ['discount']
+                                                                .toString()))
+                                                  ],
+                                                ),
                                         ]),
                                     Column(children: [
                                       paymentlist[index]['status'].toString() ==

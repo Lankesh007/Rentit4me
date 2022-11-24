@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -66,10 +65,7 @@ class _OfferMadeProductDetailScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print(postadid);
-    print(offerid);
     _getofferdetailproduct();
   }
 
@@ -103,6 +99,7 @@ class _OfferMadeProductDetailScreenState
                   : Column(
                       children: [
                         // Text(widget.offerid),
+                        // HtmlParser(),  
                         // Text(widget.postadid),
 
                         Card(
@@ -120,13 +117,13 @@ class _OfferMadeProductDetailScreenState
                                         fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 10),
                                 productimage == null
-                                    ? Container(
+                                    ? SizedBox(
                                         height: 180,
                                         width: double.infinity,
                                         child: Image.asset(
                                             'assets/images/no_image.jpg'),
                                       )
-                                    : Container(
+                                    : SizedBox(
                                         height: 180,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
@@ -213,7 +210,7 @@ class _OfferMadeProductDetailScreenState
                                   color: Color(0xFF012060),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
-                                    children: [
+                                    children:const [
                                       Text("Offer Info",
                                           style: TextStyle(
                                               color: Colors.white,
@@ -417,10 +414,7 @@ class _OfferMadeProductDetailScreenState
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                    "Convenience Charge (" +
-                                                        convenience_charge
-                                                            .toString() +
-                                                        "%)",
+                                                    "Convenience Charge ($convenience_charge%)",
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 14)),
@@ -707,7 +701,7 @@ class _OfferMadeProductDetailScreenState
                                   color: Color(0xFF012060),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text("Rentor Info",
                                           style: TextStyle(
                                               color: Colors.white,
@@ -802,7 +796,6 @@ class _OfferMadeProductDetailScreenState
     print(jsonEncode({
       "offer_request_id--->": postadid,
     }));
-    print(BASE_URL + offerdetail);
     final body = {"offer_request_id": postadid};
     var response = await http.post(Uri.parse(BASE_URL + offerdetail),
         body: jsonEncode(body),

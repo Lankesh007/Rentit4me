@@ -602,6 +602,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                                 orderId: myorderslist[
                                                                         index][
                                                                     'order_id'],
+                                                                    orderIdForFeedback:myorderslist[
+                                                                        index][
+                                                                    'id'].toString() ,
                                                               )));
                                                 },
                                                 child: Container(

@@ -8,6 +8,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/order_detail_screen.dart';
+import 'package:rentit4me_new/views/order_made_products_details_screen.dart';
 import 'package:rentit4me_new/views/shiprocket_place_order.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -459,15 +460,10 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    OfferMadeProductDetailScreen(
-                                                        postadid:
-                                                            myactiveorderslist[
-                                                                    index]['id']
-                                                                .toString(),
-                                                        offerid:
-                                                            myactiveorderslist[
-                                                                    index]['id']
-                                                                .toString())),
+                                                    OrderMadeProductsDetailsScreen(
+                                                        orderId: myactiveorderslist[
+                                                                    index]['order_id']
+                                                                .toString(),))
                                           );
                                         },
                                         child: Container(

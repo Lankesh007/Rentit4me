@@ -35,8 +35,8 @@ class UserfinderDataScreen extends StatefulWidget {
       this.getcategoryslug,
       this.cityId,
       this.finalLocation,
-      this.data
-      ,this.search })
+      this.data,
+      this.search})
       : super(key: key);
 
   @override
@@ -363,29 +363,29 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                       //         )),
                       //   ),
                       // ),
-                    InkWell(
-                      onTap: () {
-                        loggedIn == true
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddlistingScreen()))
-                            : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
-                      },
-                      child: Container(
-                          alignment: Alignment.center,
-                          height: 40,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.orange[600],
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: Text("Post An Ad",
-                              style: TextStyle(fontSize: 15))),
-                    )
+                      InkWell(
+                        onTap: () {
+                          loggedIn == true
+                              ? Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddlistingScreen()))
+                              : Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
+                        },
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.orange[600],
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: Text("Post An Ad",
+                                style: TextStyle(fontSize: 15))),
+                      )
                     ],
                   )
                 : Text(widget.getcategory.toString(),
@@ -1411,33 +1411,29 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
     }
   }
 
- Future getHomeSearch() async {
+  Future getHomeSearch() async {
     setState(() {
       isLoading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int countryId = prefs.getInt('countryId');
+    String country = prefs.getString('country');
+    String state = prefs.getString('state');
+    String city = prefs.getString('city');
     String cityId = prefs.getString('cityId');
     var url = BASE_URL + filterUrl;
-    var body = cityId != ""
-        ? {
-            "city": widget.cityId.toString(),
-            "search": "",
-            "q":widget.search.toString() ,
-            "country": countryId.toString(),
-          }
-        : {
-            // "city": cityId.toString(),
-
-            "search": "",
-            "q": widget.search.toString(),
-            "country": countryId.toString(),
-          };
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "search": "",
+      "q": widget.search.toString(),
+    };
 
     log("body--->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
-    log(result.toString());
+    log("---->s $result");
 
     if (result['ErrorMessage'] == "success") {
       setState(() {
@@ -1451,38 +1447,34 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       isLoading = false;
     });
   }
-  
+
   Future getDataBySearching() async {
     setState(() {
       isLoading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String country = prefs.getString('country');
+    String state = prefs.getString('state');
+    String city = prefs.getString('city');
     int countryId = prefs.getInt('countryId');
     String cityId = prefs.getString('cityId');
     var url = BASE_URL + filterUrl;
-    var body = cityId != ""
-        ? {
-            "city": cityId.toString(),
-            "search": "",
-            "q": searchController.text,
-            "country": countryId.toString(),
-          }
-        : {
-            // "city": cityId.toString(),
-
-            "search": "",
-            "q": searchController.text,
-            "country": countryId.toString(),
-          };
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "search": "",
+      "q": searchController.text.toString(),
+    };
 
     log("body--->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     log(result.toString());
+    var list = result['Response']['leads']['data'] as List;
 
-    if (result['ErrorMessage'] == "success") {
+    if (result['ErrorCode'] == 0) {
       setState(() {
-        var list = result['Response']['leads']['data'] as List;
         searchProductList.clear();
         var listdata = list.map((e) => SearchProductModel.fromJson(e)).toList();
         searchProductList.addAll(listdata);
@@ -1492,10 +1484,10 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       isLoading = false;
     });
   }
-  
+
   bool loggedIn = false;
 
-    Future _getprofileData() async {
+  Future _getprofileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final body = {
       "id": prefs.getString('userid'),
@@ -1535,5 +1527,4 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
-
 }

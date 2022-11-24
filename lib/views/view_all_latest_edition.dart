@@ -37,7 +37,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
 
   @override
   void initState() {
-    getUpdtaeSearchLocation();
+    getLatestAddition();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -191,7 +191,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                   onChanged: (value) {
                     if (searchController.text.isEmpty) {
                       setState(() {
-                        getUpdtaeSearchLocation();
+                        getLatestAddition();
                       });
                     }
                   },
@@ -597,28 +597,21 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       loader = true;
     });
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    int countryId = preferences.getInt('countryId');
-    String cityId = preferences.getString('cityId');
-    log("cityId---->$cityId");
+    String country = preferences.getString('country');
+    String city = preferences.getString('city');
+    String state = preferences.getString('state');
+
+    log("cityId---->$city");
 
     var url = Apis.browseAdsApi;
-    var body = cityId == null || cityId == ""
-        ? {
-            "country": countryId.toString(),
-            "city": "",
-            "search": "",
-            "q": searchController.text.toString(),
-          }
-        : {
-            "country": countryId.toString(),
-            "city": cityId.toString() == null
-                ? ""
-                : cityId.toString() == ""
-                    ? ""
-                    : cityId.toString(),
-            "search": "",
-            "q": searchController.text.toString(),
-          };
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "search": "",
+      "q": searchController.text.toString(),
+      "page": getLastPage.toString(),
+    };
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     log("=====>$result");
@@ -642,11 +635,15 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
   Future getScrollingDetails(page) async {
     setState(() {});
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    int countryId = preferences.getInt('countryId');
+    String country = preferences.getString('country');
+    String state = preferences.getString('state');
+    String city = preferences.getString('city');
+
     var url = Apis.browseAdsApi;
     var body = {
-      "country": countryId.toString(),
-      "city": "",
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
       "search": "",
       "q": searchController.text.toString(),
       "page": getLastPage.toString(),
@@ -674,23 +671,19 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
 
     int countryId = preferences.getInt('countryId');
     String cityId = preferences.getString('cityId');
+    String country = preferences.getString('country');
+    String state = preferences.getString('state');
+    String city = preferences.getString('city');
     log("cityId---->$cityId");
     var url = Apis.browseAdsApi;
-    var body = cityId == "" || cityId == null || cityId == "null"
-        ? {
-            "country": countryId.toString(),
-            // "city": cityId.toString(),
-            "search": "",
-            "q": searchController.text.toString(),
-            // "page": getLastPage.toString(),
-          }
-        : {
-            "country": countryId.toString(),
-            "city": cityId.toString(),
-            "search": "",
-            "q": searchController.text.toString(),
-            // "page": getLastPage.toString(),
-          };
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "search": "",
+      "q": searchController.text.toString(),
+      "page": getLastPage.toString(),
+    };
     log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);

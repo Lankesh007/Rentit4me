@@ -203,7 +203,7 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           BoostPaymentDetailsScreen(
-                                        postadid: boostplanlist[index]['id']
+                                        postadid: widget.postid.toString() 
                                             .toString(),
                                         planName: boostplanlist[index]['name']
                                             .toString(),
@@ -212,7 +212,7 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
                                         duration: boostplanlist[index]
                                                 ['duration']
                                             .toString(),
-                                        boostPackageId: widget.postid,
+                                        boostPackageId:boostplanlist[index]['id'].toString(),
                                       ),
                                     ),
                                   );

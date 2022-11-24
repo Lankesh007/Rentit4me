@@ -77,6 +77,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
     // TODO: implement initState
     super.initState();
     offermadelistdata();
+    _getPrefsValue();
 
     initializeRazorpay();
   }
@@ -144,6 +145,11 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
     } catch (e) {
       log("test2-----$e");
     }
+  }
+    String userId;
+  _getPrefsValue() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    userId = preferences.getString("userid");
   }
 
   @override
@@ -336,6 +342,18 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                         separatorBuilder: (BuildContext context, int index) =>
                             const Divider(),
                         itemBuilder: (BuildContext context, int index) {
+                           double finalAmount;
+                          if (userId ==
+                              offermadelist[index]['advertiser_id']
+                                  .toString()) {
+                            finalAmount = double.parse(
+                                    offermadelist[index]['final_amount']) -
+                                double.parse(offermadelist[index]
+                                    ['convenience_fee']);
+                          } else {
+                            finalAmount =
+                                double.parse(offermadelist[index]['final_amount']);
+                          }
                           return InkWell(
                             onTap: () {
                               // showDialog(
@@ -506,7 +524,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              "Security: ${offermadelist[index]['total_security']}"),
+                                              "Security: ${offermadelist[index]['product_security']}"),
                                           Text(
                                               "Offer Price (INR): ${offermadelist[index]['final_product_selling_amount'].toString()}"),
                                         ],
@@ -519,10 +537,11 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                              "Convenience Fee: ${offermadelist[index]['convenience_fee']}"),
+                                     
                                           Text(
                                               "Quantity: ${offermadelist[index]['quantity']}"),
+                                               Text(
+                                              "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
                                         ],
                                       ),
                                     ),
@@ -534,9 +553,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              "Total Rent (INR): ${offermadelist[index]['final_amount']}"),
-                                          Text(
-                                              "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
+                                              "Total Rent (INR): $finalAmount"),
+                                         
                                         ],
                                       ),
                                     ),
@@ -581,7 +599,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                           OfferMadeProductDetailScreen(
                                                               postadid: offermadelist[
                                                                           index]
-                                                                      ['id']
+                                                                      ['id'] 
                                                                   .toString(),
                                                               offerid: offermadelist[
                                                                           index]

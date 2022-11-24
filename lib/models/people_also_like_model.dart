@@ -3,11 +3,11 @@ class PeopleAlsoMayLikeModel {
   String adId;
   int userId;
   int userType;
-  int boostPackageId;
-  String boostPackagePosition;
-  int boostPackageStatus;
-  String boostPackageFromDate;
-  String boostPackageToDate;
+  Null boostPackageId;
+  Null boostPackagePosition;
+  Null boostPackageStatus;
+  Null boostPackageFromDate;
+  Null boostPackageToDate;
   String title;
   String slug;
   String description;
@@ -21,9 +21,9 @@ class PeopleAlsoMayLikeModel {
   String mobileHidden;
   int review;
   Null tags;
-  int country;
-  int state;
-  int city;
+  String country;
+  String state;
+  String city;
   String preferences;
   String locationAvailability;
   String address;
@@ -155,7 +155,7 @@ class PeopleAlsoMayLikeModel {
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images.add(Images.fromJson(v));
+        images.add( Images.fromJson(v));
       });
     }
   }

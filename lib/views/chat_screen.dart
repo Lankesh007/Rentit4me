@@ -158,12 +158,14 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       _loading = true;
     });
-    final body = {"chat_user_id": prefs.getString('quickid')};
+    final body = {};
     var response = await http.post(Uri.parse(BASE_URL + chatuserlist),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+
         });
     //print(response.body);
     setState(() {
