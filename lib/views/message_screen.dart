@@ -8,6 +8,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/views/trusted_badge_payment_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MessageScreen extends StatefulWidget {
@@ -211,62 +212,78 @@ class _MessageScreenState extends State<MessageScreen> {
                 separatorBuilder: (BuildContext context, int index) =>
                     const Divider(),
                 itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    elevation: 4.0,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                  return InkWell(
+                    onTap: () {
+                      messageslist[index]['app_url'] == null ||
+                              messageslist[index]['app_url'] == "" ||
+                              messageslist[index]['app_url'] == "null"
+                          ? ""
+                          : Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) =>
+                                      TrustedBadgePaymentDetails())));
+                    },
+                    child: Card(
+                      elevation: 4.0,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Type",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(height: 5.0),
+                                        Text(
+                                            messageslist[index]['type']
+                                                .toString(),
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text("Created At",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(height: 5.0),
+                                        Text(
+                                            messageslist[index]['created_at']
+                                                .toString()
+                                                .split("T")[0]
+                                                .toString(),
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                      ],
+                                    ),
+                                  ]),
+                              const SizedBox(height: 10.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Type",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500)),
-                                      SizedBox(height: 5.0),
-                                      Text(
-                                          messageslist[index]['type']
-                                              .toString(),
-                                          style: TextStyle(color: Colors.black))
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text("Created At",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500)),
-                                      SizedBox(height: 5.0),
-                                      Text(
-                                          messageslist[index]['created_at']
-                                              .toString()
-                                              .split("T")[0]
-                                              .toString(),
-                                          style: TextStyle(color: Colors.black))
-                                    ],
-                                  ),
-                                ]),
-                            const SizedBox(height: 10.0),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 5.0),
-                                Html(
-                                    data: messageslist[index]['message']
-                                        .toString()),
-                                Text("", style: TextStyle(color: Colors.black))
-                              ],
-                            )
-                          ]),
+                                  const SizedBox(height: 5.0),
+                                  Html(
+                                      data: messageslist[index]['message']
+                                          .toString()),
+                                  Text(messageslist[index]['app_url'] ?? "",
+                                      style: TextStyle(color: Colors.blue[800]))
+                                ],
+                              )
+                            ]),
+                      ),
                     ),
                   );
                 },

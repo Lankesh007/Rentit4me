@@ -8,11 +8,15 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:rentit4me_new/models/cities_moidel.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +32,117 @@ class ProductEditScreen extends StatefulWidget {
 }
 
 class _ProductEditScreenState extends State<ProductEditScreen> {
+  List<CitiesModel>citiesList=[];
+  String currentLattitude = "";
+  String currentLongitude = "";
+  TextEditingController currentPoint = TextEditingController();
+  // Destination Loctaion Controller
+  String destinationLattitude = "";
+  String destinationLongitude = "";
+  TextEditingController destinationPoint = TextEditingController();
+  bool showData = false;
+  bool getCurrentLocation = false;
+  List places;
+  var placecounts = 0;
+
+  bool changeLocation = false;
+
+  LatLng _center;
+  Position currentLocation;
+  String location = 'Null, Press Button';
+  String lati = '';
+  String land = '';
+  LatLng pinPosition;
+
+  Future<Position> locateUser() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    } else if (permission == LocationPermission.whileInUse) {
+    } else if (permission == LocationPermission.always) {
+    } else if (permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    } else {
+      throw Exception('Error');
+    }
+    return Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  getUserLocation(BuildContext context) async {
+    currentLocation = await locateUser();
+    // onLoading(context);
+    setState(() {
+      _center = LatLng(currentLocation.latitude, currentLocation.longitude);
+      lati = currentLocation.latitude.toString();
+      land = currentLocation.longitude.toString();
+      pinPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
+      currentLattitude = lati.toString();
+      currentLongitude = land.toString();
+      getAddressFromLatLong();
+      getCurrentLocation = true;
+    });
+    // Navigator.pop(context);
+    // print('latitude${currentLocation.latitude}');
+    // print('longitude${currentLocation.longitude}');
+  }
+
+  getAddressFromLatLong() async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(double.parse(lati), double.parse(land));
+    // log("placemark==> $placemarks");
+    Placemark place = placemarks[0];
+    String name = place.name.toString();
+    String subLocality = place.subLocality.toString();
+    locality = place.locality.toString();
+    log("------>$locality");
+    String administrativeArea = place.administrativeArea.toString();
+    String postalCode = place.postalCode.toString();
+    String country = place.country.toString();
+    String address =
+        "$name, $subLocality, $locality, $administrativeArea $postalCode, $country";
+
+    // log('Address ${Country.toString()}');
+    //setState(() {
+    currentPoint.text = address.toString();
+    // });
+  }
+
+  String locality = '';
+  String destilocality = "";
+  getAddressFromLatLongDesti(String latitude, longitude) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        double.parse(latitude), double.parse(longitude));
+    // log("placemark==> $placemarks");
+    Placemark place = placemarks[0];
+
+    destilocality = place.locality.toString();
+    log("=--->$destilocality");
+  }
+
+  Future getLocations(String locationName) async {
+    var kGoogleApiKey = Apis.mapKey.toString();
+    var url = Uri.tryParse(
+        "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=$locationName&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=$kGoogleApiKey");
+
+    http.Response res = await http.get(url);
+    setState(() {
+      showData = true;
+      places = json.decode(res.body)['candidates'];
+      placecounts = places.length;
+    });
+  }
+
+  bool addlocation = false;
+  String categoryid;
+  String subcategoryid;
+  String dropdownvalue = 'Select Location';
+
+  // List of items in our dropdown menu
+  var items = ['Select Location', 'Same As Profile', 'manually'];
+  String locations = '';
+
   String productid;
   _ProductEditScreenState(this.productid);
 
@@ -89,8 +204,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
   String initiacatlvalue;
   String initialsubcatvalue;
-  String categoryid;
-  String subcategoryid;
+
   TextEditingController securityamount = TextEditingController();
 
   List renttype = [
@@ -115,6 +229,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       "enable": true,
     },
   ];
+  List locationAddList = [];
 
   bool sameAddress = false;
 
@@ -154,6 +269,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
+  String getLocation;
 
   List<dynamic> countrylistData = [];
   String initialcountryname;
@@ -240,6 +356,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
+
+  String locationUser;
 
   @override
   void initState() {
@@ -583,8 +701,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                       onChanged: (data) {
                                         setState(() {
                                           initialsubcatvalue = data.toString();
-                                          initialsubcatvalue=null;
-                                          initialsubcatvalue=data.toString();
+                                          initialsubcatvalue = null;
+                                          initialsubcatvalue = data.toString();
                                           subcategoryid = data.toString();
                                           _getSubCategories(data);
                                         });
@@ -674,6 +792,385 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               ),
                             ),
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Location *",
+                                  style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      changeLocation = !changeLocation;
+                                    });
+                                  },
+                                  child: Text(
+                                    "Change",
+                                    style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+
+                          changeLocation == false
+                              ? Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: double.infinity,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child:Container(
+                                        alignment:Alignment.center,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: citiesList.length,
+                                          itemBuilder: ((context, index) {
+                                            var item=citiesList[index];
+                                          return Container(
+                                                                                   alignment:Alignment.center,
+
+                                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                                            child:Text("${item.name},${item.stateId},${item.countryId}") ,
+                                          );
+                                        }),
+                                      ))))
+                              : Column(
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: FormField(
+                                        builder: (FormFieldState state) {
+                                          return InputDecorator(
+                                            decoration: InputDecoration(
+                                                fillColor: Colors.white,
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
+                                                filled: true,
+                                                // labelText: "Select",
+                                                isDense: true,
+                                                contentPadding:
+                                                    EdgeInsets.all(10),
+                                                border: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.deepOrange),
+                                                )),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButton(
+                                                // Initial Value
+
+                                                value: dropdownvalue,
+
+                                                // Down Arrow Icon
+                                                icon: const Icon(
+                                                    Icons.keyboard_arrow_down),
+
+                                                // Array list of items
+                                                items:
+                                                    items.map((String items) {
+                                                  return DropdownMenuItem(
+                                                    value: items,
+                                                    child: Text(items),
+                                                  );
+                                                }).toList(),
+                                                // After selecting the desired option,it will
+                                                // change button value to selected value
+                                                onChanged: (String newValue) {
+                                                  setState(() {
+                                                    dropdownvalue = newValue;
+                                                    log("====>$dropdownvalue");
+                                                    if (dropdownvalue ==
+                                                        "manually") {
+                                                      sameAddress = false;
+                                                      if (sameAddress ==
+                                                          false) {
+                                                        _getprofileData();
+                                                      }
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    dropdownvalue == "manually"
+                                        ? Column(
+                                            children: [
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Container(
+                                                alignment: Alignment.center,
+                                                height: 50,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.9,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.grey),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Container(
+                                                  margin: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 10),
+                                                  child: TextFormField(
+                                                    controller:
+                                                        destinationPoint,
+                                                    autofocus: true,
+                                                    keyboardType:
+                                                        TextInputType.text,
+                                                    showCursor: true,
+                                                    onChanged: (value) {
+                                                      getLocations(value);
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      suffixIcon: IconButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              locationAddList.add(
+                                                                  locationUser);
+                                                              log(locationAddList
+                                                                  .toString());
+                                                              showToast(
+                                                                  "Added Sucessfully !!");
+
+                                                              destinationPoint
+                                                                  .clear();
+                                                            });
+                                                          },
+                                                          icon: Icon(Icons.add,
+                                                              color:
+                                                                  Colors.blue)),
+                                                      hintStyle: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                      border: InputBorder.none,
+                                                      hintText:
+                                                          "Search Location",
+                                                    ),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                    ),
+                                                    maxLines: 1,
+                                                  ),
+                                                ),
+                                              ),
+                                              showData == false
+                                                  ? SizedBox()
+                                                  : SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.3,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.9,
+                                                      child: ListView.builder(
+                                                        itemCount: placecounts,
+                                                        itemBuilder: (
+                                                          BuildContext context,
+                                                          int index,
+                                                        ) {
+                                                          return SizedBox(
+                                                            height: 50,
+                                                            child: ListTile(
+                                                              onTap: () {
+                                                                locations = places[
+                                                                        index][
+                                                                    'formatted_address'];
+                                                                log("------>$places");
+                                                                var lattitude =
+                                                                    places[index]
+                                                                            [
+                                                                            'geometry']
+                                                                        [
+                                                                        'location']['lat'];
+                                                                var longitude =
+                                                                    places[index]
+                                                                            [
+                                                                            'geometry']
+                                                                        [
+                                                                        'location']['lng'];
+                                                                log("Destination Point Address : ${locations.toString()}");
+                                                                log("Destination Point Lattitude : ${lattitude.toString()}");
+                                                                log("Destination Point Longitude : ${longitude.toString()}");
+                                                                getAddressFromLatLongDesti(
+                                                                    lattitude
+                                                                        .toString(),
+                                                                    longitude
+                                                                        .toString());
+                                                                showData =
+                                                                    false;
+                                                                destinationLattitude =
+                                                                    lattitude
+                                                                        .toString();
+                                                                destinationLongitude =
+                                                                    longitude
+                                                                        .toString();
+                                                                destinationPoint
+                                                                        .text =
+                                                                    locations
+                                                                        .toString();
+                                                                setState(() {
+                                                                  locationUser =
+                                                                      places[index]
+                                                                          [
+                                                                          'formatted_address'];
+                                                                  log("location user ---> $locationUser");
+
+                                                                  places
+                                                                      .clear();
+                                                                });
+                                                                FocusScope.of(
+                                                                        context)
+                                                                    .requestFocus(
+                                                                        FocusNode());
+                                                                // _setLocation(locations, lattitude, longitude);
+                                                              },
+                                                              leading:
+                                                                  Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(5),
+                                                                decoration:
+                                                                    const BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .all(
+                                                                    Radius
+                                                                        .circular(
+                                                                      100,
+                                                                    ),
+                                                                  ),
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                                child:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .location_on_outlined,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                              title: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            8.0),
+                                                                child: Text(
+                                                                  places[index][
+                                                                      'formatted_address'],
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.2,
+                                                child: ListView.builder(
+                                                    itemCount:
+                                                        locationAddList.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                          getLocation= locationAddList[
+                                                                  index];
+                                                      return Container(
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 0),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              locationAddList[
+                                                                  index],
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 16),
+                                                            ),
+                                                            IconButton(
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    locationAddList
+                                                                        .remove(
+                                                                            locationAddList[index]);
+                                                                    showToast(
+                                                                        "Removed Sucessfully !!");
+                                                                  });
+                                                                },
+                                                                icon: Icon(
+                                                                  Icons.close,
+                                                                  size: 18,
+                                                                  color: Colors
+                                                                      .red,
+                                                                ))
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }),
+                                              ),
+                                            ],
+                                          )
+                                        : SizedBox(
+                                            height: 20,
+                                          ),
+                                  ],
+                                ),
+                          // SizedBox(height: 10),
+
                           // SizedBox(height: 10),
                           // const Align(
                           //   alignment: Alignment.topLeft,
@@ -1604,11 +2101,17 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                   SizedBox(height: 20),
                   InkWell(
                     onTap: () {
-                      if (changeCategory == true &&
-                          initiacatlvalue == null||initiacatlvalue==""||initiacatlvalue=="null") {
+                      if (changeCategory == true && initiacatlvalue == null ||
+                          initiacatlvalue == "" ||
+                          initiacatlvalue == "null") {
                         showToast("Please select  category");
+                      } else if (changeLocation == true &&
+                          locationAddList.isEmpty) {
+                        showToast("Please choose Location");
                       } else if (changeCategory == true &&
-                          initialsubcatvalue == null||initialsubcatvalue==""||initialsubcatvalue=="null") {
+                              initialsubcatvalue == null ||
+                          initialsubcatvalue == "" ||
+                          initialsubcatvalue == "null") {
                         showToast("Please select sub category");
                       } else {
                         if (form.currentState.validate()) {
@@ -1653,6 +2156,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   String categoryId = '';
   String subCategoryId;
   String subCategoryTitle;
+  String userAddress;
 
   int qunatity = 0;
   Future _getpreproductedit(String productid) async {
@@ -1671,6 +2175,8 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
+
+      var list=data['posted_ad']['cities']as List;
       setState(() {
         productname.text = data['posted_ad']['title'].toString();
         locationAviablity =
@@ -1693,6 +2199,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
         categoryTitle = data['posted_ad']['category']['title'].toString();
         categoryId = data['posted_ad']['category']['id'].toString();
+        userAddress = data['posted_ad']['address'].toString();
 
         // initiacatlvalue = categoryTitle;
         log("ini0----->$categoryTitle");
@@ -1795,6 +2302,12 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         //   city_id = data['posted_ad'][0]['city'].toString();
         //   address.text = data['posted_ad'][0]['address'].toString();
         // }
+
+   citiesList.clear();
+        var listdata =
+            list.map((e) => CitiesModel.fromJson(e)).toList();
+        citiesList.addAll(listdata);
+        
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -2069,15 +2582,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         requestMulti.fields["price[4]"] = renttype[3]['amount'].toString();
         requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
         requestMulti.fields["files"] = renttype[3]['type'].toString();
-        if (sameAddress) {
-          requestMulti.fields["address_type"] = "all_cities";
-        } else {
-          requestMulti.fields["address_type"] = "all_cities";
-          // requestMulti.fields["country"] = country_id.toString();
-          // requestMulti.fields["state"] = state_id.toString();
-          // requestMulti.fields["city"] = city_id.toString();
-          requestMulti.fields["address"] = address.text.toString();
-        }
+        requestMulti.fields["address_type"] =
+            changeLocation == false ? "same_as_profile" : "manually";
+        requestMulti.fields["location_data[0]"] =
+            changeLocation == false ? userAddress : locationAddList.toString();
+
         requestMulti.fields["old_images"] = oldImages.join(",").toString();
         print(jsonEncode(requestMulti.fields));
 

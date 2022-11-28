@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, library_private_types_in_public_api
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
@@ -88,7 +89,7 @@ class _ConversationState extends State<Conversation> {
     try {
       await QB.chat.connect(userId, password);
       QB.chat.isConnected().then((value) {
-        print(value.toString() + " ----tes");
+        print("$value ----tes");
       });
       createDialog();
     } on PlatformException catch (e) {
@@ -112,12 +113,6 @@ class _ConversationState extends State<Conversation> {
   //     // Some error occurred, look at the exception message for more details
   //   }
   // }
-
-  void dispose() {
-    //...
-    super.dispose();
-    //...
-  }
 
   @override
   void initState() {
@@ -159,12 +154,13 @@ class _ConversationState extends State<Conversation> {
       "recipient_id": queryId,
       "sender_id": prefs.getString('userquickid')
     };
-    print(jsonEncode(body));
+    log(jsonEncode(body));
     var response = await http.post(Uri.parse(BASE_URL + createdialogid),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
@@ -194,6 +190,12 @@ class _ConversationState extends State<Conversation> {
   //     // Some error occurred, look at the exception message for more details
   //   }
   // }
+  @override
+  void dispose() {
+    //...
+    super.dispose();
+    //...
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -284,8 +286,9 @@ class _ConversationState extends State<Conversation> {
                                                         Widget child,
                                                         ImageChunkEvent
                                                             loadingProgress) {
-                                                  if (loadingProgress == null)
+                                                  if (loadingProgress == null) {
                                                     return child;
+                                                  }
                                                   return Center(
                                                     child:
                                                         CircularProgressIndicator(
@@ -571,7 +574,8 @@ class _ConversationState extends State<Conversation> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       _loading = false;

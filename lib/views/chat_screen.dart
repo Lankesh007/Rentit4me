@@ -1,10 +1,12 @@
 // ignore_for_file: use_build_context_synchronously, unused_local_variable
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/views/conversation.dart';
@@ -27,7 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _getchatUsers();
+    getProfile().then((value) => _getchatUsers());
 
     //getUsers();
   }
@@ -62,89 +64,104 @@ class _ChatScreenState extends State<ChatScreen> {
               Expanded(
                   child: RefreshIndicator(
                 onRefresh: _getchatUsers,
-                child: ListView.separated(
-                  itemCount: userlist.length,
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        userlist[index]['occupants_ids'].forEach((element) {
-                          if (element.toString() !=
-                              prefs.getString('quickid')) {
-                            setState(() {
-                              queryId = element.toString();
-                            });
-                          }
-                        });
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    Conversation(queryId: queryId)));
-                      },
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 45,
-                                width: 45,
-                                alignment: Alignment.center,
-                                decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(22.0)),
-                                    color: kPrimaryColor
-                                    //color: Colors.primaries[_random.nextInt(Colors.primaries.length)][_random.nextInt(9) * 100] == Colors.white ? Colors.red: Colors.primaries[_random.nextInt(Colors.primaries.length)][_random.nextInt(9) * 100],
+                child: userlist.isEmpty
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              alignment: Alignment.center,
+                              child: Text("No data Found !!")),
+                        ],
+                      )
+                    : ListView.separated(
+                        itemCount: userlist.length,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              userlist[index]['occupants_ids']
+                                  .forEach((element) {
+                                if (element.toString() !=
+                                    prefs.getString('quickid')) {
+                                  setState(() {
+                                    queryId = element.toString();
+                                  });
+                                }
+                              });
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Conversation(queryId: queryId)));
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 45,
+                                      width: 45,
+                                      alignment: Alignment.center,
+                                      decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(22.0)),
+                                          color: kPrimaryColor
+                                          //color: Colors.primaries[_random.nextInt(Colors.primaries.length)][_random.nextInt(9) * 100] == Colors.white ? Colors.red: Colors.primaries[_random.nextInt(Colors.primaries.length)][_random.nextInt(9) * 100],
+                                          ),
+                                      child: Text(
+                                          userlist[index]['name']
+                                              .toString()[0]
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18)),
                                     ),
-                                child: Text(
-                                    userlist[index]['name']
-                                        .toString()[0]
-                                        .toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18)),
+                                    SizedBox(width: 8.0),
+                                    Expanded(
+                                        child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(userlist[index]['name'].toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(height: 5.0),
+                                        userlist[index]['last_message'] == null
+                                            ? SizedBox()
+                                            : Text(
+                                                userlist[index]['last_message']
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    color: Colors.black))
+                                      ],
+                                    )),
+                                    SizedBox(width: 3.0),
+                                    userlist[index]['created_at'] == null
+                                        ? SizedBox()
+                                        : Text(
+                                            userlist[index]['created_at']
+                                                .toString()
+                                                .split('T')[0]
+                                                .toString(),
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                  ],
+                                ),
                               ),
-                              SizedBox(width: 8.0),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(userlist[index]['name'].toString(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500)),
-                                  SizedBox(height: 5.0),
-                                  userlist[index]['last_message'] == null
-                                      ? SizedBox()
-                                      : Text(
-                                          userlist[index]['last_message']
-                                              .toString(),
-                                          style: TextStyle(color: Colors.black))
-                                ],
-                              )),
-                              SizedBox(width: 3.0),
-                              userlist[index]['created_at'] == null
-                                  ? SizedBox()
-                                  : Text(
-                                      userlist[index]['created_at']
-                                          .toString()
-                                          .split('T')[0]
-                                          .toString(),
-                                      style: TextStyle(color: Colors.black))
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ))
             ],
           ),
@@ -153,31 +170,37 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Future _getchatUsers() async {
+  String quickBoxId;
+  Future getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var url = BASE_URL + profileUrl;
+    var body = {
+      "id": prefs.getString("userid"),
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      quickBoxId = result['Response']['User']['quickblox_id'];
+      log("quickboxid--->$quickBoxId");
+    }
+  }
+
+  Future _getchatUsers() async {
     setState(() {
       _loading = true;
     });
-    final body = {};
-    var response = await http.post(Uri.parse(BASE_URL + chatuserlist),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-
-        });
-    //print(response.body);
+    var url = BASE_URL + chatuserlist;
+    var body = {
+      "chat_user_id": quickBoxId.toString(),
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      userlist.addAll(result['Response']['items']);
+    }
     setState(() {
       _loading = false;
     });
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body)['Response'];
-      setState(() {
-        userlist.addAll(data['items']);
-      });
-    } else {
-      throw Exception('Failed to get data due to ${response.body}');
-    }
   }
 }

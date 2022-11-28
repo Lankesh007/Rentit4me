@@ -162,6 +162,41 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       prefs.setString('state', place.administrativeArea);
       prefs.setString('city', place.locality);
+      prefs.setString('country', place.country);
+
+      log("city-->${prefs.getString("city")}");
+      log("city-->${prefs.getString("state")}");
+      log("country-->${prefs.getString("country")}");
+
+      _loading = false;
+      selectCity = true;
+      address.text = place.locality.toString();
+      log("===>address" + address.text);
+      locationvalue = place.locality;
+
+      getLatestAdditionByUserLocation(
+          place.country, place.administrativeArea, place.locality);
+
+      var snackBar =
+          const SnackBar(content: Text('City Detected Successfully !!'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
+  }
+
+  Future<void> _getAddressFromManual(lati, long) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Placemark> placemarks = await placemarkFromCoordinates(lati, long);
+    // print(placemarks);
+    Placemark place = placemarks[0];
+
+    setState(() {
+      prefs.setString('state', place.administrativeArea);
+      prefs.setString('city', place.locality);
+      prefs.setString('country', place.country);
+
+      log("city-->${prefs.getString("city")}");
+      log("city-->${prefs.getString("state")}");
+      log("country-->${prefs.getString("country")}");
 
       _loading = false;
       selectCity = true;
@@ -208,167 +243,165 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController destinationPoint = TextEditingController();
 
   bool _check = false;
-  Future<void> showMyDialog() async {
-    return showDialog<void>(
+  Future<void> showDilogBoxForLocation(BuildContext context) async {
+    return await showDialog(
         context: context,
-        barrierDismissible: true,
-        // user must tap button!
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (context, StateSetter setState) {
-              return AlertDialog(
-                content: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Provide Location",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold)),
-                              IconButton(
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(Icons.close,
-                                      color: Colors.grey))
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(Icons.location_on_outlined,
-                                      color: Colors.grey)),
-                              SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.55,
-                                  // height: MediaQuery.of(context).size.height*0.03,
-
-                                  child: const Text(
-                                    "Please provide your delivery location to see products at nearby store",
-                                    maxLines: 3,
-                                  )),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Column(
+        // user must tap button! try kar okk nahi hua ok ruk
+        builder: (context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setStates) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  autoDetectCity = true;
-                                  findCity = true;
-                                  log('=---->$currentCity');
-                                  _determinePosition()
-                                      .then((value) => _getAddress(value));
-                                });
-                                // _determinePosition();
-
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 40,
-                                width: 230,
-                                decoration: BoxDecoration(
-                                    color: Colors.deepOrangeAccent,
-                                    borderRadius: BorderRadius.circular(40)),
-                                child: const Text("Detect My City",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text("or"),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const Text("Provide Location",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold)),
+                            IconButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                icon:
+                                    const Icon(Icons.close, color: Colors.grey))
                           ],
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          height: 50,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.deepOrange),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            child: TextFormField(
-                              controller: destinationPoint,
-                              autofocus: true,
-                              keyboardType: TextInputType.text,
-                              showCursor: true,
-                              onChanged: getLocations,
-                              decoration: const InputDecoration(
-                                hintStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                border: InputBorder.none,
-                                hintText: "Search Location",
-                              ),
-                              style: const TextStyle(
+                      ),
+                      const Divider(
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(Icons.location_on_outlined,
+                                    color: Colors.grey)),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.55,
+                                // height: MediaQuery.of(context).size.height*0.03,
+
+                                child: const Text(
+                                  "Please provide your delivery location to see products at nearby store",
+                                  maxLines: 3,
+                                )),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setStates(() {
+                                autoDetectCity = true;
+                                findCity = true;
+                                log('=---->$currentCity');
+                                _determinePosition()
+                                    .then((value) => _getAddress(value));
+                              });
+                              // _determinePosition();
+
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              width: 230,
+                              decoration: BoxDecoration(
+                                  color: Colors.deepOrangeAccent,
+                                  borderRadius: BorderRadius.circular(40)),
+                              child: const Text("Detect My City",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text("or"),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 50,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.deepOrange),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          child: TextFormField(
+                            controller: destinationPoint,
+                            autofocus: true,
+                            keyboardType: TextInputType.text,
+                            showCursor: true,
+                            onChanged: getLocations,
+                            decoration: const InputDecoration(
+                              hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.normal,
                               ),
-                              maxLines: 1,
+                              border: InputBorder.none,
+                              hintText: "Search Location",
                             ),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            maxLines: 1,
                           ),
                         ),
+                      ),
 
-                        SizedBox(
-                          height: 20,
-                        ),
-                        showData == false
-                            ? SizedBox()
-                            : SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                child: ListView.builder(
-                                  itemCount: placecounts.bitLength,
-                                  itemBuilder: (context, int index) {
-                                    return SizedBox(
-                                      height: 50,
-                                      child: ListTile(
-                                        onTap: () {
-                                          locations = places[index]
-                                              ['formatted_address'];
-                                          log("------>" + places.toString());
-                                          var lattitude = places[index]
-                                              ['geometry']['location']['lat'];
-                                          var longitude = places[index]
-                                              ['geometry']['location']['lng'];
-                                          log("Destination Point Address : ${locations.toString()}");
-                                          log("Destination Point Lattitude : ${lattitude.toString()}");
-                                          log("Destination Point Longitude : ${longitude.toString()}");
-                                          getAddressFromLatLongDesti(
-                                              lattitude.toString(),
-                                              longitude.toString());
+                      SizedBox(
+                        height: 20,
+                      ),
+                      showData == false
+                          ? SizedBox()
+                          : SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: ListView.builder(
+                                itemCount: placecounts,
+                                itemBuilder: (context, int index) {
+                                  return SizedBox(
+                                    height: 50,
+                                    child: ListTile(
+                                      onTap: () {
+                                        locations =
+                                            places[index]['formatted_address'];
+                                        log("------>" + places.toString());
+                                        var lattitude = places[index]
+                                            ['geometry']['location']['lat'];
+                                        var longitude = places[index]
+                                            ['geometry']['location']['lng'];
+                                        log("Destination Point Address : ${locations.toString()}");
+                                        log("Destination Point Lattitude : ${lattitude.toString()}");
+                                        log("Destination Point Longitude : ${longitude.toString()}");
+                                        getAddressFromLatLongDesti(
+                                            lattitude.toString(),
+                                            longitude.toString());
+                                        setStates(() {
                                           showData = false;
                                           destinationLattitude =
                                               lattitude.toString();
@@ -376,121 +409,119 @@ class _HomeScreenState extends State<HomeScreen> {
                                               longitude.toString();
                                           destinationPoint.text =
                                               locations.toString();
-                                          setState(() {
-                                            locationUser = places[index]
-                                                ['formatted_address'];
-                                            log("location user ---> $locationUser");
-                                            places.clear();
-                                          });
-
+                                          locationUser = places[index]
+                                              ['formatted_address'];
+                                          log("location user ---> $locationUser");
+                                          places.clear();
                                           FocusScope.of(context)
                                               .requestFocus(FocusNode());
 
                                           Navigator.pop(context);
-                                          _determinePosition().then(
-                                              (value) => _getAddress(value));
-                                          getLatestAddition();
-                                          // _setLocation(locations, lattitude, longitude);
-                                        },
-                                        leading: Container(
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(
-                                                100,
-                                              ),
+                                          _determinePosition().then((value) =>
+                                              _getAddressFromManual(
+                                                  lattitude, longitude));
+                                        });
+
+                                        // getLatestAddition();
+                                        // _setLocation(locations, lattitude, longitude);
+                                      },
+                                      leading: Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                              100,
                                             ),
-                                            color: Colors.grey,
                                           ),
-                                          child: const Icon(
-                                            Icons.location_on_outlined,
-                                            color: Colors.black,
-                                          ),
+                                          color: Colors.grey,
                                         ),
-                                        title: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Text(
-                                            places[index]['formatted_address'],
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                        child: const Icon(
+                                          Icons.location_on_outlined,
+                                          color: Colors.black,
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
+                                      title: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          places[index]['formatted_address'],
+                                          style: TextStyle(color: Colors.black),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
+                            ),
 
-                        // Container(
-                        //   height: 40,
-                        //   width: MediaQuery.of(context).size.width * 0.6,
-                        //   decoration:
-                        //       BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                        //   alignment: Alignment.center,
-                        //   child: TypeAheadField(
-                        //     //hideOnLoading: false,
-                        //     textFieldConfiguration: TextFieldConfiguration(
-                        //       onChanged: (value) {
-                        //         getLocations(value);
-                        //       },
-                        //       onTap: () {
-                        //         Scrollable.ensureVisible(scrollKey.currentContext,
-                        //             duration: const Duration(milliseconds: 1300));
-                        //       },
+                      // Container(
+                      //   height: 40,
+                      //   width: MediaQuery.of(context).size.width * 0.6,
+                      //   decoration:
+                      //       BoxDecoration(borderRadius: BorderRadius.circular(100)),
+                      //   alignment: Alignment.center,
+                      //   child: TypeAheadField(
+                      //     //hideOnLoading: false,
+                      //     textFieldConfiguration: TextFieldConfiguration(
+                      //       onChanged: (value) {
+                      //         getLocations(value);
+                      //       },
+                      //       onTap: () {
+                      //         Scrollable.ensureVisible(scrollKey.currentContext,
+                      //             duration: const Duration(milliseconds: 1300));
+                      //       },
 
-                        //       //autofocus: false,
-                        //       controller: typeAheadController,
+                      //       //autofocus: false,
+                      //       controller: typeAheadController,
 
-                        //       decoration: InputDecoration(
-                        //           contentPadding:
-                        //               const EdgeInsets.only(left: 5.0, top: 5.0),
-                        //           hintText: locationvalue ?? countryName,
-                        //           border: const OutlineInputBorder()),
-                        //     ),
-                        //     suggestionsCallback: (pattern) async {
-                        //       return await getLocations(pattern);
-                        //     },
-                        //     itemBuilder: (context, suggestion) {
-                        //       return ListTile(
-                        //         title: Text(places[suggestion]['formatted_address'].toString(),style: TextStyle(color: Colors.black),),
-                        //         onTap: () async {
-                        //           autoDetectCity = false;
-                        //           SharedPreferences preferences =
-                        //               await SharedPreferences.getInstance();
-                        //           preferences.setString(
-                        //               'cityName', suggestion['name'].toString());
-                        //           preferences.setString(
-                        //               'cityId', suggestion['id'].toString());
-                        //           cityId = preferences.getString('cityId');
-                        //           log("cityId--->$cityId");
+                      //       decoration: InputDecoration(
+                      //           contentPadding:
+                      //               const EdgeInsets.only(left: 5.0, top: 5.0),
+                      //           hintText: locationvalue ?? countryName,
+                      //           border: const OutlineInputBorder()),
+                      //     ),
+                      //     suggestionsCallback: (pattern) async {
+                      //       return await getLocations(pattern);
+                      //     },
+                      //     itemBuilder: (context, suggestion) {
+                      //       return ListTile(
+                      //         title: Text(places[suggestion]['formatted_address'].toString(),style: TextStyle(color: Colors.black),),
+                      //         onTap: () async {
+                      //           autoDetectCity = false;
+                      //           SharedPreferences preferences =
+                      //               await SharedPreferences.getInstance();
+                      //           preferences.setString(
+                      //               'cityName', suggestion['name'].toString());
+                      //           preferences.setString(
+                      //               'cityId', suggestion['id'].toString());
+                      //           cityId = preferences.getString('cityId');
+                      //           log("cityId--->$cityId");
 
-                        //           setState(() {
-                        //             locationvalue = suggestion['name'].toString();
-                        //             selectCity = true;
-                        //             findCity = false;
-                        //           });
-                        //           Navigator.pop(context);
-                        //           getLatestAddition();
-                        //         },
-                        //       );
-                        //     },
-                        //     onSuggestionSelected: (suggestion) {
-                        //       typeAheadController.text = suggestion;
-                        //       setState(() {
-                        //         locationvalue = suggestion['name'];
-                        //       });
-                        //     },
-                        //   ),
-                        // ),
-                      ],
-                    ),
+                      //           setState(() {
+                      //             locationvalue = suggestion['name'].toString();
+                      //             selectCity = true;
+                      //             findCity = false;
+                      //           });
+                      //           Navigator.pop(context);
+                      //           getLatestAddition();
+                      //         },
+                      //       );
+                      //     },
+                      //     onSuggestionSelected: (suggestion) {
+                      //       typeAheadController.text = suggestion;
+                      //       setState(() {
+                      //         locationvalue = suggestion['name'];
+                      //       });
+                      //     },
+                      //   ),
+                      // ),
+                    ],
                   ),
                 ),
               );
-            },
+            }),
           );
         });
   }
@@ -641,7 +672,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: TextFormField(
                         readOnly: true,
                         onTap: () {
-                          showMyDialog();
+                          showDilogBoxForLocation(context);
                         },
                         decoration: InputDecoration(
                             border: InputBorder.none,
@@ -942,7 +973,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                               : SizedBox(
                                   height: latestAdditionList.length <= 2
-                                      ? height * 0.25
+                                      ? height * 0.22
                                       : height * 0.48,
                                   width: width,
                                   child: GridView.builder(

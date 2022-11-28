@@ -86,7 +86,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
     String name = place.name.toString();
     String subLocality = place.subLocality.toString();
     locality = place.locality.toString();
-    log("------>" + locality);
+    log("------>$locality");
     String administrativeArea = place.administrativeArea.toString();
     String postalCode = place.postalCode.toString();
     String country = place.country.toString();
@@ -108,16 +108,13 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
     Placemark place = placemarks[0];
 
     destilocality = place.locality.toString();
-    log("=--->" + destilocality);
+    log("=--->$destilocality");
   }
 
   Future getLocations(String locationName) async {
     var kGoogleApiKey = Apis.mapKey.toString();
     var url = Uri.tryParse(
-        "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" +
-            locationName +
-            "&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=" +
-            kGoogleApiKey);
+        "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=$locationName&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=$kGoogleApiKey");
 
     http.Response res = await http.get(url);
     setState(() {
@@ -1787,7 +1784,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
   Future<Map> submitpostaddData(List files) async {
     log(categoryid);
-    log("--->" + subcategoryid.toString());
+    log("--->$subcategoryid");
     log(description);
     log(title);
     log(phoneNumber);
@@ -1813,7 +1810,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
         _loading = true;
       });
 
-      print("--->" + locationAddList.toString());
+      print("--->$locationAddList");
       var requestMulti =
           http.MultipartRequest('POST', Uri.parse(BASE_URL + postadstore));
 

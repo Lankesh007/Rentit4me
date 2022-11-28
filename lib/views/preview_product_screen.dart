@@ -456,16 +456,19 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
         negotiate = data['posted_ad']['negotiate'].toString();
 
         securitydeposit = data['posted_ad']['security'].toString();
-        addedbyid = data['Additional']['added-by']['id'].toString();
-        addedby = data['Additional']['added-by']['name'].toString();
-        address =
-            "${data['Additional']['added-by']['address']}, ${data['Additional']['added-by']['city_name']}, ${data['Additional']['added-by']['state_name']}, ${data['Additional']['added-by']['pincode']}, ${data['Additional']['added-by']['country_name']}";
+      
 
         email = data['posted_ad']['email'].toString();
         mobile = data['posted_ad']['mobile'].toString();
         mobile_hidden = data['posted_ad']['mobile_hidden'].toString();
 
         _checkData = true;
+        // addedbyid = data['Additional']['added-by']['id'].toString();
+        // addedby = data['Additional']['added-by']['name'].toString();
+        //   address =
+        //     "${data['Additional']['added-by']['address']}, ${data['Additional']['added-by']['city_name']}, ${data['Additional']['added-by']['state_name']}, ${data['Additional']['added-by']['pincode']}, ${data['Additional']['added-by']['country_name']}";
+
+
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
