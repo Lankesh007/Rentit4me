@@ -244,285 +244,295 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _check = false;
   Future<void> showDilogBoxForLocation(BuildContext context) async {
-    return await showDialog(
+    return showDialog(
         context: context,
-        // user must tap button! try kar okk nahi hua ok ruk
         builder: (context) {
-          return AlertDialog(
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setStates) {
-              return SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Provide Location",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold)),
-                            IconButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                },
-                                icon:
-                                    const Icon(Icons.close, color: Colors.grey))
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          children: [
-                            IconButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(Icons.location_on_outlined,
-                                    color: Colors.grey)),
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.55,
-                                // height: MediaQuery.of(context).size.height*0.03,
-
-                                child: const Text(
-                                  "Please provide your delivery location to see products at nearby store",
-                                  maxLines: 3,
-                                )),
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Column(
+          return AlertDialog(content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              setStates(() {
-                                autoDetectCity = true;
-                                findCity = true;
-                                log('=---->$currentCity');
-                                _determinePosition()
-                                    .then((value) => _getAddress(value));
-                              });
-                              // _determinePosition();
-
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 40,
-                              width: 230,
-                              decoration: BoxDecoration(
-                                  color: Colors.deepOrangeAccent,
-                                  borderRadius: BorderRadius.circular(40)),
-                              child: const Text("Detect My City",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text("or"),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const Text("Provide Location",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
+                          IconButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.close, color: Colors.grey))
                         ],
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: 50,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.deepOrange),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            controller: destinationPoint,
-                            autofocus: true,
-                            keyboardType: TextInputType.text,
-                            showCursor: true,
-                            onChanged: getLocations,
-                            decoration: const InputDecoration(
-                              hintStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              border: InputBorder.none,
-                              hintText: "Search Location",
-                            ),
-                            style: const TextStyle(
+                    ),
+                    const Divider(
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.location_on_outlined,
+                                  color: Colors.grey)),
+                          Expanded(
+                              // width: MediaQuery.of(context).size.width * 0.55,
+                              // height: MediaQuery.of(context).size.height*0.03,
+
+                              child: const Text(
+                            "Please provide your delivery location to see products at nearby store",
+                            maxLines: 3,
+                            textAlign: TextAlign.left,
+                          )),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              autoDetectCity = true;
+                              findCity = true;
+                              log('=---->$currentCity');
+                              _determinePosition()
+                                  .then((value) => _getAddress(value));
+                            });
+                            // _determinePosition();
+
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            width: 230,
+                            decoration: BoxDecoration(
+                                color: Colors.deepOrangeAccent,
+                                borderRadius: BorderRadius.circular(40)),
+                            child: const Text("Detect My City",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text("or"),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.deepOrange),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        child: TextFormField(
+                          controller: destinationPoint,
+                          autofocus: true,
+                          keyboardType: TextInputType.text,
+                          showCursor: true,
+                          onChanged: (val) async {
+                            var kGoogleApiKey = Apis.mapKey.toString();
+                            var url = Uri.tryParse(
+                                "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" +
+                                    val.toString() +
+                                    "&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=" +
+                                    kGoogleApiKey);
+
+                            http.Response res = await http.get(url);
+                            setState(() {
+                              showData = true;
+                              places = json.decode(res.body)['candidates'];
+                              placecounts = places.length;
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            hintStyle: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.normal,
                             ),
-                            maxLines: 1,
+                            border: InputBorder.none,
+                            hintText: "Search Location",
                           ),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          maxLines: 1,
                         ),
                       ),
+                    ),
 
-                      SizedBox(
-                        height: 20,
-                      ),
-                      showData == false
-                          ? SizedBox()
-                          : SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.3,
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              child: ListView.builder(
-                                itemCount: placecounts,
-                                itemBuilder: (context, int index) {
-                                  return SizedBox(
-                                    height: 50,
-                                    child: ListTile(
-                                      onTap: () {
-                                        locations =
+                    SizedBox(
+                      height: 20,
+                    ),
+                    showData == false
+                        ? SizedBox()
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: ListView.builder(
+                              itemCount: placecounts,
+                              itemBuilder: (context, int index) {
+                                return SizedBox(
+                                  height: 50,
+                                  child: ListTile(
+                                    onTap: () {
+                                      locations =
+                                          places[index]['formatted_address'];
+                                      log("------>" + places.toString());
+                                      var lattitude = places[index]['geometry']
+                                          ['location']['lat'];
+                                      var longitude = places[index]['geometry']
+                                          ['location']['lng'];
+                                      log("Destination Point Address : ${locations.toString()}");
+                                      log("Destination Point Lattitude : ${lattitude.toString()}");
+                                      log("Destination Point Longitude : ${longitude.toString()}");
+                                      getAddressFromLatLongDesti(
+                                          lattitude.toString(),
+                                          longitude.toString());
+                                      setState(() {
+                                        showData = false;
+                                        destinationLattitude =
+                                            lattitude.toString();
+                                        destinationLongitude =
+                                            longitude.toString();
+                                        destinationPoint.text =
+                                            locations.toString();
+                                        locationUser =
                                             places[index]['formatted_address'];
-                                        log("------>" + places.toString());
-                                        var lattitude = places[index]
-                                            ['geometry']['location']['lat'];
-                                        var longitude = places[index]
-                                            ['geometry']['location']['lng'];
-                                        log("Destination Point Address : ${locations.toString()}");
-                                        log("Destination Point Lattitude : ${lattitude.toString()}");
-                                        log("Destination Point Longitude : ${longitude.toString()}");
-                                        getAddressFromLatLongDesti(
-                                            lattitude.toString(),
-                                            longitude.toString());
-                                        setStates(() {
-                                          showData = false;
-                                          destinationLattitude =
-                                              lattitude.toString();
-                                          destinationLongitude =
-                                              longitude.toString();
-                                          destinationPoint.text =
-                                              locations.toString();
-                                          locationUser = places[index]
-                                              ['formatted_address'];
-                                          log("location user ---> $locationUser");
-                                          places.clear();
-                                          FocusScope.of(context)
-                                              .requestFocus(FocusNode());
+                                        log("location user ---> $locationUser");
+                                        places.clear();
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
 
-                                          Navigator.pop(context);
-                                          _determinePosition().then((value) =>
-                                              _getAddressFromManual(
-                                                  lattitude, longitude));
-                                        });
+                                        Navigator.pop(context);
+                                        _determinePosition().then((value) =>
+                                            _getAddressFromManual(
+                                                lattitude, longitude));
+                                      });
 
-                                        // getLatestAddition();
-                                        // _setLocation(locations, lattitude, longitude);
-                                      },
-                                      leading: Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(
-                                              100,
-                                            ),
+                                      // getLatestAddition();
+                                      // _setLocation(locations, lattitude, longitude);
+                                    },
+                                    leading: Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                            100,
                                           ),
-                                          color: Colors.grey,
                                         ),
-                                        child: const Icon(
-                                          Icons.location_on_outlined,
-                                          color: Colors.black,
-                                        ),
+                                        color: Colors.grey,
                                       ),
-                                      title: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          places[index]['formatted_address'],
-                                          style: TextStyle(color: Colors.black),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                      child: const Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.black,
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
+                                    title: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                        places[index]['formatted_address'],
+                                        style: TextStyle(color: Colors.black),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
+                          ),
 
-                      // Container(
-                      //   height: 40,
-                      //   width: MediaQuery.of(context).size.width * 0.6,
-                      //   decoration:
-                      //       BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                      //   alignment: Alignment.center,
-                      //   child: TypeAheadField(
-                      //     //hideOnLoading: false,
-                      //     textFieldConfiguration: TextFieldConfiguration(
-                      //       onChanged: (value) {
-                      //         getLocations(value);
-                      //       },
-                      //       onTap: () {
-                      //         Scrollable.ensureVisible(scrollKey.currentContext,
-                      //             duration: const Duration(milliseconds: 1300));
-                      //       },
+                    // Container(
+                    //   height: 40,
+                    //   width: MediaQuery.of(context).size.width * 0.6,
+                    //   decoration:
+                    //       BoxDecoration(borderRadius: BorderRadius.circular(100)),
+                    //   alignment: Alignment.center,
+                    //   child: TypeAheadField(
+                    //     //hideOnLoading: false,
+                    //     textFieldConfiguration: TextFieldConfiguration(
+                    //       onChanged: (value) {
+                    //         getLocations(value);
+                    //       },
+                    //       onTap: () {
+                    //         Scrollable.ensureVisible(scrollKey.currentContext,
+                    //             duration: const Duration(milliseconds: 1300));
+                    //       },
 
-                      //       //autofocus: false,
-                      //       controller: typeAheadController,
+                    //       //autofocus: false,
+                    //       controller: typeAheadController,
 
-                      //       decoration: InputDecoration(
-                      //           contentPadding:
-                      //               const EdgeInsets.only(left: 5.0, top: 5.0),
-                      //           hintText: locationvalue ?? countryName,
-                      //           border: const OutlineInputBorder()),
-                      //     ),
-                      //     suggestionsCallback: (pattern) async {
-                      //       return await getLocations(pattern);
-                      //     },
-                      //     itemBuilder: (context, suggestion) {
-                      //       return ListTile(
-                      //         title: Text(places[suggestion]['formatted_address'].toString(),style: TextStyle(color: Colors.black),),
-                      //         onTap: () async {
-                      //           autoDetectCity = false;
-                      //           SharedPreferences preferences =
-                      //               await SharedPreferences.getInstance();
-                      //           preferences.setString(
-                      //               'cityName', suggestion['name'].toString());
-                      //           preferences.setString(
-                      //               'cityId', suggestion['id'].toString());
-                      //           cityId = preferences.getString('cityId');
-                      //           log("cityId--->$cityId");
+                    //       decoration: InputDecoration(
+                    //           contentPadding:
+                    //               const EdgeInsets.only(left: 5.0, top: 5.0),
+                    //           hintText: locationvalue ?? countryName,
+                    //           border: const OutlineInputBorder()),
+                    //     ),
+                    //     suggestionsCallback: (pattern) async {
+                    //       return await getLocations(pattern);
+                    //     },
+                    //     itemBuilder: (context, suggestion) {
+                    //       return ListTile(
+                    //         title: Text(places[suggestion]['formatted_address'].toString(),style: TextStyle(color: Colors.black),),
+                    //         onTap: () async {
+                    //           autoDetectCity = false;
+                    //           SharedPreferences preferences =
+                    //               await SharedPreferences.getInstance();
+                    //           preferences.setString(
+                    //               'cityName', suggestion['name'].toString());
+                    //           preferences.setString(
+                    //               'cityId', suggestion['id'].toString());
+                    //           cityId = preferences.getString('cityId');
+                    //           log("cityId--->$cityId");
 
-                      //           setState(() {
-                      //             locationvalue = suggestion['name'].toString();
-                      //             selectCity = true;
-                      //             findCity = false;
-                      //           });
-                      //           Navigator.pop(context);
-                      //           getLatestAddition();
-                      //         },
-                      //       );
-                      //     },
-                      //     onSuggestionSelected: (suggestion) {
-                      //       typeAheadController.text = suggestion;
-                      //       setState(() {
-                      //         locationvalue = suggestion['name'];
-                      //       });
-                      //     },
-                      //   ),
-                      // ),
-                    ],
-                  ),
+                    //           setState(() {
+                    //             locationvalue = suggestion['name'].toString();
+                    //             selectCity = true;
+                    //             findCity = false;
+                    //           });
+                    //           Navigator.pop(context);
+                    //           getLatestAddition();
+                    //         },
+                    //       );
+                    //     },
+                    //     onSuggestionSelected: (suggestion) {
+                    //       typeAheadController.text = suggestion;
+                    //       setState(() {
+                    //         locationvalue = suggestion['name'];
+                    //       });
+                    //     },
+                    //   ),
+                    // ),
+                  ],
                 ),
-              );
-            }),
-          );
+              ),
+            );
+          }));
         });
   }
 
@@ -574,7 +584,7 @@ class _HomeScreenState extends State<HomeScreen> {
   _getinitPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     userId = preferences.getString("userid");
-    log("userId---==->$userId");
+    print("userId---==->$userId");
   }
 
   @override
@@ -627,98 +637,105 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 2.0,
           title: Row(
             children: [
-              Image.asset('assets/images/logo.png', scale: 25),
-              const SizedBox(
+              Expanded(
+                child: Image.asset('assets/images/logo.png', scale: 25),
+              ),
+              SizedBox(
                 width: 10,
               ),
-              searchHeader != true
-                  ? InkWell(
-                      onTap: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        String userID = prefs.getString("userid");
-                        log("userId--->$userID");
+              Expanded(
+                flex: 2,
+                child: searchHeader != true
+                    ? InkWell(
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String userID = prefs.getString("userid");
+                          log("userId--->$userID");
 
-                        if (userID == null || userID == "") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddlistingScreen()));
-                        }
-                      },
-                      child: Container(
-                          alignment: Alignment.center,
+                          if (userID == null || userID == "") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddlistingScreen()));
+                          }
+                        },
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.orange[600],
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: Text("Post An Ad",
+                                style: TextStyle(fontSize: 15))),
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        height: 40,
+                        width: size.width * 0.4,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: Colors.grey)),
+                        child: TextFormField(
+                          readOnly: true,
+                          onTap: () {
+                            showDilogBoxForLocation(context);
+                          },
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: findCity == true
+                                  ? "   ${address.text.toString()}"
+                                  : selectCity == true
+                                      ? "   $locationvalue"
+                                      : "   $countryName",
+                              suffixIcon: const Icon(
+                                Icons.location_searching_sharp,
+                                color: kContentColorLightTheme,
+                              )),
+                        ),
+                      ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Expanded(
+                child: searchHeader == true
+                    ? SizedBox()
+                    : InkWell(
+                        onTap: () {
+                          searchHeader = true;
+                          log(searchHeader.toString());
+                        },
+                        child: Container(
+                          alignment: Alignment.topCenter,
                           height: 40,
-                          width: 100,
+                          width: 60,
                           decoration: BoxDecoration(
                             color: Colors.orange[600],
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          child: Text("Post An Ad",
-                              style: TextStyle(fontSize: 15))),
-                    )
-                  : Container(
-                      alignment: Alignment.center,
-                      height: 40,
-                      width: size.width * 0.4,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(color: Colors.grey)),
-                      child: TextFormField(
-                        readOnly: true,
-                        onTap: () {
-                          showDilogBoxForLocation(context);
-                        },
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: findCity == true
-                                ? "   ${address.text.toString()}"
-                                : selectCity == true
-                                    ? "   $locationvalue"
-                                    : "   $countryName",
-                            suffixIcon: const Icon(
-                              Icons.location_searching_sharp,
-                              color: kContentColorLightTheme,
-                            )),
-                      ),
-                    ),
-              const SizedBox(
-                width: 10,
-              ),
-              searchHeader == true
-                  ? SizedBox()
-                  : InkWell(
-                      onTap: () {
-                        searchHeader = true;
-                        log(searchHeader.toString());
-                      },
-                      child: Container(
-                        alignment: Alignment.topCenter,
-                        height: 40,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.orange[600],
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              searchHeader = !searchHeader;
-                              log(searchHeader.toString());
-                            });
-                          },
-                          icon: Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.white,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                searchHeader = !searchHeader;
+                                log(searchHeader.toString());
+                              });
+                            },
+                            icon: Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+              )
             ],
           ),
           leading: Row(
@@ -979,7 +996,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: GridView.builder(
                                       physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
-                                      itemCount: 4,
+                                      itemCount: latestAdditionList.length,
                                       itemBuilder:
                                           (BuildContext context, int index) =>
                                               latestAdditionWidget(
@@ -2263,7 +2280,7 @@ class _HomeScreenState extends State<HomeScreen> {
       city = preferences.getString('city');
       state = preferences.getString('state');
 
-      log('cityId--->$city');
+      print('cityId--->$city');
 
       loader = true;
     });
@@ -2275,18 +2292,20 @@ class _HomeScreenState extends State<HomeScreen> {
       "state": state == null || state == "" ? "" : state,
       // autoDetectCity == true ? getCityId.toString()??"" : cityIDd.toString()??"",
     };
-    log('body---->$body');
+    print('body---->$body');
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
-    log("=====>q" + result.toString());
+    print("=====>q" + result.toString());
 
     if (result['ErrorCode'] == 0) {
       var list = result['Response']['latest_ads'] as List;
+      print("\n\n");
       setState(() {
         latestAdditionList.clear();
         var listdata =
             list.map((e) => LatestAdditionsModel.fromJson(e)).toList();
         latestAdditionList.addAll(listdata);
+        print(latestAdditionList);
         loader = false;
       });
     }
@@ -2522,7 +2541,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       countryName = prefs.getString('country');
     });
-    log("countryName--->$countryName");
+    print("countryName--->$countryName");
     var url = Apis.countryByNameApi;
     var body = {
       "country_name": countryName.toString(),
@@ -2533,14 +2552,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result['ErrorMessage'] == "success") {
       countryId = result['Response']['country']['id'];
-      log("GetCountryId---->${countryId.toString()}");
+      print("GetCountryId---->${countryId.toString()}");
       prefs.setInt('countryId', countryId);
-      log("get cId---->" + prefs.getInt('countryId').toString());
+      print("get cId---->" + prefs.getInt('countryId').toString());
       _getData();
       getLatestAddition();
-      _getprofileData();
+      // _getprofileData();
 
-      _getlocationbyUserlocation();
+      // _getlocationbyUserlocation();
     }
   }
 
