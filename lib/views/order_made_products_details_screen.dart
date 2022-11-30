@@ -204,7 +204,7 @@ class _OrderMadeProductsDetailsScreenState
                                 Row(
                                   children: [
                                     RatingBar.builder(
-                                      initialRating: productRating,
+                                      initialRating: prating,
                                       minRating: 1,
                                       direction: Axis.horizontal,
                                       allowHalfRating: true,
@@ -907,7 +907,8 @@ class _OrderMadeProductsDetailsScreenState
     );
   }
 
-  double productRating = 0;
+  int productRating;
+  double prating;
   final feedbackController = TextEditingController();
   int orderIdForFeedback = 0;
   Future<void> _getofferdetailproduct() async {
@@ -947,6 +948,7 @@ class _OrderMadeProductsDetailsScreenState
         productqty = data['Product Details']['quantity'].toString();
         currency = data['Product Details']['currency'].toString();
         productRating = data['Product Details']['review'];
+        prating=double.parse(productRating.toString()); 
         orderIdForFeedback = data['Product Details']['id'];
 
         List temp = [];

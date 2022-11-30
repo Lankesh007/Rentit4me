@@ -11,6 +11,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/order_detail_screen.dart';
 import 'package:rentit4me_new/views/order_made_products_details_screen.dart';
+import 'package:rentit4me_new/views/order_renew_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'offer_made_product_detail_screen.dart';
@@ -582,6 +583,51 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                               children: [
                                                 Text(
                                                     "Status: ${myorderslist[index]['status']}"),
+                                                myorderslist[index][
+                                                            'renewal_status'] !=
+                                                        true
+                                                    ? SizedBox()
+                                                    : InkWell(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  OrderRenewScreen(
+                                                                orderId: myorderslist[
+                                                                            index]
+                                                                        [
+                                                                        'id']
+                                                                    .toString(),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 30,
+                                                          width: 100,
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                          .orange[
+                                                                      900])),
+                                                          child: Text(
+                                                            "Renew",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .blue[800],
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      )
                                               ],
                                             ),
                                           ),
@@ -602,9 +648,11 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                                 orderId: myorderslist[
                                                                         index][
                                                                     'order_id'],
-                                                                    orderIdForFeedback:myorderslist[
-                                                                        index][
-                                                                    'id'].toString() ,
+                                                                orderIdForFeedback:
+                                                                    myorderslist[index]
+                                                                            [
+                                                                            'id']
+                                                                        .toString(),
                                                               )));
                                                 },
                                                 child: Container(

@@ -67,7 +67,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                     onTap: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      print("......///" + prefs.getString('city'));
+                      print("......///${prefs.getString('city')}");
                       showLaoding(context);
                       categorylistData.forEach((element) {
                         if (element['title'].toString() ==
@@ -95,7 +95,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                             "Accept": "application/json",
                             'Content-Type': 'application/json'
                           });
-                      print("............" + response.body);
+                      print("............${response.body}");
                       Navigator.of(context, rootNavigator: true).pop();
                       if (jsonDecode(response.body)['ErrorCode'] == 0) {
                         Navigator.push(
