@@ -83,7 +83,6 @@ class _TrustedBadgePaymentDetailsState
     var result = jsonDecode(response);
 
     // log("Payment Respone--->$response");
-    
 
     if (result["ErrorCode"] == "0") {
       showToast('Your order has been successfully placed.').toString();
@@ -563,14 +562,17 @@ class _TrustedBadgePaymentDetailsState
     var url = "${BASE_URL}trusted-badge-details";
     var response = await APIHelper.apiGetRequest(url);
     var result = jsonDecode(response);
-    var data = result['Response']['trusted_badge'];
 
     if (result['ErrorCode'] == "0") {
+      var data = result['Response']['trusted_badge'];
+
       setState(() {
         tBId = data['id'];
         tBName = data['name'];
         tBAmount = data['amount'];
       });
+    } else {
+      showToast(result['ErrorMessage']);
     }
   }
 }

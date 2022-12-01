@@ -1458,12 +1458,12 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
     String city = prefs.getString('city');
     int countryId = prefs.getInt('countryId');
     String cityId = prefs.getString('cityId');
-    var url = BASE_URL + filterUrl;
+    var url = "https://rentit4me.com/api/browse-ads";
     var body = {
       "country": country.toString(),
       "city": city == null || city == "" ? "" : city,
       "state": state == null || state == "" ? "" : state,
-      "search": "",
+      // "search": "",
       "q": searchController.text.toString(),
     };
 

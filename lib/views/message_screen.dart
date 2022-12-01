@@ -8,7 +8,11 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/views/alllisting_screen.dart';
+import 'package:rentit4me_new/views/offers_view.dart';
+import 'package:rentit4me_new/views/order_view.dart';
 import 'package:rentit4me_new/views/trusted_badge_payment_details.dart';
+import 'package:rentit4me_new/views/upgrade_membership_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MessageScreen extends StatefulWidget {
@@ -218,11 +222,56 @@ class _MessageScreenState extends State<MessageScreen> {
                               messageslist[index]['app_url'] == "" ||
                               messageslist[index]['app_url'] == "null"
                           ? ""
-                          : Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: ((context) =>
-                                      TrustedBadgePaymentDetails())));
+                          : messageslist[index]['app_url'] == "offers-made"
+                              ? Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) =>
+                                          OffersViewScreen())))
+                              : messageslist[index]['app_url'] == "orders-made"
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              OrderViewScreen())))
+                                  : messageslist[index]['app_url'] ==
+                                          "offers-recieved"
+                                      ? Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: ((context) =>
+                                                  OffersViewScreen())))
+                                      : messageslist[index]['app_url'] ==
+                                              "listings"
+                                          ? Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: ((context) =>
+                                                      AlllistingScreen())))
+                                          : messageslist[index]['app_url'] ==
+                                                  "membership/get"
+                                              ? Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: ((context) =>
+                                                          UpgradeMemberShip())))
+                                              : messageslist[index]
+                                                          ['app_url'] ==
+                                                      "my-orders"
+                                                  ? Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: ((context) =>
+                                                              OrderViewScreen())))
+                                                  : messageslist[index]
+                                                              ['app_url'] ==
+                                                          "trusted-badge"
+                                                      ? Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: ((context) =>
+                                                                  TrustedBadgePaymentDetails())))
+                                                      : "";
                     },
                     child: Card(
                       elevation: 4.0,

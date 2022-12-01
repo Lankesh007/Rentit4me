@@ -212,10 +212,78 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
                                             color: Colors.grey.shade400,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(8.0))),
-                                        child: const Text("Upgrade Plan",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14)),
+                                        child: membershipplanlist[index]
+                                                    ['current_plan'] ==
+                                                true
+                                            ? InkWell(
+                                                onTap: () {
+                                                  if (pageswitch == "Home") {
+                                                    if (membershipplanlist[
+                                                                index]['id']
+                                                            .toString() ==
+                                                        "1") {
+                                                      _selectmembership(
+                                                          membershipplanlist[
+                                                                  index]['id']
+                                                              .toString(),
+                                                          membershipplanlist[
+                                                                      index]
+                                                                  ['amount']
+                                                              .toString());
+                                                    } else {
+                                                      print(membershipplanlist[
+                                                              index]['id']
+                                                          .toString());
+                                                      setState(() {
+                                                        package_id =
+                                                            membershipplanlist[
+                                                                    index]['id']
+                                                                .toString();
+                                                      });
+                                                      // startPayment(
+                                                      //     membershipplanlist[index]
+                                                      //             ['amount']
+                                                      //         .toString());
+                                                      _selectmembership(
+                                                          membershipplanlist[
+                                                                  index]['id']
+                                                              .toString(),
+                                                          membershipplanlist[
+                                                                      index]
+                                                                  ['amount']
+                                                              .toString());
+                                                    }
+                                                  } else {
+                                                    _selectmembership(
+                                                        membershipplanlist[
+                                                                index]['id']
+                                                            .toString(),
+                                                        membershipplanlist[
+                                                                index]['amount']
+                                                            .toString());
+                                                  }
+                                                },
+                                                child: Container(
+                                                    width: size.width * 0.25,
+                                                    height: 35,
+                                                    alignment:
+                                                        AlignmentDirectional
+                                                            .center,
+                                                    decoration: const BoxDecoration(
+                                                        color: kPrimaryColor,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8.0))),
+                                                    child: Text("Renew Plan",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 14))),
+                                              )
+                                            : Text("Upgrade Plan",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14)),
                                       )
                                     : InkWell(
                                         onTap: () {

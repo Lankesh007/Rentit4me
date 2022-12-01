@@ -135,7 +135,6 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   void initState() {
     super.initState();
     _getcountryData();
-    getPrefsData();
     _getprofile().then((value) {});
 
     //_getprofile();
@@ -646,19 +645,17 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                       if (newValue == "Select") {
                                         showToast("Please select Yes/No");
                                       } else {
-                                       
-                                          setState(() {
-                                            initialtrustedbadge = newValue;
-                                            if (newValue == "Yes") {
-                                              kyc = true;
-                                              tb = true;
-                                              initialIdProof = "Select";
-                                            } else {
-                                              // kyc = true;
-                                              tb = false;
-                                            }
-                                          });
-                                        
+                                        setState(() {
+                                          initialtrustedbadge = newValue;
+                                          if (newValue == "Yes") {
+                                            kyc = true;
+                                            tb = true;
+                                            initialIdProof = "Select";
+                                          } else {
+                                            // kyc = true;
+                                            tb = false;
+                                          }
+                                        });
                                       }
                                     },
                                     items: _badgedata.map((value) {
@@ -787,7 +784,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                         ))
                                   ],
                                 )
-                              : kyc == true && country_id != 113
+                              : kyc == true && country != "India"
                                   ? Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -1017,6 +1014,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                 pincode == "null" ||
                                 pincode.text.isEmpty) {
                               showToast("Please Enter Your Pincode");
+                            } else if (destinationPoint.text.isEmpty) {
+                              showToast("Please Select Your Location");
                             } else {
                               submitDetailsOfConsumer();
                             }
@@ -1066,6 +1065,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
+                            } else if (destinationPoint.text.isEmpty) {
+                              showToast("Please Select Your Location");
                             } else if (pincode == null ||
                                 pincode == "null" ||
                                 pincode.text.isEmpty) {
@@ -1398,10 +1399,14 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   String locality = '';
   String destilocality = "";
   getAddressFromLatLongDesti(String latitude, longitude) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Placemark> placemarks = await placemarkFromCoordinates(
         double.parse(latitude), double.parse(longitude));
     // log("placemark==> $placemarks");
     Placemark place = placemarks[0];
+    prefs.setString('country', place.country.toString());
+    log(prefs.getString('country'));
+    getPrefsData();
 
     destilocality = place.locality.toString();
     log("=--->" + destilocality);
@@ -1742,7 +1747,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       request.headers.addAll({
         'Authorization': 'Bearer ${prefs.getString("token")}',
       });
-      if (kyc == true && country_id == 113) {
+      if (kyc == true && country == "India") {
         var pic = await http.MultipartFile.fromPath(
             'adhaar_doc', adharcarddoc.toString());
         request.files.add(pic);
@@ -1767,28 +1772,30 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
 
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         log("StatusCodePost11---->${response.statusCode}");
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => BillingAndTaxation()));
-        Fluttertoast.showToast(
-          msg: "Personal Details Submitted Successfully !!:",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green.shade700,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      } else {
-        Fluttertoast.showToast(
-          msg: "Something Went Wrong !!:",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green.shade700,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        var result = jsonDecode(responseString);
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => BillingAndTaxation()));
+          Fluttertoast.showToast(
+            msg: "Personal Details Submitted Successfully !!:",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: showToast(result['ErrorMessage']),
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
       }
     } on Exception catch (e) {}
     setState(() {

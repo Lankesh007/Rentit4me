@@ -523,6 +523,8 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
       "token": fcmToken,
       "latitude": prefs.getString('latitude'),
       "longitude": prefs.getString('longitude'),
+      "app_token":fcmToken.toString(),
+
       //"latitude" : "44.534721",
       //"longitude" : "24.307261",
     };

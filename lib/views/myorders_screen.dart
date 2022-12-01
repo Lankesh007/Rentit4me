@@ -12,6 +12,7 @@ import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/order_detail_screen.dart';
 import 'package:rentit4me_new/views/order_made_products_details_screen.dart';
 import 'package:rentit4me_new/views/order_renew_screen.dart';
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'offer_made_product_detail_screen.dart';
@@ -51,6 +52,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     });*/
   }
 
+  var orderId;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -255,6 +257,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                   (BuildContext context, int index) =>
                                       const Divider(),
                               itemBuilder: (BuildContext context, int index) {
+                                orderId = myorderslist[index]['id'];
                                 return InkWell(
                                   onTap: () {
                                     // showDialog(
@@ -587,46 +590,86 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                             'renewal_status'] !=
                                                         true
                                                     ? SizedBox()
-                                                    : InkWell(
-                                                        onTap: () {
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  OrderRenewScreen(
-                                                                orderId: myorderslist[
-                                                                            index]
-                                                                        [
-                                                                        'id']
-                                                                    .toString(),
+                                                    : Column(
+                                                        children: [
+                                                          myorderslist[index][
+                                                                      'status'] !=
+                                                                  "expired"
+                                                              ? InkWell(
+                                                                  onTap: () {
+                                                                    Navigator
+                                                                        .push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                OrderRenewScreen(
+                                                                          orderId:
+                                                                              myorderslist[index]['id'].toString(),
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    height: 30,
+                                                                    width: 100,
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                10),
+                                                                        border: Border.all(
+                                                                            color:
+                                                                                Colors.orange[900])),
+                                                                    child: Text(
+                                                                      "Renew",
+                                                                      style: TextStyle(
+                                                                          color: Colors.blue[
+                                                                              800],
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              : SizedBox(),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              orderReturenApi();
+                                                            },
+                                                            child: Container(
+                                                              height: 30,
+                                                              width: 100,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  border: Border.all(
+                                                                      color: Colors
+                                                                              .orange[
+                                                                          900])),
+                                                              child: Text(
+                                                                "Return",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        800],
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
                                                               ),
                                                             ),
-                                                          );
-                                                        },
-                                                        child: Container(
-                                                          height: 30,
-                                                          width: 100,
-                                                          alignment:
-                                                              Alignment.center,
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                              border: Border.all(
-                                                                  color: Colors
-                                                                          .orange[
-                                                                      900])),
-                                                          child: Text(
-                                                            "Renew",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .blue[800],
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        ),
+                                                          )
+                                                        ],
                                                       )
                                               ],
                                             ),
@@ -1062,6 +1105,22 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       return "Year";
     } else if (renttypevalue == "yearly" && period != "1") {
       return "Years";
+    }
+  }
+
+  Future orderReturenApi() async {
+    var url = "${BASE_URL}renter-orders/status";
+    var body = {
+      "order_id": orderId.toString(),
+      "status": "returned",
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']);
+      _myorderslist();
+    } else {
+      showToast(result['ErrorMessage']);
     }
   }
 }

@@ -111,6 +111,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
         elevation: 2.0,
         leading: InkWell(
             onTap: () {
+              removeCouponDetails();
               Navigator.of(context).pop();
             },
             child: const Icon(
@@ -359,7 +360,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                                     .w300))
                                               ],
                                             ),
-                                              Column(
+                                            Column(
                                               children: [
                                                 couponApplied == false
                                                     ? SizedBox()
@@ -409,7 +410,6 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                       ),
                                               ],
                                             ),
-                                           
                                             Column(
                                               children: [
                                                 couponApplied == false
@@ -460,7 +460,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
                                                       ),
                                               ],
                                             ),
-                                           SizedBox(height: 10),
+                                            SizedBox(height: 10),
                                             Divider(
                                               thickness: 0.9,
                                             ),
@@ -781,10 +781,9 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
 
       _getmakepayment();
       initializeRazorpay();
-      removeCouponDetails();
+      // removeCouponDetails();
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
-
 }

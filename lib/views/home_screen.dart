@@ -821,7 +821,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       showLaoding(context);
                                       FocusScope.of(context).unfocus();
                                       var response = await http.post(
-                                          Uri.parse(BASE_URL + filterUrl),
+                                          Uri.parse(BASE_URL+"browse-ads"),
                                           body: jsonEncode({
                                             "country": country.toString(),
                                             "city": city == null || city == ""
@@ -831,7 +831,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 state == null || state == ""
                                                     ? ""
                                                     : state,
-                                            "search": "",
+                                            // "search": "",
                                             "q": searchController.text
                                                 .toString(),
                                           }),

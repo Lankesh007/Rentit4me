@@ -32,7 +32,7 @@ class ProductEditScreen extends StatefulWidget {
 }
 
 class _ProductEditScreenState extends State<ProductEditScreen> {
-  List<CitiesModel>citiesList=[];
+  List<CitiesModel> citiesList = [];
   String currentLattitude = "";
   String currentLongitude = "";
   TextEditingController currentPoint = TextEditingController();
@@ -269,6 +269,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
+
   String getLocation;
 
   List<dynamic> countrylistData = [];
@@ -835,21 +836,23 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                   child: Container(
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      child:Container(
-                                        alignment:Alignment.center,
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: citiesList.length,
-                                          itemBuilder: ((context, index) {
-                                            var item=citiesList[index];
-                                          return Container(
-                                                                                   alignment:Alignment.center,
-
-                                            margin: const EdgeInsets.symmetric(horizontal: 3),
-                                            child:Text("${item.name},${item.stateId},${item.countryId}") ,
-                                          );
-                                        }),
-                                      ))))
+                                      child: Container(
+                                          alignment: Alignment.center,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: citiesList.length,
+                                            itemBuilder: ((context, index) {
+                                              var item = citiesList[index];
+                                              return Container(
+                                                alignment: Alignment.center,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 3),
+                                                child: Text(
+                                                    "${item.name},${item.stateId},${item.countryId}"),
+                                              );
+                                            }),
+                                          ))))
                               : Column(
                                   children: [
                                     Container(
@@ -1124,8 +1127,9 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                                         locationAddList.length,
                                                     itemBuilder:
                                                         (context, index) {
-                                                          getLocation= locationAddList[
-                                                                  index];
+                                                      getLocation =
+                                                          locationAddList[
+                                                              index];
                                                       return Container(
                                                         margin: const EdgeInsets
                                                                 .symmetric(
@@ -2113,12 +2117,18 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                           initialsubcatvalue == "" ||
                           initialsubcatvalue == "null") {
                         showToast("Please select sub category");
+                      } else if (daysprice.text.isEmpty &&
+                          monthprice.text.isEmpty &&
+                          yearprice.text.isEmpty &&
+                          yearprice.text.isEmpty) {
+                        showToast("Select Atleast one Rent type");
+                      } else if (_checkday == false &&
+                          _checkmonth == false &&
+                          _checkhour == false &&
+                          _checkyear == false) {
+                        showToast("Select Atleast one Rent type");
                       } else {
-                        if (form.currentState.validate()) {
-                          submitpostaddData(additionalimage);
-                        } else {
-                          showToast("Please fill required fields");
-                        }
+                        submitpostaddData(additionalimage);
                       }
                     },
                     child: Card(
@@ -2176,7 +2186,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
 
-      var list=data['posted_ad']['cities']as List;
+      var list = data['posted_ad']['cities'] as List;
       setState(() {
         productname.text = data['posted_ad']['title'].toString();
         locationAviablity =
@@ -2254,39 +2264,64 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         data['Pricing'].forEach((element) {
           if (element['rent_type_name'].toString() == "Hourly") {
             _checkhour = true;
-            hourlyprice.text =
-                element['price'] == null ? "" : element['price'].toString();
-            renttype[0]['amount'] =
-                element['price'] == null ? "" : element['price'].toString();
+            if (element['price'] == null ||
+                element['price'] == "" ||
+                element['price'] == "null") {
+              _checkhour = false;
+            } else {
+              hourlyprice.text =
+                  element['price'] == null ? "" : element['price'].toString();
+              renttype[0]['amount'] =
+                  element['price'] == null ? "" : element['price'].toString();
+            }
           } else if (element['rent_type_name'].toString() == "Yearly") {
             _checkyear = true;
-            yearprice.text =
-                element['price'] == null ? "" : element['price'].toString();
-            renttype[1]['amount'] =
-                element['price'] == null ? "" : element['price'].toString();
+            if (element['price'] == null ||
+                element['price'] == "" ||
+                element['price'] == "null") {
+              _checkyear = false;
+            } else {
+              yearprice.text =
+                  element['price'] == null ? "" : element['price'].toString();
+              renttype[1]['amount'] =
+                  element['price'] == null ? "" : element['price'].toString();
+            }
           } else if (element['rent_type_name'].toString() == "Monthly") {
             _checkmonth = true;
-            monthprice.text =
-                element['price'] == null ? "" : element['price'].toString();
-            renttype[2]['amount'] =
-                element['price'] == null ? "" : element['price'].toString();
+            if (element['price'] == null ||
+                element['price'] == "" ||
+                element['price'] == "null") {
+              _checkmonth = false;
+            } else {
+              monthprice.text =
+                  element['price'] == null ? "" : element['price'].toString();
+              renttype[2]['amount'] =
+                  element['price'] == null ? "" : element['price'].toString();
+            }
           } else {
             _checkday = true;
-            daysprice.text =
-                element['price'] == null ? "" : element['price'].toString();
-            renttype[3]['amount'] =
-                element['price'] == null ? "" : element['price'].toString();
+            if (element['price'] == null ||
+                element['price'] == "" ||
+                element['price'] == "null") {
+              _checkday = false;
+            }
+            {
+              daysprice.text =
+                  element['price'] == null ? "" : element['price'].toString();
+              renttype[3]['amount'] =
+                  element['price'] == null ? "" : element['price'].toString();
+            }
           }
         });
         negotiablevalue =
             data['posted_ad']['negotiate'].toString() == "1" ? "Yes" : "No";
 
-        log("subcategory--->$subCategoryTitle");
         checkData = true;
         categoryid = data['posted_ad']['categories'][0]['id'].toString();
         subcategoryid = data['posted_ad']['subcategory']['id'].toString();
         subCategoryId = data['posted_ad']['subcategory']['id'].toString();
         subCategoryTitle = data['posted_ad']['subcategory']['title'].toString();
+        log("subcategory--->$subCategoryTitle");
 
         // if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
         //   sameAddress = true;
@@ -2303,11 +2338,9 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         //   address.text = data['posted_ad'][0]['address'].toString();
         // }
 
-   citiesList.clear();
-        var listdata =
-            list.map((e) => CitiesModel.fromJson(e)).toList();
+        citiesList.clear();
+        var listdata = list.map((e) => CitiesModel.fromJson(e)).toList();
         citiesList.addAll(listdata);
-        
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -2573,13 +2606,17 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         requestMulti.fields["mobile_hidden"] = mobilehiddenvalue.toString();
         requestMulti.fields["com_prefs"] = communicationprefs.toString();
         requestMulti.fields["status"] = statusvalue.toString();
-        requestMulti.fields["price[1]"] = renttype[0]['amount'].toString();
+        requestMulti.fields["price[1]"] =
+            _checkhour == true ? renttype[0]['amount'].toString() : "";
         requestMulti.fields["rent_type[1]"] = renttype[0]['type'].toString();
-        requestMulti.fields["price[2]"] = renttype[1]['amount'].toString();
+        requestMulti.fields["price[2]"] =
+            _checkday == true ? renttype[1]['amount'].toString() : "";
         requestMulti.fields["rent_type[2]"] = renttype[1]['type'].toString();
-        requestMulti.fields["price[3]"] = renttype[2]['amount'].toString();
+        requestMulti.fields["price[3]"] =
+            _checkmonth == true ? renttype[2]['amount'].toString() : "";
         requestMulti.fields["rent_type[3]"] = renttype[2]['type'].toString();
-        requestMulti.fields["price[4]"] = renttype[3]['amount'].toString();
+        requestMulti.fields["price[4]"] =
+            _checkyear == true ? renttype[3]['amount'].toString() : "";
         requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
         requestMulti.fields["files"] = renttype[3]['type'].toString();
         requestMulti.fields["address_type"] =

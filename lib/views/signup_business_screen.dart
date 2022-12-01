@@ -51,14 +51,13 @@ class _SignupScreenState extends State<SignupScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getCountryData();
+    // _getCountryData();
+    getToken();
+  }
 
-    FirebaseMessaging.instance.getToken().then((value) {
-      setState(() {
-        fcmToken = value.toString();
-        print(fcmToken);
-      });
-    });
+  void getToken() async {
+    fcmToken = await FirebaseMessaging.instance.getToken();
+    log("fcm token--->$fcmToken");
   }
 
   @override
@@ -523,6 +522,8 @@ class _SignupScreenState extends State<SignupScreen> {
       "token": fcmToken,
       "latitude": prefs.getString('latitude'),
       "longitude": prefs.getString('longitude'),
+      "app_token": fcmToken.toString(),
+
       //"latitude" : "44.534721",
       //"longitude" : "24.307261",
     };

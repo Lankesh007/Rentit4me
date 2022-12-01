@@ -381,7 +381,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         setState(() {
           _loading = false;
           paymentlist
-              .addAll(jsonDecode(response.body)['Response']['Transactions']);
+              .addAll(jsonDecode(response.body)['Response']['Transactions']['data']);
         });
       }
     } else {

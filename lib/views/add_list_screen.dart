@@ -631,14 +631,20 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                           suffixIcon: IconButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  locationAddList
-                                                      .add(locationUser);
-                                                  log(locationAddList
-                                                      .toString());
-                                                  showToast(
-                                                      "Added Sucessfully !!");
+                                                  if (destinationPoint
+                                                      .text.isEmpty) {
+                                                    showToast(
+                                                        "Please Select Location !!");
+                                                  } else {
+                                                    locationAddList
+                                                        .add(locationUser);
+                                                    log(locationAddList
+                                                        .toString());
+                                                    showToast(
+                                                        "Added Sucessfully !!");
 
-                                                  destinationPoint.clear();
+                                                    destinationPoint.clear();
+                                                  }
                                                 });
                                               },
                                               icon: Icon(Icons.add,

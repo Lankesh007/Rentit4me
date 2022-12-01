@@ -73,8 +73,8 @@ dependencies:
   date_time_picker: ^2.1.0
   flutter_typeahead: ^4.0.0
   another_flushbar: ^1.10.29
-  firebase_messaging: ^13.0.0
-  firebase_core: ^1.21.1
+  firebase_messaging: ^14.1.2
+  firebase_core: ^2.3.0
   flutter_local_notifications: ^9.8.0+1
 
   google_sign_in: ^5.4.0
