@@ -242,7 +242,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                   height: 10,
                 ),
                 Container(
-                  height: height * 0.16,
+                  height: height * 0.14,
                   width: width * 0.5,
                   decoration: BoxDecoration(
                       image: DecorationImage(

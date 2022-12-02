@@ -76,8 +76,16 @@ class _OrderMadeProductsDetailsScreenState
   @override
   void initState() {
     super.initState();
+    _getinitdata();
 
     _getofferdetailproduct();
+  }
+
+  String userId;
+  _getinitdata() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    userId = preferences.getString('userid');
   }
 
   @override
@@ -220,88 +228,101 @@ class _OrderMadeProductsDetailsScreenState
                                   ],
                                 ),
                                 Divider(),
-                                Text("User Rating",
-                                    style: const TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700)),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                SizedBox(
-                                  child: RatingBar.builder(
-                                    initialRating: 0,
-                                    minRating: 1,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    itemSize: 20.0,
-                                    itemPadding:
-                                        EdgeInsets.symmetric(horizontal: 4.0),
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                    ),
-                                    onRatingUpdate: (rating) {
-                                      userRating = rating;
-                                      print(userRating);
-                                    },
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  height: 40,
-                                  width: size.width * 0.9,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                  ),
-                                  child: TextField(
-                                    controller: feedbackController,
-                                    textAlign: TextAlign.center,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText:
-                                            "Give Your Feedback (Optional)"),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        if (userRating == 0) {
-                                          showToast("Please Give Rating !!");
-                                        } else {
-                                          giveRatingOrder();
-                                        }
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: 40,
-                                        width: size.width * 0.4,
-                                        decoration: BoxDecoration(
-                                            color: ksecondaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                        child: Text(
-                                          buttonLoader == true
-                                              ? "Please wait..."
-                                              : "Submit",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                advertiserId.toString() != userId
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("User Rating",
+                                              style: const TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700)),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          SizedBox(
+                                            child: RatingBar.builder(
+                                              initialRating: 0,
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemSize: 20.0,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 4.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                userRating = rating;
+                                                print(userRating);
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            height: 40,
+                                            width: size.width * 0.9,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                            ),
+                                            child: TextField(
+                                              controller: feedbackController,
+                                              textAlign: TextAlign.center,
+                                              decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  hintText:
+                                                      "Give Your Feedback (Optional)"),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  if (userRating == 0) {
+                                                    showToast(
+                                                        "Please Give Rating !!");
+                                                  } else {
+                                                    giveRatingOrder();
+                                                  }
+                                                },
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  height: 40,
+                                                  width: size.width * 0.4,
+                                                  decoration: BoxDecoration(
+                                                      color: ksecondaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50)),
+                                                  child: Text(
+                                                    buttonLoader == true
+                                                        ? "Please wait..."
+                                                        : "Submit",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 16),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox()
                               ],
                             ),
                           ),
@@ -909,6 +930,8 @@ class _OrderMadeProductsDetailsScreenState
 
   int productRating;
   double prating;
+  int advertiserId;
+
   final feedbackController = TextEditingController();
   int orderIdForFeedback = 0;
   Future<void> _getofferdetailproduct() async {
@@ -936,6 +959,7 @@ class _OrderMadeProductsDetailsScreenState
       var data = json.decode(response.body)['Response'];
       // print(data['Order Details']);
       setState(() {
+        advertiserId = data['Order Details']['advertiser_id'];
         productimage = data['Image']['upload_base_path'] +
             data['Image']['file_name'].toString();
         productname = data['Product Details']['title'].toString();
@@ -948,7 +972,7 @@ class _OrderMadeProductsDetailsScreenState
         productqty = data['Product Details']['quantity'].toString();
         currency = data['Product Details']['currency'].toString();
         productRating = data['Product Details']['review'];
-        prating=double.parse(productRating.toString()); 
+        prating = double.parse(productRating.toString());
         orderIdForFeedback = data['Product Details']['id'];
 
         List temp = [];

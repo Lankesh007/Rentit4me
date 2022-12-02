@@ -355,93 +355,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     ],
                                   ),
                                 )),
-                            kyc == 1
-                                ? SizedBox(
-                                    height: 30,
-                                    width: 100,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        kyc == 1
-                                            ? Expanded(
-                                                child: Container(
-                                                decoration: BoxDecoration(
-                                                    color:
-                                                        Colors.green.shade100,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "kyc",
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 15),
-                                                      ),
-                                                      Image.asset(
-                                                        "assets/images/check-mark.png",
-                                                        scale: 16,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ))
-                                            : SizedBox(),
-                                        SizedBox(
-                                          width: 30,
-                                        ),
-                                        trustedbadgeapproval == "approved" ?? ""
-                                            ? Expanded(
-                                                child: Container(
-                                                decoration: BoxDecoration(
-                                                    color:
-                                                        Colors.green.shade100,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            40)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "Trusted Badge",
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18),
-                                                      ),
-                                                      Image.asset(
-                                                        "assets/images/check-mark.png",
-                                                        scale: 16,
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ))
-                                            : SizedBox(),
-                                      ],
-                                    ),
-                                  )
-                                : SizedBox(),
+                        
                           ],
                         ),
-                        SizedBox(height: 10.0),
-                        RatingBar.builder(
+                          SizedBox(
+                          height: 10,
+                        ),
+                           RatingBar.builder(
                           itemSize: 20,
                           initialRating: 3,
                           minRating: 1,
@@ -457,6 +377,102 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             print(rating);
                           },
                         ),
+                     
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Divider(),
+                            kyc == 1
+                                ? SizedBox(
+                                    height: 30,
+                                    width: MediaQuery.of(context).size.width*0.9,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        kyc == 1
+                                            ? Container(
+                                              width: 100,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    Colors.green.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        20)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "kyc",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15),
+                                                  ),
+                                                  Image.asset(
+                                                    "assets/images/check-mark.png",
+                                                    scale: 16,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                              )
+                                            : SizedBox(),
+                                        SizedBox(
+                                          width: 80,
+                                        ),
+
+                                        trustedbadgeapproval == "approved" 
+                                            ? Container(
+                                              width: 150,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    Colors.green.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        40)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(0.0),
+                                              child: Container(
+                                                margin: const EdgeInsets.symmetric(horizontal:10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Trusted Badge",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16),
+                                                    ),
+                                                    Image.asset(
+                                                      "assets/images/check-mark.png",
+                                                      scale: 16,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                              )
+                                            : SizedBox(),
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
+                        Divider(),
+
+                        SizedBox(height: 10.0),
+                     
                         SizedBox(height: 10.0),
 
                         Divider(

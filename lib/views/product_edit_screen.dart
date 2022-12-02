@@ -958,15 +958,22 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                                       suffixIcon: IconButton(
                                                           onPressed: () {
                                                             setState(() {
-                                                              locationAddList.add(
-                                                                  locationUser);
-                                                              log(locationAddList
-                                                                  .toString());
-                                                              showToast(
-                                                                  "Added Sucessfully !!");
+                                                              if (destinationPoint
+                                                                  .text
+                                                                  .isEmpty) {
+                                                                showToast(
+                                                                    "Select Location !!");
+                                                              } else {
+                                                                locationAddList.add(
+                                                                    locationUser);
+                                                                log(locationAddList
+                                                                    .toString());
+                                                                showToast(
+                                                                    "Added Sucessfully !!");
 
-                                                              destinationPoint
-                                                                  .clear();
+                                                                destinationPoint
+                                                                    .clear();
+                                                              }
                                                             });
                                                           },
                                                           icon: Icon(Icons.add,
@@ -2042,14 +2049,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           ),
                                         )
                                       : statusvalue == 6
-                                          ? Text(
-                                              "Active",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            )
-                                          : Container(
+                                          ? Container(
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                   border: Border.all(
@@ -2096,7 +2096,15 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                                     });
                                                   },
                                                 ),
-                                              ))),
+                                              )))
+                                          : Text(
+                                              "",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+
                           SizedBox(height: 10),
                         ],
                       ),

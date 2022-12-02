@@ -1907,6 +1907,24 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
       log(respStr.toString());
       if (jsonDecode(respStr)['ErrorCode'] == 0) {
         showToast(jsonDecode(respStr)['ErrorMessage'].toString());
+        _getCategories();
+        _getprofileData();
+        // mainimage = "";
+        // newList.clear();
+        // categorieslist.clear();
+        // subcategorieslist.clear();
+        // title.isEmpty;
+        // description.isEmpty;
+        // locationAddList.isEmpty;
+        // negotiablelist.clear();
+        // securityamount.isEmpty;
+        // hourlyprice.isEmpty;
+        // monthlyprice.isEmpty;
+        // yearlyprice.isEmpty;
+        // quantity.isEmpty;
+        // availabledate.isEmpty;
+        // _termcondition = false;
+
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => AddlistingScreen()));
       } else {

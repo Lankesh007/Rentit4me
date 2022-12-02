@@ -265,7 +265,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                                               OrderViewScreen())))
                                                   : messageslist[index]
                                                               ['app_url'] ==
-                                                          "trusted-badge"
+                                                          "trusted-badge-payment"
                                                       ? Navigator.push(
                                                           context,
                                                           MaterialPageRoute(

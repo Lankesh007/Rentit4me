@@ -67,8 +67,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
     return "${str[0].toUpperCase()}${str.substring(1).toLowerCase()}";
   }
 
-  List<String> allaction = ['Pay', 'Reject'];
-  List<String> allaction2 = ['Pay', 'Reject'];
+  List<String> allaction = ['Accept & Pay', 'Reject'];
+  List<String> allaction2 = ['Accept & Pay', 'Reject'];
 
   String initialvalue;
 
@@ -737,7 +737,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                                   onChanged:
                                                                       (value) {
                                                                     if (value ==
-                                                                        "Pay") {
+                                                                        "Accept & Pay") {
                                                                       // setState(() {
                                                                       //   post_id = offermadelist[
                                                                       //               index]
@@ -949,7 +949,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
         ),
       );
     } else if (statusvalue == "1" && paystatus == "0") {
-      return const Text("Pay", style: TextStyle(color: Colors.grey));
+      return const Text("Accept & Pay", style: TextStyle(color: Colors.grey));
     } else {
       return InkWell(
         onTap: () {},

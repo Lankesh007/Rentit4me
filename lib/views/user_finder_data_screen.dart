@@ -13,6 +13,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/views/product_detail_screen.dart';
+import 'package:rentit4me_new/views/verify_reset_otp.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -992,7 +993,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                                                   child: Column(
                                                     children: [
                                                       CachedNetworkImage(
-                                                        height: 80,
+                                                        height: 120,
                                                         width: double.infinity,
                                                         errorWidget: (context,
                                                                 url, error) =>
@@ -1008,7 +1009,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                                                                 .toString(),
                                                       ),
                                                       const SizedBox(
-                                                          height: 5.0),
+                                                          height: 10.0),
                                                       Padding(
                                                         padding:
                                                             const EdgeInsets
