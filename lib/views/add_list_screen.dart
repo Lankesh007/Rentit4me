@@ -636,8 +636,9 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                                     showToast(
                                                         "Please Select Location !!");
                                                   } else {
-                                                    locationAddList
-                                                        .add(locationUser);
+                                                    locationAddList.add(
+                                                        locationUser
+                                                            .toString());
                                                     log(locationAddList
                                                         .toString());
                                                     showToast(
@@ -774,27 +775,32 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                                 horizontal: 10, vertical: 0),
                                             child: Row(
                                               children: [
-                                                Text(
-                                                  locationAddList[index],
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16),
+                                                Expanded(
+                                                  flex: 5,
+                                                  child: Text(
+                                                    locationAddList[index],
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16),
+                                                  ),
                                                 ),
-                                                IconButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        locationAddList.remove(
-                                                            locationAddList[
-                                                                index]);
-                                                        showToast(
-                                                            "Removed Sucessfully !!");
-                                                      });
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.close,
-                                                      size: 18,
-                                                      color: Colors.red,
-                                                    ))
+                                                Expanded(
+                                                  child: IconButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          locationAddList.remove(
+                                                              locationAddList[
+                                                                  index]);
+                                                          showToast(
+                                                              "Removed Sucessfully !!");
+                                                        });
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.close,
+                                                        size: 18,
+                                                        color: Colors.red,
+                                                      )),
+                                                )
                                               ],
                                             ),
                                           );
@@ -1815,12 +1821,12 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
         _loading = true;
       });
 
-      print("--->$locationAddList");
       var requestMulti =
           http.MultipartRequest('POST', Uri.parse(BASE_URL + postadstore));
 
       requestMulti.headers.addAll({
         'Authorization': 'Bearer ${prefs.getString("token")}',
+        'Content-Type': 'application/json'
       });
 
       requestMulti.fields["id"] = prefs.getString('userid');
@@ -1856,8 +1862,13 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
           dropdownvalue.toString() == "manually"
               ? dropdownvalue
               : "same_as_profile";
-      requestMulti.fields["location_data[0]"] =
-          locationAddList.isEmpty ? "" : locationAddList.toString();
+
+      if (locationAddList.isNotEmpty) {
+        for (var i = 0; i < locationAddList.length; i++) {
+          requestMulti.fields["location_data[" + i.toString() + "]"] =
+              locationAddList[i].toString();
+        }
+      }
 
       // if (sameAddress) {
       //   requestMulti.fields["address_type"] = "same_as_profile";
@@ -1900,6 +1911,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
       var response = await requestMulti.send();
       var respStr = await response.stream.bytesToString();
+      print(jsonEncode(requestMulti.fields));
       setState(() {
         _loading = false;
       });

@@ -10,6 +10,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _pwdvisible = true;
   void getToken() async {
-     fcmToken = await FirebaseMessaging.instance.getToken();
+    fcmToken = await FirebaseMessaging.instance.getToken();
     log("fcm token--->$fcmToken");
   }
 
@@ -196,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                   ),
                   Container(
-                    height: height * 0.07,
+                    height: 60,
                     width: width * 0.9,
                     alignment: Alignment.center,
                     decoration: const BoxDecoration(
@@ -207,21 +208,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, bottom: 7.0),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            hintText: "Email",
-                            hintStyle: TextStyle(
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14),
-                            border: InputBorder.none,
-                          ),
-                          onChanged: (String value) {
-                            emailController.text = value.toString();
-                          },
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: "Email",
+                          contentPadding: EdgeInsets.all(15),
+                          hintStyle: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14),
+                          border: InputBorder.none,
                         ),
+                        onChanged: (String value) {
+                          emailController.text = value.toString();
+                        },
                       ),
                     ),
                   ),
@@ -229,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 10,
                   ),
                   Container(
-                    height: height * 0.07,
+                    height: 55,
                     width: width * 0.9,
                     decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -239,32 +238,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10, bottom: 7.0),
-                          child: TextFormField(
-                            obscureText: _pwdvisible,
-                            decoration: InputDecoration(
-                                hintText: "Password",
-                                hintStyle: const TextStyle(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14),
-                                border: InputBorder.none,
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _pwdvisible = !_pwdvisible;
-                                      });
-                                    },
-                                    icon: _pwdvisible == false
-                                        ? const Icon(Icons.visibility_off,
-                                            color: kPrimaryColor)
-                                        : const Icon(Icons.visibility,
-                                            color: kPrimaryColor))),
-                            onChanged: (String value) {
-                              passwordController.text = value.toString();
-                            },
-                          ),
+                        child: TextFormField(
+                          obscureText: _pwdvisible,
+                          decoration: InputDecoration(
+                              hintText: "Password",
+                              contentPadding: EdgeInsets.all(15),
+                              hintStyle: const TextStyle(
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14),
+                              border: InputBorder.none,
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _pwdvisible = !_pwdvisible;
+                                    });
+                                  },
+                                  icon: _pwdvisible == false
+                                      ? const Icon(Icons.visibility_off,
+                                          color: kPrimaryColor)
+                                      : const Icon(Icons.visibility,
+                                          color: kPrimaryColor))),
+                          onChanged: (String value) {
+                            passwordController.text = value.toString();
+                          },
                         )),
                   ),
                   const SizedBox(
@@ -330,26 +327,49 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: width,
-                    height: 20,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: size.width * 0.45,
-                          child:
-                              const Divider(thickness: 1, color: Colors.black),
-                        ),
-                        const Text("OR", style: TextStyle(color: Colors.black)),
-                        SizedBox(
-                          width: size.width * 0.45,
-                          child:
-                              const Divider(thickness: 1, color: Colors.black),
-                        ),
-                      ],
-                    ),
+                    width: 400,
+                    child: Stack(alignment: Alignment.center, children: [
+                      Divider(
+                        thickness: 1,
+                        height: 60,
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                      Container(
+                          color: kContentColorDarkTheme,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "OR",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  color: Color(0xff344054)),
+                            ),
+                          ))
+                    ]),
                   ),
+                  // Container(
+                  //   margin: const EdgeInsets.symmetric(horizontal: 10),
+                  //   width: width,
+                  //   height: 20,
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                  //     children: [
+                  //       // SizedBox(
+                  //       //   width: size.width * 0.45,
+                  //       //   child:
+                  //       //       const Divider(thickness: 1, color: Colors.black),
+                  //       // ),
+                  //       const Text("OR", style: TextStyle(color: Colors.black)),
+                  //       // SizedBox(
+                  //       //   width: size.width * 0.45,
+                  //       //   child:
+                  //       //       const Divider(thickness: 1, color: Colors.black),
+                  //       // ),
+                  //     ],
+                  //   ),
+                  // ),
 
                   const SizedBox(
                     height: 40,
@@ -636,7 +656,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "email": email,
       "password": password,
       "login_type": logintype,
-      "app_token":fcmToken.toString(),
+      "app_token": fcmToken.toString(),
     };
     print(jsonEncode(body));
     print(BASE_URL + login);
