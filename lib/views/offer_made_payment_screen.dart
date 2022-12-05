@@ -713,7 +713,7 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
       paymentStatus = data['User']['payment_status'];
 
       initializeRazorpay();
-      removeCouponDetails();
+      // removeCouponDetails();
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }

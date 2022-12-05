@@ -541,7 +541,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                           Text(
                                               "Quantity: ${offermadelist[index]['quantity']}"),
                                                Text(
-                                              "Status: ${_getStatus(offermadelist[index]['offer_status'].toString())}"),
+                                              "Status: ${offermadelist[index]['status_with_name'].toString()}"),
                                         ],
                                       ),
                                     ),
@@ -992,7 +992,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
           setState(() {
             offermadelist.addAll(jsonDecode(response.body)['Response']['data']);
           });
-          print(offermadelist[0]);
+          log(offermadelist[0].toString());
         } else {
           if (DashboardState.currentTab == 1) {
             // showToast("Records not found");

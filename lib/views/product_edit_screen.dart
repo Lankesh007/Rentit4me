@@ -1870,12 +1870,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                               padding: const EdgeInsets.only(left: 5.0),
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                // controller: yearprice,
+                                controller: securityamount,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "500",
+                                  hintText: securityamount.text,
                                 ),
-
                                 maxLines: 1,
                               ),
                             ),
@@ -2006,10 +2005,10 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           fontWeight: FontWeight.bold)),
                                   SizedBox(width: 4.0),
                                   Checkbox(
-                                      value: _termcondition,
+                                      value: _checkstock,
                                       onChanged: (value) {
                                         setState(() {
-                                          _termcondition = value;
+                                          _checkstock = value;
                                         });
                                       })
                                 ],
@@ -2120,11 +2119,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                       } else if (changeLocation == true &&
                           locationAddList.isEmpty) {
                         showToast("Please choose Location");
-                      } else if (changeCategory == true &&
-                              initialsubcatvalue == null ||
-                          initialsubcatvalue == "" ||
-                          initialsubcatvalue == "null") {
-                        showToast("Please select sub category");
                       } else if (daysprice.text.isEmpty &&
                           monthprice.text.isEmpty &&
                           yearprice.text.isEmpty &&
@@ -2324,13 +2318,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         negotiablevalue =
             data['posted_ad']['negotiate'].toString() == "1" ? "Yes" : "No";
 
-        checkData = true;
-        categoryid = data['posted_ad']['categories'][0]['id'].toString();
-        subcategoryid = data['posted_ad']['subcategory']['id'].toString();
-        subCategoryId = data['posted_ad']['subcategory']['id'].toString();
-        subCategoryTitle = data['posted_ad']['subcategory']['title'].toString();
-        log("subcategory--->$subCategoryTitle");
-
         // if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
         //   sameAddress = true;
         //   _getprofileData();
@@ -2349,6 +2336,13 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         citiesList.clear();
         var listdata = list.map((e) => CitiesModel.fromJson(e)).toList();
         citiesList.addAll(listdata);
+
+        checkData = true;
+        categoryid = data['posted_ad']['categories'][0]['id'].toString();
+        subcategoryid = data['posted_ad']['subcategory']['id'].toString();
+        subCategoryId = data['posted_ad']['subcategory']['id'].toString();
+        subCategoryTitle = data['posted_ad']['subcategory']['title'].toString();
+        log("subcategory--->$subCategoryTitle");
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -2631,6 +2625,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
             changeLocation == false ? "same_as_profile" : "manually";
         requestMulti.fields["location_data[0]"] =
             changeLocation == false ? userAddress : locationAddList.toString();
+        requestMulti.fields["quantity"] = quantityController.text.toString();
+
+        _checkstock== true ? requestMulti.fields["out_of_stock"] = "1" : "";
+
+        // requestMulti.fields["security"] = quantityController.text.toString();
 
         requestMulti.fields["old_images"] = oldImages.join(",").toString();
         print(jsonEncode(requestMulti.fields));
@@ -2646,7 +2645,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         }
 
         List<http.MultipartFile> newList = [];
-
         if (newImages.isNotEmpty) {
           for (var i = 0; i < newImages.length; i++) {
             File imageFile = File(newImages[i].toString());

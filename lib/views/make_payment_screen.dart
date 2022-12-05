@@ -111,7 +111,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
         elevation: 2.0,
         leading: InkWell(
             onTap: () {
-              removeCouponDetails();
+              // removeCouponDetails();
               Navigator.of(context).pop();
             },
             child: const Icon(

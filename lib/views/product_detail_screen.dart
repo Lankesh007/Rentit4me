@@ -14,6 +14,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/helper/loader.dart';
 import 'package:rentit4me_new/models/people_also_like_model.dart';
+import 'package:rentit4me_new/models/review_model.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/advertiser_profile_screen.dart';
@@ -355,50 +356,99 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     ],
                                   ),
                                 )),
-                        
                           ],
                         ),
-                          SizedBox(
+                        SizedBox(
                           height: 10,
                         ),
-                           RatingBar.builder(
-                          itemSize: 20,
-                          initialRating: 3,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: false,
-                          itemCount: 5,
-                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                          ),
-                          onRatingUpdate: (rating) {
-                            print(rating);
-                          },
-                        ),
-                     
+                        ratingList.isEmpty
+                            ? SizedBox()
+                            : SizedBox(
+                                height: height * 0.1,
+                                width: width * 0.9,
+                                child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: ratingList.length,
+                                    itemBuilder: (context, index) {
+                                      var item = ratingList[index];
+                                      // double rating =
+                                      //     double.parse(item.userRating.toString());
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            height: 30,
+                                            child: RatingBar.builder(
+                                              itemSize: 20,
+                                              initialRating:
+                                                  item.userRating.toDouble(),
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: false,
+                                              itemCount: 5,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 4.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                print(rating);
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Text(
+                                              "FeedBack",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Text(item.feedback == null ||
+                                                    item.feedback == "" ||
+                                                    item.feedback == "null"
+                                                ? ""
+                                                : item.feedback),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                              ),
+
                         SizedBox(
                           height: 10,
                         ),
                         Divider(),
-                            kyc == 1
-                                ? SizedBox(
-                                    height: 30,
-                                    width: MediaQuery.of(context).size.width*0.9,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        kyc == 1
-                                            ? Container(
-                                              width: 100,
+                        kyc == 1
+                            ? SizedBox(
+                                height: 30,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    kyc == 1
+                                        ? Container(
+                                            width: 100,
                                             decoration: BoxDecoration(
-                                                color:
-                                                    Colors.green.shade100,
+                                                color: Colors.green.shade100,
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        20)),
+                                                    BorderRadius.circular(20)),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
@@ -422,26 +472,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                 ],
                                               ),
                                             ),
-                                              )
-                                            : SizedBox(),
-                                        SizedBox(
-                                          width: 80,
-                                        ),
-
-                                        trustedbadgeapproval == "approved" 
-                                            ? Container(
-                                              width: 150,
+                                          )
+                                        : SizedBox(),
+                                    SizedBox(
+                                      width: 80,
+                                    ),
+                                    trustedbadgeapproval == "approved"
+                                        ? Container(
+                                            width: 150,
                                             decoration: BoxDecoration(
-                                                color:
-                                                    Colors.green.shade100,
+                                                color: Colors.green.shade100,
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        40)),
+                                                    BorderRadius.circular(40)),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(0.0),
                                               child: Container(
-                                                margin: const EdgeInsets.symmetric(horizontal:10),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -463,16 +512,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                 ),
                                               ),
                                             ),
-                                              )
-                                            : SizedBox(),
-                                      ],
-                                    ),
-                                  )
-                                : SizedBox(),
+                                          )
+                                        : SizedBox(),
+                                  ],
+                                ),
+                              )
+                            : SizedBox(),
                         Divider(),
 
                         SizedBox(height: 10.0),
-                     
+
                         SizedBox(height: 10.0),
 
                         Divider(
@@ -1359,6 +1408,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   String adId = '';
+  List<ReviewModel> ratingList = [];
   Future _getproductDetail(String productid) async {
     setState(() {
       apiLoading = true;
@@ -1384,7 +1434,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
       apiLoading = false;
+      var list = data['posted_ad']['total_reviews'] as List;
+
       setState(() {
+        ratingList.clear();
+        var listdata = list.map((e) => ReviewModel.fromJson(e)).toList();
+        ratingList.addAll(listdata);
         userid = prefs.getString('userid');
         adId = data['posted_ad']['ad_id'];
 

@@ -13,10 +13,8 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:rentit4me_new/views/product_detail_screen.dart';
-import 'package:rentit4me_new/views/verify_reset_otp.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'add_list_screen.dart';
 import 'login_screen.dart';
 
@@ -81,7 +79,6 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
 
   String _priceGroupValue;
   String _rentGroupValue;
-
   String usercity;
   String userstate;
   String usercountry;
@@ -288,11 +285,11 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
         listEnd = true;
       });
     } else {
-      _getData(getlocation, getcategoryslug);
+      // _getData(getlocation, getcategoryslug);
       controller.addListener(() {
         if (controller.position.pixels == controller.position.maxScrollExtent &&
             isListing) {
-          _getData(getlocation, getcategoryslug);
+          // _getData(getlocation, getcategoryslug);
         }
       });
     }
@@ -1152,7 +1149,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                                                           child: Column(
                                                             children: [
                                                               CachedNetworkImage(
-                                                                  height: 80,
+                                                                  height: 120,
                                                                   width: double
                                                                       .infinity,
                                                                   errorWidget: (context,
@@ -1246,53 +1243,53 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
   }
 
   bool listEnd = false;
-  Future _getData(String location, String category) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLoading = true;
-    });
-    log(jsonEncode({
-      "city_name": location,
-      "category": category,
-      "limit": "10",
-      "skip": skipvalue
-    }));
-    final body = {
-      "city_name": location,
-      "category": category,
-      "limit": "10",
-      "skip": skipvalue
-    };
-    var response = await http.post(Uri.parse(BASE_URL + searchingdata),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        });
-    log("new data ${response.body}");
-    setState(() {
-      isLoading = false;
-    });
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body)['Response'];
-      if (data.length > 0) {
-        setState(() {
-          skipvalue = skipvalue + 10;
-        });
-      } else {
-        setState(() {
-          listEnd = true;
-        });
-      }
-      setState(() {
-        productData.addAll(data);
-        _searchlist.addAll(data);
-      });
-    } else {
-      throw Exception('Failed to get data due to ${response.body}');
-    }
-  }
+  // Future _getData(String location, String category) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   log(jsonEncode({
+  //     "city_name": location,
+  //     "category": category,
+  //     "limit": "10",
+  //     "skip": skipvalue
+  //   }));
+  //   final body = {
+  //     "city_name": location,
+  //     "category": category,
+  //     "limit": "10",
+  //     "skip": skipvalue
+  //   };
+  //   var response = await http.post(Uri.parse(BASE_URL + searchingdata),
+  //       body: jsonEncode(body),
+  //       headers: {
+  //         "Accept": "application/json",
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer ${prefs.getString("token")}',
+  //       });
+  //   log("new data ${response.body}");
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  //   if (response.statusCode == 200) {
+  //     var data = json.decode(response.body)['Response'];
+  //     if (data.length > 0) {
+  //       setState(() {
+  //         skipvalue = skipvalue + 10;
+  //       });
+  //     } else {
+  //       setState(() {
+  //         listEnd = true;
+  //       });
+  //     }
+  //     setState(() {
+  //       productData.addAll(data);
+  //       _searchlist.addAll(data);
+  //     });
+  //   } else {
+  //     throw Exception('Failed to get data due to ${response.body}');
+  //   }
+  // }
 
   Future _getlocationandcategoryData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1422,12 +1419,12 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
     String state = prefs.getString('state');
     String city = prefs.getString('city');
     String cityId = prefs.getString('cityId');
-    var url = BASE_URL + filterUrl;
+    var url = "${BASE_URL}browse-ads";
     var body = {
       "country": country.toString(),
       "city": city == null || city == "" ? "" : city,
       "state": state == null || state == "" ? "" : state,
-      "search": "",
+      // "search": "",
       "q": widget.search.toString(),
     };
 

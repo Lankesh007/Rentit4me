@@ -525,37 +525,38 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                               Text(
                                                 "Status: ",
                                               ),
-                                              offerrecievedlist[index]
-                                                          ['offer_status'] ==
-                                                      3
-                                                  ? Text(
-                                                      "Pending",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    )
-                                                  : offerrecievedlist[index][
-                                                              'offer_status'] ==
-                                                          2
-                                                      ? Text("Rejected",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold))
-                                                      : offerrecievedlist[index]
-                                                                  [
-                                                                  'offer_status'] ==
-                                                              1
-                                                          ? Text("Accepted",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold))
-                                                          : offerrecievedlist[index]
-                                                                      ['offer_status'] ==
-                                                                  12
-                                                              ? Text("Final Amount Offered", style: TextStyle(fontWeight: FontWeight.bold))
-                                                              : SizedBox(),
+                                              Text(offerrecievedlist[index]['status_with_name']),
+                                              // offerrecievedlist[index]
+                                              //             ['offer_status'] ==
+                                              //         3
+                                              //     ? Text(
+                                              //         "Pending",
+                                              //         style: TextStyle(
+                                              //             fontWeight:
+                                              //                 FontWeight.bold),
+                                              //       )
+                                              //     : offerrecievedlist[index][
+                                              //                 'offer_status'] ==
+                                              //             2
+                                              //         ? Text("Rejected",
+                                              //             style: TextStyle(
+                                              //                 fontWeight:
+                                              //                     FontWeight
+                                              //                         .bold))
+                                              //         : offerrecievedlist[index]
+                                              //                     [
+                                              //                     'offer_status'] ==
+                                              //                 1
+                                              //             ? Text("Accepted",
+                                              //                 style: TextStyle(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .bold))
+                                              //             : offerrecievedlist[index]
+                                              //                         ['offer_status'] ==
+                                              //                     12
+                                              //                 ? Text("Final Amount Offered", style: TextStyle(fontWeight: FontWeight.bold))
+                                              //                 : SizedBox(),
                                             ],
                                           ),
                                         ),

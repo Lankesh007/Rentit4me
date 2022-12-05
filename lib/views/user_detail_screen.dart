@@ -47,6 +47,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   String iFSCCODE = '';
   bool gstfile = false;
   bool panFile = false;
+  String resubmitValue = "";
 
   var items = [
     'select',
@@ -88,6 +89,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   bool isLoading = false;
   File _pickedImage;
   File panImage;
+  bool checkKycResubmit = false;
+
   File aadharImage;
 
   bool _emailcheck = false;
@@ -740,7 +743,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                             padding: const EdgeInsets.only(
                                                 left: 10.0),
                                             child: TextFormField(
-                                              readOnly:true,
+                                              readOnly: true,
                                               controller: location,
                                               decoration: InputDecoration(
                                                 border: InputBorder.none,
@@ -854,153 +857,176 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      kyc == 1 && kycApproval == "approved"
+                                      // kyc == 1 && kycApproval == "approved"
+                                      //     ? Column(
+                                      //         children: [
+                                      //           Container(
+                                      //             alignment:
+                                      //                 Alignment.centerLeft,
+                                      //             child: const Text(
+                                      //                 "Aadhar Number",
+                                      //                 style: TextStyle(
+                                      //                   color: kPrimaryColor,
+                                      //                 )),
+                                      //           ),
+                                      //           SizedBox(height: 5),
+                                      //           Container(
+                                      //               decoration: BoxDecoration(
+                                      //                   border: Border.all(
+                                      //                       width: 1,
+                                      //                       color: Colors
+                                      //                           .deepOrangeAccent),
+                                      //                   borderRadius:
+                                      //                       BorderRadius.all(
+                                      //                           Radius.circular(
+                                      //                               12))),
+                                      //               child: Padding(
+                                      //                 padding:
+                                      //                     const EdgeInsets.only(
+                                      //                         left: 10.0),
+                                      //                 child: TextFormField(
+                                      //                   readOnly: true,
+                                      //                   keyboardType:
+                                      //                       TextInputType
+                                      //                           .number,
+                                      //                   inputFormatters: [
+                                      //                     FilteringTextInputFormatter
+                                      //                         .digitsOnly
+                                      //                   ],
+                                      //                   controller:
+                                      //                       aadharNumber,
+                                      //                   decoration:
+                                      //                       InputDecoration(
+                                      //                     border:
+                                      //                         InputBorder.none,
+                                      //                     hintText: aadharNumberApi ==
+                                      //                             ""
+                                      //                         ? "Must be 12 digits"
+                                      //                         : aadharNumberApi,
+                                      //                     counterText: "",
+                                      //                   ),
+                                      //                   maxLength: 12,
+                                      //                 ),
+                                      //               )),
+                                      //           SizedBox(
+                                      //             height: 10,
+                                      //           ),
+                                      //           Container(
+                                      //             alignment:
+                                      //                 Alignment.centerLeft,
+                                      //             child: const Text(
+                                      //                 "Aadhar Doc",
+                                      //                 style: TextStyle(
+                                      //                   color: kPrimaryColor,
+                                      //                 )),
+                                      //           ),
+                                      //           const SizedBox(height: 8.0),
+                                      //           Container(
+                                      //               decoration: BoxDecoration(
+                                      //                   border: Border.all(
+                                      //                       width: 1,
+                                      //                       color: Colors
+                                      //                           .deepOrangeAccent),
+                                      //                   borderRadius:
+                                      //                       const BorderRadius
+                                      //                               .all(
+                                      //                           Radius.circular(
+                                      //                               12))),
+                                      //               child: Padding(
+                                      //                 padding: const EdgeInsets
+                                      //                         .symmetric(
+                                      //                     vertical: 5.0,
+                                      //                     horizontal: 8.0),
+                                      //                 child: Row(
+                                      //                   mainAxisAlignment:
+                                      //                       MainAxisAlignment
+                                      //                           .spaceBetween,
+                                      //                   children: [
+                                      //                     aadharDocument.toString() ==
+                                      //                                 "" ||
+                                      //                             aadharDocument
+                                      //                                     .toString() ==
+                                      //                                 "null"
+                                      //                         ? SizedBox()
+                                      //                         : aadharDocument
+                                      //                                 .startsWith(
+                                      //                                     "http")
+                                      //                             ? CircleAvatar(
+                                      //                                 radius:
+                                      //                                     25,
+                                      //                                 backgroundImage:
+                                      //                                     NetworkImage(
+                                      //                                         aadharDocument),
+                                      //                               )
+                                      //                             : CircleAvatar(
+                                      //                                 radius:
+                                      //                                     25,
+                                      //                                 backgroundImage:
+                                      //                                     FileImage(
+                                      //                                         File(aadharDocument)),
+                                      //                               ),
+                                      //                     // InkWell(
+                                      //                     //   onTap: () {
+                                      //                     //     aadharDoc();
+                                      //                     //     setState(() {});
+                                      //                     //   },
+                                      //                     //   child: Container(
+                                      //                     //     height: 45,
+                                      //                     //     width: 120,
+                                      //                     //     alignment:
+                                      //                     //         Alignment
+                                      //                     //             .center,
+                                      //                     //     decoration: const BoxDecoration(
+                                      //                     //         color: Colors
+                                      //                     //             .deepOrangeAccent,
+                                      //                     //         borderRadius:
+                                      //                     //             BorderRadius.all(
+                                      //                     //                 Radius.circular(
+                                      //                     //                     8.0))),
+                                      //                     //     child: const Text(
+                                      //                     //         "Choose file",
+                                      //                     //         style: TextStyle(
+                                      //                     //             color: Colors
+                                      //                     //                 .white,
+                                      //                     //             fontSize:
+                                      //                     //                 16)),
+                                      //                     //   ),
+                                      //                     // )
+                                      //                   ],
+                                      //                 ),
+                                      //               )),
+                                      //           SizedBox(
+                                      //             height: 10,
+                                      //           ),
+                                      //         ],
+                                      //       )
+                                      //     : SizedBox(),
+                                      kyc == 1 && kycApproval != "approved"
                                           ? Column(
                                               children: [
-                                                Container(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: const Text(
-                                                      "Aadhar Number",
+                                                Divider(),
+                                                Row(children: [
+                                                  Text("Kyc Resubmit",
                                                       style: TextStyle(
-                                                        color: kPrimaryColor,
-                                                      )),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color: Colors
-                                                                .deepOrangeAccent),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    12))),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 10.0),
-                                                      child: TextFormField(
-                                                        readOnly: true,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        inputFormatters: [
-                                                          FilteringTextInputFormatter
-                                                              .digitsOnly
-                                                        ],
-                                                        controller:
-                                                            aadharNumber,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          border:
-                                                              InputBorder.none,
-                                                          hintText: aadharNumberApi ==
-                                                                  ""
-                                                              ? "Must be 12 digits"
-                                                              : aadharNumberApi,
-                                                          counterText: "",
-                                                        ),
-                                                        maxLength: 12,
-                                                      ),
-                                                    )),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Container(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: const Text(
-                                                      "Aadhar Doc",
-                                                      style: TextStyle(
-                                                        color: kPrimaryColor,
-                                                      )),
-                                                ),
-                                                const SizedBox(height: 8.0),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color: Colors
-                                                                .deepOrangeAccent),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                    .all(
-                                                                Radius.circular(
-                                                                    12))),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 5.0,
-                                                          horizontal: 8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          aadharDocument.toString() ==
-                                                                      "" ||
-                                                                  aadharDocument
-                                                                          .toString() ==
-                                                                      "null"
-                                                              ? SizedBox()
-                                                              : aadharDocument
-                                                                      .startsWith(
-                                                                          "http")
-                                                                  ? CircleAvatar(
-                                                                      radius:
-                                                                          25,
-                                                                      backgroundImage:
-                                                                          NetworkImage(
-                                                                              aadharDocument),
-                                                                    )
-                                                                  : CircleAvatar(
-                                                                      radius:
-                                                                          25,
-                                                                      backgroundImage:
-                                                                          FileImage(
-                                                                              File(aadharDocument)),
-                                                                    ),
-                                                          // InkWell(
-                                                          //   onTap: () {
-                                                          //     aadharDoc();
-                                                          //     setState(() {});
-                                                          //   },
-                                                          //   child: Container(
-                                                          //     height: 45,
-                                                          //     width: 120,
-                                                          //     alignment:
-                                                          //         Alignment
-                                                          //             .center,
-                                                          //     decoration: const BoxDecoration(
-                                                          //         color: Colors
-                                                          //             .deepOrangeAccent,
-                                                          //         borderRadius:
-                                                          //             BorderRadius.all(
-                                                          //                 Radius.circular(
-                                                          //                     8.0))),
-                                                          //     child: const Text(
-                                                          //         "Choose file",
-                                                          //         style: TextStyle(
-                                                          //             color: Colors
-                                                          //                 .white,
-                                                          //             fontSize:
-                                                          //                 16)),
-                                                          //   ),
-                                                          // )
-                                                        ],
-                                                      ),
-                                                    )),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                              ],
-                                            )
-                                          : SizedBox(),
-                                      kyc == 1 && kycApproval == "rejected"
-                                          ? Column(
-                                              children: [
+                                                          color: kPrimaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  Checkbox(
+                                                      value: checkKycResubmit,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          checkKycResubmit =
+                                                              value;
+                                                          // renttype[0]['enable'] = _checkhour;
+                                                          if (checkKycResubmit ==
+                                                              true) {
+                                                            resubmitValue = "1";
+                                                          } else {
+                                                            resubmitValue = "0";
+                                                          }
+                                                        });
+                                                      }),
+                                                ]),
                                                 Container(
                                                   alignment:
                                                       Alignment.centerLeft,
@@ -1141,37 +1167,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                               ],
                                             )
                                           : SizedBox(),
-
-                                      // SizedBox(
-                                      //   width: double.infinity,
-                                      //   child: Row(
-                                      //     children: [
-                                      //       const Text("Push Notification",
-                                      //           style: TextStyle(
-                                      //               color: kPrimaryColor,
-                                      //               fontWeight: FontWeight.bold)),
-                                      //       const SizedBox(width: 5),
-                                      //       Checkbox(
-                                      //           value: _checknotifi,
-                                      //           onChanged: (value) {
-                                      //             if (value) {
-                                      //               setState(() {
-                                      //                 _checknotifi = value;
-                                      //               });
-                                      //             } else {
-                                      //               setState(() {
-                                      //                 _checknotifi = value;
-                                      //               });
-                                      //             }
-                                      //           }),
-                                      //       const SizedBox(width: 5),
-                                      //       const Text('Allow',
-                                      //           style: TextStyle(
-                                      //               color: kPrimaryColor,
-                                      //               fontWeight: FontWeight.bold))
-                                      //     ],
-                                      //   ),
-                                      // ),
                                     ],
                                   ),
                                 ),
@@ -2184,12 +2179,11 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         name.text = data['User']['name'].toString();
         email.text = data['User']['email'].toString();
         countryName = data['User']['country'].toString();
-        stateName =data['User']['state'].toString();
+        stateName = data['User']['state'].toString();
         cityName = data['User']['city'].toString();
 
-        location.text="$cityName,$stateName,$countryName";
+        location.text = "$cityName,$stateName,$countryName";
         log("===>${location.text}");
-
 
         fburl.text = data['User']['facebook_url'] == null
             ? ""
@@ -2754,6 +2748,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "adhaar_no": aadharNumber.text.toString(),
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
+      "kyc_resubmit": resubmitValue,
       "pan_no": panNumber.text.toString(),
     };
 
@@ -2889,6 +2884,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
+      "kyc_resubmit": resubmitValue,
     };
 
     log(bodyMap.toString());
@@ -3023,6 +3019,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
+      "kyc_resubmit": resubmitValue,
     };
 
     try {
@@ -3139,6 +3136,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
+      "kyc_resubmit": resubmitValue,
     };
 
     try {
@@ -3253,10 +3251,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
+      "kyc_resubmit": resubmitValue,
+      "adhaar_doc": aadharDocument
       // "pan_doc": "",
       // "gst_doc": "",
       // "avatar": ""
     };
+    log("body=====>$bodyMap");
 
     var response = await APIHelper.apiPostRequest(url, bodyMap);
     var result = jsonDecode(response);
@@ -3328,7 +3329,9 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
+      "kyc_resubmit": resubmitValue,
     };
+    log("body-->$bodyMap");
 
     try {
       final request = http.MultipartRequest(
@@ -3468,7 +3471,9 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "business_name": businessName.text.toString(),
       "gst_no": gstNumber.text.toString(),
       "pan_no": panNumber.text.toString(),
+      "kyc_resubmit": resubmitValue
     };
+    log("body-->$bodyMap");
 
     try {
       final request = http.MultipartRequest(

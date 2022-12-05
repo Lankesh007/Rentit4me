@@ -509,7 +509,7 @@ class _TrustedBadgePaymentDetailsState
       paymentStatus = data['User']['payment_status'];
 
       initializeRazorpay();
-      removeCouponDetails();
+      // removeCouponDetails();
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }
