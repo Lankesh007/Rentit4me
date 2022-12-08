@@ -7,8 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +15,7 @@ import 'package:rentit4me_new/helper/loader.dart';
 import 'package:rentit4me_new/models/latest_addition_model.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/views/top_selling_categories.dart';
@@ -670,7 +669,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 40,
                             width: 100,
                             decoration: BoxDecoration(
-                              color: Colors.orange[600],
+                              color: Appcolors.primaryColor,
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Text("Post An Ad",
@@ -718,7 +717,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 40,
                           width: 60,
                           decoration: BoxDecoration(
-                            color: Colors.orange[600],
+                              color: Appcolors.primaryColor,
+                        
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: IconButton(
@@ -762,9 +762,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: !sharedpref
                     ? Image.asset('assets/images/user.png',
                         color: kPrimaryColor, scale: 1.2)
-                    : Image.asset('assets/images/power.png',
-                        color: kPrimaryColor, scale: 1.2)),
+                        :SizedBox())
+                    // : Image.asset('assets/images/power.png',
+                    //     color: kPrimaryColor, scale: 1.2)),
           ],
+       
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -809,6 +811,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 ElevatedButton(
+                                   
                                   onPressed: () async {
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
@@ -901,6 +904,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                   child: const Text("Search"),
                                   style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(Appcolors.secondaryColor),
+                                    
                                       shape: MaterialStateProperty.all(
                                           RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20.0),
@@ -961,7 +966,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 40,
                                 width: 80,
                                 decoration: BoxDecoration(
-                                  color: Colors.orange[600],
+                              color: Appcolors.primaryColor,
+                               
                                   borderRadius: BorderRadius.circular(
                                     20,
                                   ),
@@ -1628,7 +1634,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       width: MediaQuery.of(context).size.width *
                                           0.45,
                                       decoration: BoxDecoration(
-                                          color: Colors.deepOrangeAccent,
+                              color: Appcolors.primaryColor,
+                                  
                                           borderRadius:
                                               BorderRadius.circular(50)),
                                       child: const Text("Upload",
@@ -1681,7 +1688,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         height: 40,
                                         width: 80,
                                         decoration: BoxDecoration(
-                                          color: Colors.orange[600],
+                              color: Appcolors.primaryColor,
+                                         
                                           borderRadius: BorderRadius.circular(
                                             20,
                                           ),
@@ -1733,7 +1741,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Text("Today's Special Deals",
                                   style: TextStyle(
-                                      color: Colors.blue[900],
+                              color: Appcolors.secondaryColor,
+                                      
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600)),
                             ),
@@ -1863,7 +1872,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     crossAxisCount: 2,
                                                     crossAxisSpacing: 4.0,
                                                     mainAxisSpacing: 4.0,
-                                                    childAspectRatio: 1.0),
+                                                    childAspectRatio: 1.0,),
                                             itemBuilder: (context, gridindex) {
                                               return InkWell(
                                                 onTap: () {

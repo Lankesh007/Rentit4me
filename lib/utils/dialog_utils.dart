@@ -68,4 +68,12 @@ class DialogUtils {
           );
         });
   }
+
 }
+  class Appcolors{
+
+    static const primaryColor=Color(0xfff87439);
+    static const secondaryColor=Color(0xff012060);
+    static const whiteColor=Color.fromARGB(255, 243, 243, 245);
+
+  }

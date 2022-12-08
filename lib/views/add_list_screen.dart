@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddlistingScreen extends StatefulWidget {
@@ -224,7 +225,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2.0,
-        title: Text("Listings ADS", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Post An Add", style: TextStyle(color: Appcolors.secondaryColor,fontSize:23,fontWeight:FontWeight.w600)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(

@@ -60,7 +60,7 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
     FirebaseMessaging.instance.getToken().then((value) {
       setState(() {
         fcmToken = value.toString();
-        log("fcm token--->"+fcmToken);
+        log("fcm token--->" + fcmToken);
       });
     });
   }
@@ -296,9 +296,6 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
         onSaved: (String value) {
           nameController.text = value;
         },
-        onChanged: (value) {
-          nameController.text = value;
-        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
             hintText: initialValue.toString(), labelText: 'Full Name*'),
@@ -311,14 +308,11 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
         textCapitalization: TextCapitalization.sentences,
-        //controller: businessController,
+        controller: businessController,
         validator: (value) {
           return null;
         },
         onSaved: (String value) {
-          businessController.text = value;
-        },
-        onChanged: (value) {
           businessController.text = value;
         },
         cursorColor: kPrimaryColor,
@@ -341,9 +335,6 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
         onSaved: (String value) {
           emailController.text = value;
         },
-        onChanged: (value) {
-          emailController.text = value;
-        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
             hintText: initialValue.toString(), labelText: 'Email Address*'),
@@ -356,15 +347,12 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
         keyboardType: TextInputType.number,
-        //controller: mobileController,
+        controller: mobileController,
         maxLength: 10,
         validator: (value) {
           return null;
         },
         onSaved: (String value) {
-          mobileController.text = value;
-        },
-        onChanged: (value) {
           mobileController.text = value;
         },
         cursorColor: kPrimaryColor,
@@ -382,15 +370,12 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
         keyboardType: TextInputType.number,
-        //controller: alternamemobileContoller,
+        controller: alternamemobileContoller,
         maxLength: 10,
         validator: (value) {
           return null;
         },
         onSaved: (String value) {
-          alternamemobileContoller.text = value;
-        },
-        onChanged: (value) {
           alternamemobileContoller.text = value;
         },
         cursorColor: kPrimaryColor,
@@ -407,42 +392,62 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        obscureText: showPassword,
         textCapitalization: TextCapitalization.sentences,
-        //controller: pwdController,
+        controller: pwdController,
         validator: (value) {
           return null;
         },
         onSaved: (String value) {
           pwdController.text = value;
         },
-        onChanged: (value) {
-          pwdController.text = value;
-        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: initialValue.toString(), labelText: 'Password*'),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  showPassword = !showPassword;
+                });
+              },
+              icon: showPassword == false
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
+            ),
+            hintText: initialValue.toString(),
+            labelText: 'Password*'),
       ),
     );
   }
 
+  bool showPassword = true;
+  bool showConfirmPassword = true;
   Widget _confirmpwdTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
+        obscureText: showConfirmPassword,
         textCapitalization: TextCapitalization.sentences,
-        //controller: confirmpwdController,
+        controller: confirmpwdController,
         validator: (value) {
           return null;
         },
         onSaved: (String value) {
           confirmpwdController.text = value;
         },
-        onChanged: (value) {
-          confirmpwdController.text = value;
-        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: initialValue.toString(), labelText: 'Confirm Password*'),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  showConfirmPassword = !showConfirmPassword;
+                });
+              },
+              icon: showConfirmPassword == false
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
+            ),
+            hintText: initialValue.toString(),
+            labelText: 'Confirm Password*'),
       ),
     );
   }
@@ -479,18 +484,7 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       _loading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(jsonEncode({
-      "name": name,
-      "business_name": business,
-      "email": email,
-      "countrycode": countrycode,
-      "mobile": mobile,
-      "user_type": _result.toString() == "Business" ? "4" : "3",
-      "password": password,
-      "token": fcmToken,
-      "latitude": prefs.getString('latitude'),
-      "longitude": prefs.getString('longitude'),
-    }));
+
     final body = {
       "name": name,
       "business_name": business,
@@ -504,20 +498,28 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       "latitude": prefs.getString('latitude'),
       "longitude": prefs.getString('longitude'),
     };
+    log(body.toString());
     var response = await http.post(Uri.parse(BASE_URL + register),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
           'Content-Type': 'application/json'
         });
-    print(response.body);
+    log(response.body.toString());
     if (response.statusCode == 200) {
       setState(() {
         _loading = false;
       });
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
+        prefs.setString('userid',
+            jsonDecode(response.body)['Response']['user']['id'].toString());
         prefs.setString(
-            'userid', jsonDecode(response.body)['Response']['id'].toString());
+            'token', jsonDecode(response.body)['Response']['token'].toString());
+        log("token---->${prefs.getString('token')}");
+        businessController.text.isEmpty
+            ? _sendotp(mobile)
+            : prefs.setString(
+                'businessName', businessController.text.toString());
         _sendotp(mobile);
       } else {
         if (jsonDecode(response.body)['ErrorMessage'].toString() ==
@@ -542,15 +544,16 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
   }
 
   Future _sendotp(String mobile) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final body = {
       "mobile": mobile,
     };
-    var response = await http.post(Uri.parse(BASE_URL + sendotp),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + sendotp), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
       showToast(jsonDecode(response.body)['Response']['otp'].toString());
       Navigator.pushReplacement(

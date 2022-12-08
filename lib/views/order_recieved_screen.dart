@@ -893,7 +893,7 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
           myactiveorderslist
-              .addAll(jsonDecode(response.body)['Response']['Orders']);
+              .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
         });
       } else {}
     } else {
@@ -929,7 +929,7 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
           myactiveorderslist
-              .addAll(jsonDecode(response.body)['Response']['Orders']);
+              .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           _progress = false;
         });
       } else {

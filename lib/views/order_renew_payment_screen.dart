@@ -75,11 +75,14 @@ class _OrderRenewPaymentScreenState extends State<OrderRenewPaymentScreen> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
-
+var razorpayId;
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print("success");
     //print(response.orderId.toString());
     log("payment id-->${response.paymentId}");
+     setState(() {
+      razorpayId = response.paymentId;
+    });
     payForOrder(
       response.paymentId,
     );
@@ -100,6 +103,11 @@ class _OrderRenewPaymentScreenState extends State<OrderRenewPaymentScreen> {
       "amount": couponApplied == true
           ? applidTotalAmount.toString()
           : widget.totalAmount.toString(),
+           "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
     };
 
     var response = await APIHelper.apiPostRequest(url, body);
@@ -118,6 +126,7 @@ class _OrderRenewPaymentScreenState extends State<OrderRenewPaymentScreen> {
       setState(() {
         _loading = false;
       });
+      transactionFailed();
     }
     setState(() {
       _loading = false;
@@ -636,9 +645,27 @@ class _OrderRenewPaymentScreenState extends State<OrderRenewPaymentScreen> {
       paymentStatus = data['User']['payment_status'];
 
       initializeRazorpay();
-      removeCouponDetails();
+      // removeCouponDetails();
     } else {
       throw Exception('Failed to get data due to ${response.body}');
+    }
+  }
+
+  Future transactionFailed() async {
+    var url = "${BASE_URL}failed-transaction";
+    var body = {
+      "razorpay_payment_id": razorpayId,
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : amount.toString(),
+      "type": "rent"
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']);
+    } else {
+      showToast(result['ErrorMessage']);
     }
   }
 

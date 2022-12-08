@@ -15,10 +15,12 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/forgot_password.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/make_payment_screen.dart';
+import 'package:rentit4me_new/views/otp_screen.dart';
 import 'package:rentit4me_new/views/personal_detail_screen.dart';
 import 'package:rentit4me_new/views/signup_business_screen.dart';
 import 'package:rentit4me_new/views/signup_consumer_screen.dart';
@@ -124,29 +126,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 2.0,
-      //   // leading: Padding(
-      //   //   padding: const EdgeInsets.only(left: 10),
-      //   //   child: Image.asset('assets/images/logo.png'),
-      //   // ),
-      //   title: Image.asset(
-      //     'assets/images/logo.png',
-      //     scale: 22,
-      //   ),
-      //   centerTitle: true,
-      //   actions: [
-      //     IconButton(
-      //         onPressed: () {
-      //           Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //               builder: (context) => const HomeScreen()));
-      //         },
-      //         icon: const Icon(Icons.home, color: kPrimaryColor))
-      //   ],
-      // ),
       appBar: AppBar(
-        backgroundColor: Colors.orange.shade400,
+        backgroundColor: Appcolors.whiteColor,
         title: Image.asset(
           'assets/images/logo.png',
           scale: 22,
@@ -162,7 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
               icon: const Icon(Icons.home, color: Colors.black))
         ],
       ),
-
       body: ContainedTabBarView(
         tabs: const [
           Text('Sign In',
@@ -182,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SingleChildScrollView(
             child: Container(
               height: height * 0.8,
-              decoration: const BoxDecoration(color: kContentColorDarkTheme),
+              decoration: const BoxDecoration(color: Appcolors.whiteColor),
               child: Column(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -287,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: width * 0.9,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                          color: Colors.yellow.shade600,
+                          color: Appcolors.primaryColor,
                           borderRadius: BorderRadius.all(Radius.circular(21))),
                       child: Text(
                           buttonLoading == true ? "Please Wait..." : "Login",
@@ -336,7 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         endIndent: 20,
                       ),
                       Container(
-                          color: kContentColorDarkTheme,
+                          color: Appcolors.whiteColor,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -409,7 +389,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           SingleChildScrollView(
             child: Container(
-              color: kContentColorDarkTheme,
+              color: Appcolors.whiteColor,
               child: Column(
                 children: [
                   const SizedBox(
@@ -439,14 +419,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20.0)),
-                              gradient: LinearGradient(
-                                begin: Alignment.topRight,
-                                end: Alignment.bottomLeft,
-                                colors: [
-                                  Colors.deepOrange.shade400,
-                                  Colors.red,
-                                ],
-                              )),
+                              color: Appcolors.primaryColor),
                           child: const Center(
                             child: Text(
                               'Are you a Business',
@@ -509,7 +482,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           decoration: const BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20.0)),
-                              color: Colors.purple),
+                              color: Appcolors.secondaryColor),
                           child: const Center(
                             child: Text(
                               'Are you a Consumer?',
@@ -537,37 +510,47 @@ class _LoginScreenState extends State<LoginScreen> {
           await FacebookAuth.i.login(permissions: ['public_profile', 'email']);
       if (result.status == LoginStatus.success) {
         final userData = await FacebookAuth.i.getUserData();
-        if (!userData.containsKey('email')) {
-          print(userData);
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text("Information!!",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-              content: const Text(
-                  "We are not able to receive your email from facebook, you can signup through google or manually.",
-                  style: TextStyle(fontSize: 14)),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 90,
-                    decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(12.0)),
-                    padding: const EdgeInsets.all(14),
-                    child: const Text("Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                  ),
-                ),
-              ],
-            ),
-          );
+        log("userData=-->$userData");
+        if (userData.isNotEmpty) {
+          userData.addAll(userData);
+
+          log(userData['email']);
+
+          if (userData['email'] != null) {
+            _checkloginSocial(userData['email'], userData['name'], "social");
+          } else {
+            _checklogin(userData['email'], userData['name'], "social");
+          }
+          // showDialog(
+          //   context: context,
+          //   builder: (ctx) => AlertDialog(
+          //     title: const Text("Information!!",
+          //         style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          //     content: const Text(
+          //         "We are not able to receive your email from facebook, you can signup through google or manually.",
+          //         style: TextStyle(fontSize: 14)),
+          //     actions: <Widget>[
+          //       TextButton(
+          //         onPressed: () {
+          //           Navigator.of(ctx).pop();
+          //         },
+          //         child: Container(
+          //           alignment: Alignment.center,
+          //           width: 90,
+          //           decoration: BoxDecoration(
+          //               color: kPrimaryColor,
+          //               borderRadius: BorderRadius.circular(12.0)),
+          //           padding: const EdgeInsets.all(14),
+          //           child: const Text("Ok",
+          //               style: TextStyle(color: Colors.white, fontSize: 16)),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // );
+
         } else {
-          print(userData);
+          log(userData.toString());
         }
       }
     } catch (error) {
@@ -580,9 +563,13 @@ class _LoginScreenState extends State<LoginScreen> {
     GoogleSignIn googleSignIn = GoogleSignIn();
 
     var result = await googleSignIn.signIn();
-    print(result.email);
+    log(result.toString());
 
-    _checklogin(result.email, result.displayName, "social");
+    if (result != null) {
+      _checkloginSocial(result.email, result.displayName, "social");
+    } else {
+      _checklogin(result.email, result.displayName, "social");
+    }
   }
 
   // void initiateFacebookLogin() async {
@@ -606,12 +593,61 @@ class _LoginScreenState extends State<LoginScreen> {
   //   }
   // }
 
+  Future _checkloginSocial(String email, String name, String logintype) async {
+    setState(() {
+      _loading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final body = {
+      "email": email,
+      "login_type": "social",
+      "app_token": fcmToken.toString(),
+      // "password": "",
+    };
+    var response = await http.post(Uri.parse(BASE_URL + login),
+        body: jsonEncode(body),
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json'
+        });
+    log("response--->${response.body}");
+    if (response.statusCode == 200) {
+      setState(() {
+        _loading = false;
+      });
+      if (jsonDecode(response.body)['ErrorCode'] == 0) {
+        // prefs.setBool('logged_in', true);
+        prefs.setString(
+            'userid', jsonDecode(response.body)['Response']['id'].toString());
+        prefs.setString('usertype',
+            jsonDecode(response.body)['Response']['user_type'].toString());
+        prefs.setString('token', jsonDecode(response.body)['token']);
+        _getprofileData();
+        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
+
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => SignupUserScreen(name: name, email: email),
+        ));
+      }
+    } else {
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
   Future _checklogin(String email, String name, String logintype) async {
     setState(() {
       _loading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final body = {"email": email, "login_type": logintype};
+    final body = {
+      "email": email,
+      "login_type": logintype,
+      "app_token": fcmToken.toString(),
+      "password": "",
+    };
     var response = await http.post(Uri.parse(BASE_URL + login),
         body: jsonEncode(body),
         headers: {
@@ -714,7 +750,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
-    print(jsonEncode({
+    log(jsonEncode({
       "Accept": "application/json",
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${prefs.getString("token")}',
@@ -722,41 +758,41 @@ class _LoginScreenState extends State<LoginScreen> {
     print(body);
     log(response.body);
     if (response.statusCode == 200) {
+      // prefs.setString('token', '')
       var data = json.decode(response.body)['Response']['User'];
 
       if (data['package_id'] != null || data['package_id'] != 0) {
-        if (data['is_signup_complete'] == 1) {
-          if (data['payment_status'] == 1) {
-            prefs.setString('userquickid', data['quickblox_id'].toString());
-            prefs.setString('quicklogin', data['quickblox_email'].toString());
-            prefs.setString(
-                'quickpassword', data['quickblox_password'].toString());
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => Dashboard()));
+        if (data['otp_verify'] == "1") {
+          if (data['is_signup_complete'] == 1) {
+            if (data['payment_status'] == 1) {
+              prefs.setString('userquickid', data['quickblox_id'].toString());
+              prefs.setString('quicklogin', data['quickblox_email'].toString());
+              prefs.setString(
+                  'quickpassword', data['quickblox_password'].toString());
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => Dashboard()));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const PersonalDetailScreen()));
+            }
           } else {
             Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        const PersonalDetailScreen()));
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => PersonalDetailScreen()),
+            );
+            Fluttertoast.showToast(msg: "Your Signup is not completed ");
           }
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => PersonalDetailScreen()),
-          );
-          Fluttertoast.showToast(msg: "Your Signup is not completed ");
         }
+      } else {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => OtpScreen()));
       }
-      // else {
-      //   Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(
-      //           builder: (BuildContext context) => PersonalDetailScreen()));
-      // }
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }

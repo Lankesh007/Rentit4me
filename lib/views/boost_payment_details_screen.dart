@@ -51,6 +51,7 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
 
   int isSignup = 0;
   int paymentStatus = 0;
+  var razorpayId;
 
   Razorpay _razorpay;
   bool buttonLoader = false;
@@ -72,6 +73,9 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
     print("success");
     //print(response.orderId.toString());
     log("payment id-->${response.paymentId}");
+    setState(() {
+      razorpayId = response.paymentId;
+    });
     payForOrder(
       response.paymentId,
     );
@@ -91,6 +95,11 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
       "amount": couponApplied == true
           ? appliedGrandTotal.toString()
           : widget.amount.toString(),
+           "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
     };
 
     var response = await APIHelper.apiPostRequest(url, body);
@@ -110,6 +119,7 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
         _loading = false;
       });
       showToast(result['ErrorMessage']).toString();
+      transactionFailed();
     }
     setState(() {
       _loading = false;
@@ -685,6 +695,24 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
+    }
+  }
+
+  Future transactionFailed() async {
+    var url = "${BASE_URL}failed-transaction";
+    var body = {
+      "razorpay_payment_id": razorpayId,
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : widget.amount.toString(),
+      "type": "boost-listing"
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']);
+    } else {
+      showToast(result['ErrorMessage']);
     }
   }
 }

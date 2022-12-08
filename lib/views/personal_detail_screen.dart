@@ -134,6 +134,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   @override
   void initState() {
     super.initState();
+    // _getcheckapproveData();
     _getcountryData();
     _getprofile().then((value) {});
 
@@ -1107,29 +1108,31 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     );
   }
 
-  // Future _getcheckapproveData() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final body = {
-  //     "user_id": prefs.getString('userid'),
-  //   };
-  //   var response = await http.post(Uri.parse(BASE_URL + checkapprove),
-  //       body: jsonEncode(body),
-  //       headers: {
-  //         "Accept": "application/json",
-  //         'Content-Type': 'application/json'
-  //       });
-  //   print(response.body);
-  //   print(prefs.getString('userid'));
-  //   if (response.statusCode == 200) {
-  //     var data = json.decode(response.body)['Response'];
-  //     setState(() {
-  //       // usertype = data['user_type'].toString();
-  //       // usertype = "3";
-  //     });
-  //   } else {
-  //     throw Exception('Failed to get data due to ${response.body}');
-  //   }
-  // }
+  Future _getcheckapproveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final body = {
+      "user_id": prefs.getString('userid'),
+    };
+    var response = await http.post(Uri.parse(BASE_URL + checkapprove),
+        body: jsonEncode(body),
+        headers: {
+          "Accept": "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+        });
+    print(response.body);
+    print(prefs.getString('userid'));
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body)['Response'];
+      setState(() {
+        // usertype = data['user_type'].toString();
+        // usertype = "3";
+      });
+    } else {
+      throw Exception('Failed to get data due to ${response.body}');
+    }
+  }
+
   Widget bankDetailsWidget() {
     return Card(
         elevation: 4.0,
@@ -1457,9 +1460,9 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         // businessName = data['User']['business_name'].toString();
         // prefs.setString('businessName', businessName);
         // log("---->" + prefs.getString('businessName'));
-        country_id = data['User']['country'];
-        state_id = data['User']['state'];
-        city_id = data['User']['city'];
+        // country_id = data['User']['country'];
+        // state_id = data['User']['state'];
+        // city_id = data['User']['city'];
 
         // selectedCountry = data['User']['country_name'].toString();
         log("Select country---->$selectedCountry");
@@ -1471,6 +1474,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         accountno.text = data['User']['account_no'].toString();
         accounttype.text = data['User']['account_type'].toString();
         userType = data['User']['user_type'];
+        log("usertype-=-->$userType");
         ifsccode.text = data['User']['ifsc'].toString();
         // pincode.text = data['User']['pincode'].toString();
         // pincode.text??"pinCode"??"PinCode";

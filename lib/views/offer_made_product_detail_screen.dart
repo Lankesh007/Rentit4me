@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
@@ -8,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/views/verify_reset_otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OfferMadeProductDetailScreen extends StatefulWidget {
@@ -69,8 +69,12 @@ class _OfferMadeProductDetailScreenState
     _getofferdetailproduct();
   }
 
+  double height = 0;
+  double width = 0;
   @override
   Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -85,7 +89,7 @@ class _OfferMadeProductDetailScreenState
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Offer Detail", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Offer Details", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -99,7 +103,7 @@ class _OfferMadeProductDetailScreenState
                   : Column(
                       children: [
                         // Text(widget.offerid),
-                        // HtmlParser(),  
+                        // HtmlParser(),
                         // Text(widget.postadid),
 
                         Card(
@@ -110,21 +114,21 @@ class _OfferMadeProductDetailScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 5),
-                                const Text("Product Detail",
+                                const Text("Product Details",
                                     style: TextStyle(
                                         color: kPrimaryColor,
-                                        fontSize: 18,
+                                        fontSize: 21,
                                         fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 10),
                                 productimage == null
                                     ? SizedBox(
-                                        height: 180,
+                                        height: height * 0.3,
                                         width: double.infinity,
                                         child: Image.asset(
                                             'assets/images/no_image.jpg'),
                                       )
                                     : SizedBox(
-                                        height: 180,
+                                        height: height*0.4,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
                                           imageUrl: devImage + productimage,
@@ -132,16 +136,17 @@ class _OfferMadeProductDetailScreenState
                                           errorWidget: (context, url, error) =>
                                               Image.asset(
                                                   'assets/images/no_image.jpg',
-                                                  fit: BoxFit.fill),
+                                                  fit: BoxFit.none),
                                         ),
                                       ),
                                 const SizedBox(height: 10),
+                                Divider(),
                                 productname == null
                                     ? const SizedBox()
                                     : Text(productname,
                                         style: const TextStyle(
                                             color: kPrimaryColor,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w700)),
                                 // boostpack == null
                                 //     ? const SizedBox(height: 0)
@@ -183,6 +188,7 @@ class _OfferMadeProductDetailScreenState
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 5),
+                                Divider(),
                               ],
                             ),
                           ),
@@ -195,23 +201,14 @@ class _OfferMadeProductDetailScreenState
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(height: 5.0),
-                                const Text("Offer Detail",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700)),
-                                const SizedBox(height: 10),
-                                // const Divider(
-                                //     height: 5,
-                                //     color: kPrimaryColor,
-                                //     thickness: 2),
+                                // const SizedBox(height: 5.0),
+
                                 Container(
                                   color: Color(0xFF012060),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
-                                    children:const [
-                                      Text("Offer Info",
+                                    children: const [
+                                      Text("Offer Details",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
@@ -702,7 +699,7 @@ class _OfferMadeProductDetailScreenState
                                   padding: EdgeInsets.all(8),
                                   child: Row(
                                     children: const [
-                                      Text("Rentor Info",
+                                      Text("Renter Details",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 
 import 'activeorders_screen.dart';
 import 'completed_order_screen.dart';
@@ -21,6 +22,7 @@ class _OrderViewScreenState extends State<OrderViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Appcolors.secondaryColor,
         title: const Text("Orders"),
       ),
       body: ContainedTabBarView(

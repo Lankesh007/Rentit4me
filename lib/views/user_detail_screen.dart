@@ -17,6 +17,8 @@ import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/dialog_utils.dart';
+
 class UserDetailScreen extends StatefulWidget {
   const UserDetailScreen({Key key}) : super(key: key);
 
@@ -83,7 +85,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   String aadharDocument = '';
   bool aadhardocBool = false;
   String gstDocumnet = '';
-
   String panCardDocumnet = '';
   String aadharCardDocument = '';
   bool isLoading = false;
@@ -225,12 +226,12 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     name == null || name == ''
                                         ? const Text("Hi! Guest",
                                             style: TextStyle(
-                                                color: Colors.deepOrangeAccent,
+                                                color: Appcolors.primaryColor,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500))
                                         : Text(name.text,
                                             style: const TextStyle(
-                                                color: Colors.deepOrangeAccent,
+                                                color: Appcolors.primaryColor,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500)),
                                     membership == "" ||
@@ -271,7 +272,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                           const Text("My Ads",
                                               style: TextStyle(
                                                   color:
-                                                      Colors.deepOrangeAccent,
+                                                      Appcolors.primaryColor,
                                                   fontSize: 16))
                                         ],
                                       ),
@@ -322,7 +323,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                               border: Border.all(
                                                   width: 1,
                                                   color:
-                                                      Colors.deepOrangeAccent),
+                                                      Appcolors.primaryColor),
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(12))),
@@ -349,7 +350,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                               border: Border.all(
                                                   width: 1,
                                                   color:
-                                                      Colors.deepOrangeAccent),
+                                                      Appcolors.primaryColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(12))),
                                           child: Padding(
@@ -407,7 +408,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -436,7 +437,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -507,7 +508,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       //         border: Border.all(
                                       //             width: 1,
                                       //             color:
-                                      //                 Colors.deepOrangeAccent),
+                                      //                 Appcolors.primaryColor),
                                       //         borderRadius: BorderRadius.all(
                                       //             Radius.circular(12))),
                                       //     child: Padding(
@@ -546,7 +547,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       // //                 BorderRadius.circular(12),
                                       // //             borderSide: BorderSide(
                                       // //                 color:
-                                      // //                     Colors.deepOrangeAccent,
+                                      // //                     Appcolors.primaryColor,
                                       // //                 width: 1)),
                                       // //         contentPadding:
                                       // //             EdgeInsets.only(left: 10)),
@@ -590,7 +591,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       //         border: Border.all(
                                       //             width: 1,
                                       //             color:
-                                      //                 Colors.deepOrangeAccent),
+                                      //                 Appcolors.primaryColor),
                                       //         borderRadius: BorderRadius.all(
                                       //             Radius.circular(12))),
                                       //     child: Padding(
@@ -622,7 +623,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       //               BorderRadius.circular(12),
                                       //           borderSide: BorderSide(
                                       //               color:
-                                      //                   Colors.deepOrangeAccent,
+                                      //                   Appcolors.primaryColor,
                                       //               width: 1)),
                                       //       contentPadding:
                                       //           EdgeInsets.only(left: 10)),
@@ -672,7 +673,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       //               BorderRadius.circular(12),
                                       //           borderSide: BorderSide(
                                       //               color:
-                                      //                   Colors.deepOrangeAccent,
+                                      //                   Appcolors.primaryColor,
                                       //               width: 1)),
                                       //       contentPadding:
                                       //           EdgeInsets.only(left: 10)),
@@ -705,7 +706,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                       //         border: Border.all(
                                       //             width: 1,
                                       //             color:
-                                      //                 Colors.deepOrangeAccent),
+                                      //                 Appcolors.primaryColor),
                                       //         borderRadius: BorderRadius.all(
                                       //             Radius.circular(12))),
                                       //     child: Padding(
@@ -736,7 +737,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                               border: Border.all(
                                                   width: 1,
                                                   color:
-                                                      Colors.deepOrangeAccent),
+                                                      Appcolors.primaryColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(12))),
                                           child: Padding(
@@ -762,7 +763,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                               border: Border.all(
                                                   width: 1,
                                                   color:
-                                                      Colors.deepOrangeAccent),
+                                                      Appcolors.primaryColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(12))),
                                           child: Padding(
@@ -1209,7 +1210,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -1232,7 +1233,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -1255,7 +1256,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -1278,7 +1279,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -1301,7 +1302,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -1324,7 +1325,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -1459,7 +1460,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                             width: double.infinity,
                             child: Card(
                               elevation: 12.0,
-                              color: Colors.deepOrangeAccent,
+                              color: Appcolors.primaryColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24.0),
                               ),
@@ -1541,7 +1542,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                         ? const SizedBox()
                                         : Text(name.text,
                                             style: const TextStyle(
-                                                color: Colors.deepOrangeAccent,
+                                                color: Appcolors.primaryColor,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500)),
                                     membership == "" ||
@@ -1582,7 +1583,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                           const Text("My Ads",
                                               style: TextStyle(
                                                   color:
-                                                      Colors.deepOrangeAccent,
+                                                      Appcolors.primaryColor,
                                                   fontSize: 16))
                                         ],
                                       ),
@@ -1745,7 +1746,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               Container(
                   decoration: BoxDecoration(
                       border:
-                          Border.all(width: 1, color: Colors.deepOrangeAccent),
+                          Border.all(width: 1, color: Appcolors.primaryColor),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
@@ -1772,7 +1773,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               Container(
                   decoration: BoxDecoration(
                       border:
-                          Border.all(width: 1, color: Colors.deepOrangeAccent),
+                          Border.all(width: 1, color: Appcolors.primaryColor),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
@@ -1799,7 +1800,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               Container(
                   decoration: BoxDecoration(
                       border:
-                          Border.all(width: 1, color: Colors.deepOrangeAccent),
+                          Border.all(width: 1, color: Appcolors.primaryColor),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
@@ -1877,6 +1878,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                   },
                 ),
               ),
+              
               const SizedBox(height: 10),
               const Align(
                 alignment: Alignment.topLeft,
@@ -1888,7 +1890,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               Container(
                   decoration: BoxDecoration(
                       border:
-                          Border.all(width: 1, color: Colors.deepOrangeAccent),
+                          Border.all(width: 1, color: Appcolors.primaryColor),
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
@@ -1932,7 +1934,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             Container(
                 decoration: BoxDecoration(
                     border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
+                        Border.all(width: 1, color: Appcolors.primaryColor),
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -1958,7 +1960,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             Container(
                 decoration: BoxDecoration(
                     border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
+                        Border.all(width: 1, color: Appcolors.primaryColor),
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -1988,7 +1990,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             Container(
                 decoration: BoxDecoration(
                     border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
+                        Border.all(width: 1, color: Appcolors.primaryColor),
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -2020,7 +2022,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             Container(
                 decoration: BoxDecoration(
                     border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
+                        Border.all(width: 1, color: Appcolors.primaryColor),
                     borderRadius: const BorderRadius.all(Radius.circular(12))),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -2050,7 +2052,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                           width: 120,
                           alignment: Alignment.center,
                           decoration: const BoxDecoration(
-                              color: Colors.deepOrangeAccent,
+                              color: Appcolors.primaryColor,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0))),
                           child: const Text("Choose file",
@@ -2072,7 +2074,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             Container(
                 decoration: BoxDecoration(
                     border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
+                        Border.all(width: 1, color: Appcolors.primaryColor),
                     borderRadius: const BorderRadius.all(Radius.circular(12))),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -2103,7 +2105,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                           width: 120,
                           alignment: Alignment.center,
                           decoration: const BoxDecoration(
-                              color: Colors.deepOrangeAccent,
+                              color: Appcolors.primaryColor,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0))),
                           child: const Text("Choose file",

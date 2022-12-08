@@ -2,6 +2,7 @@
 
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/offer_recieved_screen.dart';
 import 'package:rentit4me_new/views/offer_made_screen.dart';
 
@@ -17,6 +18,7 @@ class _OffersViewScreenState extends State<OffersViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Appcolors.secondaryColor,
         title: const Text("Offer Made"),
       ),
       body: ContainedTabBarView(

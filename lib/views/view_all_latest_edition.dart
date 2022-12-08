@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rentit4me_new/network/api.dart';
+import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/view_all_latest_addtion.dart';
@@ -22,34 +24,49 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
   List<ViewAllLatestAdditiionModel> latestAdditionList = [];
   List<ViewAllLatestAdditiionModel> latestAdditionListBySearch = [];
 
-  ScrollController _scrollController = ScrollController();
+  ScrollController scrollController = ScrollController();
 
   final searchController = TextEditingController();
 
   double height = 0;
   double width = 0;
   bool loader = false;
-  bool _hasNext = true;
+  bool hasNext = true;
   bool isLoadMore = false;
   bool filterlowToHigh = false;
+  var items = [
+    'Sort by',
+    'Low to High',
+    'High to Low',
+  ];
+  String sortByValue = "Sort by";
 
+  var tenureItems = [
+    'Select Tenure',
+    'Hourly',
+    'Days',
+    'Monthly',
+    'Yearly ',
+  ];
+  String tenureValue = "Select Tenure";
+  String sortFilterValue;
   int page = 1;
 
   @override
   void initState() {
     getLatestAddition();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
         setState(() {
           page++;
-          _hasNext = true;
+          hasNext = true;
           isLoadMore = true;
         });
         getScrollingDetails(page.toString());
       }
-      /*  else if (_scrollController.position.pixels ==
-          _scrollController.position.minScrollExtent) {
+      /*  else if (scrollController.position.pixels ==
+          scrollController.position.minScrollExtent) {
         setState(() {
           if (page > 0) {
             page--;
@@ -69,7 +86,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange.shade400,
+        backgroundColor: Appcolors.whiteColor,
         title: Image.asset(
           'assets/images/logo.png',
           scale: 22,
@@ -83,16 +100,6 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
               color: Colors.black,
             )),
         centerTitle: true,
-        actions: [
-          // IconButton(
-          //     onPressed: () {
-          //       filterModelSheet();
-          //     },
-          //     icon: Icon(
-          //       Icons.filter_alt,
-          //       color: Colors.black,
-          //     )),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -109,8 +116,136 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
             ),
+            Divider(),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: 30,
+                    width: 130,
+                    child: FormField(
+                      builder: (FormFieldState state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            // labelText: "Select",
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.all(5),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              onTap: () {},
+                              value: tenureValue == "Select Tenure"
+                                  ? "Sort by"
+                                  : sortByValue,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: items.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              // After selecting the desired option,it will
+                              // change button value to selected value
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  sortByValue = newValue;
+                                  if (sortByValue == "Sort by") {
+                                    setState(() {
+                                      latestAdditionList.clear();
+                                    });
+                                  } else {
+                                    if (tenureValue == "Select Tenure") {
+                                      sortByValue = "Sort by";
+                                      showToast(
+                                          "Please Select Tenure First!! ");
+                                    } else {
+                                      if (sortByValue == "Low to High") {
+                                        setState(() {
+                                          sortFilterValue = "0";
+                                        });
+                                        getDataByFilters();
+                                      } else if (sortByValue == "High to Low") {
+                                        setState(() {
+                                          sortFilterValue = "1";
+                                        });
+                                        getDataByFilters();
+                                      } else {
+                                        latestAdditionList.clear();
+                                      }
+                                    }
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                    width: 130,
+                    child: FormField(
+                      builder: (FormFieldState state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            // labelText: "Select",
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.all(5),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              onTap: () {},
+                              value: tenureValue,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: tenureItems.map((String tenureItems) {
+                                return DropdownMenuItem(
+                                  value: tenureItems,
+                                  child: Text(tenureItems),
+                                );
+                              }).toList(),
+                              // After selecting the desired option,it will
+                              // change button value to selected value
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  tenureValue = newValue;
+                                  log("====>$tenureValue");
+                                  if (tenureValue != "Select Tenure") {
+                                    if (tenureValue == "Hourly") {
+                                      tenureValue = "Hourly";
+                                      sortByValue = "Sort by";
+                                    } else if (tenureValue == "Days") {
+                                      tenureValue = "Days";
+                                      sortByValue = "Sort by";
+                                    } else if (tenureValue == "Monthly") {
+                                      tenureValue = "Monthly";
+                                      sortByValue = "Sort by";
+                                    } else if (tenureValue == "Yearly") {
+                                      tenureValue = "Yearly";
+                                      sortByValue = "Sort by";
+                                    }
+                                  } else {}
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             Divider(),
             getSearchData == true
@@ -126,7 +261,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                             height: height * 0.68,
                             width: width,
                             child: GridView.builder(
-                                controller: _scrollController,
+                                controller: scrollController,
                                 physics: BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: latestAdditionListBySearch.length,
@@ -153,7 +288,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                             height: height * 0.68,
                             width: width,
                             child: GridView.builder(
-                                controller: _scrollController,
+                                controller: scrollController,
                                 physics: BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: latestAdditionList.length,
@@ -211,6 +346,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                   getDataBySearching();
                 },
                 style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Appcolors.secondaryColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ))),
@@ -270,301 +406,8 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     );
   }
 
-  Future filterModelSheet() {
-    return showMaterialModalBottomSheet(
-      context: context,
-      builder: (context) => SizedBox(
-        height: height * 0.5,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 40,
-              width: width,
-              color: Colors.grey[300],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      "Filter Your Search",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.close,
-                        color: Colors.deepOrange,
-                      ))
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(
-                  "Sort By",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                )),
-            Divider(
-              thickness: 0.9,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  filterlowToHigh = true;
-                  log(filterlowToHigh.toString());
-                });
-              },
-              child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Low To High",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: filterlowToHigh == true
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: Colors.deepOrange,
-                              )
-                            : SizedBox(),
-                      ),
-                    ],
-                  )),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  filterlowToHigh = true;
-                  log(filterlowToHigh.toString());
-                });
-              },
-              child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "High To Low",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: filterlowToHigh == true
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: Colors.deepOrange,
-                              )
-                            : SizedBox(),
-                      ),
-                    ],
-                  )),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Divider(
-              thickness: 0.9,
-            ),
-            Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(
-                  "Select Tenure",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                )),
-            Divider(
-              thickness: 0.9,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  filterlowToHigh = true;
-                  log(filterlowToHigh.toString());
-                });
-              },
-              child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Hourly",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: filterlowToHigh == true
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: Colors.deepOrange,
-                              )
-                            : SizedBox(),
-                      ),
-                    ],
-                  )),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  filterlowToHigh = true;
-                  log(filterlowToHigh.toString());
-                });
-              },
-              child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Day's",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: filterlowToHigh == true
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: Colors.deepOrange,
-                              )
-                            : SizedBox(),
-                      ),
-                    ],
-                  )),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  filterlowToHigh = true;
-                  log(filterlowToHigh.toString());
-                });
-              },
-              child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Monthly",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: filterlowToHigh == true
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: Colors.deepOrange,
-                              )
-                            : SizedBox(),
-                      ),
-                    ],
-                  )),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  filterlowToHigh = true;
-                  log(filterlowToHigh.toString());
-                });
-              },
-              child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Yearly",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: filterlowToHigh == true
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: Colors.deepOrange,
-                              )
-                            : SizedBox(),
-                      ),
-                    ],
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
 //----------------- Api call-----------------//
+
   int getCityId = 0;
   int getLastPage = 0;
   Future getUpdtaeSearchLocation() async {
@@ -660,6 +503,36 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     });
   }
 
+  Future getDataByFilters() async {
+    setState(() {});
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String country = preferences.getString('country');
+    String state = preferences.getString('state');
+    String city = preferences.getString('city');
+
+    var url = Apis.browseAdsApi;
+    var body = {
+      "country": country.toString(),
+      "city": city == null || city == "" ? "" : city,
+      "state": state == null || state == "" ? "" : state,
+      "tenure": tenureValue,
+      "sortby": sortFilterValue,
+    };
+    var res = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(res);
+    var list = result['Response']['leads']['data'] as List;
+    if (result['ErrorCode'] == 0) {
+      setState(() {
+        latestAdditionList.clear();
+        var listdata =
+            list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
+        latestAdditionList.addAll(listdata);
+      });
+    } else {
+      showToast(result['ErrorMessage']);
+    }
+  }
+
   bool searchLoader = false;
   bool getSearchData = false;
   Future getDataBySearching() async {
@@ -680,7 +553,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "country": country.toString(),
       "city": city == null || city == "" ? "" : city,
       "state": state == null || state == "" ? "" : state,
-      "search": "",
+      // "search": "",
       "q": searchController.text.toString(),
       "page": getLastPage.toString(),
     };
@@ -708,7 +581,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 }

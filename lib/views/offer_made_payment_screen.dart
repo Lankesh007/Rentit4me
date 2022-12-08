@@ -1,18 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../network/api.dart';
 import '../themes/constant.dart';
 import '../widgets/api_helper.dart';
-import 'dashboard.dart';
 import 'home_screen.dart';
 
 class OfferMadePaymentScreen extends StatefulWidget {
@@ -60,10 +56,14 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
+  var razorpayId;
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print("success");
     //print(response.orderId.toString());
     log("payment id-->${response.paymentId}");
+    setState(() {
+      razorpayId = response.paymentId;
+    });
     payForOrder(
       response.paymentId,
     );
@@ -77,32 +77,36 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
 
     var url = "${BASE_URL}pay-for-order";
     var body = {
+      // 'userid':prefs.getString('userid'),
       "postad_id": postId.toString(),
       "offer_request_id": widget.postadid.toString(),
       "razorpay_payment_id": paymentid.toString(),
       "amount": couponApplied == true
           ? appliedGrandTotal.toString()
           : totalAmount.toString(),
+      "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
     };
+    log("body-->$body");
 
     var response = await APIHelper.apiPostRequest(url, body);
-    var result = jsonDecode(response);
+    // var result = jsonDecode(response);
 
     log("Payment Respone--->$response");
-    showToast('Your order has been successfully placed.').toString();
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
 
-    // if (result["ErrorCode"] == 0) {
+    // Navigator.of(context)
+    //     .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+    // showToast('Your order has been successfully placed.').toString();
 
-    //   setState(() {
-    //     _loading = false;
-    //   });
-    // } else {
-    //   setState(() {
-    //     _loading = false;
-    //   });
-    // }
+    setState(() {
+      _loading = false;
+    });
+
+    // transactionFailed();
+
     setState(() {
       _loading = false;
     });
@@ -172,7 +176,6 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
             ? Center(child: CircularProgressIndicator(color: kPrimaryColor))
             : ListView(
                 children: [
-                  // Text(widget.postadid),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -224,10 +227,11 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
                                               children: [
                                                 const Text("Product Name",
                                                     style: TextStyle(
-                                                        color: kPrimaryColor,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w400)),
+                                                      color: kPrimaryColor,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    )),
                                                 productName == null
                                                     ? const SizedBox()
                                                     : Text(
@@ -658,6 +662,7 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
 
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
+    log(result.toString());
     if (result['ErrorCode'] == 0) {
       setState(() {
         couponApplied = true;
@@ -687,6 +692,24 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
     });
   }
 
+  Future transactionFailed() async {
+    var url = "${BASE_URL}failed-transaction";
+    var body = {
+      "razorpay_payment_id": razorpayId,
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : amount.toString(),
+      "type": "rent"
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']);
+    } else {
+      showToast(result['ErrorMessage']);
+    }
+  }
+
   Future _getprofileData() async {
     setState(() {
       _loading = true;
@@ -711,9 +734,7 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
       var data = json.decode(response.body)['Response'];
       isSignup = data['User']['is_signup_complete'];
       paymentStatus = data['User']['payment_status'];
-
       initializeRazorpay();
-      // removeCouponDetails();
     } else {
       throw Exception('Failed to get data due to ${response.body}');
     }

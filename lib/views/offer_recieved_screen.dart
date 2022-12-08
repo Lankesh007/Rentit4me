@@ -10,6 +10,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/offer_made_product_detail_screen.dart';
 import 'package:rentit4me_new/views/offers_view.dart';
@@ -103,12 +104,12 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                      color: Colors.deepOrangeAccent)),
+                                  borderSide:  BorderSide(
+                                      color:Appcolors.primaryColor)),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: Colors.deepOrangeAccent,
+                                  borderSide:  BorderSide(
+                                    color:Appcolors.primaryColor,
                                   )),
                               contentPadding: const EdgeInsets.only(left: 5),
                               hintText: searchvalue,
@@ -133,7 +134,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color:Appcolors.primaryColor),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -167,7 +168,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -222,7 +223,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                               width: double.infinity,
                               alignment: Alignment.center,
                               decoration: const BoxDecoration(
-                                  color: Colors.deepOrangeAccent,
+                                  color: Appcolors.primaryColor,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8.0))),
                               child: const Text("Filter",
@@ -525,7 +526,8 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                               Text(
                                                 "Status: ",
                                               ),
-                                              Text(offerrecievedlist[index]['status_with_name']),
+                                              Text(offerrecievedlist[index]
+                                                  ['status_with_name']),
                                               // offerrecievedlist[index]
                                               //             ['offer_status'] ==
                                               //         3
@@ -723,7 +725,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                                                             Alignment.center,
                                                                         decoration: const BoxDecoration(
                                                                             color:
-                                                                                Colors.deepOrangeAccent,
+                                                                              Appcolors.primaryColor,
                                                                             borderRadius: BorderRadius.all(Radius.circular(8.0))),
                                                                         child: const Text(
                                                                             "Submit",
@@ -826,9 +828,9 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                                                       4.0)),
                                                           border: Border.all(
                                                               color:
-                                                                  Colors.blue)),
+                                                                  Appcolors.secondaryColor)),
                                                       child: const Text("Respond",
-                                                          style: TextStyle(color: Colors.blue))))
+                                                          style: TextStyle(color:Appcolors.secondaryColor))))
                                               : _getstatus(offerrecievedlist[index]["offer_status"].toString()),
                                         ),
                                       ],
@@ -872,10 +874,10 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
                                                             Radius.circular(
                                                                 4.0)),
                                                     border: Border.all(
-                                                        color: Colors.blue)),
+                                                        color:Appcolors.secondaryColor)),
                                                 child: const Text("View",
                                                     style: TextStyle(
-                                                        color: Colors.blue)),
+                                                        color:Appcolors.secondaryColor)),
                                               ),
                                             ),
                                           ),
@@ -903,7 +905,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         children: [
           Text(
             "Pending",
-            style: TextStyle(color: Colors.yellow[800]),
+            style: TextStyle(color:Appcolors.primaryColor),
           ),
           SizedBox(
             width: 5,
@@ -911,7 +913,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
           Image.asset(
             "assets/images/pending.png",
             scale: 3,
-            color: Colors.yellow[800],
+            color:Appcolors.primaryColor,
           ),
         ],
       );
@@ -947,7 +949,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
     } else {
       return Row(
         children: [
-          Text("Accepted", style: TextStyle(color: Colors.blue[800])),
+          Text("Accepted", style: TextStyle(color: Appcolors.secondaryColor)),
           SizedBox(
             width: 5,
           ),
@@ -990,6 +992,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
           showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         } else {
           setState(() {
+            offerrecievedlist.clear();
             offerrecievedlist
                 .addAll(jsonDecode(response.body)['Response']['data']['data']);
             conPer = double.parse(jsonDecode(response.body)['Response']
@@ -1025,7 +1028,8 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {

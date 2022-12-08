@@ -30,8 +30,8 @@ class DashboardState extends State<Dashboard> {
       icon: "home.png",
       page: HomeScreen(),
     ),
-    TabItem(tabName: "Offer", icon: "offer.png", page: OffersViewScreen()),
-    TabItem(tabName: "Orders", icon: "order.png", page: OrderViewScreen()),
+    TabItem(tabName: "My Offers", icon: "offer.png", page: OffersViewScreen()),
+    TabItem(tabName: "My Orders", icon: "order.png", page: OrderViewScreen()),
     TabItem(tabName: "Listing", icon: "ads.png", page: AddlistingScreen()),
     TabItem(tabName: "Account", icon: "account.png", page: UserDetailScreen()),
   ];
@@ -111,7 +111,6 @@ class DashboardState extends State<Dashboard> {
           "Accept": "application/json",
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
-
         });
     if (response.statusCode == 200) {
       if (json.decode(response.body)['Response'] != null) {

@@ -9,6 +9,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/make_edit_offer.dart';
@@ -68,7 +69,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
   }
 
   List<String> allaction = ['Accept & Pay', 'Reject'];
-  List<String> allaction2 = ['Accept & Pay', 'Reject'];
+  List<String> allaction2 = ['Pay', 'Reject'];
 
   String initialvalue;
 
@@ -146,7 +147,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
       log("test2-----$e");
     }
   }
-    String userId;
+
+  String userId;
   _getPrefsValue() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     userId = preferences.getString("userid");
@@ -189,11 +191,11 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
-                                      color: Colors.deepOrangeAccent)),
+                                      color: Appcolors.primaryColor)),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
-                                    color: Colors.deepOrangeAccent,
+                                    color: Appcolors.primaryColor,
                                   )),
                               contentPadding: EdgeInsets.only(left: 5),
                               hintText: searchvalue,
@@ -220,7 +222,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -256,7 +258,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
-                                            color: Colors.deepOrangeAccent),
+                                            color: Appcolors.primaryColor),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12))),
                                     child: Padding(
@@ -311,7 +313,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                               width: double.infinity,
                               alignment: Alignment.center,
                               decoration: const BoxDecoration(
-                                  color: Colors.deepOrangeAccent,
+                                  color: Appcolors.primaryColor,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8.0))),
                               child: const Text("Filter",
@@ -342,17 +344,17 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                         separatorBuilder: (BuildContext context, int index) =>
                             const Divider(),
                         itemBuilder: (BuildContext context, int index) {
-                           double finalAmount;
+                          double finalAmount;
                           if (userId ==
                               offermadelist[index]['advertiser_id']
                                   .toString()) {
                             finalAmount = double.parse(
                                     offermadelist[index]['final_amount']) -
-                                double.parse(offermadelist[index]
-                                    ['convenience_fee']);
+                                double.parse(
+                                    offermadelist[index]['convenience_fee']);
                           } else {
-                            finalAmount =
-                                double.parse(offermadelist[index]['final_amount']);
+                            finalAmount = double.parse(
+                                offermadelist[index]['final_amount']);
                           }
                           return InkWell(
                             onTap: () {
@@ -537,10 +539,9 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                     
                                           Text(
                                               "Quantity: ${offermadelist[index]['quantity']}"),
-                                               Text(
+                                          Text(
                                               "Status: ${offermadelist[index]['status_with_name'].toString()}"),
                                         ],
                                       ),
@@ -554,7 +555,6 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                         children: [
                                           Text(
                                               "Total Rent (INR): $finalAmount"),
-                                         
                                         ],
                                       ),
                                     ),
@@ -599,7 +599,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                           OfferMadeProductDetailScreen(
                                                               postadid: offermadelist[
                                                                           index]
-                                                                      ['id'] 
+                                                                      ['id']
                                                                   .toString(),
                                                               offerid: offermadelist[
                                                                           index]
@@ -620,10 +620,12 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                             Radius.circular(
                                                                 4.0)),
                                                     border: Border.all(
-                                                        color: Colors.blue)),
+                                                        color: Appcolors
+                                                            .primaryColor)),
                                                 child: const Text("View",
                                                     style: TextStyle(
-                                                        color: Colors.blue)),
+                                                        color: Appcolors
+                                                            .secondaryColor)),
                                               ),
                                             ),
                                           ),
@@ -672,13 +674,13 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                                                       Radius.circular(
                                                                           4.0)),
                                                               border: Border.all(
-                                                                  color: Colors
-                                                                      .blue)),
-                                                          child: const Text(
-                                                              "Edit",
+                                                                  color: Appcolors
+                                                                      .secondaryColor)),
+                                                          child: Text("Edit",
                                                               style: TextStyle(
-                                                                  color: Colors
-                                                                      .blue)),
+                                                                color: Appcolors
+                                                                    .secondaryColor,
+                                                              )),
                                                         ),
                                                       )
                                                     : offermadelist[index][
@@ -944,8 +946,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
           padding: const EdgeInsets.all(4.0),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-              border: Border.all(color: Colors.blue)),
-          child: const Text("Edit", style: TextStyle(color: Colors.blue)),
+              border: Border.all(color:Appcolors.secondaryColor)),
+          child: const Text("Edit", style: TextStyle(color:Appcolors.secondaryColor)),
         ),
       );
     } else if (statusvalue == "1" && paystatus == "0") {
@@ -1022,7 +1024,8 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     setState(() {
       _loading = false;
@@ -1267,14 +1270,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
-    print(jsonEncode({
-      "user_id": userid,
-      "postad_id": post_id,
-      "offer_request_id": request_id,
-      "razorpay_payment_id": paymentid,
-      "amount": amount
-    }));
-    print(response.body);
+    log(response.body.toString());
     setState(() {
       _loading = false;
     });
@@ -1315,7 +1311,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                   title: const Align(
                     alignment: Alignment.topLeft,
                     child: Text("Make An Offer",
-                        style: TextStyle(color: Colors.deepOrangeAccent)),
+                        style: TextStyle(color: Appcolors.primaryColor)),
                   ),
                   content: Container(
                     child: SingleChildScrollView(
@@ -1662,7 +1658,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                               width: double.infinity,
                               alignment: Alignment.center,
                               decoration: const BoxDecoration(
-                                  color: Colors.deepOrangeAccent,
+                                  color: Appcolors.primaryColor,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8.0))),
                               child: Text("Make Offer",

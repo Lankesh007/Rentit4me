@@ -48,7 +48,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Payment", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Payment Transactions", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -208,9 +208,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  height: size.height * 0.50,
+                SizedBox(
+                  height: size.height * 0.58,
                   child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     itemCount: paymentlist.length,

@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "174037767631-rm1ilnc5vrpufdb6p9jo7b3rb0fekbes.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.rent.renteeforme",
-            "certificate_hash": "4a92cf98d7388b6c41c61018b72703bca2da4c70"
-          }
-        },
-        {
           "client_id": "174037767631-kjo3osd064adq6sadkc4f41vbjd1evnr.apps.googleusercontent.com",
           "client_type": 3
         }

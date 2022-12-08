@@ -8,10 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:rentit4me_new/helper/dialog_helper.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
-import 'package:rentit4me_new/views/account.dart';
 import 'package:rentit4me_new/views/alllisting_screen.dart';
 import 'package:rentit4me_new/views/add_list_screen.dart';
-import 'package:rentit4me_new/views/change_password.dart';
 import 'package:rentit4me_new/views/chat_screen.dart';
 import 'package:rentit4me_new/views/generate_ticket_screen.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
@@ -22,6 +20,7 @@ import 'package:rentit4me_new/views/pending_status_screen.dart';
 import 'package:rentit4me_new/views/profile_screen.dart';
 import 'package:rentit4me_new/views/select_membership_screen.dart';
 import 'package:rentit4me_new/views/user_detail_screen.dart';
+import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -42,6 +41,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   final padding = const EdgeInsets.symmetric(horizontal: 20);
 
   String name;
+  String userName;
   String email;
   String urlImage;
   String mobile;
@@ -57,7 +57,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     super.initState();
     _getuserdetail();
     _getcheckapproveData();
-    _getprofileData();
+    // _getprofileData();
   }
 
   String userId = '';
@@ -68,11 +68,11 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     if (prefs.getString('name') == null ||
         prefs.getString('name') == "" ||
         prefs.getString('name') == "null") {
-      Future temp = _getprofileData();
-      temp.then((value) {
+      _getprofileData().then((value) {
         if (value != null) {
           setState(() {
-            urlImage = devImage + value['User']['avatar_path'].toString();
+            urlImage = devImage + urlImage;
+            log(urlImage);
             name = value['User']['name'].toString() == null
                 ? "Hi Guest"
                 : prefs.getString('name');
@@ -123,7 +123,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           children: <Widget>[
             buildHeader(
                 urlImage: urlImage,
-                name: name,
+                name: userName,
                 email: email,
                 onClicked: () => Navigator.of(context).pop()),
             Container(
@@ -1114,7 +1114,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           ),
         ),
         ClipRRect(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(50),
           child: urlImage == "" || urlImage == null || urlImage == "null"
               ? SizedBox(
                   height: 80,
@@ -1122,17 +1122,15 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   child: Image.asset('assets/images/profile_placeholder.png',
                       fit: BoxFit.fill, color: Colors.white))
               : Container(
-                  height: 80,
-                  width: 80,
+                  height: 95,
+                  width: 105,
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.white, width: 1),
                       shape: BoxShape.circle),
                   child: CachedNetworkImage(
-                    imageUrl: urlImage,
+                    imageUrl: profileImage,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
-                        //border: Border.all(color: Colors.white, width: 2),
-                        //borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
                             image: imageProvider,
                             fit: BoxFit.cover,
@@ -1147,17 +1145,26 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 ),
         ),
         SizedBox(height: 15.0),
-        name == "" || name == null
+        userName == "" || userName == null
             ? Text("")
-            : Text(name,
+            : Text("Hi $userName!",
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 21,
+                    fontSize: 19,
                     fontWeight: FontWeight.w700)),
         SizedBox(height: 5.0),
-        email == "" || email == null
+        membershipPlan == "" || membershipPlan == null
             ? Text("")
-            : Text(email, style: TextStyle(color: Colors.white, fontSize: 14))
+            : Text(
+                "Plan / $membershipPlan",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300),
+              ),
+        // email == "" || email == null
+        //     ? Text("")
+        //     : Text(email, style: TextStyle(color: Colors.white, fontSize: 14))
       ],
     );
   }
@@ -1199,29 +1206,31 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     }
   }
 
+  String profileImage;
+  String membershipPlan;
+
   Future _getprofileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     log(prefs.getString('userid').toString());
-    final body = {
-      "id": prefs.getString('userid'),
+    var url = "${BASE_URL}profile";
+    var body = {
+      "id": prefs.getString('userid').toString(),
     };
-    var response = await http.post(Uri.parse(BASE_URL + profileUrl),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        });
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body)['Response'];
-      setState(() {
-        urlImage = devImage + data['User']['avatar_path'];
-        log("image url----->$urlImage");
-      });
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    log(result.toString());
 
-      return data;
+    if (result['ErrorCode'] == 0) {
+      setState(() {
+        urlImage = result['Response']['User']['avatar_path'];
+        profileImage = devImage + urlImage;
+        log("image url----->$profileImage");
+        userName = result['Response']['User']['name'];
+        log("user Name--->$userName");
+        membershipPlan = result['Response']['User']['membership_plan'];
+      });
     } else {
-      throw Exception('Failed to get data due to ${response.body}');
+      showToast(result['ErrorMessage']);
     }
   }
 

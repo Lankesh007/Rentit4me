@@ -49,6 +49,8 @@ class _TrustedBadgePaymentDetailsState
     _getprofileData();
   }
 
+  var razorpayId;
+
   void initializeRazorpay() {
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -60,9 +62,30 @@ class _TrustedBadgePaymentDetailsState
     print("success");
     //print(response.orderId.toString());
     log("payment id-->${response.paymentId}");
+    setState(() {
+      razorpayId = response.paymentId;
+    });
     payForOrder(
       response.paymentId,
     );
+  }
+
+  Future transactionFailed() async {
+    var url = "${BASE_URL}failed-transaction";
+    var body = {
+      "razorpay_payment_id": razorpayId,
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : amount.toString(),
+      "type": "trusted-badge"
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']);
+    } else {
+      showToast(result['ErrorMessage']);
+    }
   }
 
   Future payForOrder(String paymentid) async {
@@ -77,6 +100,11 @@ class _TrustedBadgePaymentDetailsState
       "amount": couponApplied == true
           ? applidTotalAmount.toString()
           : totalAmount.toString(),
+      "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
     };
 
     var response = await APIHelper.apiPostRequest(url, body);
@@ -95,6 +123,7 @@ class _TrustedBadgePaymentDetailsState
       setState(() {
         _loading = false;
       });
+      transactionFailed();
     }
     setState(() {
       _loading = false;

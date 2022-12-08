@@ -128,21 +128,25 @@ class _OrderMadeProductsDetailsScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 5),
-                                const Text("Product Detail",
+                                const Text("Product Details",
                                     style: TextStyle(
                                         color: kPrimaryColor,
-                                        fontSize: 18,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 10),
                                 productimage == null
                                     ? SizedBox(
-                                        height: 180,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.4,
                                         width: double.infinity,
                                         child: Image.asset(
                                             'assets/images/no_image.jpg'),
                                       )
                                     : SizedBox(
-                                        height: 180,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.4,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
                                           imageUrl: devImage + productimage,
@@ -150,16 +154,17 @@ class _OrderMadeProductsDetailsScreenState
                                           errorWidget: (context, url, error) =>
                                               Image.asset(
                                                   'assets/images/no_image.jpg',
-                                                  fit: BoxFit.fill),
+                                                  fit: BoxFit.none),
                                         ),
                                       ),
                                 const SizedBox(height: 10),
+                                Divider(),
                                 productname == null
                                     ? const SizedBox()
                                     : Text(productname,
                                         style: const TextStyle(
                                             color: kPrimaryColor,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w700)),
                                 // boostpack == null
                                 //     ? const SizedBox(height: 0)
@@ -201,7 +206,7 @@ class _OrderMadeProductsDetailsScreenState
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
-
+                                Divider(),
                                 Text("Product Rating",
                                     style: const TextStyle(
                                         color: kPrimaryColor,
@@ -224,6 +229,7 @@ class _OrderMadeProductsDetailsScreenState
                                         Icons.star,
                                         color: Colors.amber,
                                       ),
+                                      onRatingUpdate: (double value) {},
                                     ),
                                   ],
                                 ),
@@ -335,23 +341,12 @@ class _OrderMadeProductsDetailsScreenState
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(height: 5.0),
-                                const Text("Order Detail",
-                                    style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700)),
-                                const SizedBox(height: 10),
-                                // const Divider(
-                                //     height: 5,
-                                //     color: kPrimaryColor,
-                                //     thickness: 2),
                                 Container(
                                   color: Color(0xFF012060),
                                   padding: EdgeInsets.all(8),
                                   child: Row(
                                     children: const [
-                                      Text("Order Info",
+                                      Text("Order Details",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
@@ -842,7 +837,7 @@ class _OrderMadeProductsDetailsScreenState
                                   padding: EdgeInsets.all(8),
                                   child: Row(
                                     children: const [
-                                      Text("Rentor Info",
+                                      Text("Renter Details",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
@@ -972,7 +967,9 @@ class _OrderMadeProductsDetailsScreenState
         productqty = data['Product Details']['quantity'].toString();
         currency = data['Product Details']['currency'].toString();
         productRating = data['Product Details']['review'];
+        log("Product Rating--->$productRating");
         prating = double.parse(productRating.toString());
+        log("Product Rating--->$prating");
         orderIdForFeedback = data['Product Details']['id'];
 
         List temp = [];
@@ -1018,7 +1015,7 @@ class _OrderMadeProductsDetailsScreenState
               (double.parse(totalrent) + double.parse(totalsecurity));
           finalamount = (double.parse(finalamount) - temp).toString();
 
-          print("${finalamount}finalamount");
+          log("${finalamount}finalamount");
         } else {
           showConversionCharges = true;
           var temp = (double.parse(convenience_charge) / 100) *

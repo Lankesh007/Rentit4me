@@ -55,16 +55,7 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
                 color: Colors.black,
               )),
           centerTitle: true,
-          actions: [
-            // IconButton(
-            //     onPressed: () {
-            //       filterModelSheet();
-            //     },
-            //     icon: Icon(
-            //       Icons.filter_alt,
-            //       color: Colors.black,
-            //     )),
-          ],
+         
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -318,7 +309,6 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    int countryId = preferences.getInt('countryId');
     String cityId = preferences.getString('cityId');
      String country = preferences.getString('country');
     String state = preferences.getString('state');
@@ -329,7 +319,6 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
       "country": country.toString(),
       "city": city == null || city == "" ? "" : city,
       "state": state == null || state == "" ? "" : state,
-      "search": "",
       "q": searchController.text.toString(),
       "category": widget.category.toString(),
     };

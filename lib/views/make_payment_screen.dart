@@ -54,10 +54,15 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
+  var razorpayId;
+
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print("success");
     //print(response.orderId.toString());
     log("payment id-->" + response.paymentId.toString());
+    setState(() {
+      razorpayId = response.paymentId;
+    });
     _payformembership(
       response.paymentId,
     );
@@ -615,6 +620,11 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
       "amount": couponApplied == true
           ? appliedGrandTotal.toString()
           : planAmount.toString(),
+      "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
     };
 
     var response = await APIHelper.apiPostRequest(url, body);
@@ -633,6 +643,8 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
             MaterialPageRoute(builder: (context) => Dashboard()));
       }
     } else {
+      transactionFailed();
+
       setState(() {
         _loading = false;
       });
@@ -640,6 +652,24 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     setState(() {
       _loading = false;
     });
+  }
+
+  Future transactionFailed() async {
+    var url = "${BASE_URL}failed-transaction";
+    var body = {
+      "razorpay_payment_id": razorpayId,
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : amount.toString(),
+      "type": couponType
+    };
+    var response = await APIHelper.apiPostRequest(url, body);
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']);
+    } else {
+      showToast(result['ErrorMessage']);
+    }
   }
 
   Future removeCouponDetails() async {

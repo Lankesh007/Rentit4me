@@ -1,4 +1,4 @@
-package com.rentNew.renteeforme
+package com.rent.renteeforme
 
 import io.flutter.embedding.android.FlutterActivity
 

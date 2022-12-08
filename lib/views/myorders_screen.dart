@@ -827,10 +827,12 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
+          
           myorderslist
               .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           log("orderList-->$myorderslist");
           _progress = false;
+          searchvalue.isEmpty;
         });
       } else {
         setState(() {
@@ -857,17 +859,17 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       "from_date": startdate,
       "to_date": enddate
     };
-    var response = await http.post(Uri.parse(BASE_URL + myorders),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + myorders), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']);
+          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           _progress = false;
         });
       } else {
@@ -898,17 +900,17 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       "id": prefs.getString('userid'),
       "search": searchvalue,
     };
-    var response = await http.post(Uri.parse(BASE_URL + myorders),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
+    var response = await http
+        .post(Uri.parse(BASE_URL + myorders), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${prefs.getString("token")}',
+    });
     print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']);
+          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           _progress = false;
         });
       } else {

@@ -224,11 +224,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: 300,
+                          height: MediaQuery.of(context).size.height*0.4,
                           width: double.infinity,
                           child: CachedNetworkImage(
                             imageUrl: productimage,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                             errorWidget: (context, url, error) =>
                                 Image.asset('assets/images/no_image.jpg'),
                           ),
@@ -264,7 +264,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                           productimages[index]
                                               ['upload_base_path'] +
                                           productimages[index]['file_name'],
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                 );
@@ -327,37 +327,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ],
                             )),
                         SizedBox(height: 10.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Align(
-                                alignment: Alignment.topLeft,
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AdvertiserProfileScreen(
-                                                    advertiserid: addedbyid)));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text("Listed By ",
-                                          style: TextStyle(
-                                              color: Colors.deepOrange,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500)),
-                                      Text(" : $addedby",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500)),
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Align(
+                        //         alignment: Alignment.topLeft,
+                        //         child: InkWell(
+                        //           onTap: () {
+                        //             Navigator.push(
+                        //                 context,
+                        //                 MaterialPageRoute(
+                        //                     builder: (context) =>
+                        //                         AdvertiserProfileScreen(
+                        //                             advertiserid: addedbyid)));
+                        //           },
+                        //           child: Row(
+                        //             children: [
+                        //               Text("Listed By ",
+                        //                   style: TextStyle(
+                        //                       color: Colors.deepOrange,
+                        //                       fontSize: 16,
+                        //                       fontWeight: FontWeight.w500)),
+                        //               Text(" : $addedby",
+                        //                   style: TextStyle(
+                        //                       color: Colors.black,
+                        //                       fontSize: 16,
+                        //                       fontWeight: FontWeight.w500)),
+                        //             ],
+                        //           ),
+                        //         )),
+                        //   ],
+                        // ),
                         SizedBox(
                           height: 10,
                         ),
@@ -430,99 +430,121 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     }),
                               ),
 
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Divider(),
                         kyc == 1
-                            ? SizedBox(
-                                height: 30,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    kyc == 1
-                                        ? Container(
-                                            width: 100,
-                                            decoration: BoxDecoration(
-                                                color: Colors.green.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "kyc",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 15),
-                                                  ),
-                                                  Image.asset(
-                                                    "assets/images/check-mark.png",
-                                                    scale: 16,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : SizedBox(),
-                                    SizedBox(
-                                      width: 80,
-                                    ),
-                                    trustedbadgeapproval == "approved"
-                                        ? Container(
-                                            width: 150,
-                                            decoration: BoxDecoration(
-                                                color: Colors.green.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(40)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(0.0),
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
+                            ? Column(
+                                children: [
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 30,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        kyc == 1
+                                            ? Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.3,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.green.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            40)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(0.0),
+                                                  child: Container(
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
                                                         horizontal: 10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Trusted Badge",
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Kyc",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                        Image.asset(
+                                                          "assets/images/check-mark.png",
+                                                          scale: 16,
+                                                        )
+                                                      ],
                                                     ),
-                                                    Image.asset(
-                                                      "assets/images/check-mark.png",
-                                                      scale: 16,
-                                                    )
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          )
-                                        : SizedBox(),
-                                  ],
-                                ),
+                                              )
+                                            : SizedBox(),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        trustedbadgeapproval == "approved"
+                                            ? Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.4,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.green.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            40)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(0.0),
+                                                  child: Container(
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Trusted Badge",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16),
+                                                        ),
+                                                        Image.asset(
+                                                          "assets/images/check-mark.png",
+                                                          scale: 16,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                      ],
+                                    ),
+                                  ),
+                                  // Divider(),
+                                  // SizedBox(height: 10.0),
+                                  // SizedBox(height: 10.0),
+                                ],
                               )
                             : SizedBox(),
-                        Divider(),
-
-                        SizedBox(height: 10.0),
-
-                        SizedBox(height: 10.0),
 
                         Divider(
                           thickness: 0.9,
@@ -610,7 +632,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             color: kPrimaryColor,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(22.0))),
-                                        child: Text("LOGIN TO START DISCUSSION",
+                                        child: Text("LOGIN TO CHAT NOW",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: Colors.white,
@@ -671,7 +693,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                         BorderRadius.all(
                                                             Radius.circular(
                                                                 22.0))),
-                                                child: Text("START DISCUSSION",
+                                                child: Text("CHAT NOW",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontWeight:
@@ -767,7 +789,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "Post Comments",
+                                    "Review",
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w500),
@@ -780,7 +802,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               Container(
                                 alignment: Alignment.center,
                                 width: width * 0.98,
-                                child: Text("No Comments...",
+                                child: Text("No Reviews...",
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w500,
@@ -1485,6 +1507,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           log("kyc---->" + trustedBadge.toString());
 
           actionbtn = data['offer'].toString();
+          log("action button-->"+actionbtn);
           log(data['liked_ads'].toString());
           // likedadproductlist = data['liked_ads'];
           log("tttt----" + likedadproductlist.toString());

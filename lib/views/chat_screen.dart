@@ -197,6 +197,7 @@ class _ChatScreenState extends State<ChatScreen> {
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     if (result['ErrorCode'] == 0) {
+      userlist.clear();
       userlist.addAll(result['Response']['items']);
     }
     setState(() {

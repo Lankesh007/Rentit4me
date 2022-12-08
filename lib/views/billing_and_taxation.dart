@@ -390,7 +390,6 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                       controller: iFSCCode,
                     ),
                   )),
-            
             ],
           ),
         ));
@@ -752,6 +751,9 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
   Widget submitButtonWidgetConsumer() {
     return InkWell(
+      onTap: () {
+        submitDetailsForConsumer();
+      },
       child: Container(
         alignment: Alignment.center,
         height: height * 0.07,
@@ -1153,6 +1155,130 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
         buttonLoading = false;
       });
     }
+    setState(() {
+      buttonLoading = false;
+    });
+  }
+
+  Future submitDetailsForConsumer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String userId = prefs.getString('userid');
+    setState(() {
+      buttonLoading = true;
+    });
+    var url = Apis.billingAndTaxationApi;
+    var bodyMap = {
+      "id": userId.toString(),
+      "account_type":
+          dropdownvalue.toString() == "Select" ? "" : dropdownvalue.toString(),
+      "bank_name": bankName.text.toString(),
+      "branch_name": branchName.text.toString(),
+      "ifsc": iFSCCode.text.toString(),
+      "account_no": accountNo.text.toString(),
+      // "adhaar_no": aadharNumber.text.toString(),
+      // "pan_no": panNumber.text.toString(),
+      // "gst_no": gstNumber.text.toString(),
+    };
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+      // if (_pickedImage.path.isNotEmpty) {
+      //   var pic =
+      //       await http.MultipartFile.fromPath('gst_doc', _pickedImage.path);
+      //   request.files.add(pic);
+      //   log("ENTETED====>  $pic");
+      // } else {
+      //   log("ENTETED====>  $_pickedImage");
+      //   setState(() {
+      //     buttonLoading = false;
+      //   });
+      // }
+      // if (panImage.path.isNotEmpty) {
+      //   var pic = await http.MultipartFile.fromPath('pan_doc', panImage.path);
+      //   request.files.add(pic);
+      //   log("ENTETED====>  $pic");
+      // } else {
+      //   log("ENTETED====>  $panImage");
+      //   setState(() {
+      //     buttonLoading = false;
+      //   });
+      // }
+      // if (aadharImage.path.isNotEmpty) {
+      //   var pic =
+      //       await http.MultipartFile.fromPath('adhaar_doc', aadharImage.path);
+      //   request.files.add(pic);
+      //   log("ENTETED====>  $pic");
+      // } else {
+      //   log("ENTETED====>  $aadharImage");
+      // }
+
+      request.fields.addAll(bodyMap);
+      var response = await request.send();
+
+      log("body=====>$bodyMap");
+
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+
+      log("Requests--->$request");
+      log("PostResponse----> $responseString");
+      log("StatusCodePost---->${response.statusCode}");
+      log("response---->$response");
+      log("responseData---->$responseData");
+
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        log("StatusCodePost11---->${response.statusCode}");
+        var result = jsonDecode(responseString);
+        if (result['ErrorCode'] == 0) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SelectMemberShipScreen()));
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: result['ErrorMessage'],
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green.shade700,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          setState(() {
+            buttonLoading = false;
+          });
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: "Something Went Wrong !!:",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green.shade700,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        setState(() {
+          buttonLoading = false;
+        });
+      }
+    } on Exception catch (e) {}
     setState(() {
       buttonLoading = false;
     });
