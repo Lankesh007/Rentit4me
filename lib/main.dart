@@ -5,7 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:rentit4me_new/blocs/network_bloc/network_bloc.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -96,7 +98,32 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     showNotify();
+    checkForUpdate();
     super.initState();
+  }
+
+  AppUpdateInfo _updateInfo;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+  bool _flexibleUpdateAvailable = false;
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        _updateInfo = info;
+      });
+    }).catchError((e) {
+      showSnack(e.toString());
+    });
+  }
+
+  void showSnack(String text) {
+    if (_scaffoldKey.currentContext != null) {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext)
+          .showSnackBar(SnackBar(content: Text(text)));
+    }
   }
 
   @override
@@ -104,20 +131,83 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider(
       create: (context) => InternetBloc(),
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          //theme: lightThemeData(context),
-          //darkTheme: darkThemeData(context),
-          title: 'Rentit4me',
-          theme: ThemeData(
-            fontFamily: "Regular",
-            primarySwatch: Colors.indigo,
-          ),
-          home: SplashScreen()
-          // home: PersonalDetailScreen(),
-          //home: SignupConsumerScreen(),
-          //home: SignupScreen(),
-          //home: const CurrentUserLocationScreen(),
-          ),
+        debugShowCheckedModeBanner: false,
+               title: 'Rentit4me',
+              theme: ThemeData(
+                fontFamily: "Regular",
+                primarySwatch: Colors.indigo,
+              ),
+              home:_flexibleUpdateAvailable == false?SplashScreen(): Scaffold(
+                key: _scaffoldKey,
+                appBar: AppBar(
+                  backgroundColor: Appcolors.primaryColor,
+                  title: const Text('Rentit4me Have A New Version'),
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Center(
+                        child: Text('Update info: $_updateInfo'),
+                      ),
+                      ElevatedButton(
+                        child: Text('Check for Update'),
+                        onPressed: () => checkForUpdate(),
+                      ),
+                      ElevatedButton(
+                        onPressed: _updateInfo?.updateAvailability ==
+                                UpdateAvailability.updateAvailable
+                            ? () {
+                                InAppUpdate.performImmediateUpdate()
+                                    .catchError((e) => showSnack(e.toString()));
+                              }
+                            : null,
+                        child: Text('Perform immediate update'),
+                      ),
+                      ElevatedButton(
+                        onPressed: _updateInfo?.updateAvailability ==
+                                UpdateAvailability.updateAvailable
+                            ? () {
+                                InAppUpdate.startFlexibleUpdate().then((_) {
+                                  setState(() {
+                                    _flexibleUpdateAvailable = true;
+                                  });
+                                }).catchError((e) {
+                                  showSnack(e.toString());
+                                });
+                              }
+                            : null,
+                        child: Text('Start flexible update'),
+                      ),
+                      ElevatedButton(
+                        onPressed: !_flexibleUpdateAvailable
+                            ? null
+                            : () {
+                                InAppUpdate.completeFlexibleUpdate().then((_) {
+                                  showSnack("Success!");
+                                }).catchError((e) {
+                                  showSnack(e.toString());
+                                });
+                              },
+                        child: Text('Complete flexible update'),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          //  MaterialApp(
+          //     debugShowCheckedModeBanner: false,
+          //     //theme: lightThemeData(context),
+          //     //darkTheme: darkThemeData(context),
+          //     title: 'Rentit4me',
+          //     theme: ThemeData(
+          //       fontFamily: "Regular",
+          //       primarySwatch: Colors.indigo,
+          //     ),
+          //     home: Scaffold(),
+            
+          //   ),
     );
   }
 
@@ -131,9 +221,7 @@ class _MyAppState extends State<MyApp> {
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     flutterLocalNotify.initialize(initializationSettings,
-        onSelectNotification: 
-        
-        onSelectNotification);
+        onSelectNotification: onSelectNotification);
 
     FirebaseMessaging.onMessage.listen(
       (RemoteMessage message) {

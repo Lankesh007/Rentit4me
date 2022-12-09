@@ -17,6 +17,7 @@ import 'package:rentit4me_new/models/people_also_like_model.dart';
 import 'package:rentit4me_new/models/review_model.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/advertiser_profile_screen.dart';
 import 'package:rentit4me_new/views/conversation.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
@@ -223,16 +224,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height*0.4,
-                          width: double.infinity,
-                          child: CachedNetworkImage(
-                            imageUrl: productimage,
-                            fit: BoxFit.contain,
-                            errorWidget: (context, url, error) =>
-                                Image.asset('assets/images/no_image.jpg'),
-                          ),
-                        ),
+                        Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            width: width,
+                            child: CachedNetworkImage(
+                              imageUrl: productimage.toString(),
+                              fit: BoxFit.fill,
+                              width: width * 0.98,
+                              height: height,
+                              errorWidget: (context, url, error) {
+                                return Text("Image Lodaing...");
+                              },
+                            )),
+                        Divider(),
                         Container(
                           height: 80,
                           padding: EdgeInsets.only(top: 5),
@@ -258,18 +263,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   },
                                   child: SizedBox(
                                     height: 55,
-                                    width: size.width * 0.30,
+                                    width: size.width * 0.15,
                                     child: CachedNetworkImage(
                                       imageUrl: devImage +
                                           productimages[index]
                                               ['upload_base_path'] +
-                                          productimages[index]['file_name'],
-                                      fit: BoxFit.contain,
+                                          productimages[index]['file_name']
+                                              .toString(),
+                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 );
                               }),
                         ),
+                        Divider(),
+
                         SizedBox(
                           height: 20,
                         ),
@@ -326,6 +334,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         fontWeight: FontWeight.w500)),
                               ],
                             )),
+
                         SizedBox(height: 10.0),
                         // Row(
                         //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -359,76 +368,38 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         //   ],
                         // ),
                         SizedBox(
-                          height: 10,
+                          height: 20,
+                          child: RatingBar.builder(
+                            itemSize: 20,
+                            initialRating: review.toDouble(),
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            onRatingUpdate: (rating) {
+                              print(rating);
+                            },
+                          ),
                         ),
-                        ratingList.isEmpty
-                            ? SizedBox()
-                            : SizedBox(
-                                height: height * 0.1,
-                                width: width * 0.9,
-                                child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: ratingList.length,
-                                    itemBuilder: (context, index) {
-                                      var item = ratingList[index];
-                                      // double rating =
-                                      //     double.parse(item.userRating.toString());
-
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            height: 30,
-                                            child: RatingBar.builder(
-                                              itemSize: 20,
-                                              initialRating:
-                                                  item.userRating.toDouble(),
-                                              minRating: 1,
-                                              direction: Axis.horizontal,
-                                              allowHalfRating: false,
-                                              itemCount: 5,
-                                              itemPadding: EdgeInsets.symmetric(
-                                                  horizontal: 4.0),
-                                              itemBuilder: (context, _) => Icon(
-                                                Icons.star,
-                                                color: Colors.yellow,
-                                              ),
-                                              onRatingUpdate: (rating) {
-                                                print(rating);
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Text(
-                                              "FeedBack",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Text(item.feedback == null ||
-                                                    item.feedback == "" ||
-                                                    item.feedback == "null"
-                                                ? ""
-                                                : item.feedback),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                              ),
+                        ratingList.isNotEmpty
+                            ? Column(
+                                children: [
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 7),
+                                      child: Text(
+                                          "Total Review : ${ratingList.length.toString()}")),
+                                ],
+                              )
+                            : SizedBox(),
 
                         kyc == 1
                             ? Column(
@@ -702,8 +673,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                if (actionbtn ==
-                                                    "Make An Offer") {
+                                                if (actionbtn == "Rent Now") {
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -796,17 +766,79 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   )
                                 ],
                               ),
-                              SizedBox(
-                                height: 30,
-                              ),
+                              // SizedBox(
+                              //   height: 30,
+                              // ),
                               Container(
                                 alignment: Alignment.center,
                                 width: width * 0.98,
-                                child: Text("No Reviews...",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey)),
+                                child: ratingList.isEmpty
+                                    ? SizedBox(
+                                        child: Text("No Reviews..."),
+                                      )
+                                    : SizedBox(
+                                        height: height * 0.13,
+                                        width: width * 0.9,
+                                        child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: ratingList.length,
+                                            itemBuilder: (context, index) {
+                                              var item = ratingList[index];
+
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Divider(thickness: 0.9),
+                                                  SizedBox(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          height: 50,
+                                                          width: 50,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      devImage +
+                                                                          item
+                                                                              .avatarPath)),
+                                                              border: Border.all(
+                                                                  color: Appcolors
+                                                                      .primaryColor),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100)),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text("User Name : " +
+                                                                  item.name),
+                                                              Text(
+                                                                  "Comment : ${item.feedback}"),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
+                                      ),
                               ),
                             ],
                           ),
@@ -886,187 +918,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       SizedBox(height: 0),
                                     ],
                                   ),
-                        // Row(
-                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                        //   children: [
-                        //     Text("Price : ",
-                        //         style: TextStyle(
-                        //             color: kPrimaryColor,
-                        //             fontSize: 18,
-                        //             fontWeight: FontWeight.bold)),
-                        //     SizedBox(
-                        //       width: size.width * 0.70,
-                        //       child: negotiable == "0" ? Text("Fixed",
-                        //           maxLines: 2,
-                        //           style: TextStyle(
-                        //               color: kPrimaryColor, fontSize: 18)) : Text(
-                        //           "Negotiable",
-                        //           maxLines: 2,
-                        //           style: TextStyle(
-                        //               color: kPrimaryColor, fontSize: 18)),
-                        //     )
-                        //   ],
-                        //   ],
-                        // ),
-                        // SizedBox(height: 20),
-                        // Row(
-                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                        //   children: [
-                        //     Text("Email : ",
-                        //         style: TextStyle(
-                        //             color: kPrimaryColor,
-                        //             fontSize: 18,
-                        //             fontWeight: FontWeight.bold)),
-                        //     SizedBox(
-                        //       width: size.width * 0.70,
-                        //       child: email == null
-                        //           ? SizedBox()
-                        //           : Text(email,
-                        //               maxLines: 1,
-                        //               style: TextStyle(
-                        //                   color: kPrimaryColor, fontSize: 18)),
-                        //     )
-                        //   ],
-                        // ),
-                        // // Padding(
-                        //     padding: EdgeInsets.symmetric(vertical: 10.0),
-                        //     child: Container(
-                        //       height: 550,
-                        //       width: double.infinity,
-                        //       child: GoogleMap(
-                        //         initialCameraPosition: initialCameraPosition,
-                        //         markers: markers,
-                        //         zoomControlsEnabled: false,
-                        //         mapType: MapType.normal,
-                        //         onMapCreated: (GoogleMapController controller) {
-                        //           googleMapController = controller;
-                        //         },
-                        //       ),
-                        //     ),
-                        // ),
-                        // likedadproductlist.isEmpty
-                        //     ? SizedBox()
-                        //     : SizedBox(height: 30),
-                        // likedadproductlist.isEmpty
-                        //     ? SizedBox(height: 0)
-                        //     : const Text("You May Also Like",
-                        //         style: TextStyle(
-                        //             color: Colors.deepOrangeAccent,
-                        //             fontWeight: FontWeight.w700,
-                        //             fontSize: 21)),
-                        // likedadproductlist.isEmpty
-                        //     ? SizedBox(height: 0)
-                        //     : SizedBox(height: 10),
-                        // likedadproductlist.isEmpty
-                        //     ? SizedBox(height: 0)
-                        //     : GridView.builder(
-                        //         shrinkWrap: true,
-                        //         itemCount: likedadproductlist.length,
-                        //         physics: ClampingScrollPhysics(),
-                        //         gridDelegate:
-                        //             const SliverGridDelegateWithFixedCrossAxisCount(
-                        //                 crossAxisCount: 2,
-                        //                 crossAxisSpacing: 4.0,
-                        //                 mainAxisSpacing: 4.0,
-                        //                 childAspectRatio: 1.0),
-                        //         itemBuilder: (context, index) {
-                        //           return InkWell(
-                        //             onTap: () {
-                        //               Navigator.push(
-                        //                   context,
-                        //                   MaterialPageRoute(
-                        //                       builder: (context) =>
-                        //                           ProductDetailScreen(
-                        //                               productid:
-                        //                                   likedadproductlist[index]
-                        //                                           ['id']
-                        //                                       .toString())));
-                        //             },
-                        //             child: Card(
-                        //               shape: RoundedRectangleBorder(
-                        //                 borderRadius: BorderRadius.circular(4.0),
-                        //               ),
-                        //               child: Column(
-                        //                 children: [
-                        //                   CachedNetworkImage(
-                        //                     height: 80,
-                        //                     width: double.infinity,
-                        //                     placeholder: (context, url) =>
-                        //                         Image.asset(
-                        //                             'assets/images/no_image.jpg',
-                        //                             fit: BoxFit.fill),
-                        //                     errorWidget: (context, url, error) =>
-                        //                         Image.asset(
-                        //                             'assets/images/no_image.jpg',
-                        //                             fit: BoxFit.fill),
-                        //                     fit: BoxFit.fill,
-                        //                     imageUrl: likedadproductlist[index]
-                        //                                     ['images']
-                        //                                 .length >
-                        //                             0
-                        //                         ? devImage +
-                        //                             "assets/frontend/images/listings/" +
-                        //                             likedadproductlist[index]
-                        //                                         ['images'][0]
-                        //                                     ['file_name']
-                        //                                 .toString()
-                        //                         : "http://themedemo.wpeka.com/wp-content/themes/apppress/images/icons/included/color.png",
-                        //                   ),
-                        //                   SizedBox(height: 5.0),
-                        //                   Padding(
-                        //                     padding: EdgeInsets.only(
-                        //                         left: 5.0, right: 15.0),
-                        //                     child: Align(
-                        //                       alignment: Alignment.topLeft,
-                        //                       child: Text(
-                        //                           likedadproductlist[index]['title']
-                        //                               .toString(),
-                        //                           maxLines: 1,
-                        //                           style: TextStyle(
-                        //                               color: Colors.black,
-                        //                               fontWeight: FontWeight.w700,
-                        //                               fontSize: 16)),
-                        //                     ),
-                        //                   ),
-                        //                   SizedBox(height: 5.0),
-                        //                   Padding(
-                        //                     padding: const EdgeInsets.only(
-                        //                         left: 4.0, right: 4.0),
-                        //                     child: Row(
-                        //                       mainAxisAlignment:
-                        //                           MainAxisAlignment.spaceBetween,
-                        //                       children: [
-                        //                         SizedBox(
-                        //                             width: size.width * 0.4,
-                        //                             child: Text(
-                        //                                 "Starting from ${likedadproductlist[index]['currency'].toString()} ${likedadproductlist[index]['prices'][0]['price'].toString()}",
-                        //                                 style: TextStyle(
-                        //                                     color: kPrimaryColor,
-                        //                                     fontSize: 12))),
-                        //                         // IconButton(
-                        //                         //     iconSize: 28,
-                        //                         //     onPressed: () {
-                        //                         //       Navigator.push(
-                        //                         //           context,
-                        //                         //           MaterialPageRoute(
-                        //                         //               builder: (context) =>
-                        //                         //                   ProductDetailScreen(
-                        //                         //                       productid: likedadproductlist[
-                        //                         //                                   index]
-                        //                         //                               ['id']
-                        //                         //                           .toString())));
-                        //                         //     },
-                        //                         //     icon: Icon(
-                        //                         //         Icons.add_box_rounded,
-                        //                         //         color: kPrimaryColor))
-                        //                       ],
-                        //                     ),
-                        //                   )
-                        //                 ],
-                        //               ),
-                        //             ),
-                        //           );
-                        //         }),
 
                         SizedBox(
                           height: 0,
@@ -1108,7 +959,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(0.0)),
                                     child: CachedNetworkImage(
-                                      imageUrl: bottomimage1,
+                                      imageUrl: bottomimage1.toString(),
                                       fit: BoxFit.fill,
                                     ),
                                   ),
@@ -1128,7 +979,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(0.0)),
                                     child: CachedNetworkImage(
-                                      imageUrl: bottomimage2,
+                                      imageUrl: bottomimage2.toString(),
                                       fit: BoxFit.fill,
                                     ),
                                   ),
@@ -1154,7 +1005,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       width: MediaQuery.of(context).size.width *
                                           0.43,
                                       child: CachedNetworkImage(
-                                        imageUrl: bottomimage3,
+                                        imageUrl: bottomimage3.toString(),
                                         fit: BoxFit.fill,
                                       ),
                                     ),
@@ -1165,7 +1016,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       width: MediaQuery.of(context).size.width *
                                           0.43,
                                       child: CachedNetworkImage(
-                                        imageUrl: bottomimage4,
+                                        imageUrl: bottomimage4.toString(),
                                         fit: BoxFit.fill,
                                       ),
                                     ),
@@ -1431,6 +1282,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   String adId = '';
   List<ReviewModel> ratingList = [];
+  int review;
+
   Future _getproductDetail(String productid) async {
     setState(() {
       apiLoading = true;
@@ -1474,6 +1327,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           apiLoading = false;
 
           productname = data['posted_ad']['title'].toString();
+          review = data['posted_ad']['review'];
+
           final document = parse(data['posted_ad']['description'].toString());
           description =
               parse(document.body.text).documentElement.text.toString();
@@ -1507,7 +1362,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           log("kyc---->" + trustedBadge.toString());
 
           actionbtn = data['offer'].toString();
-          log("action button-->"+actionbtn);
+          log("action button-->" + actionbtn);
           log(data['liked_ads'].toString());
           // likedadproductlist = data['liked_ads'];
           log("tttt----" + likedadproductlist.toString());

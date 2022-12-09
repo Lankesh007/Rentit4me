@@ -62,20 +62,15 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
           page++;
           hasNext = true;
           isLoadMore = true;
+          log("Page--->" + page.toString());
         });
-        getScrollingDetails(page.toString());
+
+        if (page > getLastPage) {
+        } else {
+          getScrollingDetails(page.toString());
+        }
       }
-      /*  else if (scrollController.position.pixels ==
-          scrollController.position.minScrollExtent) {
-        setState(() {
-          if (page > 0) {
-            page--;
-            isLoadfirst = true;
-            getScrollingDetails(page.toString());
-          }
-        });
-      } */
-      // log('=================>>>' + page.toString());
+     
     });
     super.initState();
   }
@@ -260,21 +255,26 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                         : SizedBox(
                             height: height * 0.68,
                             width: width,
-                            child: GridView.builder(
-                                controller: scrollController,
-                                physics: BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: latestAdditionListBySearch.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                        latestAdditionWidget(
-                                          latestAdditionListBySearch[index],
-                                        ),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 1.0,
-                                        mainAxisSpacing: 1.0)),
+                            child: Column(
+                              children: [
+                                GridView.builder(
+                                    controller: scrollController,
+                                    physics: BouncingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        latestAdditionListBySearch.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) =>
+                                            latestAdditionWidget(
+                                              latestAdditionListBySearch[index],
+                                            ),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            crossAxisSpacing: 1.0,
+                                            mainAxisSpacing: 1.0)),
+                              ],
+                            ),
                           )
                 : latestAdditionList.isEmpty
                     ? Center(
@@ -284,25 +284,47 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                         ? Center(
                             child: CircularProgressIndicator(),
                           )
-                        : SizedBox(
-                            height: height * 0.68,
-                            width: width,
-                            child: GridView.builder(
-                                controller: scrollController,
-                                physics: BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: latestAdditionList.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                        latestAdditionWidget(
-                                          latestAdditionList[index],
-                                        ),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 1.0,
-                                        mainAxisSpacing: 1.0)),
-                          ),
+                        : scrollLoader == true
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    // CircularProgressIndicator(),
+                                    Container(
+                                        height: height*0.6,
+                                        alignment: Alignment.bottomCenter,
+                                        child: Text(
+                                          "Loding Products...",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                  ],
+                                ),
+                              )
+                            : SizedBox(
+                                height: height * 0.7,
+                                width: width,
+                                child: GridView.builder(
+                                    controller: scrollController,
+                                    physics: BouncingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: latestAdditionList.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) =>
+                                            Column(
+                                              children: [
+                                                latestAdditionWidget(
+                                                  latestAdditionList[index],
+                                                ),
+                                              ],
+                                            ),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            crossAxisSpacing: 1.0,
+                                            mainAxisSpacing: 1.0)),
+                              ),
           ],
         ),
       ),
@@ -346,10 +368,11 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                   getDataBySearching();
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Appcolors.secondaryColor),
+                    backgroundColor:
+                        MaterialStateProperty.all(Appcolors.secondaryColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ))),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ))),
                 child: Text("Search"),
               )
             ],
@@ -397,6 +420,14 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                     child: Text(
                       item.title,
                       style: TextStyle(fontWeight: FontWeight.w600),
+                    )),
+                    SizedBox(height: 2,),
+                      Container(
+                    width: width * 0.5,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Starting From : ${item.currency} ${item.price}",
+                      style: TextStyle(fontWeight: FontWeight.w600,color: Colors.grey),
                     )),
               ],
             ),
@@ -467,6 +498,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
             list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
         latestAdditionList.addAll(listdata);
         getLastPage = result['Response']['leads']['last_page'];
+        log("last page--->$getLastPage");
         loader = false;
       });
     }
@@ -475,8 +507,11 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     });
   }
 
+  bool scrollLoader = false;
   Future getScrollingDetails(page) async {
-    setState(() {});
+    setState(() {
+      scrollLoader = true;
+    });
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String country = preferences.getString('country');
     String state = preferences.getString('state');
@@ -489,18 +524,25 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "state": state == null || state == "" ? "" : state,
       "search": "",
       "q": searchController.text.toString(),
-      "page": getLastPage.toString(),
+      "page": page.toString(),
     };
     var res = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(res);
 
     var list = result['Response']['leads']['data'] as List;
-    setState(() {
-      // deshDetailsList.clear();
-      var listdata =
-          list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
-      latestAdditionList.addAll(listdata);
-    });
+    if (result['ErrorCode'] == 0) {
+      setState(() {
+        // deshDetailsList.clear();
+        var listdata =
+            list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
+        latestAdditionList.addAll(listdata);
+        scrollLoader = false;
+      });
+    } else {
+      setState(() {
+        scrollLoader = false;
+      });
+    }
   }
 
   Future getDataByFilters() async {

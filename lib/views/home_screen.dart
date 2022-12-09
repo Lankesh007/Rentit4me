@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:rentit4me_new/helper/dialog_helper.dart';
 import 'package:rentit4me_new/helper/loader.dart';
 import 'package:rentit4me_new/models/latest_addition_model.dart';
 import 'package:rentit4me_new/network/api.dart';
@@ -571,6 +570,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int countryId = 0;
   String countryName = '';
+  String stateName;
+
   String userId = '';
   @override
   void initState() {
@@ -580,9 +581,12 @@ class _HomeScreenState extends State<HomeScreen> {
     searchController.clear();
   }
 
+  bool searchProduct = false;
+
   _getinitPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     userId = preferences.getString("userid");
+    stateName = preferences.getString('stateName');
     print("userId---==->$userId");
   }
 
@@ -643,99 +647,77 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 10,
               ),
               Expanded(
-                flex: 2,
-                child: searchHeader != true
-                    ? InkWell(
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          String userID = prefs.getString("userid");
-                          log("userId--->$userID");
+                  flex: 2,
+                  child: searchHeader != true
+                      ? InkWell(
+                          onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            String userID = prefs.getString("userid");
+                            log("userId--->$userID");
 
-                          if (userID == null || userID == "") {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddlistingScreen()));
-                          }
-                        },
-                        child: Container(
-                            alignment: Alignment.center,
-                            height: 40,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: Appcolors.primaryColor,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Text("Post An Ad",
-                                style: TextStyle(fontSize: 15))),
-                      )
-                    : Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        width: size.width * 0.4,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: Colors.grey)),
-                        child: TextFormField(
-                          readOnly: true,
-                          onTap: () {
-                            showDilogBoxForLocation(context);
+                            if (userID == null || userID == "") {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddlistingScreen()));
+                            }
                           },
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: findCity == true
-                                  ? "   ${address.text.toString()}"
-                                  : selectCity == true
-                                      ? "   $locationvalue"
-                                      : "   $countryName",
-                              suffixIcon: const Icon(
-                                Icons.location_searching_sharp,
-                                color: kContentColorLightTheme,
-                              )),
-                        ),
-                      ),
-              ),
+                          child: Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Appcolors.primaryColor,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Text("Post An Ad",
+                                  style: TextStyle(fontSize: 15))),
+                        )
+                      : Size),
+
               SizedBox(
                 width: 5,
               ),
-              Expanded(
-                child: searchHeader == true
-                    ? SizedBox()
-                    : InkWell(
-                        onTap: () {
-                          searchHeader = true;
-                          log(searchHeader.toString());
-                        },
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          height: 40,
-                          width: 60,
-                          decoration: BoxDecoration(
-                              color: Appcolors.primaryColor,
-                        
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                searchHeader = !searchHeader;
-                                log(searchHeader.toString());
-                              });
-                            },
-                            icon: Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-              )
+
+              // Expanded(
+              //   child: searchHeader == true
+              //       ? SizedBox()
+              //       : InkWell(
+              //           onTap: () {
+              //             searchHeader = true;
+              //             log(searchHeader.toString());
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.topCenter,
+              //             height: 40,
+              //             width: 60,
+              //             decoration: BoxDecoration(
+              //                 color: Appcolors.primaryColor,
+
+              //               borderRadius: BorderRadius.circular(100),
+              //             ),
+              //             child: IconButton(
+              //               onPressed: () {
+              //                 setState(() {
+              //                   searchHeader = !searchHeader;
+              //                   log(searchHeader.toString());
+              //                 });
+              //               },
+              //               icon: Icon(
+              //                 Icons.location_on_outlined,
+              //                 color: Colors.white,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              // )
             ],
           ),
           leading: Row(
@@ -745,6 +727,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _scaffoldKey.currentState.openDrawer();
                   },
                   icon: const Icon(Icons.menu, color: kPrimaryColor)),
+
               //SizedBox(width: 2),
               //Image.asset('assets/images/logo.png', scale: 45),
             ],
@@ -756,17 +739,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => LoginScreen()));
                   } else {
-                    DialogHelper.logout(context);
+                    // DialogHelper.logout(context);
                   }
                 },
                 icon: !sharedpref
                     ? Image.asset('assets/images/user.png',
                         color: kPrimaryColor, scale: 1.2)
-                        :SizedBox())
-                    // : Image.asset('assets/images/power.png',
-                    //     color: kPrimaryColor, scale: 1.2)),
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            searchProduct = !searchProduct;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.search_sharp,
+                          color: Colors.black,
+                        )))
+            // : Image.asset('assets/images/power.png',
+            //     color: kPrimaryColor, scale: 1.2)),
           ],
-       
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -784,137 +775,193 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const Center(child: CircularProgressIndicator()))
                 : Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(7.0),
-                        child: Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.indigo.shade50,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5)),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: searchController,
-                                    decoration: const InputDecoration(
-                                      hintText: "Search Rentit4me",
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 40,
+                        width: size.width,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 225, 237, 248),
+                          borderRadius: BorderRadius.circular(5),
+                          // border: Border.all(color: Colors.grey)),
+                        ),
+                        child: SizedBox(
+                          width: width * 0.45,
+                          child: TextFormField(
+                            readOnly: true,
+                            onTap: () {
+                              showDilogBoxForLocation(context);
+                            },
+                            textAlign: TextAlign.start,
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.location_on_outlined,
+                                  color: Appcolors.primaryColor,
                                 ),
-                                ElevatedButton(
-                                   
-                                  onPressed: () async {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    String country = prefs.getString('country');
-                                    String state = prefs.getString('state');
-                                    String city = prefs.getString('city');
-                                    if (searchController.text.isEmpty) {
-                                      showToast("Please enter your search");
-                                    } else {
-                                      showLaoding(context);
-                                      FocusScope.of(context).unfocus();
-                                      var response = await http.post(
-                                          Uri.parse(BASE_URL+"browse-ads"),
-                                          body: jsonEncode({
-                                            "country": country.toString(),
-                                            "city": city == null || city == ""
-                                                ? ""
-                                                : city,
-                                            "state":
-                                                state == null || state == ""
-                                                    ? ""
-                                                    : state,
-                                            // "search": "",
-                                            "q": searchController.text
-                                                .toString(),
-                                          }),
-                                          headers: {
-                                            "Accept": "application/json",
-                                            'Content-Type': 'application/json',
-                                            'Authorization':
-                                                'Bearer ${prefs.getString("token")}',
-                                          });
-
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                      if (jsonDecode(
-                                              response.body)['ErrorCode'] ==
-                                          0) {
-                                        if (jsonDecode(response.body)[
-                                                    'ErrorMessage']
-                                                .toString() ==
-                                            "success") {
-                                          List temp = [];
-                                          temp.clear();
-                                          temp.addAll(jsonDecode(response.body)[
-                                              'Response']['leads']['data']);
-                                          setState(() {});
-                                          log(jsonDecode(response.body)[
-                                                  'Response']['leads']['data']
-                                              .toString());
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  UserfinderDataScreen(
-                                                cityId: cityId.toString(),
-                                                getlocation: locationvalue,
-                                                getcategory: categoryvalue,
-                                                getcategoryslug:
-                                                    categoryslugname,
-                                                data: temp,
-                                                finalLocation:
-                                                    countryName.toString(),
-                                                search: searchController.text
-                                                    .toString(),
-                                              ),
-                                            ),
-                                          );
-                                        } else {
-                                          setState(() {
-                                            searchController.text = "";
-                                          });
-                                          // showToast(jsonDecode(
-                                          //         response.body)['ErrorMessage']
-                                          //     .toString());
-
-                                          log("error1--->${jsonDecode(response.body)['ErrorMessage']}");
-                                        }
-                                      } else {
-                                        setState(() {
-                                          searchController.text = "";
-                                        });
-                                        // showToast(jsonDecode(
-                                        //         response.body)['ErrorMessage']
-                                        //     .toString());
-
-                                        log("error2--->${jsonDecode(response.body)['ErrorMessage']}");
-                                      }
-                                    }
-                                  },
-                                  child: const Text("Search"),
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(Appcolors.secondaryColor),
-                                    
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ))),
-                                )
-                              ],
-                            )),
+                                border: InputBorder.none,
+                                hintText: findCity == true
+                                    ? "   ${address.text.toString()}"
+                                    : selectCity == true
+                                        ? "   $locationvalue "
+                                        : "   $countryName",
+                                suffixIcon: Container(
+                                  margin: const EdgeInsets.only(top: 6),
+                                  child: const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Appcolors.secondaryColor,
+                                  ),
+                                )),
+                          ),
+                        ),
                       ),
 
+                      searchProduct == true
+                          ? Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: Container(
+                                  margin: const EdgeInsets.only(top: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.indigo.shade50,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5)),
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: searchController,
+                                          decoration: const InputDecoration(
+                                            hintText: "Search Rentit4me",
+                                            hintStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          String country =
+                                              prefs.getString('country');
+                                          String state =
+                                              prefs.getString('state');
+                                          String city = prefs.getString('city');
+                                          if (searchController.text.isEmpty) {
+                                            showToast(
+                                                "Please enter your search");
+                                          } else {
+                                            showLaoding(context);
+                                            FocusScope.of(context).unfocus();
+                                            var response = await http.post(
+                                                Uri.parse(
+                                                    BASE_URL + "browse-ads"),
+                                                body: jsonEncode({
+                                                  "country": country.toString(),
+                                                  "city":
+                                                      city == null || city == ""
+                                                          ? ""
+                                                          : city,
+                                                  "state": state == null ||
+                                                          state == ""
+                                                      ? ""
+                                                      : state,
+                                                  // "search": "",
+                                                  "q": searchController.text
+                                                      .toString(),
+                                                }),
+                                                headers: {
+                                                  "Accept": "application/json",
+                                                  'Content-Type':
+                                                      'application/json',
+                                                  'Authorization':
+                                                      'Bearer ${prefs.getString("token")}',
+                                                });
+
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                            if (jsonDecode(response.body)[
+                                                    'ErrorCode'] ==
+                                                0) {
+                                              if (jsonDecode(response.body)[
+                                                          'ErrorMessage']
+                                                      .toString() ==
+                                                  "success") {
+                                                List temp = [];
+                                                temp.clear();
+                                                temp.addAll(
+                                                    jsonDecode(response.body)[
+                                                            'Response']['leads']
+                                                        ['data']);
+                                                setState(() {});
+                                                log(jsonDecode(response.body)[
+                                                            'Response']['leads']
+                                                        ['data']
+                                                    .toString());
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UserfinderDataScreen(
+                                                      cityId: cityId.toString(),
+                                                      getlocation:
+                                                          locationvalue,
+                                                      getcategory:
+                                                          categoryvalue,
+                                                      getcategoryslug:
+                                                          categoryslugname,
+                                                      data: temp,
+                                                      finalLocation: countryName
+                                                          .toString(),
+                                                      search: searchController
+                                                          .text
+                                                          .toString(),
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                setState(() {
+                                                  searchController.text = "";
+                                                });
+                                                // showToast(jsonDecode(
+                                                //         response.body)['ErrorMessage']
+                                                //     .toString());
+
+                                                log("error1--->${jsonDecode(response.body)['ErrorMessage']}");
+                                              }
+                                            } else {
+                                              setState(() {
+                                                searchController.text = "";
+                                              });
+                                              // showToast(jsonDecode(
+                                              //         response.body)['ErrorMessage']
+                                              //     .toString());
+
+                                              log("error2--->${jsonDecode(response.body)['ErrorMessage']}");
+                                            }
+                                          }
+                                        },
+                                        child: const Text("Search"),
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Appcolors.secondaryColor),
+                                            shape: MaterialStateProperty.all(
+                                                RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ))),
+                                      )
+                                    ],
+                                  )),
+                            )
+                          : SizedBox(),
+                      SizedBox(height: 5),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.22,
                         width: double.infinity,
@@ -966,8 +1013,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 40,
                                 width: 80,
                                 decoration: BoxDecoration(
-                              color: Appcolors.primaryColor,
-                               
+                                  color: Appcolors.primaryColor,
                                   borderRadius: BorderRadius.circular(
                                     20,
                                   ),
@@ -1634,8 +1680,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       width: MediaQuery.of(context).size.width *
                                           0.45,
                                       decoration: BoxDecoration(
-                              color: Appcolors.primaryColor,
-                                  
+                                          color: Appcolors.primaryColor,
                                           borderRadius:
                                               BorderRadius.circular(50)),
                                       child: const Text("Upload",
@@ -1688,8 +1733,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         height: 40,
                                         width: 80,
                                         decoration: BoxDecoration(
-                              color: Appcolors.primaryColor,
-                                         
+                                          color: Appcolors.primaryColor,
                                           borderRadius: BorderRadius.circular(
                                             20,
                                           ),
@@ -1741,8 +1785,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Text("Today's Special Deals",
                                   style: TextStyle(
-                              color: Appcolors.secondaryColor,
-                                      
+                                      color: Appcolors.secondaryColor,
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600)),
                             ),
@@ -1869,10 +1912,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             itemCount: e['ads'].length,
                                             gridDelegate:
                                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    crossAxisSpacing: 4.0,
-                                                    mainAxisSpacing: 4.0,
-                                                    childAspectRatio: 1.0,),
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 4.0,
+                                              mainAxisSpacing: 4.0,
+                                              childAspectRatio: 1.0,
+                                            ),
                                             itemBuilder: (context, gridindex) {
                                               return InkWell(
                                                 onTap: () {
