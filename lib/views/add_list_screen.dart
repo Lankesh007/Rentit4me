@@ -42,6 +42,11 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
   String location = 'Null, Press Button';
   String lati = '';
   String land = '';
+  bool hourlyRent = false;
+  bool monthlyRent = false;
+  bool dailyRent = false;
+  bool yearlyRent = false;
+
   LatLng pinPosition;
 
   Future<Position> locateUser() async {
@@ -225,7 +230,11 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2.0,
-        title: Text("Post An Add", style: TextStyle(color: Appcolors.secondaryColor,fontSize:23,fontWeight:FontWeight.w600)),
+        title: Text("Post An Add",
+            style: TextStyle(
+                color: Appcolors.secondaryColor,
+                fontSize: 23,
+                fontWeight: FontWeight.w600)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -1380,6 +1389,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                           renttype[0]['amount'] =
                                               value.toString();
                                           renttype[0]['enable'] = true;
+                                          hourlyRent = renttype[0]['enable'];
                                         });
                                       }
                                     },
@@ -1422,6 +1432,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                           renttype[1]['amount'] =
                                               value.toString();
                                           renttype[1]['enable'] = true;
+                                          dailyRent = renttype[1]['enable'];
                                         });
                                       }
                                     },
@@ -1464,6 +1475,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                           renttype[2]['amount'] =
                                               value.toString();
                                           renttype[2]['enable'] = true;
+                                          monthlyRent = renttype[2]['enable'];
                                         });
                                       }
                                     },
@@ -1506,6 +1518,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                                           renttype[3]['amount'] =
                                               value.toString();
                                           renttype[3]['enable'] = true;
+                                          yearlyRent = renttype[3]['enable'];
                                         });
                                       }
                                     },
@@ -1670,9 +1683,6 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                     if (mainimage.isEmpty) {
                       showToast("Please choose main image");
                       return;
-                    } else if (additionalimage.isEmpty) {
-                      showToast("Please choose additional image");
-                      return;
                     } else if (categoryid == null || categoryid == "") {
                       showToast("Please select category");
                       return;
@@ -1713,6 +1723,19 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
                       showToast("Please entere address");
                     } else if (dropdownvalue == "Select Location") {
                       showToast("Please Choose Location");
+                    } else if (_checkhour == true && hourlyRent == false) {
+                      showToast("Please fill hourly price");
+                    } else if (_checkday == true && dailyRent == false) {
+                      showToast("Please fill Days Price");
+                    } else if (_checkmonth == true && monthlyRent == false) {
+                      showToast("Please fill monthly price");
+                    } else if (_checkyear == true && yearlyRent == false) {
+                      showToast("Please fill yearly price");
+                    } else if (_checkday == false &&
+                        _checkmonth == false &&
+                        _checkhour == false &&
+                        _checkyear == false) {
+                      showToast("Select Atleast one Rent type");
                     } else {
                       submitpostaddData(additionalimage);
                     }
@@ -1866,7 +1889,7 @@ class _AddlistingScreenState extends State<AddlistingScreen> {
 
       if (locationAddList.isNotEmpty) {
         for (var i = 0; i < locationAddList.length; i++) {
-          requestMulti.fields["location_data[" + i.toString() + "]"] =
+          requestMulti.fields["location_data[$i]"] =
               locationAddList[i].toString();
         }
       }

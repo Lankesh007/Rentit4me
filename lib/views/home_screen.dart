@@ -743,8 +743,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
                 icon: !sharedpref
-                    ? Image.asset('assets/images/user.png',
-                        color: kPrimaryColor, scale: 1.2)
+                    ? Icon(
+                        Icons.person_outline_sharp,
+                        color: Appcolors.primaryColor,
+                        size: 32,
+                      )
                     : IconButton(
                         onPressed: () {
                           setState(() {
@@ -785,7 +788,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           // border: Border.all(color: Colors.grey)),
                         ),
                         child: SizedBox(
-                          width: width * 0.45,
+                          width: width * 0.9,
                           child: TextFormField(
                             readOnly: true,
                             onTap: () {
@@ -793,23 +796,35 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             textAlign: TextAlign.start,
                             decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.location_on_outlined,
-                                  color: Appcolors.primaryColor,
-                                ),
-                                border: InputBorder.none,
-                                hintText: findCity == true
-                                    ? "   ${address.text.toString()}"
-                                    : selectCity == true
-                                        ? "   $locationvalue "
-                                        : "   $countryName",
-                                suffixIcon: Container(
-                                  margin: const EdgeInsets.only(top: 6),
-                                  child: const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Appcolors.secondaryColor,
+                              border: InputBorder.none,
+                              hintText: findCity == true
+                                  ? "   ${address.text.toString()}"
+                                  : selectCity == true
+                                      ? "   $locationvalue "
+                                      : "   $countryName",
+                              suffixIcon: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 25,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                        color: Appcolors.primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(100)),
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: 25,
+                                      child: Image.asset(
+                                        "assets/images/gps.png".toString(),
+                                        color: Appcolors.whiteColor,
+                                      ),
+                                    ),
                                   ),
-                                )),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),

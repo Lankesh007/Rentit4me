@@ -11,15 +11,21 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <application android:label="Rentit4me" 
-    android:usesCleartextTraffic="true"
-    android:name="${applicationName}"
-    android:icon="@mipmap/launcher_icon">
+    <application android:label="Rentit4me"
+        android:usesCleartextTraffic="true"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAUr4dGAQi1XocxvHSQMh6SVVpT2jqU96o" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="custom_notification_channel_id" />
 
-        <!-- android:value="AIzaSyCbyuLLPBysP-hHBoX6fLnnm-5daOVDDZM" /> -->
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. -->
+
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming notification message.  -->
+
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token" />

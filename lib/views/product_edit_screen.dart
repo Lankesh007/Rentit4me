@@ -134,6 +134,11 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     });
   }
 
+  bool hourlyRent = false;
+  bool monthlyRent = false;
+  bool dailyRent = false;
+  bool yearlyRent = false;
+
   bool addlocation = false;
   String categoryid;
   String subcategoryid;
@@ -1571,6 +1576,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           setState(() {
                                             _checkhour = value;
                                             renttype[0]['enable'] = _checkhour;
+                                            hourlyRent = renttype[0]['enable'];
                                           });
                                         }),
                                     const Text("Hourly",
@@ -1585,6 +1591,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           setState(() {
                                             _checkday = value;
                                             renttype[1]['enable'] = _checkday;
+                                            dailyRent = renttype[1]['enable'];
                                           });
                                         }),
                                     const Text("Daily",
@@ -1604,6 +1611,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           setState(() {
                                             _checkmonth = value;
                                             renttype[2]['enable'] = _checkmonth;
+                                            monthlyRent = renttype[2]['enable'];
                                           });
                                         }),
                                     const Text("Monthly",
@@ -1618,6 +1626,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                           setState(() {
                                             _checkyear = value;
                                             renttype[3]['enable'] = _checkyear;
+                                            yearlyRent = renttype[3]['enable'];
                                           });
                                         }),
                                     const Text("Yearly",
@@ -2040,69 +2049,96 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                       ),
                                     )
                                   : statusvalue == 4
-                                      ? Text(
-                                          "InActive",
+                                      ? Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey,
+                                                  width: 1.0),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.0))),
+                                          child: DropdownButtonHideUnderline(
+                                              child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0, right: 5.0),
+                                            child: DropdownButton(
+                                              value: statusvalue,
+                                              icon: const Icon(Icons
+                                                  .arrow_drop_down_rounded),
+                                              items: [
+                                                {"title": "Active", "id": "6"},
+                                                {"title": "Inctive", "id": "4"},
+                                                // {"title": "Pending", "id": "3"},
+                                                // {"title": "Rejected", "id": "2"}
+                                              ].map((items) {
+                                                return DropdownMenuItem(
+                                                  value: int.parse(
+                                                      items['id'].toString()),
+                                                  child: Text(items['title']
+                                                      .toString()),
+                                                );
+                                              }).toList(),
+                                              isExpanded: true,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  statusvalue = int.parse(
+                                                      value.toString());
+                                                });
+                                              },
+                                            ),
+                                          )))
+                                      : Text(
+                                          "",
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
-                                        )
-                                      : statusvalue == 6
-                                          ? Container(
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1.0),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              8.0))),
-                                              child:
-                                                  DropdownButtonHideUnderline(
-                                                      child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5.0, right: 5.0),
-                                                child: DropdownButton(
-                                                  value: statusvalue,
-                                                  icon: const Icon(Icons
-                                                      .arrow_drop_down_rounded),
-                                                  items: [
-                                                    {
-                                                      "title": "Active",
-                                                      "id": "6"
-                                                    },
-                                                    {
-                                                      "title": "Inctive",
-                                                      "id": "4"
-                                                    },
-                                                    // {"title": "Pending", "id": "3"},
-                                                    // {"title": "Rejected", "id": "2"}
-                                                  ].map((items) {
-                                                    return DropdownMenuItem(
-                                                      value: int.parse(
-                                                          items['id']
-                                                              .toString()),
-                                                      child: Text(items['title']
-                                                          .toString()),
-                                                    );
-                                                  }).toList(),
-                                                  isExpanded: true,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      statusvalue = int.parse(
-                                                          value.toString());
-                                                    });
-                                                  },
-                                                ),
-                                              )))
-                                          : Text(
-                                              "",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
+                                        ),
+                          statusvalue == 6
+                              ? Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey, width: 1.0),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0))),
+                                  child: DropdownButtonHideUnderline(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5.0),
+                                    child: DropdownButton(
+                                      value: statusvalue,
+                                      icon: const Icon(
+                                          Icons.arrow_drop_down_rounded),
+                                      items: [
+                                        {"title": "Active", "id": "6"},
+                                        {"title": "Inctive", "id": "4"},
+                                        // {"title": "Pending", "id": "3"},
+                                        // {"title": "Rejected", "id": "2"}
+                                      ].map((items) {
+                                        return DropdownMenuItem(
+                                          value:
+                                              int.parse(items['id'].toString()),
+                                          child:
+                                              Text(items['title'].toString()),
+                                        );
+                                      }).toList(),
+                                      isExpanded: true,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          statusvalue =
+                                              int.parse(value.toString());
+                                        });
+                                      },
+                                    ),
+                                  )))
+                              : Text(
+                                  "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
 
                           SizedBox(height: 10),
                         ],
@@ -2122,13 +2158,23 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                       } else if (daysprice.text.isEmpty &&
                           monthprice.text.isEmpty &&
                           yearprice.text.isEmpty &&
-                          yearprice.text.isEmpty) {
+                          hourlyprice.text.isEmpty) {
                         showToast("Select Atleast one Rent type");
                       } else if (_checkday == false &&
                           _checkmonth == false &&
                           _checkhour == false &&
                           _checkyear == false) {
                         showToast("Select Atleast one Rent type");
+                      } else if (_checkhour == true &&
+                          hourlyprice.text.isEmpty) {
+                        showToast("Please fill hourly price");
+                      } else if (_checkday == true && daysprice.text.isEmpty) {
+                        showToast("Please fill Days Price");
+                      } else if (_checkmonth == true &&
+                          monthprice.text.isEmpty) {
+                        showToast("Please fill monthly price");
+                      } else if (_checkyear == true && yearprice.text.isEmpty) {
+                        showToast("Please fill yearly price");
                       } else {
                         submitpostaddData(additionalimage);
                       }
@@ -2558,119 +2604,114 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   bool changeSubCategory = false;
 
   Future<Map> submitpostaddData(List files) async {
-    if (files.isEmpty) {
-      showToast("Please add atleast one additonal image");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List temp = [];
+    for (var element in renttype) {
+      if (element['enable']) {
+        temp.add(element);
+      }
+    }
+    if (temp.isEmpty) {
+      showToast("Please select atleast one rent type");
     } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      List temp = [];
-      for (var element in renttype) {
-        if (element['enable']) {
-          temp.add(element);
+      setState(() {
+        _loading = true;
+      });
+
+      List newImages = [];
+      List oldImages = [];
+
+      for (var element in files) {
+        if (element['update'].toString() == "true") {
+          newImages.add(element['image']);
+        } else {
+          oldImages.add(element['id']);
         }
       }
-      if (temp.isEmpty) {
-        showToast("Please select atleast one rent type");
+
+      var requestMulti =
+          http.MultipartRequest('POST', Uri.parse(BASE_URL + updatepost));
+
+      requestMulti.fields["userid"] = prefs.get('userid').toString();
+      requestMulti.fields["post_id"] = productid;
+      requestMulti.fields["quantity"] = qunatity.toString();
+
+      requestMulti.fields["category[0]"] =
+          changeCategory == true ? categoryid : categoryId.toString();
+      requestMulti.fields["category[1]"] =
+          changeSubCategory == true ? changeCategory : subcategoryid.toString();
+      requestMulti.fields["title"] = productname.text.toString();
+      requestMulti.fields["description"] = description.text.toString();
+      requestMulti.fields["security"] = securityamount.text.toString();
+      requestMulti.fields["negotiate"] =
+          negotiablevalue.toString() == "Yes" ? "1" : "0";
+      requestMulti.fields["mobile"] = mobile.text.toString();
+      requestMulti.fields["email"] = email.text.toString();
+      requestMulti.fields["mobile_hidden"] = mobilehiddenvalue.toString();
+      requestMulti.fields["com_prefs"] = communicationprefs.toString();
+      requestMulti.fields["status"] = statusvalue.toString();
+      requestMulti.fields["price[1]"] =
+          _checkhour == true ? renttype[0]['amount'].toString() : "";
+      requestMulti.fields["rent_type[1]"] = renttype[0]['type'].toString();
+      requestMulti.fields["price[2]"] =
+          _checkday == true ? renttype[1]['amount'].toString() : "";
+      requestMulti.fields["rent_type[2]"] = renttype[1]['type'].toString();
+      requestMulti.fields["price[3]"] =
+          _checkmonth == true ? renttype[2]['amount'].toString() : "";
+      requestMulti.fields["rent_type[3]"] = renttype[2]['type'].toString();
+      requestMulti.fields["price[4]"] =
+          _checkyear == true ? renttype[3]['amount'].toString() : "";
+      requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
+      requestMulti.fields["files"] = renttype[3]['type'].toString();
+      requestMulti.fields["address_type"] =
+          changeLocation == false ? "same_as_profile" : "manually";
+      requestMulti.fields["location_data[0]"] =
+          changeLocation == false ? userAddress : locationAddList.toString();
+      requestMulti.fields["quantity"] = quantityController.text.toString();
+
+      _checkstock == true ? requestMulti.fields["out_of_stock"] = "1" : "";
+
+      // requestMulti.fields["security"] = quantityController.text.toString();
+
+      requestMulti.fields["old_images"] = oldImages.join(",").toString();
+      print(jsonEncode(requestMulti.fields));
+
+      requestMulti.headers.addAll({
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+      });
+
+      if (!mainimage.contains('http')) {
+        requestMulti.files.add(http.MultipartFile("main_image",
+            File(mainimage).openRead(), File(mainimage).lengthSync(),
+            filename: "image${p.extension(mainimage.toString())}"));
+      }
+
+      List<http.MultipartFile> newList = [];
+      if (newImages.isNotEmpty) {
+        for (var i = 0; i < newImages.length; i++) {
+          File imageFile = File(newImages[i].toString());
+          var stream = http.ByteStream(imageFile.openRead());
+          var length = await imageFile.length();
+          var multipartFile = http.MultipartFile("images[]", stream, length,
+              filename: "image${p.extension(newImages[i].toString())}");
+          newList.add(multipartFile);
+        }
+      }
+
+      requestMulti.files.addAll(newList);
+
+      var response = await requestMulti.send();
+      var respStr = await response.stream.bytesToString();
+      setState(() {
+        _loading = false;
+      });
+      print(respStr);
+      if (jsonDecode(respStr)['ErrorCode'] == 0) {
+        showToast(jsonDecode(respStr)['ErrorMessage'].toString());
+        _getpreproductedit(productid);
+        Navigator.of(context).pop();
       } else {
-        setState(() {
-          _loading = true;
-        });
-
-        List newImages = [];
-        List oldImages = [];
-
-        for (var element in files) {
-          if (element['update'].toString() == "true") {
-            newImages.add(element['image']);
-          } else {
-            oldImages.add(element['id']);
-          }
-        }
-
-        var requestMulti =
-            http.MultipartRequest('POST', Uri.parse(BASE_URL + updatepost));
-
-        requestMulti.fields["userid"] = prefs.get('userid').toString();
-        requestMulti.fields["post_id"] = productid;
-        requestMulti.fields["quantity"] = qunatity.toString();
-
-        requestMulti.fields["category[0]"] =
-            changeCategory == true ? categoryid : categoryId.toString();
-        requestMulti.fields["category[1]"] = changeSubCategory == true
-            ? changeCategory
-            : subcategoryid.toString();
-        requestMulti.fields["title"] = productname.text.toString();
-        requestMulti.fields["description"] = description.text.toString();
-        requestMulti.fields["security"] = securityamount.text.toString();
-        requestMulti.fields["negotiate"] =
-            negotiablevalue.toString() == "Yes" ? "1" : "0";
-        requestMulti.fields["mobile"] = mobile.text.toString();
-        requestMulti.fields["email"] = email.text.toString();
-        requestMulti.fields["mobile_hidden"] = mobilehiddenvalue.toString();
-        requestMulti.fields["com_prefs"] = communicationprefs.toString();
-        requestMulti.fields["status"] = statusvalue.toString();
-        requestMulti.fields["price[1]"] =
-            _checkhour == true ? renttype[0]['amount'].toString() : "";
-        requestMulti.fields["rent_type[1]"] = renttype[0]['type'].toString();
-        requestMulti.fields["price[2]"] =
-            _checkday == true ? renttype[1]['amount'].toString() : "";
-        requestMulti.fields["rent_type[2]"] = renttype[1]['type'].toString();
-        requestMulti.fields["price[3]"] =
-            _checkmonth == true ? renttype[2]['amount'].toString() : "";
-        requestMulti.fields["rent_type[3]"] = renttype[2]['type'].toString();
-        requestMulti.fields["price[4]"] =
-            _checkyear == true ? renttype[3]['amount'].toString() : "";
-        requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
-        requestMulti.fields["files"] = renttype[3]['type'].toString();
-        requestMulti.fields["address_type"] =
-            changeLocation == false ? "same_as_profile" : "manually";
-        requestMulti.fields["location_data[0]"] =
-            changeLocation == false ? userAddress : locationAddList.toString();
-        requestMulti.fields["quantity"] = quantityController.text.toString();
-
-        _checkstock== true ? requestMulti.fields["out_of_stock"] = "1" : "";
-
-        // requestMulti.fields["security"] = quantityController.text.toString();
-
-        requestMulti.fields["old_images"] = oldImages.join(",").toString();
-        print(jsonEncode(requestMulti.fields));
-
-        requestMulti.headers.addAll({
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        });
-
-        if (!mainimage.contains('http')) {
-          requestMulti.files.add(http.MultipartFile("main_image",
-              File(mainimage).openRead(), File(mainimage).lengthSync(),
-              filename: "image${p.extension(mainimage.toString())}"));
-        }
-
-        List<http.MultipartFile> newList = [];
-        if (newImages.isNotEmpty) {
-          for (var i = 0; i < newImages.length; i++) {
-            File imageFile = File(newImages[i].toString());
-            var stream = http.ByteStream(imageFile.openRead());
-            var length = await imageFile.length();
-            var multipartFile = http.MultipartFile("images[]", stream, length,
-                filename: "image${p.extension(newImages[i].toString())}");
-            newList.add(multipartFile);
-          }
-        }
-
-        requestMulti.files.addAll(newList);
-
-        var response = await requestMulti.send();
-        var respStr = await response.stream.bytesToString();
-        setState(() {
-          _loading = false;
-        });
-        print(respStr);
-        if (jsonDecode(respStr)['ErrorCode'] == 0) {
-          showToast(jsonDecode(respStr)['ErrorMessage'].toString());
-          _getpreproductedit(productid);
-          Navigator.of(context).pop();
-        } else {
-          showToast(jsonDecode(respStr)['ErrorMessage'].toString());
-        }
+        showToast(jsonDecode(respStr)['ErrorMessage'].toString());
       }
     }
   }

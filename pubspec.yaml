@@ -46,7 +46,7 @@ dependencies:
   image_gallery_saver: ^1.7.1
   permission_handler: ^8.3.0
   url_launcher: ^6.1.4
-  # webview_flutter: ^3.0.4
+  webview_flutter: ^2.0.4
   progress_dialog: ^1.2.4
   syncfusion_flutter_maps: ^20.2.38
   location: ^4.4.0

@@ -627,6 +627,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
           : appliedDiscount.toString(),
     };
 
+    log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     if (result["ErrorCode"] == 0) {
@@ -757,8 +758,14 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     var body = {
       "id": widget.packageId,
       "razorpay_payment_id": "",
-      "amount": "0"
+      "amount": "0",
+      "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
     };
+    log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     if (result['ErrorCode'] == 0) {

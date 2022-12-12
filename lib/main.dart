@@ -40,7 +40,7 @@ Future<void> _firebaseMessangingBackgroundHandler(RemoteMessage message) async {
   log('Data----->   ${message.data}');
 
   RemoteNotification notification = message.notification;
-  AndroidNotification android = message.notification?.android;
+  AndroidNotification android = message.notification.android;
   if (notification != null && android != null) {
     flutterLocalNotify.show(
       notification.hashCode,
@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
 
   AppUpdateInfo _updateInfo;
 
-  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   bool _flexibleUpdateAvailable = false;
 
@@ -120,8 +120,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void showSnack(String text) {
-    if (_scaffoldKey.currentContext != null) {
-      ScaffoldMessenger.of(_scaffoldKey.currentContext)
+    if (scaffoldKey.currentContext != null) {
+      ScaffoldMessenger.of(scaffoldKey.currentContext)
           .showSnackBar(SnackBar(content: Text(text)));
     }
   }
@@ -129,86 +129,90 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => InternetBloc(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-               title: 'Rentit4me',
-              theme: ThemeData(
-                fontFamily: "Regular",
-                primarySwatch: Colors.indigo,
-              ),
-              home:_flexibleUpdateAvailable == false?SplashScreen(): Scaffold(
-                key: _scaffoldKey,
-                appBar: AppBar(
-                  backgroundColor: Appcolors.primaryColor,
-                  title: const Text('Rentit4me Have A New Version'),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Center(
-                        child: Text('Update info: $_updateInfo'),
-                      ),
-                      ElevatedButton(
-                        child: Text('Check for Update'),
-                        onPressed: () => checkForUpdate(),
-                      ),
-                      ElevatedButton(
-                        onPressed: _updateInfo?.updateAvailability ==
-                                UpdateAvailability.updateAvailable
-                            ? () {
-                                InAppUpdate.performImmediateUpdate()
-                                    .catchError((e) => showSnack(e.toString()));
-                              }
-                            : null,
-                        child: Text('Perform immediate update'),
-                      ),
-                      ElevatedButton(
-                        onPressed: _updateInfo?.updateAvailability ==
-                                UpdateAvailability.updateAvailable
-                            ? () {
-                                InAppUpdate.startFlexibleUpdate().then((_) {
-                                  setState(() {
-                                    _flexibleUpdateAvailable = true;
+        create: (context) => InternetBloc(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Rentit4me',
+          theme: ThemeData(
+            fontFamily: "Regular",
+            primarySwatch: Colors.indigo,
+          ),
+          home: _flexibleUpdateAvailable == false
+              ? SplashScreen()
+              : Scaffold(
+                  key: scaffoldKey,
+                  appBar: AppBar(
+                    backgroundColor: Appcolors.primaryColor,
+                    title: const Text('Rentit4me Have A New Version'),
+                  ),
+                  body: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                          child: Text('Update info: $_updateInfo'),
+                        ),
+                        ElevatedButton(
+                          child: Text('Check for Update'),
+                          onPressed: () => checkForUpdate(),
+                        ),
+                        ElevatedButton(
+                          onPressed: _updateInfo.updateAvailability ==
+                                  UpdateAvailability.updateAvailable
+                              ? () {
+                                  InAppUpdate.performImmediateUpdate()
+                                      .catchError(
+                                          (e) => showSnack(e.toString()));
+                                }
+                              : null,
+                          child: Text('Perform immediate update'),
+                        ),
+                        ElevatedButton(
+                          onPressed: _updateInfo.updateAvailability ==
+                                  UpdateAvailability.updateAvailable
+                              ? () {
+                                  InAppUpdate.startFlexibleUpdate().then((_) {
+                                    setState(() {
+                                      _flexibleUpdateAvailable = true;
+                                    });
+                                  }).catchError((e) {
+                                    showSnack(e.toString());
                                   });
-                                }).catchError((e) {
-                                  showSnack(e.toString());
-                                });
-                              }
-                            : null,
-                        child: Text('Start flexible update'),
-                      ),
-                      ElevatedButton(
-                        onPressed: !_flexibleUpdateAvailable
-                            ? null
-                            : () {
-                                InAppUpdate.completeFlexibleUpdate().then((_) {
-                                  showSnack("Success!");
-                                }).catchError((e) {
-                                  showSnack(e.toString());
-                                });
-                              },
-                        child: Text('Complete flexible update'),
-                      )
-                    ],
+                                }
+                              : null,
+                          child: Text('Start flexible update'),
+                        ),
+                        ElevatedButton(
+                          onPressed: !_flexibleUpdateAvailable
+                              ? null
+                              : () {
+                                  InAppUpdate.completeFlexibleUpdate()
+                                      .then((_) {
+                                    showSnack("Success!");
+                                  }).catchError((e) {
+                                    showSnack(e.toString());
+                                  });
+                                },
+                          child: Text('Complete flexible update'),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          //  MaterialApp(
-          //     debugShowCheckedModeBanner: false,
-          //     //theme: lightThemeData(context),
-          //     //darkTheme: darkThemeData(context),
-          //     title: 'Rentit4me',
-          //     theme: ThemeData(
-          //       fontFamily: "Regular",
-          //       primarySwatch: Colors.indigo,
-          //     ),
-          //     home: Scaffold(),
-            
-          //   ),
-    );
+        )
+        //  MaterialApp(
+        //     debugShowCheckedModeBanner: false,
+        //     //theme: lightThemeData(context),
+        //     //darkTheme: darkThemeData(context),
+        //     title: 'Rentit4me',
+        //     theme: ThemeData(
+        //       fontFamily: "Regular",
+        //       primarySwatch: Colors.indigo,
+        //     ),
+        //     home: Scaffold(),
+
+        //   ),
+        );
   }
 
   showNotify() async {
@@ -225,31 +229,39 @@ class _MyAppState extends State<MyApp> {
 
     FirebaseMessaging.onMessage.listen(
       (RemoteMessage message) {
-        log('Ass new onMessagep event was published!${message.data['title']}     ${message.data['message']}');
+        log("All data--->${message.notification}");
+        log('As new onMessagep event was published!${message.notification.title}     ${message.notification.body}');
 
-        log('Data----->   ${message.data}');
+        // log('Data----->   ${message.data}');
 
         RemoteNotification notification = message.notification;
-        // if (notification != null && android != null) {
-        flutterLocalNotify.show(
-          notification.hashCode,
-          message.data['title'],
-          message.data['message'],
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              'channel_ID',
-              'channel name',
-              channelDescription: 'channel description',
-              importance: Importance.max,
-              playSound: true,
-              showProgress: true,
-              priority: Priority.high,
-              ticker: 'test ticker',
+        AndroidNotification android = message.notification.android;
+        // log("A--->${message.notification.android}");
+        // log("N--->${message.notification.body}");
+
+        if (notification != null && android != null) {
+          flutterLocalNotify.show(
+            notification.hashCode,
+            message.notification.title,
+            message.notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                'channel_ID',
+                'channel name',
+                channelDescription: 'channel description',
+                importance: Importance.max,
+                playSound: true,
+                showProgress: true,
+                priority: Priority.high,
+                ticker: 'test ticker',
+              ),
             ),
-          ),
-          payload: json.encode(message.data),
-          // payload: message.data['payload']
-        );
+            payload: json.encode(message.data),
+            // payload: message.data['payload']
+          );
+        } else {
+          log("No data found!!");
+        }
         /*   Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => OrderDetails(
@@ -262,33 +274,34 @@ class _MyAppState extends State<MyApp> {
         // }
       },
     );
+
     FirebaseMessaging.onMessageOpenedApp.listen(
       (RemoteMessage message) {
         log('A new onMessageOpenedApp event was published!');
         RemoteNotification notification = message.notification;
-        AndroidNotification android = message.notification?.android;
+        AndroidNotification android = message.notification.android;
 
-        // if (notification != null && android != null) {
-        flutterLocalNotify.show(
-          notification.hashCode,
-          message.data['title'],
-          message.data['message'],
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              'channel_ID',
-              'channel name',
-              channelDescription: 'channel description',
-              importance: Importance.max,
-              playSound: true,
-              showProgress: true,
-              priority: Priority.high,
-              ticker: 'test ticker',
+        if (notification != null && android != null) {
+          flutterLocalNotify.show(
+            notification.hashCode,
+            message.data['title'],
+            message.data['message'],
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                'channel_ID',
+                'channel name',
+                channelDescription: 'channel description',
+                importance: Importance.max,
+                playSound: true,
+                showProgress: true,
+                priority: Priority.high,
+                ticker: 'test ticker',
+              ),
             ),
-          ),
-          payload: json.encode(message.data),
-          // payload: message.data['payload']
-        );
-        /*  Navigator.of(context).push(
+            payload: json.encode(message.data),
+            // payload: message.data['payload']
+          );
+          /*  Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => OrderDetails(
               deliveryBoyId: message.data['deliveruboyid'].toString(),
@@ -297,6 +310,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ); */
+        } else {
+          print("No data");
+        }
       },
     );
   }

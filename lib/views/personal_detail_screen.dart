@@ -63,8 +63,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   TextEditingController pincode = TextEditingController();
   TextEditingController adharnum = TextEditingController();
 
-  String internIdProofDocument = "";
-  TextEditingController internIdProofController = TextEditingController();
+  String passportDoc = "";
+  String dlDoc = "";
+
+  TextEditingController drivingLicenseNumber = TextEditingController();
+  TextEditingController pasportNumber = TextEditingController();
 
   bool _emailcheck = false;
   bool _smscheck = false;
@@ -825,9 +828,10 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                                             newValue;
                                                         adharcarddoc = "";
                                                         adharnum.clear();
-                                                        internIdProofDocument =
-                                                            "";
-                                                        internIdProofController
+                                                        passportDoc = "";
+                                                        dlDoc = "";
+                                                        pasportNumber.clear();
+                                                        drivingLicenseNumber
                                                             .clear();
                                                       });
                                                     }
@@ -884,8 +888,16 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                                                     .only(
                                                                 left: 10.0),
                                                         child: TextFormField(
-                                                          controller:
-                                                              internIdProofController,
+                                                          controller: initialIdProof ==
+                                                                  "Select"
+                                                              ? ""
+                                                              : initialIdProof ==
+                                                                      "Driving Licence"
+                                                                  ? drivingLicenseNumber
+                                                                  : initialIdProof ==
+                                                                          "Passport"
+                                                                      ? pasportNumber
+                                                                      : "",
                                                           decoration:
                                                               InputDecoration(
                                                             border: InputBorder
@@ -929,19 +941,23 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                                                               MainAxisAlignment
                                                                   .spaceBetween,
                                                           children: [
-                                                            internIdProofDocument
-                                                                            .toString() ==
-                                                                        "" ||
-                                                                    internIdProofDocument
-                                                                            .toString() ==
-                                                                        "null"
-                                                                ? SizedBox()
-                                                                : CircleAvatar(
+                                                            initialIdProof ==
+                                                                    "Passport"
+                                                                ? CircleAvatar(
                                                                     radius: 25,
                                                                     backgroundImage:
                                                                         FileImage(
-                                                                            File(internIdProofDocument)),
-                                                                  ),
+                                                                            File(passportDoc)),
+                                                                  )
+                                                                : initialIdProof ==
+                                                                        "Driving Licence"
+                                                                    ? CircleAvatar(
+                                                                        radius:
+                                                                            25,
+                                                                        backgroundImage:
+                                                                            FileImage(File(dlDoc)),
+                                                                      )
+                                                                    : "",
                                                             InkWell(
                                                               onTap: () {
                                                                 FocusScope.of(
@@ -1007,7 +1023,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               showToast("Please select Id Proof");
                             } else if (kyc == true &&
                                 country != "India" &&
-                                internIdProofDocument == "") {
+                                passportDoc == "" &&
+                                dlDoc == "") {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
@@ -1062,7 +1079,8 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               showToast("Please select Id Proof");
                             } else if (kyc == true &&
                                 country != "India" &&
-                                internIdProofDocument == "") {
+                                passportDoc == "" &&
+                                dlDoc == "") {
                               showToast("Please upload " +
                                   initialIdProof.toString() +
                                   " documents");
@@ -1612,7 +1630,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     }
   }
 
-  Future _personaldetailupdatewithdoc() async {
+  Future submitPersonalDetailsNew() async {
     List comPrefList = [];
     if (checkEmail == "1") {
       comPrefList.add("1");
@@ -1620,78 +1638,108 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     if (checkSms == "2") {
       comPrefList.add('2');
     }
-    List temp = [];
-    if (_emailcheck) {
-      temp.add("1");
-    }
-    if (_smscheck) {
-      temp.add("2");
-    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    log('Bearer ${prefs.getString("token")}');
-    // setState(() {
-    //   _loading = true;
-    // });
-
-    var requestMulti =
-        http.MultipartRequest('POST', Uri.parse(BASE_URL + personalupdate));
-    requestMulti.fields["id"] = prefs.getString('userid').toString();
-    requestMulti.fields["address"] = address.text.toString();
-    requestMulti.fields["country"] = country_id.toString();
-    requestMulti.fields["state"] = state_id.toString();
-    requestMulti.fields["city"] = city_id.toString();
-    requestMulti.fields["kyc"] = kyc.toString();
-    requestMulti.fields["com_prefs"] = comPrefList.join(',');
-    requestMulti.fields["trusted_badge"] = initialtrustedbadge.toString();
-    // requestMulti.fields["account_type"] = dropdownvalue.toString();
-    // requestMulti.fields["bank_name"] = bankname.text.toString();
-    // requestMulti.fields["branch_name"] = branchname.text.toString();
-    // requestMulti.fields["ifsc"] = ifsccode.text.toString();
-    // requestMulti.fields["account_no"] = accountno.text.toString();
-    requestMulti.fields["adhaar_no"] = adharnum.text.toString();
-    // requestMulti.fields["pincode"] = pincode.text.toString();
-    print(requestMulti.fields);
-
-    if (kyc == true && country_id == 113) {
-      requestMulti.files
-          .add(await http.MultipartFile.fromPath('adhaar_doc', adharcarddoc));
-    } else if (kyc != true && country_id != 113) {
-      requestMulti.files
-          .add(await http.MultipartFile.fromPath('adhaar_doc', adharcarddoc));
+    String kycdone = '';
+    String trustedBadge = '';
+    if (initialtrustedbadge == "Yes") {
+      setState(() {
+        trustedBadge = "1";
+      });
+    } else {
+      setState(() {
+        trustedBadge = "0";
+      });
     }
-
-    requestMulti.send().then((response) {
-      response.headers.addAll({
-        'Authorization': 'Bearer ${prefs.getString("token")}',
+    if (kyc == true) {
+      setState(() {
+        kycdone = "1";
       });
-
-      response.stream.toBytes().then((value) {
-        try {
-          var responseString = String.fromCharCodes(value);
-          setState(() {
-            _loading = false;
-          });
-          var jsonData = jsonDecode(responseString);
-          if (jsonData['ErrorCode'].toString() == "0") {
-            if (jsonData['Response']['user_type'].toString() == "3") {
-              _getprofileData();
-            } else {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => BillingAndTaxation()));
-            }
-          } else {
-            showToast(jsonData['Response'].toString());
-          }
-        } catch (e) {
-          setState(() {
-            _loading = false;
-          });
-        }
+    } else {
+      setState(() {
+        kycdone = "0";
       });
+    }
+    log('Bearer ${prefs.getString("token")}');
+
+    String userId = prefs.getString('userid');
+    setState(() {
+      buttonLoading = true;
     });
+    var bodyMap = country != "India" && initialIdProof == "Passport"
+        ? {
+            "pincode": pincode.text.toString(),
+            "location": locationUser.toString(),
+            "kyc": kycdone.toString(),
+            "com_prefs": comPrefList.join(','),
+            "kyc_document_type": initialIdProof == "Select"
+                ? ""
+                : initialIdProof == "Passport"
+                    ? "passport"
+                    : initialIdProof == "Driving Licence"
+                        ? "driving_license"
+                        : "",
+            "trusted_badge": trustedBadge.toString(),
+            "passport_no": pasportNumber.text.toString(),
+            "passport_doc": passportDoc.toString()
+          }
+        : country != "India" && initialIdProof == "Driving Licence"
+            ? {
+                "pincode": pincode.text.toString(),
+                "location": locationUser.toString(),
+                "kyc": kycdone.toString(),
+                "com_prefs": comPrefList.join(','),
+                "kyc_document_type": initialIdProof == "Select"
+                    ? ""
+                    : initialIdProof == "Passport"
+                        ? "passport"
+                        : initialIdProof == "Driving Licence"
+                            ? "driving_license"
+                            : "",
+                "trusted_badge": trustedBadge.toString(),
+                "driving_license_no": drivingLicenseNumber.text.toString(),
+                "driving_license_doc": dlDoc.toString(),
+              }
+            : {
+                "pincode": pincode.text.toString(),
+                "location": locationUser.toString(),
+                "kyc": kycdone.toString(),
+                "com_prefs": comPrefList.join(','),
+                "trusted_badge": trustedBadge.toString(),
+                "adhaar_no": adharnum.text.toString(),
+                "adhaar_doc": adharcarddoc.toString(),
+              };
+
+    var url = BASE_URL + "personal-profile-update";
+
+    var response = await APIHelper.apiPostRequest(url, bodyMap);
+
+    log("body-->$bodyMap");
+    log("response-->"+response.toString());
+
+    var result = jsonDecode(response);
+    if (result['ErrorCode'] == 0) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => BillingAndTaxation()));
+      Fluttertoast.showToast(
+        msg: showToast(result['ErrorMessage']),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green.shade700,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: showToast(result['ErrorMessage']),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green.shade700,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 
   Future submitPersonalDetails() async {
@@ -1730,20 +1778,48 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       buttonLoading = true;
     });
     var url = BASE_URL + personalupdate;
-    var bodyMap = {
-      "id": userId.toString(),
-      // "address": address.text.toString(),
-      // "country": country_id.toString(),
-      // "state": state_id.toString(),
-      "pincode": pincode.text.toString(),
-      "location": locationUser.toString(),
-      // "city": city_id.toString(),
-      "kyc": kycdone.toString(),
-      "com_prefs": comPrefList.join(','),
-      "trusted_badge": trustedBadge.toString(),
-      "adhaar_no": adharnum.text.toString(),
-      // "adhaar_doc": adharcarddoc.toString(),
-    };
+    var bodyMap = country != "India" && initialIdProof == "Passport"
+        ? {
+            "pincode": pincode.text.toString(),
+            "location": locationUser.toString(),
+            "kyc": kycdone.toString(),
+            "com_prefs": comPrefList.join(','),
+            "kyc_document_type": initialIdProof == "Select"
+                ? ""
+                : initialIdProof == "Passport"
+                    ? "passport"
+                    : initialIdProof == "Driving Licence"
+                        ? "driving_license"
+                        : "",
+            "trusted_badge": trustedBadge.toString(),
+            "passport_no": pasportNumber.text.toString(),
+            "passport_doc": passportDoc.toString()
+          }
+        : country != "India" && initialIdProof == "Driving Licence"
+            ? {
+                "pincode": pincode.text.toString(),
+                "location": locationUser.toString(),
+                "kyc": kycdone.toString(),
+                "com_prefs": comPrefList.join(','),
+                "kyc_document_type": initialIdProof == "Select"
+                    ? ""
+                    : initialIdProof == "Passport"
+                        ? "passport"
+                        : initialIdProof == "Driving Licence"
+                            ? "driving_license"
+                            : "",
+                "trusted_badge": trustedBadge.toString(),
+                "driving_license_no": drivingLicenseNumber.text.toString(),
+                "driving_license_doc": dlDoc.toString(),
+              }
+            : {
+                "pincode": pincode.text.toString(),
+                "location": locationUser.toString(),
+                "kyc": kycdone.toString(),
+                "com_prefs": comPrefList.join(','),
+                "trusted_badge": trustedBadge.toString(),
+                "adhaar_no": adharnum.text.toString(),
+              };
 
     try {
       final request = http.MultipartRequest('POST', Uri.parse(url));
@@ -1756,10 +1832,20 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
             'adhaar_doc', adharcarddoc.toString());
         request.files.add(pic);
         log("ENTETED====>  $pic");
-      } else {
-        log("ENTETED====>  not sent");
-      }
-
+        } else if (initialIdProof == "Passport" && country != "India") {
+          var passportPic = await http.MultipartFile.fromPath(
+              'passport_doc', passportDoc.toString());
+          request.files.add(passportPic);
+          log("ENTETED====>  $passportPic");
+        } else if (initialIdProof == "Driving Licence" && country != "India") {
+          var dlPic = await http.MultipartFile.fromPath(
+              'driving_license_doc', passportDoc.toString());
+          request.files.add(dlPic);
+          log("ENTETED====>  $dlPic");
+        } else {
+          log("no data");
+        }
+      
       request.fields.addAll(bodyMap);
       var response = await request.send();
 
@@ -1781,7 +1867,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => BillingAndTaxation()));
           Fluttertoast.showToast(
-            msg: "Personal Details Submitted Successfully !!:",
+            msg: showToast(result['ErrorMessage']),
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -1806,65 +1892,6 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       buttonLoading = false;
     });
   }
-
-  // Future _personaldetailupdatewithoutdoc(
-  //     String countryid,
-  //     String stateid,
-  //     String cityid,
-  //     String address,
-  //     String pincode,
-  //     String commpref,
-  //     String kyc,
-  //     String trustbadge) async {
-  //   print("Without doc");
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     _loading = true;
-  //   });
-
-  //   final body = {
-  //     "id": prefs.getString('userid'),
-  //     "address": address,
-  //     // "country": country_id,
-  //     "state": state_id,
-  //     "city": city_id,
-  //     "kyc": kyc,
-  //     "com_prefs": commpref,
-  //     "trusted_badge": trustbadge,
-  //     "account_type": dropdownvalue,
-  //     "bank_name": bankname,
-  //     "branch_name": branchname,
-  //     "ifsc": ifsccode,
-  //     "account_no": accountno,
-  //     "pincode": pincode.toString()
-  //   };
-  //   print(jsonEncode(body));
-  //   var response = await http.post(Uri.parse(BASE_URL + personalupdate),
-  //       body: jsonEncode(body),
-  //       headers: {
-  //         "Accept": "application/json",
-  //         'Content-Type': 'application/json'
-  //       });
-  //   print(response.body);
-  //   if (response.statusCode == 200) {
-  //     if (json.decode(response.body)['Response']['user_type'].toString() ==
-  //         "3") {
-  //       _getprofileData();
-  //       //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>  HomeScreen()));
-  //     } else {
-  //       Navigator.pushReplacement(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (BuildContext context) =>
-  //                   BankAndBusinessDetailScreen()));
-  //     }
-  //   } else {
-  //     setState(() {
-  //       _loading = false;
-  //     });
-  //     throw Exception('Failed to get data due to ${response.body}');
-  //   }
-  // }
 
   Future<void> _captureadharcard(bool imageFor) async {
     final ImagePicker _picker = ImagePicker();
@@ -1900,14 +1927,22 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                               maxWidth: 640,
                             );
                             if (result != null) {
-                              if (imageFor) {
+                              if (country == "India") {
                                 setState(() {
                                   adharcarddoc = result.path.toString();
                                 });
                               } else {
                                 setState(() {
-                                  internIdProofDocument =
-                                      result.path.toString();
+                                  if (initialIdProof == "Select") {
+                                  } else if (initialIdProof ==
+                                      "Driving Licence") {
+                                    dlDoc = result.path.toString();
+                                    log("dl doc" + dlDoc.toString());
+                                  } else if (initialIdProof == "Passport") {
+                                    passportDoc = result.path.toString();
+                                    log("passport doc" +
+                                        passportDoc.toString());
+                                  }
                                 });
                               }
                             }
@@ -1934,14 +1969,22 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
                             );
 
                             if (result != null) {
-                              if (imageFor) {
+                              if (country == "India") {
                                 setState(() {
                                   adharcarddoc = result.path.toString();
                                 });
                               } else {
                                 setState(() {
-                                  internIdProofDocument =
-                                      result.path.toString();
+                                  if (initialIdProof == "Select") {
+                                  } else if (initialIdProof ==
+                                      "Driving Licence") {
+                                    dlDoc = result.path.toString();
+                                    log("dl doc" + dlDoc.toString());
+                                  } else if (initialIdProof == "Passport") {
+                                    passportDoc = result.path.toString();
+                                    log("passport doc" +
+                                        passportDoc.toString());
+                                  }
                                 });
                               }
                             }
@@ -2123,80 +2166,6 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
   String pancarddoc;
   String businessname;
 
-  Future submitPersonalDetailsWithTrustedBadge() async {
-    setState(() {
-      buttonLoading = true;
-    });
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String kycdone = '';
-    String trustedBadge = '';
-    List comPrefList = [];
-    if (checkEmail == "1") {
-      comPrefList.add("1");
-    }
-    if (checkSms == "2") {
-      comPrefList.add('2');
-    }
-    if (initialtrustedbadge == "Yes") {
-      setState(() {
-        trustedBadge = "1";
-      });
-    } else {
-      setState(() {
-        trustedBadge = "0";
-      });
-    }
-    if (kyc == true) {
-      setState(() {
-        kycdone = "1";
-      });
-    } else {
-      setState(() {
-        kycdone = "0";
-      });
-    }
-    String userId = preferences.getString("userid");
-    log("userId--->" + userId);
-    var url = Apis.personalDetailsApi;
-    var body = {
-      "id": userId.toString(),
-      // "address": address.text.toString(),
-      // "country": country_id.toString(),
-      // "state": state_id.toString(),
-
-      "location": locationUser.toString(),
-      "pincode": pincode.text.toString(),
-      // "city": city_id.toString(),
-      "kyc": kycdone.toString(),
-      "com_prefs": comPrefList.join(','),
-      "trusted_badge": trustedBadge.toString(),
-      "adhaar_no": adharnum.text.toString(),
-      "adhaar_doc": adharcarddoc.toString(),
-    };
-    // var data = jsonEncode(body);
-    log("data---->$body");
-    var response = await APIHelper.apiPostRequest(url, body);
-    var result = jsonDecode(response);
-    log("---->$result");
-
-    if (result['ErrorCode'] == 0) {
-      if (initialtrustedbadge == "No") {
-        showToast(result['ErrorMessage']);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => BillingAndTaxation()));
-      } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => BillingAndTaxation()));
-        showToast(result['ErrorMessage']);
-      }
-    } else {
-      showToast(result['ErrorMessage']);
-    }
-    setState(() {
-      buttonLoading = false;
-    });
-  }
-
   Future submitDetailsOfConsumer() async {
     String kycdone = '';
     String trustedBadge = '';
@@ -2251,6 +2220,10 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
       "branch_name": branchName.text.toString(),
       "ifsc": iFSCCode.text.toString(),
       "account_no": accountNo.text.toString(),
+      "passport_no ": pasportNumber.text.toString(),
+      "driving_license_no ": drivingLicenseNumber.text.toString(),
+      "passport_doc": passportDoc.toString(),
+      "driving_license_doc": dlDoc.toString(),
     };
     // var data = jsonEncode(body);
     log("data---->$body");

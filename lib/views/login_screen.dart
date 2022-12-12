@@ -380,6 +380,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  InkWell(
+                    onTap: (){},
+                    child: Text(
+                      "Privacy Policy !",
+                      style: TextStyle(
+                          color: Appcolors.secondaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  )
                 ],
               ),
             ),
