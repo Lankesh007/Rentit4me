@@ -1156,7 +1156,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         membershipPlan == "" || membershipPlan == null
             ? Text("")
             : Text(
-                "Plan / $membershipPlan",
+                "Plan :- $membershipPlan",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

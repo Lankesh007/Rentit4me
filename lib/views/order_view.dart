@@ -23,7 +23,7 @@ class _OrderViewScreenState extends State<OrderViewScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Appcolors.secondaryColor,
-        title: const Text("Orders"),
+        title: const Text("My Orders"),
       ),
       body: ContainedTabBarView(
         tabBarProperties: const TabBarProperties(),

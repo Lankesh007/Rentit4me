@@ -54,18 +54,23 @@ class LogoutConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // ignore: deprecated_member_use
-                RaisedButton(
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.green)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    color: Colors.green,
-                    textColor: Colors.white,
+                    // color: Colors.green,
+                    // textColor: Colors.white,
                     child: Text('No')),
                 SizedBox(
                   width: 8,
                 ),
                 // ignore: deprecated_member_use
-                RaisedButton(
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.red)),
                     onPressed: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
@@ -75,8 +80,8 @@ class LogoutConfirmationDialog extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => SplashScreen()));
                     },
-                    color: Colors.red,
-                    textColor: Colors.white,
+                    // color: Colors.red,
+                    // textColor: Colors.white,
                     child: Text('Yes'))
               ],
             )

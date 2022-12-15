@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/order_renew_payment_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 
@@ -28,7 +29,7 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
   String totalSecurity;
   String convinenceCharge;
   String finalAmount;
-  String dropdownvalue = 'Hourly';
+  String dropdownvalue ;
   int hours;
   int days;
   double totalR;
@@ -37,9 +38,10 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
   String productName;
   final enterHoursController = TextEditingController();
   List orderPriceList = [];
+  int rentTypeId;
   var items = [
     'hourly',
-    'days',
+    'Days',
   ];
   int dropdownId;
   int dropdownPrice;
@@ -128,6 +130,7 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
                           setState(() {
                             dropdownId = items['id'];
                             dropdownPrice = items['price'];
+                            rentTypeId=items['rent_type_id'];
                             log("price--->$dropdownPrice+$dropdownId");
                             totalRent = "";
                             totalR = 0;
@@ -145,7 +148,7 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 alignment: Alignment.centerLeft,
-                                child: Text(items['rent_type_name']))),
+                                child: Text(items['rent_type_name'].toString()))),
                       );
                     }).toList(),
                     // After selecting the desired option,it will
@@ -153,6 +156,7 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
                     onChanged: (newValue) {
                       setState(() {
                         dropdownvalue = newValue.toString();
+                        log("dropdown--->$dropdownvalue");
                       });
                     },
                   ),
@@ -371,6 +375,7 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
                             ? finalAmount.toString()
                             : finalPrices.toString(),
                         orderId: widget.orderId.toString(),
+                        rentType: rentTypeId.toString(),
                       )));
         }
       },
@@ -379,7 +384,7 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
         height: 50,
         width: width * 0.8,
         decoration: BoxDecoration(
-            color: Colors.orange, borderRadius: BorderRadius.circular(100)),
+            color: Appcolors.primaryColor, borderRadius: BorderRadius.circular(100)),
         child: Text(
           "RENEW",
           style: TextStyle(
@@ -401,6 +406,9 @@ class _OrderRenewScreenState extends State<OrderRenewScreen> {
       setState(() {
         orderPriceList.addAll(result["Response"]["data"]['prices']);
         rentTypeName = result["Response"]["data"]['rent_type_name'];
+        rentTypeId = result["Response"]["data"]['rent_type_id'];
+        dropdownvalue=rentTypeName;
+        log("dropdown value--->$dropdownvalue");
         listedPrice = result["Response"]["data"]['product_price'];
         securityDeposit = result["Response"]["data"]['product_security'];
         totalSecurity = result["Response"]["data"]['total_security'];

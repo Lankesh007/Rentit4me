@@ -19,7 +19,7 @@ class _OffersViewScreenState extends State<OffersViewScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Appcolors.secondaryColor,
-        title: const Text("Offer Made"),
+        title: const Text("My Offers"),
       ),
       body: ContainedTabBarView(
         tabs: const [

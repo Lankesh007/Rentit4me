@@ -9,14 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
-import 'package:rentit4me_new/views/order_detail_screen.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/order_made_products_details_screen.dart';
 import 'package:rentit4me_new/views/order_renew_screen.dart';
+import 'package:rentit4me_new/views/renewal_history_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'offer_made_product_detail_screen.dart';
-
 class MyOrdersScreen extends StatefulWidget {
   const MyOrdersScreen({Key key}) : super(key: key);
 
@@ -422,54 +420,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                             ),
                                           ),
 
-                                          // Row(
-                                          //   mainAxisAlignment: MainAxisAlignment.start,
-                                          //   children: [
-                                          //     TextButton(
-                                          //         onPressed: () {
-                                          //           Navigator.push(
-                                          //               context,
-                                          //               MaterialPageRoute(
-                                          //                   builder: (context) =>
-                                          //                       OrderDetailScreen(
-                                          //                           orderid: myorderslist[
-                                          //                                   index]['id']
-                                          //                               .toString())));
-                                          //         },
-                                          //         child: SizedBox(
-                                          //             width: size.width * 0.60,
-                                          //             child: Text("Product Name : ${myorderslist[index]['title']}"))),
-                                          //     SizedBox(width: 4.0),
-                                          //     myorderslist[index]["status"].toString() ==
-                                          //             "delivered"
-                                          //         ? InkWell(
-                                          //             onTap: () {
-                                          //               _confirmation(
-                                          //                   context,
-                                          //                   myorderslist[index]['id']
-                                          //                       .toString());
-                                          //             },
-                                          //             child: Container(
-                                          //                 width: 80,
-                                          //                 alignment: Alignment.center,
-                                          //                 padding: EdgeInsets.all(4.0),
-                                          //                 decoration: BoxDecoration(
-                                          //                     borderRadius:
-                                          //                         BorderRadius.all(
-                                          //                             Radius.circular(
-                                          //                                 4.0)),
-                                          //                     border: Border.all(
-                                          //                         color: Colors.blue)),
-                                          //                 child: Text("Recieved",
-                                          //                     textAlign: TextAlign.center,
-                                          //                     style: TextStyle(
-                                          //                         color: Colors.blue))))
-                                          //         : _getaction(myorderslist[index]
-                                          //                 ["status"]
-                                          //             .toString())
-                                          //   ],
-                                          // ),
-
+                                         
                                           SizedBox(height: 10.0),
                                           Padding(
                                             padding: const EdgeInsets.all(.0),
@@ -555,9 +506,48 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.w500)),
+                                                InkWell(
+                                                  onTap: () {
+                                                    myorderslist[index][
+                                                                'renewal_count'] !=
+                                                            0
+                                                        ? Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        RenewalHistoryScreen(
+                                                                          orderId:
+                                                                              myorderslist[index]['id'].toString(),
+                                                                        )))
+                                                        : SizedBox();
+                                                  },
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    height: 30,
+                                                    width: 100,
+                                                    decoration: BoxDecoration(
+                                                        color: Appcolors
+                                                            .primaryColor,
+                                                        border: Border.all(
+                                                            color: Colors.red),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8)),
+                                                    child: Text(
+                                                        "Renewal : ${myorderslist[index]['renewal_count']}",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        )),
+                                                  ),
+                                                )
+                                            
                                               ],
                                             ),
                                           ),
+
                                           Container(
                                             margin:
                                                 const EdgeInsets.only(top: 10),
@@ -671,6 +661,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                                           )
                                                         ],
                                                       )
+                                           
                                               ],
                                             ),
                                           ),
@@ -827,7 +818,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          
           myorderslist
               .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           log("orderList-->$myorderslist");
@@ -869,7 +859,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']['data']);
+          myorderslist
+              .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           _progress = false;
         });
       } else {
@@ -910,7 +901,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          myorderslist.addAll(jsonDecode(response.body)['Response']['Orders']['data']);
+          myorderslist
+              .addAll(jsonDecode(response.body)['Response']['Orders']['data']);
           _progress = false;
         });
       } else {
@@ -1024,39 +1016,39 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     }
   }
 
-  Future<void> _confirmation(BuildContext context, String orderid) {
-    return showDialog(
-      builder: (context) => AlertDialog(
-        actionsPadding: EdgeInsets.all(0),
-        insetPadding: EdgeInsets.all(0),
-        title: const Text('Confirmation!!'),
-        content: const Text(
-          "Are you sure, product recieved?",
-          style: TextStyle(color: Colors.black54),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('CANCEL', style: TextStyle(color: kPrimaryColor)),
-          ),
-          FlatButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _submitrespond(orderid, "active");
-              //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => SignUp()), (route) => false);
-            },
-            child: const Text(
-              'YES',
-              style: TextStyle(color: kPrimaryColor),
-            ),
-          ),
-        ],
-      ),
-      context: context,
-    );
-  }
+  // Future<void> _confirmation(BuildContext context, String orderid) {
+  //   return showDialog(
+  //     builder: (context) => AlertDialog(
+  //       actionsPadding: EdgeInsets.all(0),
+  //       insetPadding: EdgeInsets.all(0),
+  //       title: const Text('Confirmation!!'),
+  //       content: const Text(
+  //         "Are you sure, product recieved?",
+  //         style: TextStyle(color: Colors.black54),
+  //       ),
+  //       actions: <Widget>[
+  //         FlatButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //           },
+  //           child: const Text('CANCEL', style: TextStyle(color: kPrimaryColor)),
+  //         ),
+  //         FlatButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //             _submitrespond(orderid, "active");
+  //             //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => SignUp()), (route) => false);
+  //           },
+  //           child: const Text(
+  //             'YES',
+  //             style: TextStyle(color: kPrimaryColor),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //     context: context,
+  //   );
+  // }
 
   Future<void> _submitrespond(String orderid, String respond) async {
     setState(() {

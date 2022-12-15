@@ -160,11 +160,13 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
                                       if (sortByValue == "Low to High") {
                                         setState(() {
                                           sortFilterValue = "0";
+                                          page=1;
                                         });
                                         getDataByFilters();
                                       } else if (sortByValue == "High to Low") {
                                         setState(() {
                                           sortFilterValue = "1";
+                                          page=1;
                                         });
                                         getDataByFilters();
                                       } else {
@@ -278,16 +280,20 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
                             child: CircularProgressIndicator(),
                           )
                         : scrollLoader == true
-                            ? Center(
+                            ? Container(
+                                height: height * 0.6,
+                                alignment: Alignment.center,
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    // CircularProgressIndicator(),
+                                    CircularProgressIndicator(),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                     Container(
-                                        height: height * 0.6,
                                         alignment: Alignment.bottomCenter,
                                         child: Text(
-                                          "Loding Products...",
+                                          "Loading Products...",
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
@@ -555,6 +561,7 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
       "state": state == null || state == "" ? "" : state,
       "tenure": tenureValue,
       "sortby": sortFilterValue,
+      "page": page,
       "category": widget.category,
     };
     var res = await APIHelper.apiPostRequest(url, body);

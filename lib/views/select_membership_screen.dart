@@ -77,7 +77,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var options = {
-        'key': 'rzp_test_NNbwJ9tmM0fbxj',
+        'key': 'rzp_live_8NG6IItB9AtBhV',
         'name': 'Rentit4me',
         'amount': int.parse(amount) * 100,
         'description': '',

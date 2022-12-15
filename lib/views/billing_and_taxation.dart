@@ -145,15 +145,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
   double height = 0;
   double width = 0;
-  // String businessName;
-
-  // getPrefencesData() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     businessName = prefs.getString('businessName');
-  //     log("----->$businessName");
-  //   });
-  // }
+ 
 
   @override
   void initState() {
@@ -463,67 +455,45 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
                   ),
                 )),
             const SizedBox(height: 10),
-            const SizedBox(height: 10),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text("PAN Number",
-                  style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.w500)),
-            ),
-            const SizedBox(height: 8),
-            Container(
-                decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 1, color: Colors.deepOrangeAccent),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: "PAN No.(must be 10 digit)",
-                        border: InputBorder.none,
-                        counterText: ""),
-                    maxLength: 10,
-                    onChanged: (value) {
-                      setState(() {
-                        // adharno = value;
-                      });
-                    },
-                    controller: panNumber,
+            country != "India"
+                ? SizedBox()
+                : Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("PAN Number",
+                            style: TextStyle(
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.w500)),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1, color: Colors.deepOrangeAccent),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                  hintText: "PAN No.(must be 10 digit)",
+                                  border: InputBorder.none,
+                                  counterText: ""),
+                              maxLength: 10,
+                              onChanged: (value) {
+                                setState(() {
+                                  // adharno = value;
+                                });
+                              },
+                              controller: panNumber,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      const SizedBox(height: 10),
+                    ],
                   ),
-                )),
-            const SizedBox(height: 10),
-            const SizedBox(height: 10),
-            // const Align(
-            //   alignment: Alignment.topLeft,
-            //   child: Text("Aadhar Number*",
-            //       style: TextStyle(
-            //           color: kPrimaryColor, fontWeight: FontWeight.w500)),
-            // ),
-            // const SizedBox(height: 8),
-            // Container(
-            //     decoration: BoxDecoration(
-            //         border:
-            //             Border.all(width: 1, color: Colors.deepOrangeAccent),
-            //         borderRadius: BorderRadius.all(Radius.circular(12))),
-            //     child: Padding(
-            //       padding: const EdgeInsets.only(left: 10.0),
-            //       child: TextField(
-            //         keyboardType: TextInputType.number,
-            //         decoration: InputDecoration(
-            //             hintText: "Aadhar No.(must be 12 digit)",
-            //             border: InputBorder.none,
-            //             counterText: ""),
-            //         maxLength: 12,
-            //         onChanged: (value) {
-            //           setState(() {
-            //             // adharno = value;
-            //           });
-            //         },
-            //         controller: aadharNumber,
-            //       ),
-            //     )),
-            // const SizedBox(height: 10),
             const Align(
               alignment: Alignment.topLeft,
               child: Text("GST ",
@@ -1031,6 +1001,7 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
 // ------------------ API CALL---------------------//
 
+  String country = "";
   Future getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString("userid");
@@ -1044,6 +1015,8 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
     var result = jsonDecode(response);
     if (result['ErrorMessage'] == "success") {
       userType = result['Response']['User']['user_type'];
+      country = result['Response']['User']['country'];
+
       log("userType----->${userType.toString()}");
     }
   }

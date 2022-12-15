@@ -48,7 +48,7 @@ class _PendingStatusScreenState extends State<PendingStatusScreen> {
         });
         if (_connectionStatus.toString() ==
             ConnectivityResult.none.toString()) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
+          _scaffoldKey.currentState;(SnackBar(
               content: Text("Please check your internet connection.",
                   style: TextStyle(color: Colors.white)),
               backgroundColor: Colors.red));

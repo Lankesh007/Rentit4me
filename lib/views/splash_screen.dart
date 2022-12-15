@@ -96,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen> {
         });
         if (_connectionStatus.toString() ==
             ConnectivityResult.none.toString()) {
-          _scaffoldKey.currentState.showSnackBar(const SnackBar(
+          _scaffoldKey.currentState;(const SnackBar(
               content: Text("Please check your internet connection.",
                   style: TextStyle(color: Colors.white)),
               backgroundColor: Colors.red));

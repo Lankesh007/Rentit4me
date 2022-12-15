@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/api.dart';
@@ -24,7 +25,7 @@ class OrderRenewPaymentScreen extends StatefulWidget {
   final String subTotal;
   final String totalAmount;
   final String orderId;
-
+final String rentType;
   const OrderRenewPaymentScreen(
       {this.convinenceCharge,
       this.duration,
@@ -34,6 +35,7 @@ class OrderRenewPaymentScreen extends StatefulWidget {
       this.subTotal,
       this.totalAmount,
       this.orderId,
+      this.rentType,
       Key key})
       : super(key: key);
 
@@ -96,9 +98,9 @@ var razorpayId;
 
     var url = "${BASE_URL}post-ad/renew/order";
     var body = {
-      "orderid": widget.orderId,
-      "period": widget.duration,
-      "rent_type": "1",
+      "orderid": widget.orderId.toString(),
+      "period": widget.duration.toString(),
+      "rent_type": widget.rentType.toString(),
       "razorpay_payment_id": paymentid.toString(),
       "amount": couponApplied == true
           ? applidTotalAmount.toString()
@@ -110,10 +112,11 @@ var razorpayId;
           : appliedDiscount.toString(),
     };
 
+    log(body.toString());
+
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
-
-    // log("Payment Respone--->$response");
+    log("Payment Respone--->$response");
 
     if (result["ErrorCode"] == 0) {
       showToast('Your order has been successfully placed.').toString();
@@ -153,7 +156,7 @@ var razorpayId;
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var options = {
-      'key': 'rzp_test_NNbwJ9tmM0fbxj',
+      'key': 'rzp_live_8NG6IItB9AtBhV',
       'name': 'Rentit4me',
       'amount': couponApplied == true
           ? (double.parse(applidTotalAmount.toString()) * 100).toString()
@@ -480,7 +483,7 @@ var razorpayId;
                                                     .width *
                                                 0.4,
                                             decoration: BoxDecoration(
-                                                color: Colors.orange,
+                                                color: Appcolors.primaryColor,
                                                 borderRadius:
                                                     BorderRadius.circular(3)),
                                             child: Text(
@@ -549,7 +552,7 @@ var razorpayId;
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8.0),
-                                      color: Colors.orange),
+                                      color: Appcolors.primaryColor),
                                   child: Text("Pay",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16)),

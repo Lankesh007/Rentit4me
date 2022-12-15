@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,6 @@ import 'package:rentit4me_new/views/view_all_latest_edition.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:rentit4me_new/widgets/navigation_drawer_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/top_selling_categories_model.dart';
 import 'add_list_screen.dart';
 
@@ -236,6 +234,13 @@ class _HomeScreenState extends State<HomeScreen> {
     //setState(() {
     currentPoint.text = address.toString();
     // });
+  }
+
+  Future getrData()async{
+    var url=BASE_URL+"test-response";
+    var response=await APIHelper.apiGetRequest(url);
+    var result=jsonDecode(response);
+    log("R log---->"+result);
   }
 
   TextEditingController destinationPoint = TextEditingController();
@@ -575,6 +580,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String userId = '';
   @override
   void initState() {
+    // getrData();
     super.initState();
     _getinitPref();
     getCounrtyId();

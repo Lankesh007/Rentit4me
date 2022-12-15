@@ -30,10 +30,12 @@ class DashboardState extends State<Dashboard> {
       icon: "home.png",
       page: HomeScreen(),
     ),
-    TabItem(tabName: "My Offers", icon: "offer.png", page: OffersViewScreen()),
-    TabItem(tabName: "My Orders", icon: "order.png", page: OrderViewScreen()),
-    TabItem(tabName: "Listing", icon: "ads.png", page: AddlistingScreen()),
-    TabItem(tabName: "Account", icon: "account.png", page: UserDetailScreen()),
+    TabItem(
+        tabName: "My Offers", icon: "git.png", page: OffersViewScreen()),
+    TabItem(
+        tabName: "My Orders", icon: "clipboard.png", page: OrderViewScreen()),
+    TabItem(tabName: "Post An Ad", icon: "ads.png", page: AddlistingScreen()),
+    TabItem(tabName: "Profile", icon: "account.png", page: UserDetailScreen()),
   ];
 
   DashboardState() {

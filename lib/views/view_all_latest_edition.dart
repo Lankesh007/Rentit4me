@@ -162,11 +162,13 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                                       if (sortByValue == "Low to High") {
                                         setState(() {
                                           sortFilterValue = "0";
+                                          page=1;
                                         });
                                         getDataByFilters();
                                       } else if (sortByValue == "High to Low") {
                                         setState(() {
                                           sortFilterValue = "1";
+                                          page=1;
                                         });
                                         getDataByFilters();
                                       } else {
@@ -285,23 +287,29 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                             child: CircularProgressIndicator(),
                           )
                         : scrollLoader == true
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    // CircularProgressIndicator(),
-                                    Container(
-                                        height: height*0.6,
-                                        alignment: Alignment.bottomCenter,
-                                        child: Text(
-                                          "Loding Products...",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                  ],
-                                ),
-                              )
+                            ? Container(
+                              height: height*0.6,
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                  
+                                      alignment: Alignment.bottomCenter,
+                                      child: Text(
+                                        "Loading Products...",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                ],
+                              ),
+                            )
+                          
                             : SizedBox(
                                 height: height * 0.7,
                                 width: width,
@@ -420,6 +428,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                     child: Text(
                       item.title,
                       style: TextStyle(fontWeight: FontWeight.w600),
+                      maxLines: 2,
                     )),
                     SizedBox(height: 2,),
                       Container(
@@ -559,6 +568,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "state": state == null || state == "" ? "" : state,
       "tenure": tenureValue,
       "sortby": sortFilterValue,
+      "page":page.toString(),
     };
     var res = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(res);

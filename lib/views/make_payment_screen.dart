@@ -88,7 +88,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var options = {
-        'key': 'rzp_test_NNbwJ9tmM0fbxj',
+        'key': 'rzp_live_8NG6IItB9AtBhV',
         'name': 'Rentit4me',
         'amount': couponApplied == true
             ? (double.parse(appliedGrandTotal.toString()) * 100).toString()
@@ -630,6 +630,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
     log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
+    log(result.toString());
     if (result["ErrorCode"] == 0) {
       setState(() {
         _loading = false;

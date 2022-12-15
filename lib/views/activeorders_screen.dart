@@ -40,7 +40,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
   void openCheckout(double amount) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var options = {
-      'key': 'rzp_test_NNbwJ9tmM0fbxj',
+      'key': 'rzp_live_8NG6IItB9AtBhV',
       'name': 'Rentit4me',
       'amount': (amount * 100).toString(),
       'description': '',

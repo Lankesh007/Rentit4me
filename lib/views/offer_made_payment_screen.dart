@@ -132,7 +132,7 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var options = {
-        'key': 'rzp_test_NNbwJ9tmM0fbxj',
+        'key': 'rzp_live_8NG6IItB9AtBhV',
         'name': 'Rentit4me',
         'amount': couponApplied == true
             ? (double.parse(appliedGrandTotal.toString()) * 100).toString()

@@ -19,14 +19,13 @@ import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/forgot_password.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
-import 'package:rentit4me_new/views/make_payment_screen.dart';
 import 'package:rentit4me_new/views/otp_screen.dart';
 import 'package:rentit4me_new/views/personal_detail_screen.dart';
 import 'package:rentit4me_new/views/signup_business_screen.dart';
 import 'package:rentit4me_new/views/signup_consumer_screen.dart';
 import 'package:rentit4me_new/views/signup_users_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -90,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         if (_connectionStatus.toString() ==
             ConnectivityResult.none.toString()) {
-          _scaffoldKey.currentState.showSnackBar(const SnackBar(
+          _scaffoldKey.currentState;(const SnackBar(
               content: Text("Please check your internet connection.",
                   style: TextStyle(color: Colors.white)),
               backgroundColor: Colors.red));
@@ -384,7 +383,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 50,
                   ),
                   InkWell(
-                    onTap: (){},
+                    onTap: (){
+                      launchUrlString("https://rentit4me.com/privacy-policy");
+                    },
                     child: Text(
                       "Privacy Policy !",
                       style: TextStyle(

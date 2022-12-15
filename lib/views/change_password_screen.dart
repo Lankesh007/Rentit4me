@@ -9,10 +9,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/account.dart';
-import 'package:rentit4me_new/views/dashboard.dart';
-import 'package:rentit4me_new/views/forget_password_screen.dart';
-import 'package:rentit4me_new/views/home_screen.dart';
-import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -37,7 +33,6 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
   bool _currentobsecure = true;
   bool _newobsecure = true;
   bool _newobsecureconfirm = true;
-
 
   @override
   void initState() {
@@ -68,7 +63,8 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
         });
         if (_connectionStatus.toString() ==
             ConnectivityResult.none.toString()) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
+          _scaffoldKey.currentState;
+          (SnackBar(
               content: Text("Please check your internet connection.",
                   style: TextStyle(color: Colors.white)),
               backgroundColor: Colors.red));
@@ -220,7 +216,8 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
                                   suffixIcon: IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        _newobsecureconfirm = !_newobsecureconfirm;
+                                        _newobsecureconfirm =
+                                            !_newobsecureconfirm;
                                       });
                                     },
                                     icon: _newobsecureconfirm == false
