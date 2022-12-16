@@ -647,12 +647,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                             InkWell(
                                               onTap: () {
                                                 log(queryId);
-                                                // Navigator.push(
-                                                //     context,
-                                                //     MaterialPageRoute(
-                                                //         builder: (context) =>
-                                                //             Conversation(
-                                                //                 queryId: queryId)));
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Conversation(
+                                                                queryId: queryId)));
                                               },
                                               child: Container(
                                                 height: 45,

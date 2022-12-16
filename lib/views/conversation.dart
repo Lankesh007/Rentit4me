@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:quickblox_sdk/auth/module.dart';
+import 'package:quickblox_sdk/chat/constants.dart';
 import 'package:quickblox_sdk/models/qb_attachment.dart';
 import 'package:quickblox_sdk/models/qb_file.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -51,10 +52,10 @@ class _ConversationState extends State<Conversation> {
 
   String _dialogId;
 
-  String appId = "96417";
-  String authKey = "BmYxKrbn3HDthbc";
-  String authSecret = "XRfs7bw3Y9H4yMc";
-  String accountKey = "hr2cuVsMyCZXsZMEE32H";
+  String appId = "98140";
+  String authKey = "kjk5CsBpk8yTE3E";
+  String authSecret = "L29hPU6ebj5avgp";
+  String accountKey = "1MEE_UeWudYscuyTsJx6";
 
   void init() async {
     setState(() {
@@ -118,32 +119,34 @@ class _ConversationState extends State<Conversation> {
   void initState() {
     super.initState();
     init();
-    // _getchatData(queryId);
-    // createDialog();
-    // _connectnow();
+    _getchatData(queryId);
+    createDialog();
+    _connectnow();
+    subscribeNewMessage();
   }
 
-  // void dispose() {
-  //   message.clear();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    message.clear();
+    super.dispose();
+  }
 
-  // void _connectnow() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   print(prefs.getString('quicklogin'));
-  //   print(queryId);
-  //   setState(() {
-  //     userquickid = prefs.getString('userquickid');
-  //     _loading = true;
-  //   });
-  //   try {
-  //     await QB.chat.connect(int.parse(prefs.getString('userquickid')),
-  //         prefs.getString('quickpassword'));
-  //     createDialog();
-  //   } on PlatformException catch (e) {
-  //     // Some error occurred, look at the exception message for more details
-  //   }
-  // }
+  void _connectnow() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('quicklogin'));
+    print(queryId);
+    setState(() {
+      userquickid = prefs.getString('userquickid');
+      _loading = true;
+    });
+    try {
+      await QB.chat.connect(int.parse(prefs.getString('userquickid')),
+          prefs.getString('quickpassword'));
+      createDialog();
+    } on PlatformException catch (e) {
+      // Some error occurred, look at the exception message for more details
+    }
+  }
 
   Future createDialog() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -174,27 +177,31 @@ class _ConversationState extends State<Conversation> {
     }
   }
 
-  // String eventName = QBChatEvents.RECEIVED_NEW_MESSAGE;
+  String messageFromAnotherPerson = "";
+  String eventName = QBChatEvents.RECEIVED_NEW_MESSAGE;
 
-  // void subscribeNewMessage() async {
-  //   try {
-  //     await QB.chat.subscribeChatEvent(eventName, (data) {
-  //       Map<dynamic, dynamic> map = Map<dynamic, dynamic>.from(data);
-  //       Map<dynamic, dynamic> payload =
-  //           Map<dynamic, dynamic>.from(map["payload"]);
-  //       String messageId = payload["id"] as String;
-  //     }, onErrorMethod: (error) {
-  //       // Some error occurred, look at the exception message for more details
-  //     });
-  //   } on PlatformException catch (e) {
-  //     // Some error occurred, look at the exception message for more details
-  //   }
-  // }
-  @override
-  void dispose() {
-    //...
-    super.dispose();
-    //...
+  void subscribeNewMessage() async {
+    try {
+      await QB.chat.subscribeChatEvent(eventName, (data) {
+        Map<dynamic, dynamic> map = Map<dynamic, dynamic>.from(data);
+        Map<dynamic, dynamic> payload =
+            Map<dynamic, dynamic>.from(map["payload"]);
+        setState(() {
+          log(payload.toString());
+
+          String messageId = payload["id"] as String;
+          messageFromAnotherPerson = payload['dialogId'].toString();
+
+          log(messageId);
+          log(messageFromAnotherPerson);
+        });
+        _getchatData(messageFromAnotherPerson);
+      }, onErrorMethod: (error) {
+        // Some error occurred, look at the exception message for more details
+      });
+    } on PlatformException catch (e) {
+      // Some error occurred, look at the exception message for more details
+    }
   }
 
   @override
@@ -230,7 +237,7 @@ class _ConversationState extends State<Conversation> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 1.45,
+                      height: MediaQuery.of(context).size.height / 1.36,
                       child: ListView(
                         reverse: true,
                         scrollDirection: Axis.vertical,
@@ -570,6 +577,7 @@ class _ConversationState extends State<Conversation> {
       "dialogid": dialogid,
       "chat_user_id": prefs.getString('userquickid')
     };
+    log("body-->$body");
     var response = await http.post(Uri.parse(BASE_URL + chathistory),
         body: jsonEncode(body),
         headers: {
@@ -581,10 +589,13 @@ class _ConversationState extends State<Conversation> {
       _loading = false;
     });
     if (response.statusCode == 200) {
-      List data = json.decode(response.body)['Response']['items'];
+      var result = jsonDecode(response.body);
+      List data = [];
       setState(() {
         conversion.clear();
+        data = result['Response']['items'];
         conversion.addAll(data.reversed);
+        // conversion.reversed;
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');

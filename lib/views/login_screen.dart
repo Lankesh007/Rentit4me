@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -296,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             "Forgot Password ?",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold,color: Appcolors.secondaryColor),
                           ),
                         ),
                       ),
@@ -351,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // ),
 
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -382,17 +381,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 50,
                   ),
-                  InkWell(
+                  Text("By countinuing, you agree to our", style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
                     onTap: (){
-                      launchUrlString("https://rentit4me.com/privacy-policy");
+                      launchUrlString("https://rentit4me.com/terms-of-use");
                     },
                     child: Text(
-                      "Privacy Policy !",
+                      "Term of service & ",
                       style: TextStyle(
                           color: Appcolors.secondaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
+                  ),
+                      InkWell(
+                        onTap: (){
+                          launchUrlString("https://rentit4me.com/privacy-policy");
+                        },
+                        child: Text(
+                          "Privacy Policy",
+                          style: TextStyle(
+                              color: Appcolors.secondaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),
