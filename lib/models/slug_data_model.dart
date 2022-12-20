@@ -30,15 +30,15 @@ class SlugDataModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['currency'] = this.currency;
-    data['boost_package_status'] = this.boostPackageStatus;
-    data['title'] = this.title;
-    data['price'] = this.price;
-    data['rent_type_name'] = this.rentTypeName;
-    data['upload_base_path'] = this.uploadBasePath;
-    data['file_name'] = this.fileName;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['currency'] = currency;
+    data['boost_package_status'] = boostPackageStatus;
+    data['title'] = title;
+    data['price'] = price;
+    data['rent_type_name'] = rentTypeName;
+    data['upload_base_path'] = uploadBasePath;
+    data['file_name'] = fileName;
     return data;
   }
 }

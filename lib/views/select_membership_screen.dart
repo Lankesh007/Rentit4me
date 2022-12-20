@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, must_be_immutable, library_private_types_in_public_api, no_logic_in_create_state
+// ignore_for_file: use_build_context_synchronously, must_be_immutable, library_private_types_in_public_api, no_logic_in_create_state, non_constant_identifier_names
 
 import 'dart:convert';
 import 'dart:developer';
@@ -51,9 +51,9 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print("success");
+     log("success");
     //print(response.orderId.toString());
-    print(response.paymentId.toString());
+    // print(response.paymentId.toString());
     _payformembership(package_id, response.paymentId.toString());
   }
 
@@ -232,9 +232,9 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
                                                           ['amount']
                                                       .toString());
                                             } else {
-                                              print(membershipplanlist[index]
-                                                      ['id']
-                                                  .toString());
+                                              // print(membershipplanlist[index]
+                                              //         ['id']
+                                              //     .toString());
                                               setState(() {
                                                 package_id =
                                                     membershipplanlist[index]
@@ -339,7 +339,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     log('Bearer ${prefs.getString("token")}');
-    print(response.body);
+    // print(response.body);
     setState(() {
       _loading = false;
     });
@@ -466,7 +466,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }

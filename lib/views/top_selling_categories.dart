@@ -587,7 +587,7 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    int countryId = preferences.getInt('countryId');
+    // int countryId = preferences.getInt('countryId');
     String cityId = preferences.getString('cityId');
     String country = preferences.getString('country');
     String state = preferences.getString('state');

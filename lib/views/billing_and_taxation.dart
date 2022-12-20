@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'dart:convert';
 import 'dart:developer';
@@ -664,33 +664,6 @@ class _BillingAndTaxationState extends State<BillingAndTaxation> {
 
   Widget submitButtonWidgetBusiness() {
     return InkWell(
-      // onTap: () {
-      //   if (bankName.text.isEmpty &&
-      //       branchName.text.isEmpty &&
-      //       accountNo.text.isEmpty &&
-      //       dropdownvalue == "Select" &&
-      //       iFSCCode.text.isEmpty) {
-      //     if (_pickedImage.path == null) {
-      //       submitBillingAndTaxationwithoutFile();
-      //     } else {
-      //       submitBillingAndTaxation();
-      //     }
-      //   } else {
-      //     if (bankName.text.isNotEmpty &&
-      //             branchName.text.isNotEmpty &&
-      //             accountNo.text.isNotEmpty &&
-      //             dropdownvalue == "Current" ||
-      //         dropdownvalue == "Saving" && iFSCCode.text.isNotEmpty) {
-      //       if (_pickedImage.path == null) {
-      //         submitBillingAndTaxationwithoutFile();
-      //       } else {
-      //         submitBillingAndTaxation();
-      //       }
-      //     } else {
-      //       showToast("please fill all bank Details !!");
-      //     }
-      //   }
-      // },
       onTap: () {
         if (pickedgstImage == true && pickedpanImage) {
           submitBillingAndTaxation();

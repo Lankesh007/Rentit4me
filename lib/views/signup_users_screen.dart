@@ -538,7 +538,7 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }

@@ -50,9 +50,9 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print("success");
+    // print("success");
     //print(response.orderId.toString());
-    print(response.paymentId.toString());
+    // print(response.paymentId.toString());
     _payformembership(package_id, response.paymentId.toString());
   }
 
@@ -231,9 +231,9 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
                                                                   ['amount']
                                                               .toString());
                                                     } else {
-                                                      print(membershipplanlist[
-                                                              index]['id']
-                                                          .toString());
+                                                      // print(membershipplanlist[
+                                                      //         index]['id']
+                                                      //     .toString());
                                                       setState(() {
                                                         package_id =
                                                             membershipplanlist[
@@ -299,9 +299,9 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
                                                           ['amount']
                                                       .toString());
                                             } else {
-                                              print(membershipplanlist[index]
-                                                      ['id']
-                                                  .toString());
+                                              // print(membershipplanlist[index]
+                                              //         ['id']
+                                              //     .toString());
                                               setState(() {
                                                 package_id =
                                                     membershipplanlist[index]
@@ -406,7 +406,7 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     log('Bearer ${prefs.getString("token")}');
-    print(response.body);
+    // print(response.body);
     setState(() {
       _loading = false;
     });
@@ -533,7 +533,7 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }

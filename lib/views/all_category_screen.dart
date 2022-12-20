@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -32,7 +34,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    // Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -52,7 +54,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: myProducts.length == 0 || myProducts.isEmpty
+        child: myProducts.isEmpty || myProducts.isEmpty
             ? Center(child: CircularProgressIndicator())
             : GridView.builder(
                 shrinkWrap: true,
@@ -67,7 +69,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                     onTap: () async {
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
-                      print("......///${prefs.getString('city')}");
+                      // print("......///${prefs.getString('city')}");
                       showLaoding(context);
                       categorylistData.forEach((element) {
                         if (element['title'].toString() ==
@@ -77,12 +79,12 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                           });
                         }
                       });
-                      print(jsonEncode({
-                        "city_name": prefs.getString('city'),
-                        "category": categoryslugname,
-                        "exclude": "1",
-                        "search": ""
-                      }));
+                      // print(jsonEncode({
+                      //   "city_name": prefs.getString('city'),
+                      //   "category": categoryslugname,
+                      //   "exclude": "1",
+                      //   "search": ""
+                      // }));
                       var response = await http.post(
                           Uri.parse(BASE_URL + filterUrl),
                           body: jsonEncode({
@@ -95,7 +97,7 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                             "Accept": "application/json",
                             'Content-Type': 'application/json'
                           });
-                      print("............${response.body}");
+                      // print("............${response.body}");
                       Navigator.of(context, rootNavigator: true).pop();
                       if (jsonDecode(response.body)['ErrorCode'] == 0) {
                         Navigator.push(
@@ -136,7 +138,8 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
                           borderRadius:
                               const BorderRadius.all(Radius.circular(12)),
                           child: Container(
-                            child: CachedNetworkImage(
+                            // ignore: sort_child_properties_last
+                            child:  CachedNetworkImage(
                               fit: BoxFit.cover,
                               imageUrl: myProducts[index],
                             ),
@@ -178,8 +181,8 @@ class _AllCategoryScreenState extends State<AllCategoryScreen> {
           myProducts.add(imagepath + element['image'].toString());
         });
 
-        print(category.toString());
-        print(myProducts.toString());
+        // print(category.toString());
+        // print(myProducts.toString());
 
         check = true;
       });

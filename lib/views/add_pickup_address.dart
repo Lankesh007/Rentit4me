@@ -344,7 +344,7 @@ class _AddPickUpAddressState extends State<AddPickUpAddress> {
                         setState(() {
                           loading = false;
                         });
-                        print(response.body);
+                        // print(response.body);
                         if (jsonDecode(response.body)['success'].toString() ==
                             "true") {
                           setState(() {
@@ -423,7 +423,7 @@ class _AddPickUpAddressState extends State<AddPickUpAddress> {
                               "userid": prefs.getString('userid').toString()
                             };
 
-                            print(jsonEncode(body));
+                            // print(jsonEncode(body));
                             var response = await http.post(
                                 Uri.parse(BASE_URL + "store-pickup-address"),
                                 body: jsonEncode(body),
@@ -434,7 +434,7 @@ class _AddPickUpAddressState extends State<AddPickUpAddress> {
                             setState(() {
                               loading = false;
                             });
-                            print(response.body);
+                            // print(response.body);
                             if (jsonDecode(response.body)['ErrorCode'] == 1) {
                               showProdcutDetails(
                                   context, jsonDecode(response.body));

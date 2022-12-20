@@ -18,7 +18,6 @@ import 'package:rentit4me_new/models/review_model.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/utils/dialog_utils.dart';
-import 'package:rentit4me_new/views/advertiser_profile_screen.dart';
 import 'package:rentit4me_new/views/conversation.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/login_screen.dart';
@@ -133,26 +132,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     log("userid-==-->$loggedUserId");
   }
 
-  _getgooglelocation() async {
-    Position position = await _determinePosition();
-
-    googleMapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(position.latitude, position.longitude),
-          zoom: 14,
-        ),
-      ),
-    );
-    markers.clear();
-    markers.add(
-      Marker(
-        markerId: const MarkerId('currentLocation'),
-        position: LatLng(position.latitude, position.longitude),
-      ),
-    );
-    setState(() {});
-  }
+  // _getgooglelocation() async {
+  //   Position position = await _determinePosition();
+  //   googleMapController.animateCamera(
+  //     CameraUpdate.newCameraPosition(
+  //       CameraPosition(
+  //         target: LatLng(position.latitude, position.longitude),
+  //         zoom: 14,
+  //       ),
+  //     ),
+  //   );
+  //   markers.clear();
+  //   markers.add(
+  //     Marker(
+  //       markerId: const MarkerId('currentLocation'),
+  //       position: LatLng(position.latitude, position.longitude),
+  //     ),
+  //   );
+  //   setState(() {});
+  // }
 
   // void init() async {
   //   //print(appId);
@@ -204,7 +202,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Details", style: TextStyle(color: kPrimaryColor)),
+        title: Text(" Product Details", style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: apiLoading == true
@@ -652,7 +650,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             Conversation(
-                                                                queryId: queryId)));
+                                                                queryId:
+                                                                    queryId)));
                                               },
                                               child: Container(
                                                 height: 45,
@@ -828,7 +827,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                               Text("User Name : " +
                                                                   item.name),
                                                               Text(
-                                                                  "Comment : ${item.feedback}"),
+                                                                  "Comment : ${item.feedback ?? "-"}"),
                                                             ],
                                                           ),
                                                         )

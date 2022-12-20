@@ -2410,61 +2410,61 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     }
   }
 
-  Future _getStateData(String id) async {
-    setState(() {
-      statelistData.clear();
-      _loading = true;
-    });
-    final body = {
-      "id": int.parse(id),
-    };
-    var response = await http
-        .post(Uri.parse(BASE_URL + getState), body: jsonEncode(body), headers: {
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-    });
-    if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body)['Response']['states'];
-      setState(() {
-        _loading = false;
-        statelistData.addAll(list);
-      });
-    } else {
-      setState(() {
-        _loading = false;
-      });
-      throw Exception('Failed to get data due to ${response.body}');
-    }
-  }
+  // Future _getStateData(String id) async {
+  //   setState(() {
+  //     statelistData.clear();
+  //     _loading = true;
+  //   });
+  //   final body = {
+  //     "id": int.parse(id),
+  //   };
+  //   var response = await http
+  //       .post(Uri.parse(BASE_URL + getState), body: jsonEncode(body), headers: {
+  //     "Accept": "application/json",
+  //     'Content-Type': 'application/json',
+  //   });
+  //   if (response.statusCode == 200) {
+  //     Iterable list = json.decode(response.body)['Response']['states'];
+  //     setState(() {
+  //       _loading = false;
+  //       statelistData.addAll(list);
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //     throw Exception('Failed to get data due to ${response.body}');
+  //   }
+  // }
 
-  Future _getCityData(String id) async {
-    setState(() {
-      citylistData.clear();
-      _loading = true;
-    });
-    final body = {
-      "id": int.parse(id),
-    };
-    var response = await http.post(Uri.parse(BASE_URL + getCity),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json'
-        });
-    //print(response.body);
-    if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body)['Response']['cities'];
-      setState(() {
-        _loading = false;
-        citylistData.addAll(list);
-      });
-    } else {
-      setState(() {
-        _loading = false;
-      });
-      throw Exception('Failed to get data due to ${response.body}');
-    }
-  }
+  // Future _getCityData(String id) async {
+  //   setState(() {
+  //     citylistData.clear();
+  //     _loading = true;
+  //   });
+  //   final body = {
+  //     "id": int.parse(id),
+  //   };
+  //   var response = await http.post(Uri.parse(BASE_URL + getCity),
+  //       body: jsonEncode(body),
+  //       headers: {
+  //         "Accept": "application/json",
+  //         'Content-Type': 'application/json'
+  //       });
+  //   //print(response.body);
+  //   if (response.statusCode == 200) {
+  //     Iterable list = json.decode(response.body)['Response']['cities'];
+  //     setState(() {
+  //       _loading = false;
+  //       citylistData.addAll(list);
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //     throw Exception('Failed to get data due to ${response.body}');
+  //   }
+  // }
 
   Future<void> showPhotoCaptureOptions() async {
     final ImagePicker picker = ImagePicker();

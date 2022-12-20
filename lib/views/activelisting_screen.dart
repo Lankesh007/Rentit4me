@@ -788,7 +788,7 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      log(response.body.toString());
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
@@ -870,7 +870,7 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
   }
 
   Future<void> _postboost(String id) async {
-    print(id);
+    // print(id);
     setState(() {
       _loading = true;
     });
@@ -878,7 +878,7 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
       "Accept": "application/json",
       'Content-Type': 'application/json'
     });
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
@@ -899,7 +899,7 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
@@ -944,7 +944,7 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
   }
 
   Future<void> deleteProduct(String id) async {
-    print(id);
+    // print(id);
     setState(() {
       _loading = true;
     });
@@ -957,7 +957,7 @@ class _ActivelistingScreenState extends State<ActivelistingScreen> {
           "Accept": "application/json",
           'Content-Type': 'application/json'
         });
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'] == 0) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

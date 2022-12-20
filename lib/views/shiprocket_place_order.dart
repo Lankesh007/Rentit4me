@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, must_be_immutable, library_private_types_in_public_api
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, must_be_immutable, library_private_types_in_public_api, empty_catches
 
 import 'dart:convert';
 
@@ -47,7 +47,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
           "Accept": "application/json",
           'Content-Type': 'application/json'
         });
-    print(jsonDecode(response.body)['Response']['locations']);
+    // print(jsonDecode(response.body)['Response']['locations']);
     if (jsonDecode(response.body)['ErrorCode'] == 0) {
       setState(() {
         shippingAddress.text = jsonDecode(response.body)['Response']
@@ -498,10 +498,11 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                             ),
                             TextFormField(
                               validator: (value) {
-                                if (value.isEmpty)
+                                if (value.isEmpty) {
                                   return "Required Field";
-                                else
+                                } else {
                                   return null;
+                                }
                               },
                               controller: weight,
                               inputFormatters: [
@@ -513,8 +514,9 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                     final text = newValue.text;
                                     if (text.isNotEmpty) double.parse(text);
                                     return newValue;
-                                  } catch (e) {}
-                                  return oldValue;
+                                  } catch (e) {
+                                    return oldValue;
+                                  }
                                 }),
                               ],
                               keyboardType: TextInputType.numberWithOptions(
@@ -543,10 +545,6 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                 width: MediaQuery.of(context).size.width,
                                 height: 45,
                                 child: ElevatedButton(
-                                    child: Text("Submit",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16)),
                                     style: ButtonStyle(
                                         backgroundColor:
                                             MaterialStateProperty.all(
@@ -575,7 +573,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                               .getString('userid')
                                               .toString()
                                         };
-                                        print(jsonEncode(body));
+                                        // print(jsonEncode(body));
                                         var response = await http.post(
                                             Uri.parse(
                                                 "${BASE_URL}shiprocket/place-order"),
@@ -587,7 +585,7 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                         setState(() {
                                           isLoading = false;
                                         });
-                                        print(response.body);
+                                        // print(response.body);
                                         if (jsonDecode(
                                                 response.body)['ErrorCode'] ==
                                             0) {
@@ -596,7 +594,11 @@ class _ShipRocketPlaceOrderState extends State<ShipRocketPlaceOrder> {
                                           Navigator.of(context).pop();
                                         }
                                       }
-                                    }))
+                                    },
+                                    child: Text("Submit",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16))))
                           ],
                         ),
                 ],

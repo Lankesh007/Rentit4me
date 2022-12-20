@@ -183,7 +183,7 @@ class _SplashScreenState extends State<SplashScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
-    print("Bearer ${prefs.getString("token")}");
+    log("Bearer---> ${prefs.getString("token")}");
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
       log("data----->$data");

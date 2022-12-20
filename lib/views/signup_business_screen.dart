@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:convert';
 import 'dart:developer';
@@ -32,7 +32,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final alternamemobileContoller = TextEditingController();
   final pwdController = TextEditingController();
   final confirmpwdController = TextEditingController();
-  int _value = 0;
 
   //int usertypevalue = 0;
   //bool _businessnamevisibility = false;
@@ -49,9 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // _getCountryData();
     getToken();
   }
 
@@ -137,18 +134,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     }).toList(),
                     onChanged: (value) {
                       if (value != "Country Code") {
-                        countrycodelistwithname.forEach((element) {
+                        for (var element in countrycodelistwithname) {
                           if (element.toString() == value) {
                             setState(() {
                               countrycode = "";
                               countrycode = element.split("+")[1];
                             });
                           }
-                        });
+                        }
                       } else {
                         showToast("Select Country Code");
                       }
-                      print(countrycode);
+                      // print(countrycode);
                     },
                   ),
                 ),
@@ -247,7 +244,7 @@ class _SignupScreenState extends State<SignupScreen> {
         ));
   }
 
-  Widget _fullnameTextbox(_initialValue) {
+  Widget _fullnameTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -263,12 +260,12 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: _initialValue.toString(), labelText: 'Full Name*'),
+            hintText: initialValue.toString(), labelText: 'Full Name*'),
       ),
     );
   }
 
-  Widget _businessnameTextbox(_initialValue) {
+  Widget _businessnameTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -284,12 +281,12 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: _initialValue.toString(), labelText: 'Business Name*'),
+            hintText: initialValue.toString(), labelText: 'Business Name*'),
       ),
     );
   }
 
-  Widget _emailTextbox(_initialValue) {
+  Widget _emailTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -306,31 +303,31 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-            hintText: _initialValue.toString(), labelText: 'Email Address*'),
+            hintText: initialValue.toString(), labelText: 'Email Address*'),
       ),
     );
   }
 
-  Widget _CountrynameTextbox(_initialValue) {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-      child: TextFormField(
-        textCapitalization: TextCapitalization.sentences,
-        validator: (value) {
-          return null;
-        },
-        onSaved: (String value) {
-          countrynameController.text = value;
-        },
-        onChanged: (value) {
-          countrynameController.text = value;
-        },
-        cursorColor: kPrimaryColor,
-        decoration: InputDecoration(
-            hintText: _initialValue.toString(), labelText: 'Country Name*'),
-      ),
-    );
-  }
+  // Widget _CountrynameTextbox(initialValue) {
+  //   return Container(
+  //     margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+  //     child: TextFormField(
+  //       textCapitalization: TextCapitalization.sentences,
+  //       validator: (value) {
+  //         return null;
+  //       },
+  //       onSaved: (String value) {
+  //         countrynameController.text = value;
+  //       },
+  //       onChanged: (value) {
+  //         countrynameController.text = value;
+  //       },
+  //       cursorColor: kPrimaryColor,
+  //       decoration: InputDecoration(
+  //           hintText: initialValue.toString(), labelText: 'Country Name*'),
+  //     ),
+  //   );
+  // }
 
   Widget _mobileTextbox() {
     return Container(
@@ -373,7 +370,7 @@ class _SignupScreenState extends State<SignupScreen> {
   //   );
   // }
 
-  Widget _alternamemobileTextbox(_initialValue) {
+  Widget _alternamemobileTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -390,7 +387,7 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
-          hintText: _initialValue.toString(),
+          hintText: initialValue.toString(),
           labelText: 'Alternate Mobile(optional)',
           counterText: "",
         ),
@@ -398,7 +395,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _passwordTextbox(_initialValue) {
+  Widget _passwordTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -425,7 +422,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ? Icon(Icons.visibility)
                   : Icon(Icons.visibility_off),
             ),
-            hintText: _initialValue.toString(),
+            hintText: initialValue.toString(),
             labelText: 'Password*'),
       ),
     );
@@ -433,7 +430,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool showPassword = true;
   bool showConfirmPassword = true;
-  Widget _confirmpwdTextbox(_initialValue) {
+  Widget _confirmpwdTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -460,29 +457,29 @@ class _SignupScreenState extends State<SignupScreen> {
                   ? Icon(Icons.visibility)
                   : Icon(Icons.visibility_off),
             ),
-            hintText: _initialValue.toString(),
+            hintText: initialValue.toString(),
             labelText: 'Confirm Password*'),
       ),
     );
   }
 
-  Future _getCountryData() async {
-    var response = await http.get(Uri.parse(BASE_URL + countrycodeUrl));
-    if (response.statusCode == 200) {
-      setState(() {
-        countrycodelistwithname.clear();
-        countrycodelist.clear();
-        countrynamelist.clear();
+  // Future _getCountryData() async {
+  //   var response = await http.get(Uri.parse(BASE_URL + countrycodeUrl));
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       countrycodelistwithname.clear();
+  //       countrycodelist.clear();
+  //       countrynamelist.clear();
 
-        jsonDecode(response.body)['Response'].forEach((element) {
-          countrycodelistwithname
-              .add("${element['name']} +${element['dialcode']}");
-          countrycodelist.add("+${element['dialcode']}");
-          countrynamelist.add(element['name'].toString());
-        });
-      });
-    }
-  }
+  //       jsonDecode(response.body)['Response'].forEach((element) {
+  //         countrycodelistwithname
+  //             .add("${element['name']} +${element['dialcode']}");
+  //         countrycodelist.add("+${element['dialcode']}");
+  //         countrynamelist.add(element['name'].toString());
+  //       });
+  //     });
+  //   }
+  // }
 
   Future _register(
       String name,

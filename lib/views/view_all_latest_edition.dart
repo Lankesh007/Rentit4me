@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:group_radio_button/group_radio_button.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/utils/dialog_utils.dart';
@@ -62,7 +61,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
           page++;
           hasNext = true;
           isLoadMore = true;
-          log("Page--->" + page.toString());
+          log("Page--->$page");
         });
 
         if (page > getLastPage) {
@@ -594,7 +593,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    int countryId = preferences.getInt('countryId');
+    // int countryId = preferences.getInt('countryId');
     String cityId = preferences.getString('cityId');
     String country = preferences.getString('country');
     String state = preferences.getString('state');

@@ -44,14 +44,13 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getCountryData();
 
     FirebaseMessaging.instance.getToken().then((value) {
       setState(() {
         fcmToken = value.toString();
-        print(fcmToken);
+        log(fcmToken);
       });
     });
   }
@@ -119,18 +118,18 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                     }).toList(),
                     onChanged: (value) {
                       if (value != "Country Code") {
-                        countrycodelistwithname.forEach((element) {
+                        for (var element in countrycodelistwithname) {
                           if (element.toString() == value) {
                             setState(() {
                               countrycode = "";
                               countrycode = element.split("+")[1];
                             });
                           }
-                        });
+                        }
                       } else {
                         showToast("Select Country Code");
                       }
-                      print(countrycode);
+                      // print(countrycode);
                     },
                   ),
                 ),
@@ -267,26 +266,26 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
     );
   }
 
-  Widget _CountrynameTextbox(initialValue) {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-      child: TextFormField(
-        textCapitalization: TextCapitalization.sentences,
-        validator: (value) {
-          return null;
-        },
-        onSaved: (String value) {
-          countrynameController.text = value;
-        },
-        onChanged: (value) {
-          countrynameController.text = value;
-        },
-        cursorColor: kPrimaryColor,
-        decoration: InputDecoration(
-            hintText: initialValue.toString(), labelText: 'Country Name*'),
-      ),
-    );
-  }
+  // Widget _CountrynameTextbox(initialValue) {
+  //   return Container(
+  //     margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+  //     child: TextFormField(
+  //       textCapitalization: TextCapitalization.sentences,
+  //       validator: (value) {
+  //         return null;
+  //       },
+  //       onSaved: (String value) {
+  //         countrynameController.text = value;
+  //       },
+  //       onChanged: (value) {
+  //         countrynameController.text = value;
+  //       },
+  //       cursorColor: kPrimaryColor,
+  //       decoration: InputDecoration(
+  //           hintText: initialValue.toString(), labelText: 'Country Name*'),
+  //     ),
+  //   );
+  // }
 
   // Widget _mobileTextbox(initialValue) {
   //   return Container(
@@ -356,7 +355,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
     );
   }
 
-  Widget _passwordTextbox(_initialValue) {
+  Widget _passwordTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -383,7 +382,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                   ? Icon(Icons.visibility)
                   : Icon(Icons.visibility_off),
             ),
-            hintText: _initialValue.toString(),
+            hintText: initialValue.toString(),
             labelText: 'Password*'),
       ),
     );
@@ -391,7 +390,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
 
   bool showPassword = true;
   bool showConfirmPassword = true;
-  Widget _confirmpwdTextbox(_initialValue) {
+  Widget _confirmpwdTextbox(initialValue) {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: TextFormField(
@@ -418,7 +417,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
                   ? Icon(Icons.visibility)
                   : Icon(Icons.visibility_off),
             ),
-            hintText: _initialValue.toString(),
+            hintText: initialValue.toString(),
             labelText: 'Confirm Password*'),
       ),
     );
@@ -499,18 +498,18 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
       _loading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(jsonEncode({
-      "name": name,
-      "business_name": business,
-      "email": email,
-      "countrycode": countrycode,
-      "mobile": mobileController.text.toString(),
-      "user_type": "3",
-      "password": password,
-      "token": fcmToken,
-      "latitude": prefs.getString('latitude'),
-      "longitude": prefs.getString('longitude'),
-    }));
+    // print(jsonEncode({
+    //   "name": name,
+    //   "business_name": business,
+    //   "email": email,
+    //   "countrycode": countrycode,
+    //   "mobile": mobileController.text.toString(),
+    //   "user_type": "3",
+    //   "password": password,
+    //   "token": fcmToken,
+    //   "latitude": prefs.getString('latitude'),
+    //   "longitude": prefs.getString('longitude'),
+    // }));
     final body = {
       "name": name,
       "business_name": business,
@@ -534,7 +533,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
           "Accept": "application/json",
           'Content-Type': 'application/json'
         });
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 200) {
       setState(() {
         _loading = false;
@@ -565,7 +564,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }

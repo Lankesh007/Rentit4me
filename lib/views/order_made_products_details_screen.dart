@@ -229,7 +229,10 @@ class _OrderMadeProductsDetailsScreenState
                                         Icons.star,
                                         color: Colors.amber,
                                       ),
-                                      onRatingUpdate: (double value) {},
+                                      onRatingUpdate: (double value) {
+                                        prating = value;
+                                        log("p rating ---> $prating");
+                                      },
                                     ),
                                   ],
                                 ),
@@ -249,7 +252,8 @@ class _OrderMadeProductsDetailsScreenState
                                           ),
                                           SizedBox(
                                             child: RatingBar.builder(
-                                              initialRating: 0,
+                                              initialRating:
+                                                  userRating.toDouble(),
                                               minRating: 1,
                                               direction: Axis.horizontal,
                                               allowHalfRating: true,
@@ -991,7 +995,7 @@ class _OrderMadeProductsDetailsScreenState
             data['Order Details']['final_product_selling_amount'].toString();
         totalrent = data['Order Details']['total_rent'].toString();
         totalsecurity = data['Order Details']['total_security'].toString();
-        finalamount = data['Order Details']['final_amount'].toString();
+        finalamount = data['order']['amount'].toString();
         startdate = data['Order Details']['start_date'].toString();
         enddate = data['Order Details']['end_date'].toString();
         status = data['order']['status'].toString();
@@ -1035,7 +1039,7 @@ class _OrderMadeProductsDetailsScreenState
     });
     var url = "${BASE_URL}order-rating";
     var body = {
-      "product_rating": productRating.toString(),
+      "product_rating": prating.toString(),
       "user_rating": userRating.toString(),
       "orderid": widget.orderIdForFeedback.toString(),
       "feedback": feedbackController.text.toString()

@@ -62,7 +62,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     map['razorpay_payment_id'] = response.paymentId.toString();
-    print(map);
+    // print(map);
     var response1 = await http.post(Uri.parse(BASE_URL + "post-ad/renew/order"),
         body: jsonEncode(map),
         headers: {

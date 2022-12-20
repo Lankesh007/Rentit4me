@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names, prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -59,7 +61,7 @@ class _TrustedBadgePaymentDetailsState
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print("success");
+    // print("success");
     //print(response.orderId.toString());
     log("payment id-->${response.paymentId}");
     setState(() {
@@ -89,7 +91,7 @@ class _TrustedBadgePaymentDetailsState
   }
 
   Future payForOrder(String paymentid) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
@@ -139,14 +141,14 @@ class _TrustedBadgePaymentDetailsState
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {}
-
+  @override
   void dispose() {
     _razorpay.clear();
     super.dispose();
   }
 
   void startPayment(String amount) async {
-    print(amount);
+    // print(amount);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var options = {
@@ -164,13 +166,13 @@ class _TrustedBadgePaymentDetailsState
       };
       _razorpay.open(options);
     } catch (e) {
-      print("test2-----$e");
+      // print("test2-----$e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    // Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -528,7 +530,7 @@ class _TrustedBadgePaymentDetailsState
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     log('Bearer ${prefs.getString("token")}');
-    print(response.body);
+    // print(response.body);
     setState(() {
       _loading = false;
     });

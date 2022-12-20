@@ -304,12 +304,12 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
     usercountry = prefs.getString('country');
   }
 
-  Future<void> _setlocationorcategory(String lc, String cat) async {
-    setState(() {
-      locationvalue = lc != null || lc != "" ? lc : "";
-      categoryvalue = cat != null || cat != "" ? cat : "";
-    });
-  }
+  // Future<void> _setlocationorcategory(String lc, String cat) async {
+  //   setState(() {
+  //     locationvalue = lc != null || lc != "" ? lc : "";
+  //     categoryvalue = cat != null || cat != "" ? cat : "";
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -1291,39 +1291,39 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
   //   }
   // }
 
-  Future _getlocationandcategoryData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLoading = true;
-    });
-    final body = {
-      "country": prefs.getString('country'),
-      "state": prefs.getString('state'),
-      "city": prefs.getString('city'),
-    };
-    var response = await http
-        .post(Uri.parse(BASE_URL + homeUrl), body: jsonEncode(body), headers: {
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${prefs.getString("token")}',
-    });
-    if (response.statusCode == 200) {
-      setState(() {
-        isLoading = false;
-        location.clear();
-        category.clear();
-        // jsonDecode(response.body)['Response']['cities'].forEach((element) {
-        //   location.add(element['name'].toString());
-        // });
-        // categorylistData
-        //     .addAll(jsonDecode(response.body)['Response']['categories']);
-        // jsonDecode(response.body)['Response']['categories'].forEach((element) {
-        //   category.add(element['title'].toString());
-        // });
-      });
-      _setlocationorcategory(getlocation, getcategory);
-    }
-  }
+  // Future _getlocationandcategoryData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   final body = {
+  //     "country": prefs.getString('country'),
+  //     "state": prefs.getString('state'),
+  //     "city": prefs.getString('city'),
+  //   };
+  //   var response = await http
+  //       .post(Uri.parse(BASE_URL + homeUrl), body: jsonEncode(body), headers: {
+  //     "Accept": "application/json",
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer ${prefs.getString("token")}',
+  //   });
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       isLoading = false;
+  //       location.clear();
+  //       category.clear();
+  //       // jsonDecode(response.body)['Response']['cities'].forEach((element) {
+  //       //   location.add(element['name'].toString());
+  //       // });
+  //       // categorylistData
+  //       //     .addAll(jsonDecode(response.body)['Response']['categories']);
+  //       // jsonDecode(response.body)['Response']['categories'].forEach((element) {
+  //       //   category.add(element['title'].toString());
+  //       // });
+  //     });
+  //     _setlocationorcategory(getlocation, getcategory);
+  //   }
+  // }
 
   Future<List> _getAllCity(String pattern) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1414,11 +1414,11 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
       isLoading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int countryId = prefs.getInt('countryId');
+    // int countryId = prefs.getInt('countryId');
     String country = prefs.getString('country');
     String state = prefs.getString('state');
     String city = prefs.getString('city');
-    String cityId = prefs.getString('cityId');
+    // String cityId = prefs.getString('cityId');
     var url = "${BASE_URL}browse-ads";
     var body = {
       "country": country.toString(),
@@ -1454,8 +1454,8 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
     String country = prefs.getString('country');
     String state = prefs.getString('state');
     String city = prefs.getString('city');
-    int countryId = prefs.getInt('countryId');
-    String cityId = prefs.getString('cityId');
+    // int countryId = prefs.getInt('countryId');
+    // String cityId = prefs.getString('cityId');
     var url = "https://rentit4me.com/api/browse-ads";
     var body = {
       "country": country.toString(),

@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:rentit4me_new/models/browse_all_category.dart';
 import 'package:rentit4me_new/network/api.dart';
-import 'package:rentit4me_new/views/product_detail_screen.dart';
 import 'package:rentit4me_new/views/top_selling_categories.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 

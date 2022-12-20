@@ -37,7 +37,6 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _promotedalllist();
   }
@@ -706,7 +705,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);/
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
@@ -744,7 +743,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
@@ -780,7 +779,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
@@ -892,7 +891,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
       setState(() {
         _loading = false;
       });
-      print(response.body);
+      // print(response.body);
       throw Exception('Failed to get data due to ${response.body}');
     }
   }
@@ -937,7 +936,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
   }
 
   Future<void> deleteProduct(String id) async {
-    print(id);
+    // print(id);
     setState(() {
       _loading = true;
     });
@@ -950,7 +949,7 @@ class _PromotedlistScreenState extends State<PromotedlistScreen> {
           "Accept": "application/json",
           'Content-Type': 'application/json'
         });
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'] == 0) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

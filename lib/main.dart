@@ -1,10 +1,9 @@
+// ignore_for_file: invalid_return_type_for_catch_error
+
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:rentit4me_new/blocs/network_bloc/network_bloc.dart';
 import 'package:rentit4me_new/utils/dialog_utils.dart';

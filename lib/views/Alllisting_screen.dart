@@ -1,9 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -51,80 +49,81 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2.0,
-        actions: [
-          // InkWell(
-          //   onTap: () {
-          //     List delet = [];
-          //     for (var element in alllist) {
-          //       if (element['selected']) {
-          //         delet.add(element['id'].toString());
-          //       }
-          //     }
+        // actions: [
+        //   // InkWell(
+        //   //   onTap: () {
+        //   //     List delet = [];
+        //   //     for (var element in alllist) {
+        //   //       if (element['selected']) {
+        //   //         delet.add(element['id'].toString());
+        //   //       }
+        //   //     }
 
-          //     if (delet.isNotEmpty) {
-          //       showDialog(
-          //           context: context,
-          //           builder: (context) => AlertDialog(
-          //                 title: Text("Confirmation"),
-          //                 content:
-          //                     Text("Do you want to delete all selected items"),
-          //                 actions: [
-          //                   TextButton(
-          //                       onPressed: () {
-          //                         Navigator.of(context).pop();
-          //                       },
-          //                       child: Text("Cancel")),
-          //                   TextButton(
-          //                       onPressed: () async {
-          //                         SharedPreferences prefs =
-          //                             await SharedPreferences.getInstance();
-          //                         setState(() {
-          //                           _loading = true;
-          //                         });
-          //                         final body = {
-          //                           "ids": delet.join(",").toString(),
-          //                           "userid": prefs.getString('userid'),
-          //                         };
-          //                         var response = await http.post(
-          //                             Uri.parse(
-          //                                 "${BASE_URL}posted-ads/bulk-delete"),
-          //                             body: jsonEncode(body),
-          //                             headers: {
-          //                               "Accept": "application/json",
-          //                               'Content-Type': 'application/json'
-          //                             });
+        //   //     if (delet.isNotEmpty) {
+        //   //       showDialog(
+        //   //           context: context,
+        //   //           builder: (context) => AlertDialog(
+        //   //                 title: Text("Confirmation"),
+        //   //                 content:
+        //   //                     Text("Do you want to delete all selected items"),
+        //   //                 actions: [
+        //   //                   TextButton(
+        //   //                       onPressed: () {
+        //   //                         Navigator.of(context).pop();
+        //   //                       },
+        //   //                       child: Text("Cancel")),
+        //   //                   TextButton(
+        //   //                       onPressed: () async {
+        //   //                         SharedPreferences prefs =
+        //   //                             await SharedPreferences.getInstance();
+        //   //                         setState(() {
+        //   //                           _loading = true;
+        //   //                         });
+        //   //                         final body = {
+        //   //                           "ids": delet.join(",").toString(),
+        //   //                           "userid": prefs.getString('userid'),
+        //   //                         };
+        //   //                         var response = await http.post(
+        //   //                             Uri.parse(
+        //   //                                 "${BASE_URL}posted-ads/bulk-delete"),
+        //   //                             body: jsonEncode(body),
+        //   //                             headers: {
+        //   //                               "Accept": "application/json",
+        //   //                               'Content-Type': 'application/json'
+        //   //                             });
 
-          //                         setState(() {
-          //                           _loading = false;
-          //                         });
-          //                         if (jsonDecode(response.body)['ErrorCode'] ==
-          //                             0) {
-          //                           Navigator.of(context).pop();
+        //   //                         setState(() {
+        //   //                           _loading = false;
+        //   //                         });
+        //   //                         if (jsonDecode(response.body)['ErrorCode'] ==
+        //   //                             0) {
+        //   //                           Navigator.of(context).pop();
 
-          //                           Fluttertoast.showToast(
-          //                               msg: jsonDecode(
-          //                                       response.body)['ErrorMessage']
-          //                                   .toString());
-          //                           _alllist();
-          //                         }
-          //                       },
-          //                       child: Text("Confirm"))
-          //                 ],
-          //               ));
-          //     } else {
-          //       Fluttertoast.showToast(msg: "Select alteast one item");
-          //     }
-          //   },
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: Icon(
-          //       Icons.delete_forever,
-          //       color: Colors.red,
-          //     ),
-          //   ),
-          // )
+        //   //                           Fluttertoast.showToast(
+        //   //                               msg: jsonDecode(
+        //   //                                       response.body)['ErrorMessage']
+        //   //                                   .toString());
+        //   //                           _alllist();
+        //   //                         }
+        //   //                       },
+        //   //                       child: Text("Confirm"))
+        //   //                 ],
+        //   //               ));
+        //   //     } else {
+        //   //       Fluttertoast.showToast(msg: "Select alteast one item");
+        //   //     }
+        //   //   },
+        //   //   child: Padding(
+        //   //     padding: const EdgeInsets.all(8.0),
+        //   //     child: Icon(
+        //   //       Icons.delete_forever,
+        //   //       color: Colors.red,
+        //   //     ),
+        //   //   ),
+        //   // )
       
-        ],
+        // ],
+       
         leading: InkWell(
             onTap: () {
               Navigator.of(context).pop();
@@ -993,7 +992,6 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
   }
 
   Future<void> _postboost(String id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
@@ -1067,7 +1065,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
   Future<void> deleteProduct(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print(id);
+    // print(id);
     setState(() {
       _loading = true;
     });
@@ -1081,7 +1079,7 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
         });
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'] == 0) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
