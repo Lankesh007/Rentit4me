@@ -14,17 +14,17 @@ import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MakePaymentScreen extends StatefulWidget {
+class MakePaymentScreenForSignup extends StatefulWidget {
   final String packageId;
   final String totalAmount;
-  const MakePaymentScreen({this.packageId, this.totalAmount, Key key})
+  const MakePaymentScreenForSignup({this.packageId, this.totalAmount, Key key})
       : super(key: key);
 
   @override
-  State<MakePaymentScreen> createState() => _MakePaymentScreenState();
+  State<MakePaymentScreenForSignup> createState() => _MakePaymentScreenForSignupState();
 }
 
-class _MakePaymentScreenState extends State<MakePaymentScreen> {
+class _MakePaymentScreenForSignupState extends State<MakePaymentScreenForSignup> {
   bool _loading = false;
 
   String package_id;
@@ -613,33 +613,25 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
       _loading = true;
     });
 
-    var url = BASE_URL + "pay-for-membarship";
-    var body = couponCode == "" || couponCode == null
-        ? {
-            "id": widget.packageId,
-            "razorpay_payment_id": paymentid.toString(),
-            "amount": couponApplied == true
-                ? appliedGrandTotal.toString()
-                : planAmount.toString(),
-          }
-        : {
-            "id": widget.packageId,
-            "razorpay_payment_id": paymentid.toString(),
-            "amount": couponApplied == true
-                ? appliedGrandTotal.toString()
-                : planAmount.toString(),
-            "applied_couponcode":
-                couponCode == "" || couponCode == null ? "" : couponCode,
-            "discount": appliedDiscount == 0 || appliedDiscount == null
-                ? ""
-                : appliedDiscount.toString(),
-          };
+    var url = BASE_URL + "signup-membership";
+    var body = {
+      "id": widget.packageId,
+      "razorpay_payment_id": paymentid.toString(),
+      "amount": couponApplied == true
+          ? appliedGrandTotal.toString()
+          : planAmount.toString(),
+      "applied_couponcode":
+          couponCode == "" || couponCode == null ? "" : couponCode,
+      "discount": appliedDiscount == 0 || appliedDiscount == null
+          ? ""
+          : appliedDiscount.toString(),
+    };
 
     log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
-    log('res--->$result');
-    if (result["ErrorCode"].toString() == "0") {
+    log(result.toString());
+    if (result["ErrorCode"] == 0) {
       setState(() {
         _loading = false;
       });
@@ -670,7 +662,7 @@ class _MakePaymentScreenState extends State<MakePaymentScreen> {
       "razorpay_payment_id": razorpayId,
       "amount": couponApplied == true
           ? appliedGrandTotal.toString()
-          : planAmount.toString(),
+          : amount.toString(),
       "type": couponType
     };
     var response = await APIHelper.apiPostRequest(url, body);

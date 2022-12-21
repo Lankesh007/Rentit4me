@@ -1839,7 +1839,7 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
           log("ENTETED====>  $passportPic");
         } else if (initialIdProof == "Driving Licence" && country != "India") {
           var dlPic = await http.MultipartFile.fromPath(
-              'driving_license_doc', passportDoc.toString());
+              'driving_license_doc', dlDoc.toString());
           request.files.add(dlPic);
           log("ENTETED====>  $dlPic");
         } else {

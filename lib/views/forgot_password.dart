@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rentit4me_new/network/api.dart';
+import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/views/login_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -132,15 +134,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     if (result['ErrorCode'] == 0) {
       otp = result['Response'];
       log("otp-->$otp");
-
       prefs.setString("resetNumber", resetController.text.toString());
       log("reset number---->${prefs.getString("resetNumber")}");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => VerifyResetOtp(
-                    otp: otp.toString(),
-                  )));
+      if (result['ErrorMessage'] ==
+          "We have emailed your password reset link!") {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => VerifyResetOtp(
+                      otp: otp.toString(),
+                    )));
+      }
+
       setState(() {
         buttonLoader = false;
       });

@@ -25,7 +25,7 @@ class OrderRenewPaymentScreen extends StatefulWidget {
   final String subTotal;
   final String totalAmount;
   final String orderId;
-final String rentType;
+  final String rentType;
   const OrderRenewPaymentScreen(
       {this.convinenceCharge,
       this.duration,
@@ -77,12 +77,13 @@ class _OrderRenewPaymentScreenState extends State<OrderRenewPaymentScreen> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
-var razorpayId;
+
+  var razorpayId;
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print("success");
     //print(response.orderId.toString());
     log("payment id-->${response.paymentId}");
-     setState(() {
+    setState(() {
       razorpayId = response.paymentId;
     });
     payForOrder(
@@ -97,20 +98,30 @@ var razorpayId;
     });
 
     var url = "${BASE_URL}post-ad/renew/order";
-    var body = {
-      "orderid": widget.orderId.toString(),
-      "period": widget.duration.toString(),
-      "rent_type": widget.rentType.toString(),
-      "razorpay_payment_id": paymentid.toString(),
-      "amount": couponApplied == true
-          ? applidTotalAmount.toString()
-          : widget.totalAmount.toString(),
-           "applied_couponcode":
-          couponCode == "" || couponCode == null ? "" : couponCode,
-      "discount": appliedDiscount == 0 || appliedDiscount == null
-          ? ""
-          : appliedDiscount.toString(),
-    };
+    var body = couponCode == "" || couponCode == null
+        ? {
+            "orderid": widget.orderId.toString(),
+            "period": widget.duration.toString(),
+            "rent_type": widget.rentType.toString(),
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? applidTotalAmount.toString()
+                : widget.totalAmount.toString(),
+          }
+        : {
+            "orderid": widget.orderId.toString(),
+            "period": widget.duration.toString(),
+            "rent_type": widget.rentType.toString(),
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? applidTotalAmount.toString()
+                : widget.totalAmount.toString(),
+            "applied_couponcode":
+                couponCode == "" || couponCode == null ? "" : couponCode,
+            "discount": appliedDiscount == 0 || appliedDiscount == null
+                ? ""
+                : appliedDiscount.toString(),
+          };
 
     log(body.toString());
 
@@ -659,8 +670,8 @@ var razorpayId;
     var body = {
       "razorpay_payment_id": razorpayId,
       "amount": couponApplied == true
-          ? appliedGrandTotal.toString()
-          : amount.toString(),
+          ? applidTotalAmount.toString()
+          : widget.totalAmount.toString(),
       "type": "rent"
     };
     var response = await APIHelper.apiPostRequest(url, body);

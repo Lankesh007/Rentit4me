@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rentit4me_new/network/api.dart';
+import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -138,7 +139,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
               InkWell(
                 onTap: () {
-                 if (passwordController.text.isEmpty) {
+                  if (passwordController.text.isEmpty) {
                     Fluttertoast.showToast(msg: "Please enter password");
                   } else if (confirmPasswordController.text.isEmpty) {
                     Fluttertoast.showToast(
@@ -195,11 +196,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     if (result['ErrorCode'] == 0) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (route) => false);
-      Fluttertoast.showToast(msg: result['ErrorMessage']);
+      prefs.setString('token', result['token']);
+      prefs.setString('userid', result['Response']['id'].toString());
+      if (prefs.getString('token') != null&&prefs.getString('userid') != null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => Dashboard()),
+            (route) => false);
+        Fluttertoast.showToast(msg: result['ErrorMessage']);
+        setState(() {
+          buttonLoader = false;
+        });
+      } else {
+        Fluttertoast.showToast(msg: result['ErrorMessage']);
+      }
       setState(() {
         buttonLoader = false;
       });

@@ -76,36 +76,49 @@ class _OfferMadePaymentScreenState extends State<OfferMadePaymentScreen> {
     });
 
     var url = "${BASE_URL}pay-for-order";
-    var body = {
-      // 'userid':prefs.getString('userid'),
-      "postad_id": postId.toString(),
-      "offer_request_id": widget.postadid.toString(),
-      "razorpay_payment_id": paymentid.toString(),
-      "amount": couponApplied == true
-          ? appliedGrandTotal.toString()
-          : totalAmount.toString(),
-      "applied_couponcode":
-          couponCode == "" || couponCode == null ? "" : couponCode,
-      "discount": appliedDiscount == 0 || appliedDiscount == null
-          ? ""
-          : appliedDiscount.toString(),
-    };
+    var body = couponCode == "" || couponCode == null
+        ? {
+            "postad_id": postId.toString(),
+            "offer_request_id": widget.postadid.toString(),
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? appliedGrandTotal.toString()
+                : totalAmount.toString(),
+          }
+        : {
+            // 'userid':prefs.getString('userid'),
+            "postad_id": postId.toString(),
+            "offer_request_id": widget.postadid.toString(),
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? appliedGrandTotal.toString()
+                : totalAmount.toString(),
+            "applied_couponcode":
+                couponCode == "" || couponCode == null ? "" : couponCode,
+            "discount": appliedDiscount == 0 || appliedDiscount == null
+                ? ""
+                : appliedDiscount.toString(),
+          };
     log("body-->$body");
 
     var response = await APIHelper.apiPostRequest(url, body);
-    // var result = jsonDecode(response);
+    var result = jsonDecode(response);
 
     log("Payment Respone--->$response");
+    if (result['ErrorCode'] == 0) {
+      showToast(result['ErrorMessage']).toString();
 
-    // Navigator.of(context)
-    //     .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
-    // showToast('Your order has been successfully placed.').toString();
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      transactionFailed();
+
+      showToast(result['ErrorMessage']).toString();
+    }
 
     setState(() {
       _loading = false;
     });
-
-    // transactionFailed();
 
     setState(() {
       _loading = false;

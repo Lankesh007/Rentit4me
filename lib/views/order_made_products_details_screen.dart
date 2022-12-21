@@ -214,27 +214,25 @@ class _OrderMadeProductsDetailsScreenState
                                         fontWeight: FontWeight.w700)),
                                 const SizedBox(height: 5),
 
-                                Row(
-                                  children: [
-                                    RatingBar.builder(
-                                      initialRating: prating,
-                                      minRating: 1,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      itemSize: 20.0,
-                                      itemPadding:
-                                          EdgeInsets.symmetric(horizontal: 4.0),
-                                      itemBuilder: (context, _) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
-                                      onRatingUpdate: (double value) {
-                                        prating = value;
-                                        log("p rating ---> $prating");
-                                      },
+                                SizedBox(
+                                  child: RatingBar.builder(
+                                    initialRating: prating,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    itemSize: 20.0,
+                                    itemPadding:
+                                        EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
                                     ),
-                                  ],
+                                    onRatingUpdate: (double value) {
+                                      prating = value;
+                                      log("p rating ---> $prating");
+                                    },
+                                  ),
                                 ),
                                 Divider(),
                                 advertiserId.toString() != userId

@@ -187,6 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       child: TextField(
+                        keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           hintText: "Email",
                           contentPadding: EdgeInsets.all(15),

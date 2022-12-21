@@ -50,6 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
   void initState() {
     super.initState();
     getToken();
+    _getCountryData();
   }
 
   void getToken() async {
@@ -145,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       } else {
                         showToast("Select Country Code");
                       }
-                      // print(countrycode);
+                      print(countrycode);
                     },
                   ),
                 ),
@@ -463,23 +464,23 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // Future _getCountryData() async {
-  //   var response = await http.get(Uri.parse(BASE_URL + countrycodeUrl));
-  //   if (response.statusCode == 200) {
-  //     setState(() {
-  //       countrycodelistwithname.clear();
-  //       countrycodelist.clear();
-  //       countrynamelist.clear();
+  Future _getCountryData() async {
+    var response = await http.get(Uri.parse(BASE_URL + countrycodeUrl));
+    if (response.statusCode == 200) {
+      setState(() {
+        countrycodelistwithname.clear();
+        countrycodelist.clear();
+        countrynamelist.clear();
 
-  //       jsonDecode(response.body)['Response'].forEach((element) {
-  //         countrycodelistwithname
-  //             .add("${element['name']} +${element['dialcode']}");
-  //         countrycodelist.add("+${element['dialcode']}");
-  //         countrynamelist.add(element['name'].toString());
-  //       });
-  //     });
-  //   }
-  // }
+        jsonDecode(response.body)['Response'].forEach((element) {
+          countrycodelistwithname
+              .add("${element['name']} +${element['dialcode']}");
+          countrycodelist.add("+${element['dialcode']}");
+          countrynamelist.add(element['name'].toString());
+        });
+      });
+    }
+  }
 
   Future _register(
       String name,
