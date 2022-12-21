@@ -231,14 +231,15 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            Container(
+                            SizedBox(
                               child: Text("No Products Found !!"),
                             ),
                           ],
                         )
-                      : Container(
-                          height: size.height * 0.50,
+                      : SizedBox(
+                          height: size.height * 0.48,
                           child: ListView.separated(
+                            physics: BouncingScrollPhysics(),
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             itemCount: myactiveorderslist.length,
@@ -428,28 +429,8 @@ class _OrderRecievedScreenState extends State<OrderRecievedScreen> {
                                                     color: kPrimaryColor,
                                                     fontWeight:
                                                         FontWeight.w500)),
-                                            // myactiveorderslist[index]["offer_status"]
-                                            //             .toString() ==
-                                            //         "1"
-                                            //     ? InkWell(
-                                            //         onTap: () {},
-                                            //         child: Container(
-                                            //           padding: EdgeInsets.all(4.0),
-                                            //           decoration: BoxDecoration(
-                                            //               borderRadius:
-                                            //                   BorderRadius.all(
-                                            //                       Radius.circular(4.0)),
-                                            //               border: Border.all(
-                                            //                   color: Colors.blue)),
-                                            //           child: const Text("Action",
-                                            //               style: TextStyle(
-                                            //                   color: Colors.blue)),
-                                            //         ),
-                                            //       )
-                                            //     : _getaction(
-                                            //         myactiveorderslist[index]["status"]
-                                            //             .toString(),
-                                            //       ),
+                                            
+                                           
                                           ],
                                         ),
                                         const SizedBox(height: 10.0),

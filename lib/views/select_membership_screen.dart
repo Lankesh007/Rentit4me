@@ -12,6 +12,7 @@ import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
 import 'package:rentit4me_new/views/make_payment_screen.dart';
+import 'package:rentit4me_new/views/make_payment_signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectMemberShipScreen extends StatefulWidget {
@@ -415,7 +416,7 @@ class _SelectMemberShipScreenState extends State<SelectMemberShipScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => MakePaymentScreen(
+                  builder: (context) => MakePaymentScreenForSignup(
                         packageId: packageId.toString(),
                       )));
         }

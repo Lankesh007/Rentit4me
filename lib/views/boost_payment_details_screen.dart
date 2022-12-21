@@ -88,19 +88,28 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
     });
 
     var url = "${BASE_URL}pay-for-boostAd";
-    var body = {
-      "post_id": widget.postadid.toString(),
-      "id": widget.boostPackageId.toString(),
-      "razorpay_payment_id": paymentid.toString(),
-      "amount": couponApplied == true
-          ? appliedGrandTotal.toString()
-          : widget.amount.toString(),
-           "applied_couponcode":
-          couponCode == "" || couponCode == null ? "" : couponCode,
-      "discount": appliedDiscount == 0 || appliedDiscount == null
-          ? ""
-          : appliedDiscount.toString(),
-    };
+    var body = couponCode == "" || couponCode == null
+        ? {
+            "post_id": widget.postadid.toString(),
+            "id": widget.boostPackageId.toString(),
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? appliedGrandTotal.toString()
+                : widget.amount.toString(),
+          }
+        : {
+            "post_id": widget.postadid.toString(),
+            "id": widget.boostPackageId.toString(),
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? appliedGrandTotal.toString()
+                : widget.amount.toString(),
+            "applied_couponcode":
+                couponCode == "" || couponCode == null ? "" : couponCode,
+            "discount": appliedDiscount == 0 || appliedDiscount == null
+                ? ""
+                : appliedDiscount.toString(),
+          };
 
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);

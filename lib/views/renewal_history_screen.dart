@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/utils/dialog_utils.dart';
+import 'package:rentit4me_new/views/renewd_order_details.dart';
 import 'package:rentit4me_new/widgets/api_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -100,205 +101,220 @@ class _RenewalHistoryScreenState extends State<RenewalHistoryScreen> {
                           return items['renewal_status'] == 0
                               ? Column(
                                   children: [
-                                    SizedBox(
-                                      width: width * 0.95,
-                                      child: Card(
-                                        elevation: 5,
-                                        child: Column(
-                                          children: [
-                                            SizedBox(height: 3),
-                                            Container(
-                                                width: width * 0.95,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 2),
-                                                height: 30,
-                                                color: Appcolors.secondaryColor,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Order id : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.white),
-                                                    ),
-                                                    Text(
-                                                      items['order_id']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Quantity : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['quantity']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Duration : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['period']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            userId !=
-                                                    items['advertiser_id']
-                                                        .toString()
-                                                ? Column(
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OrderRenewdDetailsScreen(
+                                                      renewalOrderId:
+                                                          items['id']
+                                                              .toString(),
+                                                    )));
+                                      },
+                                      child: SizedBox(
+                                        width: width * 0.95,
+                                        child: Card(
+                                          elevation: 5,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 3),
+                                              Container(
+                                                  width: width * 0.95,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(horizontal: 2),
+                                                  height: 30,
+                                                  color:
+                                                      Appcolors.secondaryColor,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Divider(),
-                                                      SizedBox(
-                                                          width: width * 0.9,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                "Convenience Fee : ",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                              Text(
-                                                                items[
-                                                                    'convenience_fee'],
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                            ],
-                                                          )),
+                                                      Text(
+                                                        "Order id : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                      Text(
+                                                        items['order_id']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
                                                     ],
-                                                  )
-                                                : SizedBox(),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Total Rent (INR) : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['total_amount']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            items['convenience_fee'] == null
-                                                ? SizedBox()
-                                                : Column(
+                                                  )),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Divider(),
-                                                      SizedBox(
-                                                          width: width * 0.9,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                "Security : ",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                              Text(
-                                                                items['convenience_fee']
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                            ],
-                                                          )),
+                                                      Text(
+                                                        "Quantity : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['quantity']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
                                                     ],
-                                                  ),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Start Date : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
+                                                  )),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Duration : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['period']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              userId !=
+                                                      items['advertiser_id']
+                                                          .toString()
+                                                  ? Column(
+                                                      children: [
+                                                        Divider(),
+                                                        SizedBox(
+                                                            width: width * 0.9,
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  "Convenience Fee : ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                                Text(
+                                                                  items[
+                                                                      'convenience_fee'],
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      ],
+                                                    )
+                                                  : SizedBox(),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Total Rent (INR) : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['total_amount']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              items['convenience_fee'] == null
+                                                  ? SizedBox()
+                                                  : Column(
+                                                      children: [
+                                                        Divider(),
+                                                        SizedBox(
+                                                            width: width * 0.9,
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  "Security : ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                                Text(
+                                                                  items['convenience_fee']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      items['start_date'],
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "End Date : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['end_date'],
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            SizedBox(height: 3),
-                                          ],
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Start Date : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['start_date'],
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "End Date : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['end_date'],
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              SizedBox(height: 3),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -361,205 +377,219 @@ class _RenewalHistoryScreenState extends State<RenewalHistoryScreen> {
                           return items['renewal_status'] >= 1
                               ? Column(
                                   children: [
-                                    SizedBox(
-                                      width: width * 0.95,
-                                      child: Card(
-                                        elevation: 5,
-                                        child: Column(
-                                          children: [
-                                            SizedBox(height: 3),
-                                            Container(
-                                                width: width * 0.95,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 2),
-                                                height: 30,
-                                                color: Appcolors.primaryColor,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Order id : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.white),
-                                                    ),
-                                                    Text(
-                                                      items['order_id']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Quantity : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['quantity']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Duration : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['period']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            userId !=
-                                                    items['advertiser_id']
-                                                        .toString()
-                                                ? Column(
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OrderRenewdDetailsScreen(
+                                                      renewalOrderId:
+                                                          items['id']
+                                                              .toString(),
+                                                    )));
+                                      },
+                                      child: SizedBox(
+                                        width: width * 0.95,
+                                        child: Card(
+                                          elevation: 5,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 3),
+                                              Container(
+                                                  width: width * 0.95,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(horizontal: 2),
+                                                  height: 30,
+                                                  color: Appcolors.primaryColor,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Divider(),
-                                                      SizedBox(
-                                                          width: width * 0.9,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                "Convenience Fee : ",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                              Text(
-                                                                items['convenience_fee']
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                            ],
-                                                          )),
+                                                      Text(
+                                                        "Order id : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                      Text(
+                                                        items['order_id']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
                                                     ],
-                                                  )
-                                                : SizedBox(),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Total Rent (INR) : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['total_amount']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            items['convenience_fee'] == null
-                                                ? SizedBox()
-                                                : Column(
+                                                  )),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Divider(),
-                                                      SizedBox(
-                                                          width: width * 0.9,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                "Security : ",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                              Text(
-                                                                items['convenience_fee']
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                              ),
-                                                            ],
-                                                          )),
+                                                      Text(
+                                                        "Quantity : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['quantity']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
                                                     ],
-                                                  ),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Start Date : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
+                                                  )),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Duration : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['period']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              userId !=
+                                                      items['advertiser_id']
+                                                          .toString()
+                                                  ? Column(
+                                                      children: [
+                                                        Divider(),
+                                                        SizedBox(
+                                                            width: width * 0.9,
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  "Convenience Fee : ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                                Text(
+                                                                  items['convenience_fee']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      ],
+                                                    )
+                                                  : SizedBox(),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Total Rent (INR) : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['total_amount']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              items['convenience_fee'] == null
+                                                  ? SizedBox()
+                                                  : Column(
+                                                      children: [
+                                                        Divider(),
+                                                        SizedBox(
+                                                            width: width * 0.9,
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  "Security : ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                                Text(
+                                                                  items['convenience_fee']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      items['start_date'],
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Divider(),
-                                            SizedBox(
-                                                width: width * 0.9,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "End Date : ",
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      items['end_date'],
-                                                      style: TextStyle(
-                                                          fontSize: 16),
-                                                    ),
-                                                  ],
-                                                )),
-                                            SizedBox(height: 3),
-                                          ],
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Start Date : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['start_date'],
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              Divider(),
+                                              SizedBox(
+                                                  width: width * 0.9,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "End Date : ",
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        items['end_date'],
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              SizedBox(height: 3),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

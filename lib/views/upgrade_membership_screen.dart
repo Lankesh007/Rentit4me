@@ -162,21 +162,25 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
+                                      // const Text("INR ",
+                                      //     style: TextStyle(
+                                      //        color: Colors.white,
+                                      //         fontSize: 28,
+                                      //         fontWeight: FontWeight.w700)),
                                       Text(
-                                          membershipplanlist[index]['amount']
-                                              .toString(),
+                                          "${membershipplanlist[index]['amount']}/-",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 28,
                                               fontWeight: FontWeight.w700)),
-                                      const Text("/",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16)),
-                                      const Text("month",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16))
+                                      // const Text("/",
+                                      //     style: TextStyle(
+                                      //         color: Colors.white,
+                                      //         fontSize: 16)),
+                                      // const Text("month",
+                                      //     style: TextStyle(
+                                      //         color: Colors.white,
+                                      //         fontSize: 16))
                                     ],
                                   ),
                                 ),

@@ -289,7 +289,7 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
       "razorpay_payment_id": razorpayid,
       "amount": amount
     };
-    var response = await http.post(Uri.parse(BASE_URL + "pay-for-boostAd"),
+    var response = await http.post(Uri.parse("${BASE_URL}pay-for-boostAd"),
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",

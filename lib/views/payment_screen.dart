@@ -294,6 +294,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       "null"
                                               ? SizedBox()
                                               : Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text("Discount : ",
                                                         style: TextStyle(

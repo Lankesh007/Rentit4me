@@ -69,7 +69,6 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
           getScrollingDetails(page.toString());
         }
       }
-     
     });
     super.initState();
   }
@@ -161,13 +160,13 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                                       if (sortByValue == "Low to High") {
                                         setState(() {
                                           sortFilterValue = "0";
-                                          page=1;
+                                          page = 1;
                                         });
                                         getDataByFilters();
                                       } else if (sortByValue == "High to Low") {
                                         setState(() {
                                           sortFilterValue = "1";
-                                          page=1;
+                                          page = 1;
                                         });
                                         getDataByFilters();
                                       } else {
@@ -287,28 +286,26 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                           )
                         : scrollLoader == true
                             ? Container(
-                              height: height*0.6,
-                              alignment: Alignment.center,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                  
-                                      alignment: Alignment.bottomCenter,
-                                      child: Text(
-                                        "Loading Products...",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                ],
-                              ),
-                            )
-                          
+                                height: height * 0.6,
+                                alignment: Alignment.center,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Text(
+                                          "Loading Products...",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                  ],
+                                ),
+                              )
                             : SizedBox(
                                 height: height * 0.7,
                                 width: width,
@@ -429,13 +426,16 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                       maxLines: 2,
                     )),
-                    SizedBox(height: 2,),
-                      Container(
+                SizedBox(
+                  height: 2,
+                ),
+                Container(
                     width: width * 0.5,
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Starting From : ${item.currency} ${item.price}",
-                      style: TextStyle(fontWeight: FontWeight.w600,color: Colors.grey),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.grey),
                     )),
               ],
             ),
@@ -567,7 +567,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "state": state == null || state == "" ? "" : state,
       "tenure": tenureValue,
       "sortby": sortFilterValue,
-      "page":page.toString(),
+      "page": page.toString(),
     };
     var res = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(res);
@@ -606,7 +606,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "state": state == null || state == "" ? "" : state,
       // "search": "",
       "q": searchController.text.toString(),
-      "page": getLastPage.toString(),
+      "page": page.toString(),
     };
     log("body-->$body");
     var response = await APIHelper.apiPostRequest(url, body);

@@ -77,8 +77,8 @@ class _TrustedBadgePaymentDetailsState
     var body = {
       "razorpay_payment_id": razorpayId,
       "amount": couponApplied == true
-          ? appliedGrandTotal.toString()
-          : amount.toString(),
+          ? applidTotalAmount.toString()
+          : totalAmount.toString(),
       "type": "trusted-badge"
     };
     var response = await APIHelper.apiPostRequest(url, body);
@@ -97,17 +97,24 @@ class _TrustedBadgePaymentDetailsState
     });
 
     var url = "${BASE_URL}trusted-badge-payment";
-    var body = {
-      "razorpay_payment_id": paymentid.toString(),
-      "amount": couponApplied == true
-          ? applidTotalAmount.toString()
-          : totalAmount.toString(),
-      "applied_couponcode":
-          couponCode == "" || couponCode == null ? "" : couponCode,
-      "discount": appliedDiscount == 0 || appliedDiscount == null
-          ? ""
-          : appliedDiscount.toString(),
-    };
+    var body = couponCode == "" || couponCode == null
+        ? {
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? applidTotalAmount.toString()
+                : totalAmount.toString(),
+          }
+        : {
+            "razorpay_payment_id": paymentid.toString(),
+            "amount": couponApplied == true
+                ? applidTotalAmount.toString()
+                : totalAmount.toString(),
+            "applied_couponcode":
+                couponCode == "" || couponCode == null ? "" : couponCode,
+            "discount": appliedDiscount == 0 || appliedDiscount == null
+                ? ""
+                : appliedDiscount.toString(),
+          };
 
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);

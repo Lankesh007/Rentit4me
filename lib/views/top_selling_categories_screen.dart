@@ -60,7 +60,7 @@ class _TopSellingCategoriesScreenState
       ),
       body: ListView(
         children: [
-          searchWidget(),
+          // searchWidget(),
           Divider(),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -100,7 +100,7 @@ class _TopSellingCategoriesScreenState
                       child: Text("No data found !!"),
                     )
                   : SizedBox(
-                      height: height * 0.68,
+                      height: height * 0.76,
                       width: width,
                       child: ListView.builder(
                         physics: BouncingScrollPhysics(),
@@ -128,43 +128,43 @@ class _TopSellingCategoriesScreenState
     );
   }
 
-  Widget searchWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(7.0),
-      child: Container(
-          margin: const EdgeInsets.only(top: 5),
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.indigo.shade50,
-            borderRadius: const BorderRadius.all(Radius.circular(5)),
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: TextFormField(
-                  controller: searchController,
-                  decoration: const InputDecoration(
-                    hintText: "Search Rentit4me",
-                    hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ))),
-                child: Text("Search"),
-              )
-            ],
-          )),
-    );
-  }
+  // Widget searchWidget() {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(7.0),
+  //     child: Container(
+  //         margin: const EdgeInsets.only(top: 5),
+  //         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+  //         decoration: BoxDecoration(
+  //           color: Colors.indigo.shade50,
+  //           borderRadius: const BorderRadius.all(Radius.circular(5)),
+  //         ),
+  //         child: Row(
+  //           children: <Widget>[
+  //             Expanded(
+  //               child: TextFormField(
+  //                 controller: searchController,
+  //                 decoration: const InputDecoration(
+  //                   hintText: "Search Rentit4me",
+  //                   hintStyle: TextStyle(
+  //                       color: Colors.grey,
+  //                       fontWeight: FontWeight.w500,
+  //                       fontSize: 14),
+  //                   border: InputBorder.none,
+  //                 ),
+  //               ),
+  //             ),
+  //             ElevatedButton(
+  //               onPressed: () {},
+  //               style: ButtonStyle(
+  //                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0),
+  //               ))),
+  //               child: Text("Search"),
+  //             )
+  //           ],
+  //         )),
+  //   );
+  // }
 
   Widget categoriesWidget(BrowseAllCategories item) {
     return Column(
