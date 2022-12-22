@@ -164,20 +164,20 @@ class _BoostPaymentScreenState extends State<BoostPaymentScreen> {
                                   const Text("/",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16)),
-                                  const Text("month",
+                                  const Text("-",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16))
                                 ],
                               ),
                             ),
                             const SizedBox(height: 10.0),
-                            const Text("Duration",
+                            const Text("Ad/Package Duration-",
                                 style: TextStyle(
                                     color: Colors.deepOrangeAccent,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600)),
                             const SizedBox(height: 5.0),
-                            Text(boostplanlist[index]['duration'].toString(),
+                            Text("${boostplanlist[index]['duration']} Days",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 16)),
                             const SizedBox(height: 5.0),

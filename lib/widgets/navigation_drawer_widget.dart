@@ -65,9 +65,10 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   Future _getuserdetail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('userid');
-    if (prefs.getString('name') == null ||
-        prefs.getString('name') == "" ||
-        prefs.getString('name') == "null") {
+    log("usernaame===>" + prefs.getString('name'));
+    if (prefs.getString('name') != null ||
+        prefs.getString('name') != "" ||
+        prefs.getString('name') != "null") {
       _getprofileData().then((value) {
         if (value != null) {
           setState(() {
@@ -132,7 +133,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 children: [
                   const SizedBox(height: 20),
                   InkWell(
-                    
                     child: ExpansionTile(
                       iconColor: Colors.white,
                       collapsedIconColor: const Color(0xFFFFFFFF),
@@ -357,7 +357,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           ),
                         ),
                       ),
-               
                     ],
                   ),
                   const Divider(color: Colors.white70),
@@ -436,7 +435,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       SizedBox(
                         height: 10,
                       ),
-                 
                     ],
                   ),
                   const Divider(color: Colors.white70),
@@ -584,7 +582,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     ],
                   ),
                   const Divider(color: Colors.white70),
-                
                   ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
@@ -774,7 +771,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       border: Border.all(color: Colors.white, width: 1),
                       shape: BoxShape.circle),
                   child: CachedNetworkImage(
-                    imageUrl: profileImage,
+                    imageUrl: profileImage.toString(),
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(

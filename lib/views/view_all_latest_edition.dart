@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/utils/dialog_utils.dart';
@@ -13,7 +11,9 @@ import '../widgets/api_helper.dart';
 
 class ViewAllLatestAddition extends StatefulWidget {
   final String cityId;
-  const ViewAllLatestAddition({this.cityId, Key key}) : super(key: key);
+  final String searchText;
+  const ViewAllLatestAddition({this.cityId, this.searchText, Key key})
+      : super(key: key);
 
   @override
   State<ViewAllLatestAddition> createState() => _ViewAllLatestAdditionState();
@@ -21,12 +21,11 @@ class ViewAllLatestAddition extends StatefulWidget {
 
 class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
   List<ViewAllLatestAdditiionModel> latestAdditionList = [];
-  List<ViewAllLatestAdditiionModel> latestAdditionListBySearch = [];
+  // List<ViewAllLatestAdditiionModel> latestAdditionList = [];
 
   ScrollController scrollController = ScrollController();
 
   final searchController = TextEditingController();
-
   double height = 0;
   double width = 0;
   bool loader = false;
@@ -217,15 +216,31 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                                     if (tenureValue == "Hourly") {
                                       tenureValue = "Hourly";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     } else if (tenureValue == "Days") {
                                       tenureValue = "Days";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     } else if (tenureValue == "Monthly") {
                                       tenureValue = "Monthly";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     } else if (tenureValue == "Yearly") {
                                       tenureValue = "Yearly";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     }
                                   } else {}
                                 });
@@ -244,7 +259,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
             ),
             Divider(),
             getSearchData == true
-                ? latestAdditionListBySearch.isEmpty
+                ? latestAdditionList.isEmpty
                     ? Center(
                         child: Text("No Record Found !!"),
                       )
@@ -253,7 +268,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                             child: CircularProgressIndicator(),
                           )
                         : SizedBox(
-                            height: height * 0.68,
+                            height: height * 0.7,
                             width: width,
                             child: Column(
                               children: [
@@ -261,12 +276,11 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
                                     controller: scrollController,
                                     physics: BouncingScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount:
-                                        latestAdditionListBySearch.length,
+                                    itemCount: latestAdditionList.length,
                                     itemBuilder:
                                         (BuildContext context, int index) =>
                                             latestAdditionWidget(
-                                              latestAdditionListBySearch[index],
+                                              latestAdditionList[index],
                                             ),
                                     gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
@@ -369,7 +383,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  getDataBySearching();
+                  getLatestAddition();
                 },
                 style: ButtonStyle(
                     backgroundColor:
@@ -474,6 +488,8 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     }
   }
 
+  int currentPage;
+
   Future getLatestAddition() async {
     setState(() {
       loader = true;
@@ -486,14 +502,25 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     log("cityId---->$city");
 
     var url = Apis.browseAdsApi;
-    var body = {
-      "country": country.toString(),
-      "city": city == null || city == "" ? "" : city,
-      "state": state == null || state == "" ? "" : state,
-      "search": "",
-      "q": searchController.text.toString(),
-      "page": getLastPage.toString(),
-    };
+    var body = widget.searchText == null ||
+            widget.searchText == "" ||
+            widget.searchText == "null"
+        ? {
+            "country": country.toString(),
+            "city": city == null || city == "" ? "" : city,
+            "state": state == null || state == "" ? "" : state,
+            "search": "",
+            "q": searchController.text.toString(),
+            "page": page.toString(),
+          }
+        : {
+            "country": country.toString(),
+            "city": city == null || city == "" ? "" : city,
+            "state": state == null || state == "" ? "" : state,
+            "search": "",
+            "q": widget.searchText.toString(),
+            "page": page.toString(),
+          };
     var response = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(response);
     log("=====>$result");
@@ -506,6 +533,8 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
             list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
         latestAdditionList.addAll(listdata);
         getLastPage = result['Response']['leads']['last_page'];
+        currentPage = result['Response']['leads']['current_page'];
+
         log("last page--->$getLastPage");
         loader = false;
       });
@@ -540,7 +569,7 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     var list = result['Response']['leads']['data'] as List;
     if (result['ErrorCode'] == 0) {
       setState(() {
-        // deshDetailsList.clear();
+        // latestAdditionList.clear();
         var listdata =
             list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
         latestAdditionList.addAll(listdata);
@@ -565,9 +594,9 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "country": country.toString(),
       "city": city == null || city == "" ? "" : city,
       "state": state == null || state == "" ? "" : state,
-      "tenure": tenureValue,
-      "sortby": sortFilterValue,
-      "page": page.toString(),
+      "tenure": tenureValue.toString(),
+      "sortby": sortFilterValue.toString(),
+      "page": currentPage.toString(),
     };
     var res = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(res);
@@ -586,9 +615,10 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
 
   bool searchLoader = false;
   bool getSearchData = false;
-  Future getDataBySearching() async {
+  Future getLate() async {
     setState(() {
       searchLoader = true;
+      scrollLoader = true;
     });
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -615,18 +645,21 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       var list = result['Response']['leads']['data'] as List;
       setState(() {
         latestAdditionList.clear();
-        latestAdditionListBySearch.clear();
+        latestAdditionList.clear();
         var listdata =
             list.map((e) => ViewAllLatestAdditiionModel.fromJson(e)).toList();
-        latestAdditionListBySearch.addAll(listdata);
+        latestAdditionList.addAll(listdata);
         getSearchData = true;
+        scrollLoader = false;
       });
       setState(() {
         searchLoader = false;
+        scrollLoader = false;
       });
     }
     setState(() {
       searchLoader = false;
+      scrollLoader = false;
     });
   }
 

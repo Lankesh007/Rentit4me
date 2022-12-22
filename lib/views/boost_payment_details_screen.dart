@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/api.dart';
@@ -459,7 +460,7 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
                                                           .width *
                                                       0.4,
                                                   decoration: BoxDecoration(
-                                                      color: Colors.orange,
+                                                      color:Appcolors.primaryColor,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               3)),
@@ -533,7 +534,7 @@ class _BoostPaymentDetailsScreenState extends State<BoostPaymentDetailsScreen> {
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
-                                            color: Colors.orange),
+                                            color: Appcolors.primaryColor),
                                         child: Text("Pay",
                                             style: TextStyle(
                                                 color: Colors.white,

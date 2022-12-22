@@ -361,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             var url = Uri.tryParse(
                                 "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" +
                                     val.toString() +
-                                    "&inputtype=textquery&fields=formatted_address,geometry&location=20.7711857,73.729974&radius=10000&key=" +
+                                    "&inputtype=textquery&fields=formatted_address,geometry&location=28.7041,77.1025&radius=500000&key=" +
                                     kGoogleApiKey);
 
                             http.Response res = await http.get(url);
@@ -928,20 +928,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        UserfinderDataScreen(
+                                                        ViewAllLatestAddition(
                                                       cityId: cityId.toString(),
-                                                      getlocation:
-                                                          locationvalue,
-                                                      getcategory:
-                                                          categoryvalue,
-                                                      getcategoryslug:
-                                                          categoryslugname,
-                                                      data: temp,
-                                                      finalLocation: countryName
-                                                          .toString(),
-                                                      search: searchController
-                                                          .text
-                                                          .toString(),
+                                                      searchText:searchController.text.toString() ,
+                                                     
                                                     ),
                                                   ),
                                                 );
@@ -2532,6 +2522,7 @@ class _HomeScreenState extends State<HomeScreen> {
         prefs.setString(
             'profile', devImage + data['User']['avatar_path'].toString());
         prefs.setString('name', data['User']['name'].toString());
+        log("usernaame===>"+prefs.getString('name'));
         prefs.setString('email', data['User']['email'].toString());
         prefs.setString('mobile', data['User']['mobile'].toString());
         prefs.setString('userquickid', data['User']['quickblox_id'].toString());
@@ -2631,7 +2622,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print("get cId---->" + prefs.getInt('countryId').toString());
       _getData();
       getLatestAddition();
-      // _getprofileData();
+      _getprofileData();
 
       // _getlocationbyUserlocation();
     }

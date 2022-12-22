@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -121,9 +120,9 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
         //   //     ),
         //   //   ),
         //   // )
-      
+
         // ],
-       
+
         leading: InkWell(
             onTap: () {
               Navigator.of(context).pop();
@@ -301,8 +300,11 @@ class _AlllistingScreenState extends State<AlllistingScreen> {
                   List a = alllist[index]['prices'];
                   a.forEach((element) {
                     if (element['price'] != null) {
-                      temp.add(
-                          "INR ${element['price']} (${element['rent_type_name']})");
+                      if (element['status'] == 1) {
+                        temp.add(element['status'] == 1
+                            ? "INR ${element['price']} (${element['rent_type_name']})"
+                            : "");
+                      }
                     }
                   });
                   return InkWell(

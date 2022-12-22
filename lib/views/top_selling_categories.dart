@@ -209,7 +209,7 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
                               }).toList(),
                               // After selecting the desired option,it will
                               // change button value to selected value
-                              onChanged: (String newValue) {
+                             onChanged: (String newValue) {
                                 setState(() {
                                   tenureValue = newValue;
                                   log("====>$tenureValue");
@@ -217,19 +217,36 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
                                     if (tenureValue == "Hourly") {
                                       tenureValue = "Hourly";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     } else if (tenureValue == "Days") {
                                       tenureValue = "Days";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     } else if (tenureValue == "Monthly") {
                                       tenureValue = "Monthly";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     } else if (tenureValue == "Yearly") {
                                       tenureValue = "Yearly";
                                       sortByValue = "Sort by";
+                                      setState(() {
+                                        page = 1;
+                                      });
+                                      getDataByFilters();
                                     }
                                   } else {}
                                 });
                               },
+                            
                             ),
                           ),
                         );
@@ -559,9 +576,9 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
       "country": country.toString(),
       "city": city == null || city == "" ? "" : city,
       "state": state == null || state == "" ? "" : state,
-      "tenure": tenureValue,
-      "sortby": sortFilterValue,
-      "page": page,
+      "tenure": tenureValue.toString(),
+      "sortby": sortFilterValue.toString(),
+      "page": page.toString(),
       "category": widget.category,
     };
     var res = await APIHelper.apiPostRequest(url, body);

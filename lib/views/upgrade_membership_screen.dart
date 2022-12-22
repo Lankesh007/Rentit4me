@@ -11,6 +11,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/dashboard.dart';
+import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/make_payment_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -185,13 +186,13 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
                                   ),
                                 ),
                                 const SizedBox(height: 5.0),
-                                const Text("Ad Duration",
+                                const Text("Ad/Package Duration -",
                                     style: TextStyle(
                                         color: Colors.deepOrangeAccent,
                                         fontSize: 14)),
                                 const SizedBox(height: 5.0),
                                 Text(
-                                    membershipplanlist[index]['ad_duration']
+                                    membershipplanlist[index]['ad_duration'].toString()+" Days"
                                         .toString(),
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 14)),
@@ -476,7 +477,7 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
         if (jsonDecode(response.body)['Response'] == null) {
           if (jsonDecode(response.body)['redirection'] == "profile") {
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => Dashboard()));
+                MaterialPageRoute(builder: (context) => HomeScreen()));
           }
         } else {
           // Navigator.of(context).pushReplacement(MaterialPageRoute(

@@ -1610,6 +1610,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
                                         onChanged: (value) {
                                           setState(() {
                                             _checkmonth = value;
+                                            log(_checkmonth.toString());
                                             renttype[2]['enable'] = _checkmonth;
                                             monthlyRent = renttype[2]['enable'];
                                           });
@@ -2261,7 +2262,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
 
         // initiacatlvalue = categoryTitle;
         log("ini0----->$categoryTitle");
-        _getCategories();
 
         // initiacatlvalue=categoryTitle;
         // log(initiacatlvalue);
@@ -2378,6 +2378,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         //   city_id = data['posted_ad'][0]['city'].toString();
         //   address.text = data['posted_ad'][0]['address'].toString();
         // }
+        _getCategories();
 
         citiesList.clear();
         var listdata = list.map((e) => CitiesModel.fromJson(e)).toList();
@@ -2389,39 +2390,6 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
         subCategoryId = data['posted_ad']['subcategory']['id'].toString();
         subCategoryTitle = data['posted_ad']['subcategory']['title'].toString();
         log("subcategory--->$subCategoryTitle");
-      });
-    } else {
-      throw Exception('Failed to get data due to ${response.body}');
-    }
-  }
-
-  Future _getOldAddressDetails(String productid) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final body = {"id": productid, "userid": prefs.get('userid').toString()};
-    var response = await http.post(Uri.parse(BASE_URL + editviewpost),
-        body: jsonEncode(body),
-        headers: {
-          "Accept": "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString("token")}',
-        });
-    print(jsonEncode(body));
-    print(BASE_URL + editviewpost);
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body)['Response'];
-      setState(() {
-        if (data['posted_ad'][0]['address_same_as_profile'] == "yes") {
-          _getprofileData();
-        } else {
-          selectedCountry =
-              data['posted_ad'][0]['get_country']['name'].toString();
-          selectedState = data['posted_ad'][0]['get_state']['name'].toString();
-          selectedCity = data['posted_ad'][0]['get_city']['name'].toString();
-          country_id = data['posted_ad'][0]['country'].toString();
-          state_id = data['posted_ad'][0]['state'].toString();
-          city_id = data['posted_ad'][0]['city'].toString();
-          address.text = data['posted_ad'][0]['address'].toString();
-        }
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');
@@ -2650,17 +2618,34 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       requestMulti.fields["mobile_hidden"] = mobilehiddenvalue.toString();
       requestMulti.fields["com_prefs"] = communicationprefs.toString();
       requestMulti.fields["status"] = statusvalue.toString();
-      requestMulti.fields["price[1]"] =
-          _checkhour == true ? renttype[0]['amount'].toString() : "";
+      if (_checkhour == true && hourlyprice.text.isEmpty) {
+        requestMulti.fields["price[1]"] = renttype[0]['amount'].toString();
+      } else if (hourlyprice.text.isNotEmpty && _checkhour == true) {
+        requestMulti.fields["price[1]"] = hourlyprice.text.toString();
+      }
+      if (_checkday == true && daysprice.text.isEmpty) {
+        requestMulti.fields["price[2]"] = renttype[1]['amount'].toString();
+      } else if (daysprice.text.isNotEmpty && _checkday == true) {
+        requestMulti.fields["price[2]"] = daysprice.text.toString();
+      }
+      if (_checkmonth == true && monthprice.text.isEmpty) {
+        requestMulti.fields["price[3]"] = renttype[2]['amount'].toString();
+      } else if (monthprice.text.isNotEmpty && _checkmonth == true) {
+        requestMulti.fields["price[3]"] = monthprice.text.toString();
+      }
+
+      if (_checkyear == true && yearprice.text.isEmpty) {
+        requestMulti.fields["price[4]"] = renttype[3]['amount'].toString();
+      } else if (yearprice.text.isNotEmpty && _checkyear == true) {
+        requestMulti.fields["price[4]"] = yearprice.text.toString();
+      }
+
       requestMulti.fields["rent_type[1]"] = renttype[0]['type'].toString();
-      requestMulti.fields["price[2]"] =
-          _checkday == true ? renttype[1]['amount'].toString() : "";
+
       requestMulti.fields["rent_type[2]"] = renttype[1]['type'].toString();
-      requestMulti.fields["price[3]"] =
-          _checkmonth == true ? renttype[2]['amount'].toString() : "";
+
       requestMulti.fields["rent_type[3]"] = renttype[2]['type'].toString();
-      requestMulti.fields["price[4]"] =
-          _checkyear == true ? renttype[3]['amount'].toString() : "";
+
       requestMulti.fields["rent_type[4]"] = renttype[3]['type'].toString();
       requestMulti.fields["files"] = renttype[3]['type'].toString();
       requestMulti.fields["address_type"] =

@@ -36,7 +36,7 @@ class _OrderRenewdDetailsScreenState extends State<OrderRenewdDetailsScreen> {
   String conviencevalue;
   String subTotal;
   String discount;
-  String totalAmount;
+  int totalAmount;
   String rentee;
   String businessName;
   String orderId;
@@ -558,6 +558,7 @@ class _OrderRenewdDetailsScreenState extends State<OrderRenewdDetailsScreen> {
 // -----------------API CALL--------------//
 
   Future getRenewalProductsDetails(renewOrderID) async {
+    log("id--->$renewOrderID");
     var url = "${BASE_URL}renewed-order-details";
     var body = {
       "renewed_order_id": renewOrderID,

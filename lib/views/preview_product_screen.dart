@@ -267,47 +267,50 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                           )),
                     ),
                     const SizedBox(height: 15.0),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AdvertiserProfileScreen(
-                                      advertiserid: addedbyid)));
-                        },
-                        child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Row(
-                              children: [
-                                Text("Listed By :",
-                                    style: TextStyle(
-                                        color: Colors.deepOrange,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600)),
-                                Text(" $addedby",
-                                    style: TextStyle(
-                                        color: Colors.blue[900],
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600)),
-                              ],
-                            )),
-                      ),
-                    ),
+                    // Container(
+                    //   margin: const EdgeInsets.symmetric(horizontal: 10),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => AdvertiserProfileScreen(
+                    //                   advertiserid: addedbyid)));
+                    //     },
+                    //     child: Align(
+                    //         alignment: Alignment.topLeft,
+                    //         child: Row(
+                    //           children: [
+                    //             Text("Listed By :",
+                    //                 style: TextStyle(
+                    //                     color: Colors.deepOrange,
+                    //                     fontSize: 16,
+                    //                     fontWeight: FontWeight.w600)),
+                    //             Text(" $addedby",
+                    //                 style: TextStyle(
+                    //                     color: Colors.blue[900],
+                    //                     fontSize: 16,
+                    //                     fontWeight: FontWeight.w600)),
+                    //           ],
+                    //         )),
+                    //   ),
+                    // ),
                     const SizedBox(height: 35.0),
                     Container(
                       height: 40,
                       color: Colors.grey[200],
                       alignment: Alignment.centerLeft,
-                      child: Text("  Description",style: TextStyle(fontSize: 16 ,fontWeight: FontWeight.w600),),
+                      child: Text(
+                        "  Description",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 10),
-
                       child: Align(
                           alignment: Alignment.topLeft,
                           child: description == "null" || description == null
@@ -340,7 +343,7 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                     //   ],
                     // ),
                     // Divider(thickness: 0.9),
-                    
+
                     // // const SizedBox(height: 20),
                     // // Row(
                     // //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,8 +408,6 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
                     // ),
                     // const SizedBox(height: 20),
                     Divider(thickness: 0.9),
-
-
                   ],
                 ),
               ),
@@ -447,8 +448,10 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
 
         List temp = [];
         data['Pricing'].forEach((element) {
-          if (element['price'] != null) {
-            temp.add("INR ${element['price']} (${element['rent_type_name']})");
+          if (element['status'] == 1) {
+            temp.add(element['status'] == 1
+                ? "INR ${element['price']} (${element['rent_type_name']})"
+                : "");
           }
         });
 
@@ -456,7 +459,6 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
         negotiate = data['posted_ad']['negotiate'].toString();
 
         securitydeposit = data['posted_ad']['security'].toString();
-      
 
         email = data['posted_ad']['email'].toString();
         mobile = data['posted_ad']['mobile'].toString();
@@ -467,8 +469,6 @@ class _PreviewProductScreenState extends State<PreviewProductScreen> {
         // addedby = data['Additional']['added-by']['name'].toString();
         //   address =
         //     "${data['Additional']['added-by']['address']}, ${data['Additional']['added-by']['city_name']}, ${data['Additional']['added-by']['state_name']}, ${data['Additional']['added-by']['pincode']}, ${data['Additional']['added-by']['country_name']}";
-
-
       });
     } else {
       throw Exception('Failed to get data due to ${response.body}');

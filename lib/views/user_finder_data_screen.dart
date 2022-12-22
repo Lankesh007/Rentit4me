@@ -440,246 +440,247 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                   ],
                 )),
         centerTitle: true,
-        actions: [
-          InkWell(
-            onTap: () async {
-              // showFilter();
-              await showModalBottomSheet(
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20.0))),
-                  backgroundColor: Colors.white,
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) => StatefulBuilder(builder:
-                          (BuildContext context, StateSetter setState) {
-                        return SizedBox(
-                            height: MediaQuery.of(context).size.height / 2,
-                            child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: SingleChildScrollView(
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Filter",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Icon(
-                                              Icons.close,
-                                              color: Colors.red[900],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Row(
-                                            children: const [
-                                              Text("SORT BY",
-                                                  style: TextStyle(
-                                                      color: Colors
-                                                          .deepOrangeAccent,
-                                                      fontWeight:
-                                                          FontWeight.w700)),
-                                              Text("(Price)",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w700))
-                                            ],
-                                          )),
-                                      RadioGroup<String>.builder(
-                                        horizontalAlignment:
-                                            MainAxisAlignment.start,
-                                        groupValue: _priceGroupValue,
-                                        direction: Axis.vertical,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _priceGroupValue = value;
-                                            if (value.toString() ==
-                                                "Lowest To Highest") {
-                                              productData.sort((a, b) =>
-                                                  a['price']
-                                                      .compareTo(b['price']));
-                                              _searchlist.clear();
-                                              _searchlist.addAll(productData);
+        // actions: [
+        //   InkWell(
+        //     onTap: () async {
+        //       // showFilter();
+        //       await showModalBottomSheet(
+        //           shape: RoundedRectangleBorder(
+        //               borderRadius:
+        //                   BorderRadius.vertical(top: Radius.circular(20.0))),
+        //           backgroundColor: Colors.white,
+        //           context: context,
+        //           isScrollControlled: true,
+        //           builder: (context) => StatefulBuilder(builder:
+        //                   (BuildContext context, StateSetter setState) {
+        //                 return SizedBox(
+        //                     height: MediaQuery.of(context).size.height / 2,
+        //                     child: Padding(
+        //                         padding: const EdgeInsets.all(20),
+        //                         child: SingleChildScrollView(
+        //                             child: Column(
+        //                                 crossAxisAlignment:
+        //                                     CrossAxisAlignment.start,
+        //                                 children: [
+        //                               Row(
+        //                                 mainAxisAlignment:
+        //                                     MainAxisAlignment.spaceBetween,
+        //                                 children: [
+        //                                   Text(
+        //                                     "Filter",
+        //                                     style: TextStyle(
+        //                                         fontSize: 18,
+        //                                         fontWeight: FontWeight.bold),
+        //                                   ),
+        //                                   InkWell(
+        //                                     onTap: () {
+        //                                       Navigator.of(context).pop();
+        //                                     },
+        //                                     child: Icon(
+        //                                       Icons.close,
+        //                                       color: Colors.red[900],
+        //                                     ),
+        //                                   )
+        //                                 ],
+        //                               ),
+        //                               SizedBox(
+        //                                 height: 20,
+        //                               ),
+        //                               Padding(
+        //                                   padding:
+        //                                       const EdgeInsets.only(left: 8.0),
+        //                                   child: Row(
+        //                                     children: const [
+        //                                       Text("SORT BY",
+        //                                           style: TextStyle(
+        //                                               color: Colors
+        //                                                   .deepOrangeAccent,
+        //                                               fontWeight:
+        //                                                   FontWeight.w700)),
+        //                                       Text("(Price)",
+        //                                           style: TextStyle(
+        //                                               color: Colors.black,
+        //                                               fontWeight:
+        //                                                   FontWeight.w700))
+        //                                     ],
+        //                                   )),
+        //                               RadioGroup<String>.builder(
+        //                                 horizontalAlignment:
+        //                                     MainAxisAlignment.start,
+        //                                 groupValue: _priceGroupValue,
+        //                                 direction: Axis.vertical,
+        //                                 onChanged: (value) {
+        //                                   setState(() {
+        //                                     _priceGroupValue = value;
+        //                                     if (value.toString() ==
+        //                                         "Lowest To Highest") {
+        //                                       productData.sort((a, b) =>
+        //                                           a['price']
+        //                                               .compareTo(b['price']));
+        //                                       _searchlist.clear();
+        //                                       _searchlist.addAll(productData);
 
-                                              // print("......"+productData.toString());
-                                              //_getfilterData(category, location, sortby, search, country, state, city, pattern, renttype)
-                                              // _getfilterData(
-                                              //     categoryslugname,
-                                              //     locationvalue,
-                                              //     "0",
-                                              //     "",
-                                              //     usercountry,
-                                              //     userstate,
-                                              //     usercity,
-                                              //     searchController.text,
-                                              //     _rentGroupValue);
-                                            } else {
-                                              productData.sort((a, b) =>
-                                                  b['price']
-                                                      .compareTo(a['price']));
-                                              _searchlist.clear();
-                                              _searchlist.addAll(productData);
+        //                                       // print("......"+productData.toString());
+        //                                       //_getfilterData(category, location, sortby, search, country, state, city, pattern, renttype)
+        //                                       // _getfilterData(
+        //                                       //     categoryslugname,
+        //                                       //     locationvalue,
+        //                                       //     "0",
+        //                                       //     "",
+        //                                       //     usercountry,
+        //                                       //     userstate,
+        //                                       //     usercity,
+        //                                       //     searchController.text,
+        //                                       //     _rentGroupValue);
+        //                                     } else {
+        //                                       productData.sort((a, b) =>
+        //                                           b['price']
+        //                                               .compareTo(a['price']));
+        //                                       _searchlist.clear();
+        //                                       _searchlist.addAll(productData);
 
-                                              // _getfilterData(locationvalue, categoryvalue, "1");
-                                              // _getfilterData(
-                                              //     categoryslugname,
-                                              //     locationvalue,
-                                              //     "1",
-                                              //     "",
-                                              //     usercountry,
-                                              //     userstate,
-                                              //     usercity,
-                                              //     searchController.text,
-                                              //     _rentGroupValue);
-                                            }
-                                          });
-                                        },
-                                        textStyle:
-                                            const TextStyle(fontSize: 16),
-                                        items: const [
-                                          "Lowest To Highest",
-                                          "Highest To Lowest"
-                                        ],
-                                        itemBuilder: (item) =>
-                                            RadioButtonBuilder(item,
-                                                textPosition:
-                                                    RadioButtonTextPosition
-                                                        .right),
-                                        activeColor: Colors.red,
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Row(
-                                            children: const [
-                                              Text("SORT BY",
-                                                  style: TextStyle(
-                                                      color: Colors
-                                                          .deepOrangeAccent,
-                                                      fontWeight:
-                                                          FontWeight.w700)),
-                                              Text(" (Rent type)",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w700))
-                                            ],
-                                          )),
-                                      Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.31),
-                                            child: RadioGroup<String>.builder(
-                                              groupValue: _rentGroupValue,
-                                              direction: Axis.vertical,
-                                              onChanged: (value) =>
-                                                  setState(() {
-                                                _rentGroupValue = value;
-                                                _getfilterData(
-                                                    categoryslugname,
-                                                    locationvalue,
-                                                    "0",
-                                                    "",
-                                                    usercountry,
-                                                    userstate,
-                                                    usercity,
-                                                    searchController.text,
-                                                    _rentGroupValue);
-                                              }),
-                                              textStyle:
-                                                  const TextStyle(fontSize: 16),
-                                              items: const [
-                                                "Hourly",
-                                                "Days",
-                                                "Monthly",
-                                                "Yearly"
-                                              ],
-                                              itemBuilder: (item) =>
-                                                  RadioButtonBuilder(item),
-                                              activeColor: Colors.red,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      // SizedBox(
-                                      //   width:
-                                      //       MediaQuery.of(context).size.width,
-                                      //   child: ElevatedButton.icon(
-                                      //       icon: Icon(Icons.clear),
-                                      //       onPressed: () {
-                                      //         Navigator.of(context).pop();
-                                      //         if (widget.data.length > 0) {
-                                      //           setState(() {
-                                      //             productData.clear();
-                                      //             _searchlist.clear();
-                                      //             productData
-                                      //                 .addAll(widget.data);
-                                      //             _searchlist
-                                      //                 .addAll(widget.data);
-                                      //             isLoading = false;
-                                      //             listEnd = true;
-                                      //           });
-                                      //         } else {
-                                      //           _getData(getlocation,
-                                      //               getcategoryslug);
-                                      //         }
-                                      //         // _getData(
-                                      //         //     getlocation, getcategoryslug);
-                                      //       },
-                                      //       label: Text("Clear Filter")),
-                                      // )
-                                    ]))));
-                      }));
-            },
-            child: Image.asset(
-              "assets/images/filter.png",
-              scale: 1.5,
-              color: kPrimaryColor,
-            ),
-          ),
-          // isSearching == true
-          //     ? SizedBox()
-          //     : IconButton(
-          //         onPressed: () {
-          //           setState(() {
-          //             isSearching = !isSearching;
-          //           });
-          //         },
-          //         icon: const Icon(
-          //           Icons.search,
-          //           color: kPrimaryColor,
-          //           size: 30,
-          //         ))
-        ],
+        //                                       // _getfilterData(locationvalue, categoryvalue, "1");
+        //                                       // _getfilterData(
+        //                                       //     categoryslugname,
+        //                                       //     locationvalue,
+        //                                       //     "1",
+        //                                       //     "",
+        //                                       //     usercountry,
+        //                                       //     userstate,
+        //                                       //     usercity,
+        //                                       //     searchController.text,
+        //                                       //     _rentGroupValue);
+        //                                     }
+        //                                   });
+        //                                 },
+        //                                 textStyle:
+        //                                     const TextStyle(fontSize: 16),
+        //                                 items: const [
+        //                                   "Lowest To Highest",
+        //                                   "Highest To Lowest"
+        //                                 ],
+        //                                 itemBuilder: (item) =>
+        //                                     RadioButtonBuilder(item,
+        //                                         textPosition:
+        //                                             RadioButtonTextPosition
+        //                                                 .right),
+        //                                 activeColor: Colors.red,
+        //                               ),
+        //                               SizedBox(
+        //                                 height: 20,
+        //                               ),
+        //                               Padding(
+        //                                   padding:
+        //                                       const EdgeInsets.only(left: 8.0),
+        //                                   child: Row(
+        //                                     children: const [
+        //                                       Text("SORT BY",
+        //                                           style: TextStyle(
+        //                                               color: Colors
+        //                                                   .deepOrangeAccent,
+        //                                               fontWeight:
+        //                                                   FontWeight.w700)),
+        //                                       Text(" (Rent type)",
+        //                                           style: TextStyle(
+        //                                               color: Colors.black,
+        //                                               fontWeight:
+        //                                                   FontWeight.w700))
+        //                                     ],
+        //                                   )),
+        //                               Column(
+        //                                 children: [
+        //                                   Padding(
+        //                                     padding: EdgeInsets.only(
+        //                                         right: MediaQuery.of(context)
+        //                                                 .size
+        //                                                 .width *
+        //                                             0.31),
+        //                                     child: RadioGroup<String>.builder(
+        //                                       groupValue: _rentGroupValue,
+        //                                       direction: Axis.vertical,
+        //                                       onChanged: (value) =>
+        //                                           setState(() {
+        //                                         _rentGroupValue = value;
+        //                                         _getfilterData(
+        //                                             categoryslugname,
+        //                                             locationvalue,
+        //                                             "0",
+        //                                             "",
+        //                                             usercountry,
+        //                                             userstate,
+        //                                             usercity,
+        //                                             searchController.text,
+        //                                             _rentGroupValue);
+        //                                       }),
+        //                                       textStyle:
+        //                                           const TextStyle(fontSize: 16),
+        //                                       items: const [
+        //                                         "Hourly",
+        //                                         "Days",
+        //                                         "Monthly",
+        //                                         "Yearly"
+        //                                       ],
+        //                                       itemBuilder: (item) =>
+        //                                           RadioButtonBuilder(item),
+        //                                       activeColor: Colors.red,
+        //                                     ),
+        //                                   ),
+        //                                 ],
+        //                               ),
+        //                               SizedBox(
+        //                                 height: 20,
+        //                               ),
+        //                               // SizedBox(
+        //                               //   width:
+        //                               //       MediaQuery.of(context).size.width,
+        //                               //   child: ElevatedButton.icon(
+        //                               //       icon: Icon(Icons.clear),
+        //                               //       onPressed: () {
+        //                               //         Navigator.of(context).pop();
+        //                               //         if (widget.data.length > 0) {
+        //                               //           setState(() {
+        //                               //             productData.clear();
+        //                               //             _searchlist.clear();
+        //                               //             productData
+        //                               //                 .addAll(widget.data);
+        //                               //             _searchlist
+        //                               //                 .addAll(widget.data);
+        //                               //             isLoading = false;
+        //                               //             listEnd = true;
+        //                               //           });
+        //                               //         } else {
+        //                               //           _getData(getlocation,
+        //                               //               getcategoryslug);
+        //                               //         }
+        //                               //         // _getData(
+        //                               //         //     getlocation, getcategoryslug);
+        //                               //       },
+        //                               //       label: Text("Clear Filter")),
+        //                               // )
+        //                             ]))));
+        //               }));
+        //     },
+        //     child: Image.asset(
+        //       "assets/images/filter.png",
+        //       scale: 1.5,
+        //       color: kPrimaryColor,
+        //     ),
+        //   ),
+        //   // isSearching == true
+        //   //     ? SizedBox()
+        //   //     : IconButton(
+        //   //         onPressed: () {
+        //   //           setState(() {
+        //   //             isSearching = !isSearching;
+        //   //           });
+        //   //         },
+        //   //         icon: const Icon(
+        //   //           Icons.search,
+        //   //           color: kPrimaryColor,
+        //   //           size: 30,
+        //   //         ))
+        // ],
+  
       ),
       body: ModalProgressHUD(
         inAsyncCall: isLoading,
@@ -936,6 +937,7 @@ class _UserfinderDataScreenState extends State<UserfinderDataScreen> {
                     ],
                   )),
             ),*/
+            
 
             Expanded(
                 child: isLoading
