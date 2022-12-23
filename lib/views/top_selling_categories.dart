@@ -436,7 +436,9 @@ class _TopSellingCategoriesState extends State<TopSellingCategories> {
                     child: Text(
                       item.title,
                       style: TextStyle(fontWeight: FontWeight.w600),
-                    )),
+                      maxLines: 2,
+                    ),
+                    ),
                 SizedBox(
                   height: 2,
                 ),

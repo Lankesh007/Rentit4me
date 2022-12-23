@@ -8,6 +8,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/animations/animations.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
+import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:rentit4me_new/views/offer_made_product_detail_screen.dart';
 import 'dart:convert';
@@ -221,465 +222,344 @@ class _OffersScreenState extends State<OffersScreen> {
                 separatorBuilder: (BuildContext context, int index) =>
                     const Divider(),
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                              title: const Text('Detail Information'),
-                              content: SingleChildScrollView(
-                                  child: Column(children: [
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Rentee"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ['name']
-                                        .toString()),
-                                  ),
+                  return Card(
+                    elevation: 4.0,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OfferMadeProductDetailScreen(
+                                        postadid: offerrecievedlist[index]
+                                                ['offer_status']
+                                            .toString(),
+                                        offerid: offerrecievedlist[index]['id']
+                                            .toString())));
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            color: Colors.grey,
+                            height: 30,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                      "Ad Id: ${offerrecievedlist[index]["ad_id"]} "),
                                 ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Product Name"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["title"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Product Quantity"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["quantity"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Rent Type"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["rent_type_name"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Duration"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["period"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Product Price(INR)"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["product_price"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Offer Amount(INR)"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["renter_amount"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Total Rent(INR)"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["total_rent"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Total Security(INR)"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["total_security"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                  color: Colors.grey[100],
-                                  child: ListTile(
-                                    title: const Text("Total Rent(INR)"),
-                                    subtitle: Text(offerrecievedlist[index]
-                                            ["total_rent"]
-                                        .toString()),
-                                  ),
-                                ),
-                                Card(
-                                    color: Colors.grey[100],
-                                    child: ListTile(
-                                        title: const Text("Final Amount(INR)"),
-                                        subtitle: Text(offerrecievedlist[index]
-                                                ["final_amount"]
-                                            .toString())))
-                              ]))));
-                    },
-                    child: Card(
-                      elevation: 4.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 10.0),
-                              //   child: Text(
-                              //       "Renter : ${offerrecievedlist[index]['name']}",
-                              //       style: const TextStyle(
-                              //           color: Colors.black,
-                              //           fontSize: 14,
-                              //           fontWeight: FontWeight.w500)),
-                              // ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 2.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: size.width * 0.70,
-                                      child: TextButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        OfferMadeProductDetailScreen(
-                                                            postadid: offerrecievedlist[
-                                                                        index][
-                                                                    'id']
-                                                                .toString(),
-                                                            offerid: offerrecievedlist[
-                                                                        index][
-                                                                    'id']
-                                                                .toString())));
-                                          },
-                                          child: Text(
-                                              "Product Name : ${offerrecievedlist[index]['title']}")),
-                                    ),
-                                    offerrecievedlist[index]["offer_status"]
-                                                .toString() ==
-                                            "3"
-                                        ? InkWell(
-                                            onTap: () {
-                                              showGeneralDialog(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                transitionBuilder: (context,
-                                                    _animation,
-                                                    _secondaryAnimation,
-                                                    _child) {
-                                                  return Animations.fromTop(
-                                                      _animation,
-                                                      _secondaryAnimation,
-                                                      _child);
-                                                },
-                                                pageBuilder: (_animation,
-                                                    _secondaryAnimation,
-                                                    _child) {
-                                                  return StatefulBuilder(
-                                                      builder:
-                                                          (context, setState) {
-                                                    return AlertDialog(
-                                                      title: const Text(
-                                                          "Response",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .deepOrangeAccent)),
-                                                      content: Container(
-                                                        child:
-                                                            SingleChildScrollView(
-                                                                child: Column(
-                                                                    children: [
-                                                              DropdownButtonHideUnderline(
-                                                                child:
-                                                                    DropdownButton<
-                                                                        String>(
-                                                                  hint: const Text(
-                                                                      "Select",
-                                                                      style: TextStyle(
-                                                                          color: Colors
-                                                                              .black,
-                                                                          fontSize:
-                                                                              18)),
-                                                                  value:
-                                                                      response,
-                                                                  elevation: 16,
-                                                                  isExpanded:
-                                                                      true,
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                      "Price: ${offerrecievedlist[index]["product_price"]} "),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    "Renter Amount: ${offerrecievedlist[index]["renter_amount"]} "),
+                                Text(
+                                    "Security: ${offerrecievedlist[index]["total_security"]} ")
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    "Offer Price: ${offerrecievedlist[index]["final_product_selling_amount"]} "),
+                                Text(
+                                    "Total Amount: ${offerrecievedlist[index]["final_amount"]} "),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            height: 30,
+                            color: Appcolors.secondaryColor,
+                            child: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "Product Name : ${offerrecievedlist[index]['title']}",
+                                  style: TextStyle(color: Appcolors.whiteColor),
+                                )),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                offerrecievedlist[index]["offer_status"]
+                                            .toString() ==
+                                        "3"
+                                    ? InkWell(
+                                        onTap: () {
+                                          showGeneralDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            transitionBuilder: (context,
+                                                _animation,
+                                                _secondaryAnimation,
+                                                _child) {
+                                              return Animations.fromTop(
+                                                  _animation,
+                                                  _secondaryAnimation,
+                                                  _child);
+                                            },
+                                            pageBuilder: (_animation,
+                                                _secondaryAnimation, _child) {
+                                              return StatefulBuilder(
+                                                  builder: (context, setState) {
+                                                return AlertDialog(
+                                                  title: const Text("Response",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .deepOrangeAccent)),
+                                                  content: Container(
+                                                    child:
+                                                        SingleChildScrollView(
+                                                            child: Column(
+                                                                children: [
+                                                          DropdownButtonHideUnderline(
+                                                            child:
+                                                                DropdownButton<
+                                                                    String>(
+                                                              hint: const Text(
+                                                                  "Select",
                                                                   style: TextStyle(
                                                                       color: Colors
-                                                                          .grey
-                                                                          .shade700,
+                                                                          .black,
                                                                       fontSize:
-                                                                          16),
-                                                                  onChanged:
-                                                                      (String
-                                                                          data) {
-                                                                    setState(
-                                                                        () {
-                                                                      if (data.toString() ==
-                                                                          "Reject") {
-                                                                        responsevalue =
-                                                                            "2";
-                                                                        response =
-                                                                            data.toString();
-                                                                        newamtcheck =
-                                                                            false;
-                                                                      } else if (data
-                                                                              .toString() ==
-                                                                          "Accept") {
-                                                                        responsevalue =
-                                                                            "1";
-                                                                        response =
-                                                                            data.toString();
-                                                                        newamtcheck =
-                                                                            false;
-                                                                      } else {
-                                                                        responsevalue =
-                                                                            "3";
-                                                                        response =
-                                                                            data.toString();
-                                                                        newamtcheck =
-                                                                            true;
-                                                                      }
-                                                                    });
-                                                                  },
-                                                                  items: responselist.map<
-                                                                      DropdownMenuItem<
-                                                                          String>>((String
-                                                                      value) {
-                                                                    return DropdownMenuItem<
-                                                                        String>(
-                                                                      value:
-                                                                          value,
-                                                                      child: Text(
-                                                                          value),
-                                                                    );
-                                                                  }).toList(),
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 2),
-                                                              const Divider(
-                                                                  height: 1,
+                                                                          18)),
+                                                              value: response,
+                                                              elevation: 16,
+                                                              isExpanded: true,
+                                                              style: TextStyle(
                                                                   color: Colors
-                                                                      .grey,
-                                                                  thickness: 1),
-                                                              const SizedBox(
-                                                                  height: 8),
-                                                              newamtcheck
-                                                                  ? const Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                          top:
-                                                                              5.0,
-                                                                          bottom:
-                                                                              5.0),
-                                                                      child:
-                                                                          TextField(
-                                                                        keyboardType:
-                                                                            TextInputType.number,
-                                                                        decoration:
-                                                                            InputDecoration(
-                                                                          border:
-                                                                              OutlineInputBorder(),
-                                                                          labelText:
-                                                                              'Your Amount',
-                                                                          hintText:
-                                                                              'Your Amount',
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                  : const SizedBox(),
-                                                              const SizedBox(
-                                                                  height: 15),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  if (responsevalue ==
-                                                                          null ||
-                                                                      responsevalue ==
-                                                                          "" ||
-                                                                      responsevalue ==
-                                                                          "null") {
-                                                                    showToast(
-                                                                        "Please select your response");
+                                                                      .grey
+                                                                      .shade700,
+                                                                  fontSize: 16),
+                                                              onChanged: (String
+                                                                  data) {
+                                                                setState(() {
+                                                                  if (data.toString() ==
+                                                                      "Reject") {
+                                                                    responsevalue =
+                                                                        "2";
+                                                                    response = data
+                                                                        .toString();
+                                                                    newamtcheck =
+                                                                        false;
+                                                                  } else if (data
+                                                                          .toString() ==
+                                                                      "Accept") {
+                                                                    responsevalue =
+                                                                        "1";
+                                                                    response = data
+                                                                        .toString();
+                                                                    newamtcheck =
+                                                                        false;
                                                                   } else {
-                                                                    print(offerrecievedlist[index]
+                                                                    responsevalue =
+                                                                        "3";
+                                                                    response = data
+                                                                        .toString();
+                                                                    newamtcheck =
+                                                                        true;
+                                                                  }
+                                                                });
+                                                              },
+                                                              items: responselist.map<
+                                                                  DropdownMenuItem<
+                                                                      String>>((String
+                                                                  value) {
+                                                                return DropdownMenuItem<
+                                                                    String>(
+                                                                  value: value,
+                                                                  child: Text(
+                                                                      value),
+                                                                );
+                                                              }).toList(),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 2),
+                                                          const Divider(
+                                                              height: 1,
+                                                              color:
+                                                                  Colors.grey,
+                                                              thickness: 1),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          newamtcheck
+                                                              ? const Padding(
+                                                                  padding: EdgeInsets.only(
+                                                                      top: 5.0,
+                                                                      bottom:
+                                                                          5.0),
+                                                                  child:
+                                                                      TextField(
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(),
+                                                                      labelText:
+                                                                          'Your Amount',
+                                                                      hintText:
+                                                                          'Your Amount',
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              : const SizedBox(),
+                                                          const SizedBox(
+                                                              height: 15),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              if (responsevalue ==
+                                                                      null ||
+                                                                  responsevalue ==
+                                                                      "" ||
+                                                                  responsevalue ==
+                                                                      "null") {
+                                                                showToast(
+                                                                    "Please select your response");
+                                                              } else {
+                                                                print(offerrecievedlist[
+                                                                            index]
+                                                                        [
+                                                                        'user_id']
+                                                                    .toString());
+                                                                print(offerrecievedlist[
+                                                                            index]
+                                                                        [
+                                                                        'post_ad_id']
+                                                                    .toString());
+                                                                print(
+                                                                    responsevalue);
+                                                                _offeraction(
+                                                                    offerrecievedlist[index]
+                                                                            [
+                                                                            'post_ad_id']
+                                                                        .toString(),
+                                                                    responsevalue,
+                                                                    offerrecievedlist[index]
                                                                             [
                                                                             'user_id']
                                                                         .toString());
-                                                                    print(offerrecievedlist[index]
-                                                                            [
-                                                                            'post_ad_id']
-                                                                        .toString());
-                                                                    print(
-                                                                        responsevalue);
-                                                                    _offeraction(
-                                                                        offerrecievedlist[index]['post_ad_id']
-                                                                            .toString(),
-                                                                        responsevalue,
-                                                                        offerrecievedlist[index]['user_id']
-                                                                            .toString());
-                                                                  }
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 45,
-                                                                  width: double
-                                                                      .infinity,
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  decoration: const BoxDecoration(
+                                                              }
+                                                            },
+                                                            child: Container(
+                                                              height: 45,
+                                                              width: double
+                                                                  .infinity,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration: const BoxDecoration(
+                                                                  color: Colors
+                                                                      .deepOrangeAccent,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              8.0))),
+                                                              child: const Text(
+                                                                  "Submit",
+                                                                  style: TextStyle(
                                                                       color: Colors
-                                                                          .deepOrangeAccent,
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(8.0))),
-                                                                  child: const Text(
-                                                                      "Submit",
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white)),
-                                                                ),
-                                                              )
-                                                            ])),
-                                                      ),
-                                                    );
-                                                  });
-                                                },
-                                                // builder: (context)=> StatefulBuilder(
-                                                //     builder: (context, setState){
-                                                //       return AlertDialog(
-                                                //         title: const Text("Response", style: TextStyle(color: Colors.deepOrangeAccent)),
-                                                //         content: Container(
-                                                //           child: SingleChildScrollView(
-                                                //               child: Column(
-                                                //                 children: [
-                                                //                   DropdownButtonHideUnderline(
-                                                //                      child: DropdownButton<String>(
-                                                //                      hint: const Text("Select", style: TextStyle(color: Colors.black, fontSize: 18)),
-                                                //                      value: response,
-                                                //                      elevation: 16,
-                                                //                      isExpanded: true,
-                                                //                      style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
-                                                //                       onChanged: (String data) {
-                                                //                       setState(() {
-                                                //                         if(data.toString() == "Reject"){
-                                                //                           responsevalue = "2";
-                                                //                           response = data.toString();
-                                                //                         }
-                                                //                         else if(data.toString() == "Accept"){
-                                                //                           responsevalue = "1";
-                                                //                           response = data.toString();
-                                                //                         }
-                                                //                         else{
-                                                //                            newamtcheck = true;
-                                                //                         }
-                                                //                       });
-                                                //                     },
-                                                //                     items: responselist.map<DropdownMenuItem<String>>((String value) {
-                                                //                       return DropdownMenuItem<String>(
-                                                //                         value: value,
-                                                //                         child: Text(value),
-                                                //                       );
-                                                //                     }).toList(),
-                                                //                   ),
-                                                //                 ),
-                                                //                   const SizedBox(height: 2),
-                                                //                   const Divider(height: 1, color: Colors.grey, thickness: 1),
-                                                //                   const SizedBox(height: 5),
-                                                //                   newamtcheck ? const TextField(
-                                                //                     decoration: InputDecoration(
-                                                //                       border: OutlineInputBorder(),
-                                                //                       labelText: 'Your Amount',
-                                                //                       hintText: 'Your Amount',
-                                                //                     ),
-                                                //                   ) : const SizedBox(),
-                                                //                   const SizedBox(height: 15),
-                                                //                   InkWell(onTap:() {
-                                                //                    if(responsevalue == null || responsevalue == "" || responsevalue == "null"){
-                                                //                      showToast("Please select your response");
-                                                //                    }
-                                                //                    else{
-                                                //                      print(offerrecievedlist[index]['user_id'].toString());
-                                                //                      print(offerrecievedlist[index]['post_ad_id'].toString());
-                                                //                      print(responsevalue);
-                                                //                     _offeraction(offerrecievedlist[index]['post_ad_id'].toString(), responsevalue, offerrecievedlist[index]['user_id'].toString());
-                                                //                    }
-                                                //                   },
-                                                //                   child: Container(
-                                                //                     height: 45,
-                                                //                     width: double.infinity,
-                                                //                     alignment: Alignment.center,
-                                                //                     decoration: const BoxDecoration(
-                                                //                         color: Colors.deepOrangeAccent,
-                                                //                         borderRadius: BorderRadius.all(Radius.circular(8.0))
-                                                //                     ),
-                                                //                     child: const Text("Submit", style: TextStyle(color: Colors.white)),
-                                                //                   ),
-                                                //                 )
-                                                //               ])
-                                                //           ),
-                                                //         ),
-                                                //
-                                                //       );
-                                                //     }
-                                                // )
-                                              );
+                                                                          .white)),
+                                                            ),
+                                                          )
+                                                        ])),
+                                                  ),
+                                                );
+                                              });
                                             },
-                                            child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: const BorderRadius.all(
+                                          );
+                                        },
+                                        child: Container(
+                                            padding: const EdgeInsets.all(4.0),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
                                                         Radius.circular(4.0)),
-                                                    border: Border.all(
-                                                        color: Colors.blue)),
-                                                child: const Text("Respond",
-                                                    style: TextStyle(
-                                                        color: Colors.blue))))
-                                        : _getstatus(offerrecievedlist[index]
-                                                ["offer_status"]
-                                            .toString())
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 5.0),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          "Qty: ${offerrecievedlist[index]['quantity']}"),
-                                      const SizedBox(width: 2.0),
-                                      Text(
-                                          "Duration: ${offerrecievedlist[index]['period']}"),
-                                      const SizedBox(width: 2.0),
-                                      Text(
-                                          "Rent type: ${offerrecievedlist[index]['rent_type_name']}"),
-                                    ]),
-                              ),
-                            ]),
+                                                border: Border.all(
+                                                    color: Colors.blue)),
+                                            child: const Text("Respond",
+                                                style: TextStyle(
+                                                    color: Colors.blue))))
+                                    : _getstatus(offerrecievedlist[index]
+                                            ["offer_status"]
+                                        .toString())
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Start Date : ${offerrecievedlist[index]['start_date']}",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "End Date : ${offerrecievedlist[index]['end_date']}",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      "Qty: ${offerrecievedlist[index]['quantity']}"),
+                                  const SizedBox(width: 2.0),
+                                  Text(
+                                      "Duration: ${offerrecievedlist[index]['period']}"),
+                                  const SizedBox(width: 2.0),
+                                  Text(
+                                      "Rent type: ${offerrecievedlist[index]['rent_type_name']}"),
+                                ]),
+                          ),
+                          const SizedBox(height: 5.0),
+                        ],
                       ),
                     ),
                   );
@@ -705,7 +585,7 @@ class _OffersScreenState extends State<OffersScreen> {
   }
 
   Future<void> _offerrecievedlist() async {
-    SharedPreferences prefs=await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _loading = true;
     });
@@ -720,7 +600,6 @@ class _OffersScreenState extends State<OffersScreen> {
           "Accept": "application/json",
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("token")}',
-
         });
     setState(() {
       _loading = false;
@@ -731,7 +610,8 @@ class _OffersScreenState extends State<OffersScreen> {
           showToast(jsonDecode(response.body)['ErrorMessage'].toString());
         } else {
           setState(() {
-            offerrecievedlist.addAll(jsonDecode(response.body)['Response']['data']);
+            offerrecievedlist
+                .addAll(jsonDecode(response.body)['Response']['data']);
           });
         }
       } else {
@@ -747,6 +627,8 @@ class _OffersScreenState extends State<OffersScreen> {
   }
 
   Future<void> _offerrecievedlistByDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       offerrecievedlist.clear();
       _loading = true;
@@ -760,7 +642,8 @@ class _OffersScreenState extends State<OffersScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -772,7 +655,8 @@ class _OffersScreenState extends State<OffersScreen> {
       } else {
         setState(() {
           _loading = false;
-          offerrecievedlist.addAll(jsonDecode(response.body)['Response']['data']);
+          offerrecievedlist
+              .addAll(jsonDecode(response.body)['Response']['data']);
         });
       }
     } else {
@@ -785,6 +669,7 @@ class _OffersScreenState extends State<OffersScreen> {
   }
 
   Future<void> _offerrecievedlistBySearch() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       offerrecievedlist.clear();
       _loading = true;
@@ -797,12 +682,14 @@ class _OffersScreenState extends State<OffersScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          offerrecievedlist.addAll(jsonDecode(response.body)['Response']['data']);
+          offerrecievedlist
+              .addAll(jsonDecode(response.body)['Response']['data']);
           _loading = false;
         });
       } else {

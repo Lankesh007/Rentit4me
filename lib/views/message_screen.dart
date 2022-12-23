@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
@@ -208,135 +210,147 @@ class _MessageScreenState extends State<MessageScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                  child: ListView.separated(
-                itemCount: messageslist.length,
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(),
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      messageslist[index]['app_url'] == null ||
-                              messageslist[index]['app_url'] == "" ||
-                              messageslist[index]['app_url'] == "null"
-                          ? ""
-                          : messageslist[index]['app_url'] == "offers-made"
-                              ? Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) =>
-                                          OffersViewScreen())))
-                              : messageslist[index]['app_url'] == "orders-made"
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) =>
-                                              OrderViewScreen())))
-                                  : messageslist[index]['app_url'] ==
-                                          "offers-recieved"
-                                      ? Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: ((context) =>
-                                                  OffersViewScreen())))
-                                      : messageslist[index]['app_url'] ==
-                                              "listings"
-                                          ? Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: ((context) =>
-                                                      AlllistingScreen())))
-                                          : messageslist[index]['app_url'] ==
-                                                  "membership/get"
-                                              ? Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: ((context) =>
-                                                          UpgradeMemberShip())))
-                                              : messageslist[index]
-                                                          ['app_url'] ==
-                                                      "my-orders"
-                                                  ? Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: ((context) =>
-                                                              OrderViewScreen())))
-                                                  : messageslist[index]
-                                                              ['app_url'] ==
-                                                          "trusted-badge-payment"
-                                                      ? Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: ((context) =>
-                                                                  TrustedBadgePaymentDetails())))
-                                                      : "";
-                    },
-                    child: Card(
-                      elevation: 4.0,
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+              messageslist.isEmpty
+                  ? Column(
+                      children: const [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text("No records found !!"),
+                      ],
+                    )
+                  : Expanded(
+                      child: ListView.separated(
+                      itemCount: messageslist.length,
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          onTap: () {
+                            messageslist[index]['app_url'] == null ||
+                                    messageslist[index]['app_url'] == "" ||
+                                    messageslist[index]['app_url'] == "null"
+                                ? ""
+                                : messageslist[index]['app_url'] ==
+                                        "offers-made"
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) =>
+                                                OffersViewScreen())))
+                                    : messageslist[index]['app_url'] ==
+                                            "orders-made"
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: ((context) =>
+                                                    OrderViewScreen())))
+                                        : messageslist[index]['app_url'] ==
+                                                "offers-recieved"
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: ((context) =>
+                                                        OffersViewScreen())))
+                                            : messageslist[index]['app_url'] ==
+                                                    "listings"
+                                                ? Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: ((context) =>
+                                                            AlllistingScreen())))
+                                                : messageslist[index]['app_url'] ==
+                                                        "membership/get"
+                                                    ? Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: ((context) =>
+                                                                UpgradeMemberShip())))
+                                                    : messageslist[index]
+                                                                ['app_url'] ==
+                                                            "my-orders"
+                                                        ? Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: ((context) => OrderViewScreen())))
+                                                        : messageslist[index]['app_url'] == "trusted-badge-payment"
+                                                            ? Navigator.push(context, MaterialPageRoute(builder: ((context) => TrustedBadgePaymentDetails())))
+                                                            : "";
+                          },
+                          child: Card(
+                            elevation: 4.0,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Type",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                              SizedBox(height: 5.0),
+                                              Text(
+                                                  messageslist[index]['type']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black))
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text("Created At",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                              SizedBox(height: 5.0),
+                                              Text(
+                                                  messageslist[index]
+                                                          ['created_at']
+                                                      .toString()
+                                                      .split("T")[0]
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black))
+                                            ],
+                                          ),
+                                        ]),
+                                    const SizedBox(height: 10.0),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        Text("Type",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500)),
-                                        SizedBox(height: 5.0),
+                                        const SizedBox(height: 5.0),
+                                        Html(
+                                            data: messageslist[index]['message']
+                                                .toString()),
                                         Text(
-                                            messageslist[index]['type']
-                                                .toString(),
-                                            style:
-                                                TextStyle(color: Colors.black))
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text("Created At",
+                                            messageslist[index]['app_url'] ??
+                                                "",
                                             style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500)),
-                                        SizedBox(height: 5.0),
-                                        Text(
-                                            messageslist[index]['created_at']
-                                                .toString()
-                                                .split("T")[0]
-                                                .toString(),
-                                            style:
-                                                TextStyle(color: Colors.black))
+                                                color: Colors.blue[800]))
                                       ],
-                                    ),
+                                    )
                                   ]),
-                              const SizedBox(height: 10.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 5.0),
-                                  Html(
-                                      data: messageslist[index]['message']
-                                          .toString()),
-                                  Text(messageslist[index]['app_url'] ?? "",
-                                      style: TextStyle(color: Colors.blue[800]))
-                                ],
-                              )
-                            ]),
-                      ),
-                    ),
-                  );
-                },
-              ))
+                            ),
+                          ),
+                        );
+                      },
+                    ))
             ],
           ),
         ),
@@ -376,27 +390,33 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
-  Future<void> _messageslistByDate() async {
+  Future _messageslistByDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       messageslist.clear();
       _loading = true;
     });
-    final body = {
-      "user_id": prefs.getString('userid'),
-      "from_date": startdate,
-      "to_date": enddate
-    };
-    var response = await http.post(Uri.parse(BASE_URL + messagesurl),
-        body: jsonEncode(body),
+    // final body = {
+    //   // "user_id": prefs.getString('userid'),
+    //   "from_date": startdate.toString(),
+    //   "to_date": enddate.toString(),
+    // };
+    var response = await http.get(Uri.parse(BASE_URL + messagesurl),
+        // body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
+
+    var result = jsonDecode(response.body);
+    log("--->$result");
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          messageslist.addAll(jsonDecode(response.body)['Response']['Data']);
+          messageslist.clear();
+          messageslist
+              .addAll(jsonDecode(response.body)['Response']['Data']['data']);
           _loading = false;
         });
       } else {
@@ -419,20 +439,22 @@ class _MessageScreenState extends State<MessageScreen> {
       messageslist.clear();
       _loading = true;
     });
-    final body = {
-      "user_id": prefs.getString('userid'),
-      "search": searchvalue,
-    };
-    var response = await http.post(Uri.parse(BASE_URL + messagesurl),
-        body: jsonEncode(body),
+    // final body = {
+    //   "user_id": prefs.getString('userid'),
+    //   "search": searchvalue,
+    // };
+    var response = await http.get(Uri.parse(BASE_URL + messagesurl),
+        // body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
         setState(() {
-          messageslist.addAll(jsonDecode(response.body)['Response']['Data']);
+          messageslist
+              .addAll(jsonDecode(response.body)['Response']['Data']['data']);
           _loading = false;
         });
       } else {

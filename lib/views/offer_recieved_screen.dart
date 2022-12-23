@@ -1033,7 +1033,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         });
     print(response.body);
     if (response.statusCode == 200) {
-      if (jsonDecode(response.body)['Response']['data'].length == 0) {
+      if (jsonDecode(response.body)['ErrorCode'] == 1) {
         setState(() {
           _loading = false;
         });
@@ -1042,7 +1042,7 @@ class _OfferRecievedScreenState extends State<OfferRecievedScreen> {
         setState(() {
           _loading = false;
           offerrecievedlist
-              .addAll(jsonDecode(response.body)['Response']['data']);
+              .addAll(jsonDecode(response.body)['Response']['data']['data']);
         });
       }
     } else {

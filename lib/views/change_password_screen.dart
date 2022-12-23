@@ -9,6 +9,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
 import 'package:rentit4me_new/themes/constant.dart';
 import 'package:rentit4me_new/views/account.dart';
+import 'package:rentit4me_new/views/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -339,21 +340,32 @@ class _ChangePasswordScreensState extends State<ChangePasswordScreens> {
         setState(() {
           _loading = false;
         });
+        currentpassword.isEmpty;
+        newpassword.isEmpty;
+        confirmpassword.isEmpty;
+        showToast(jsonDecode(response.body)['ErrorMessage']);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (route) => false);
 
         // prefs.clear();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AccountViewScreen()));
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => HomeScreen()));
       } else {
+        showToast(jsonDecode(response.body)['ErrorMessage']);
+
         setState(() {
           _loading = false;
         });
       }
     } else {
+      showToast(jsonDecode(response.body)['ErrorMessage']);
       setState(() {
         _loading = false;
       });
-      log(response.body);
-      throw Exception('Failed to get data due to ${response.body}');
+      // log(response.body);
+      // throw Exception('Failed to get data due to ${response.body}');
     }
   }
 

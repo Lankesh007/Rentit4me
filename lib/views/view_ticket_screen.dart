@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -104,6 +103,7 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
+                                          
                                           const Text("Ticket ID",
                                               style: TextStyle(
                                                   color: Colors.black,
@@ -364,10 +364,10 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
                                                                     if (usertype ==
                                                                         "3") {
                                                                       _save(
-                                                                          "${sliderpath}assets/consumer/attachment/${getcommentdatalist[index]['attachment']}");
+                                                                          "${devImage}assets/consumer/attachment/${getcommentdatalist[index]['attachment']}");
                                                                     } else {
                                                                       _save(
-                                                                          "${sliderpath}assets/business/attachment/${getcommentdatalist[index]['attachment']}");
+                                                                          "${devImage}assets/business/attachment/${getcommentdatalist[index]['attachment']}");
                                                                     }
                                                                   },
                                                                   child: Text(
@@ -507,10 +507,10 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
                                                                     if (usertype ==
                                                                         "3") {
                                                                       _save(
-                                                                          "${sliderpath}assets/consumer/attachment/${getcommentdatalist[index]['attachment']}");
+                                                                          "${devImage}assets/consumer/attachment/${getcommentdatalist[index]['attachment']}");
                                                                     } else {
                                                                       _save(
-                                                                          "${sliderpath}assets/business/attachment/${getcommentdatalist[index]['attachment']}");
+                                                                          "${devImage}assets/business/attachment/${getcommentdatalist[index]['attachment']}");
                                                                     }
                                                                   },
                                                                   child: Text(
@@ -932,11 +932,11 @@ class _ViewTicketScreenState extends State<ViewTicketScreen> {
 
   getAttachmentPath(String usertype, String imagename) {
     if (usertype == "1") {
-      return "${sliderpath}assets/admin/ticket-attachment/$imagename";
+      return "${devImage}assets/admin/ticket-attachment/$imagename";
     } else if (usertype == "3") {
-      return "${sliderpath}assets/consumer/attachment/$imagename";
+      return "${devImage}assets/consumer/attachment/$imagename";
     } else {
-      return "${sliderpath}assets/business/attachment/$imagename";
+      return "${devImage}assets/business/attachment/$imagename";
     }
   }
 }

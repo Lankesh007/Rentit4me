@@ -583,6 +583,7 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 5.0),
+
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
@@ -946,8 +947,9 @@ class _OfferMadeScreenState extends State<OfferMadeScreen> {
           padding: const EdgeInsets.all(4.0),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-              border: Border.all(color:Appcolors.secondaryColor)),
-          child: const Text("Edit", style: TextStyle(color:Appcolors.secondaryColor)),
+              border: Border.all(color: Appcolors.secondaryColor)),
+          child: const Text("Edit",
+              style: TextStyle(color: Appcolors.secondaryColor)),
         ),
       );
     } else if (statusvalue == "1" && paystatus == "0") {

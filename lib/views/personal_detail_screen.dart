@@ -4,14 +4,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:rentit4me_new/network/api.dart';
@@ -1720,25 +1718,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
     if (result['ErrorCode'] == 0) {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => BillingAndTaxation()));
-      Fluttertoast.showToast(
-        msg: showToast(result['ErrorMessage']),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green.shade700,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+    showToast(result['ErrorMessage']);
+       
     } else {
-      Fluttertoast.showToast(
-        msg: showToast(result['ErrorMessage']),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green.shade700,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+    showToast(result['ErrorMessage']);
+     
     }
   }
 
@@ -1866,25 +1850,11 @@ class _PersonalDetailScreenState extends State<PersonalDetailScreen> {
         if (result['ErrorCode'] == 0) {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => BillingAndTaxation()));
-          Fluttertoast.showToast(
-            msg: showToast(result['ErrorMessage']),
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green.shade700,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+          showToast(result['ErrorMessage']);
+            
         } else {
-          Fluttertoast.showToast(
-            msg: showToast(result['ErrorMessage']),
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green.shade700,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+           showToast(result['ErrorMessage']);
+           
         }
       }
     } on Exception catch (e) {}

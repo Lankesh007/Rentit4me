@@ -48,7 +48,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Icons.arrow_back,
               color: kPrimaryColor,
             )),
-        title: Text("Payment Transactions", style: TextStyle(color: kPrimaryColor)),
+        title: Text("Payment Transactions",
+            style: TextStyle(color: kPrimaryColor)),
         centerTitle: true,
       ),
       body: ModalProgressHUD(
@@ -294,7 +295,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       "null"
                                               ? SizedBox()
                                               : Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text("Discount : ",
                                                         style: TextStyle(
@@ -382,8 +384,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       } else {
         setState(() {
           _loading = false;
-          paymentlist
-              .addAll(jsonDecode(response.body)['Response']['Transactions']['data']);
+          paymentlist.addAll(
+              jsonDecode(response.body)['Response']['Transactions']['data']);
         });
       }
     } else {
@@ -410,11 +412,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
-      if (jsonDecode(response.body)['Response']['Transactions'].length == 0) {
+      if (jsonDecode(response.body)['Response']['Transactions']['data'].length == 0) {
         setState(() {
           _loading = false;
         });
@@ -423,7 +426,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         setState(() {
           _loading = false;
           paymentlist
-              .addAll(jsonDecode(response.body)['Response']['Transactions']);
+              .addAll(jsonDecode(response.body)['Response']['Transactions']['data']);
         });
       }
     } else {
@@ -449,11 +452,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
         body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString("token")}',
         });
     print(response.body);
     if (response.statusCode == 200) {
-      if (jsonDecode(response.body)['Response']['Transactions'].length == 0) {
+      if (jsonDecode(response.body)['Response']['Transactions']['data'].length == 0) {
         setState(() {
           _loading = false;
         });
@@ -462,7 +466,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         setState(() {
           _loading = false;
           paymentlist
-              .addAll(jsonDecode(response.body)['Response']['Transactions']);
+              .addAll(jsonDecode(response.body)['Response']['Transactions']['data']);
         });
       }
     } else {

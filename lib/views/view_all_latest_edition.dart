@@ -555,14 +555,76 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
     String city = preferences.getString('city');
 
     var url = Apis.browseAdsApi;
-    var body = {
-      "country": country.toString(),
-      "city": city == null || city == "" ? "" : city,
-      "state": state == null || state == "" ? "" : state,
-      "search": "",
-      "q": searchController.text.toString(),
-      "page": page.toString(),
-    };
+    var body;
+    if (tenureValue.toString() == "Select Tenure" &&
+        sortByValue.toString() == "Sort by") {
+      body = {
+        "country": country.toString(),
+        "city": city == null || city == "" ? "" : city,
+        "state": state == null || state == "" ? "" : state,
+        "search": "",
+        "q": searchController.text.toString(),
+        "page": page.toString(),
+      };
+    } else if (tenureValue.toString() != "Select Tenure"&&sortByValue=="Sort by") {
+      body = {
+        "country": country.toString(),
+        "city": city == null || city == "" ? "" : city,
+        "state": state == null || state == "" ? "" : state,
+        "search": "",
+        "tenure": tenureValue.toString() == null
+            ? ""
+            : tenureValue.toString() == ""
+                ? ""
+                : tenureValue.toString(),
+        "q": searchController.text.toString(),
+        "page": page.toString(),
+      };
+    } else if (sortByValue.toString() != "Sort by" && tenureValue=="Select Tenure") {
+      body = {
+        "country": country.toString(),
+        "city": city == null || city == "" ? "" : city,
+        "state": state == null || state == "" ? "" : state,
+        "search": "",
+        "sortby": sortFilterValue.toString() == null
+            ? ""
+            : sortFilterValue.toString() == ""
+                ? ""
+                : sortFilterValue.toString(),
+        "q": searchController.text.toString(),
+        "page": page.toString(),
+      };
+    } else if (sortByValue.toString() != "Sort by" &&
+        tenureValue.toString() != "Select Tenure") {
+      body = {
+        "country": country.toString(),
+        "city": city == null || city == "" ? "" : city,
+        "state": state == null || state == "" ? "" : state,
+        "search": "",
+        "tenure": tenureValue.toString() == null
+            ? ""
+            : tenureValue.toString() == ""
+                ? ""
+                : tenureValue.toString(),
+        "sortby": sortFilterValue.toString() == null
+            ? ""
+            : sortFilterValue.toString() == ""
+                ? ""
+                : sortFilterValue.toString(),
+        "q": searchController.text.toString(),
+        "page": page.toString(),
+      };
+    } else {
+      body = {
+        "country": country.toString(),
+        "city": city == null || city == "" ? "" : city,
+        "state": state == null || state == "" ? "" : state,
+        "search": "",
+        "q": searchController.text.toString(),
+        "page": page.toString(),
+      };
+    }
+
     var res = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(res);
 

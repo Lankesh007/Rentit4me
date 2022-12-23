@@ -220,7 +220,25 @@ class _UpgradeMemberShipState extends State<UpgradeMemberShip> {
                                         child: membershipplanlist[index]
                                                     ['current_plan'] ==
                                                 true
-                                            ? InkWell(
+                                            ?membershipplanlist[index]
+                                                    ['type'] =="free"
+                                                ?  Container(
+
+                                                    width: size.width * 0.25,
+                                                    height: 35,
+                                                    alignment:
+                                                        AlignmentDirectional
+                                                            .center,
+                                                    decoration: const BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8.0))),
+                                                    child: Text(" Renew Plan",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 14))):InkWell(
                                                 onTap: () {
                                                   if (pageswitch == "Home") {
                                                     if (membershipplanlist[

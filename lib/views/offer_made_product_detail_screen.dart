@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
@@ -128,7 +130,7 @@ class _OfferMadeProductDetailScreenState
                                             'assets/images/no_image.jpg'),
                                       )
                                     : SizedBox(
-                                        height: height*0.4,
+                                        height: height * 0.4,
                                         width: double.infinity,
                                         child: CachedNetworkImage(
                                           imageUrl: devImage + productimage,
@@ -806,9 +808,11 @@ class _OfferMadeProductDetailScreenState
       _loading = false;
     });
 
+    var result = jsonDecode(response.body);
+    log("response---->$result");
+
     if (response.statusCode == 200) {
       var data = json.decode(response.body)['Response'];
-      // print(data['Offer Details']);
       setState(() {
         productimage = data['Image']['upload_base_path'] +
             data['Image']['file_name'].toString();
