@@ -1,15 +1,13 @@
-// ignore_for_file: invalid_return_type_for_catch_error
-
 import 'dart:convert';
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:rentit4me_new/blocs/network_bloc/network_bloc.dart';
-import 'package:rentit4me_new/utils/dialog_utils.dart';
 import 'package:rentit4me_new/views/PushNotificationService.dart';
 import 'package:rentit4me_new/views/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:upgrader/upgrader.dart';
 
 // const AndroidNotificationChannel channel = AndroidNotificationChannel(
 //   "id",
@@ -67,10 +65,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // }
 
 Future<void> main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
+  await Upgrader.clearSavedSettings();
+
   await PushNotificationService().setupInteractedMessage();
-  
+
   // await Firebase.initializeApp();
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessangingBackgroundHandler);
   // await flutterLocalNotificationsPlugin
@@ -84,10 +83,10 @@ Future<void> main() async {
   // );
   runApp(MyApp());
   RemoteMessage initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      // App received a notification when it was killed
-    }
+      await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    // App received a notification when it was killed
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -134,80 +133,20 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  bool updateer = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => InternetBloc(),
         child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Rentit4me',
-          theme: ThemeData(
-            fontFamily: "Regular",
-            primarySwatch: Colors.indigo,
-          ),
-          home: _flexibleUpdateAvailable == false
-              ? SplashScreen()
-              : Scaffold(
-                  key: scaffoldKey,
-                  appBar: AppBar(
-                    backgroundColor: Appcolors.primaryColor,
-                    title: const Text('Rentit4me Have A New Version'),
-                  ),
-                  body: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        Center(
-                          child: Text('Update info: $_updateInfo'),
-                        ),
-                        ElevatedButton(
-                          child: Text('Check for Update'),
-                          onPressed: () => checkForUpdate(),
-                        ),
-                        ElevatedButton(
-                          onPressed: _updateInfo.updateAvailability ==
-                                  UpdateAvailability.updateAvailable
-                              ? () {
-                                  InAppUpdate.performImmediateUpdate()
-                                      .catchError(
-                                          (e) => showSnack(e.toString()));
-                                }
-                              : null,
-                          child: Text('Perform immediate update'),
-                        ),
-                        ElevatedButton(
-                          onPressed: _updateInfo.updateAvailability ==
-                                  UpdateAvailability.updateAvailable
-                              ? () {
-                                  InAppUpdate.startFlexibleUpdate().then((_) {
-                                    setState(() {
-                                      _flexibleUpdateAvailable = true;
-                                    });
-                                  }).catchError((e) {
-                                    showSnack(e.toString());
-                                  });
-                                }
-                              : null,
-                          child: Text('Start flexible update'),
-                        ),
-                        ElevatedButton(
-                          onPressed: !_flexibleUpdateAvailable
-                              ? null
-                              : () {
-                                  InAppUpdate.completeFlexibleUpdate()
-                                      .then((_) {
-                                    showSnack("Success!");
-                                  }).catchError((e) {
-                                    showSnack(e.toString());
-                                  });
-                                },
-                          child: Text('Complete flexible update'),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-        )
+            debugShowCheckedModeBanner: false,
+            title: 'Rentit4me',
+            theme: ThemeData(
+              fontFamily: "Regular",
+              primarySwatch: Colors.indigo,
+            ),
+            home: SplashScreen())
         //  MaterialApp(
         //     debugShowCheckedModeBanner: false,
         //     //theme: lightThemeData(context),

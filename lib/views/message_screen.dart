@@ -401,7 +401,8 @@ class _MessageScreenState extends State<MessageScreen> {
     //   "from_date": startdate.toString(),
     //   "to_date": enddate.toString(),
     // };
-    var response = await http.get(Uri.parse(BASE_URL + messagesurl),
+    print("$BASE_URL$messagesurl?from_date=$startdate&end_date=$enddate");
+    var response = await http.get(Uri.parse("$BASE_URL$messagesurl?from_date=$startdate&end_date=$enddate"),
         // body: jsonEncode(body),
         headers: {
           "Accept": "application/json",
@@ -443,7 +444,7 @@ class _MessageScreenState extends State<MessageScreen> {
     //   "user_id": prefs.getString('userid'),
     //   "search": searchvalue,
     // };
-    var response = await http.get(Uri.parse(BASE_URL + messagesurl),
+    var response = await http.get(Uri.parse("$BASE_URL$messagesurl?search=$searchvalue"),
         // body: jsonEncode(body),
         headers: {
           "Accept": "application/json",

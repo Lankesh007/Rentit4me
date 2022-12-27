@@ -582,7 +582,7 @@ class _SignupConsumerScreenState extends State<SignupConsumerScreen> {
       'Authorization': 'Bearer ${prefs.getString("token")}',
     });
     if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-      showToast(jsonDecode(response.body)['Response']['otp'].toString());
+      // showToast(jsonDecode(response.body)['Response']['otp'].toString());
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

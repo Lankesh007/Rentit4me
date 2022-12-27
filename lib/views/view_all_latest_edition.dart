@@ -659,6 +659,8 @@ class _ViewAllLatestAdditionState extends State<ViewAllLatestAddition> {
       "tenure": tenureValue.toString(),
       "sortby": sortFilterValue.toString(),
       "page": currentPage.toString(),
+      "q":searchController.text.toString(),
+      
     };
     var res = await APIHelper.apiPostRequest(url, body);
     var result = jsonDecode(res);

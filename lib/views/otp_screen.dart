@@ -45,7 +45,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getprefs();
     super.initState();
     initConnectivity();
@@ -281,7 +280,8 @@ class _OtpScreenState extends State<OtpScreen> {
     });
     log(response.body.toString());
     if (jsonDecode(response.body)['ErrorCode'].toString() == "0") {
-      showToast(jsonDecode(response.body)['Response']['otp'].toString());
+      showToast("Otp Sent Successfully");
+      // showToast(jsonDecode(response.body)['Response']['otp'].toString());
       setState(() {
         otp = "";
         otp = jsonDecode(response.body)['Response']['otp'].toString();
