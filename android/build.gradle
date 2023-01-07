@@ -16,8 +16,14 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // maven {
+        //     url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
+        // }
     }
 }
+
+// def qbSdkVersion = '3.9.1'
+
 
 rootProject.buildDir = '../build'
 subprojects {

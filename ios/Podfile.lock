@@ -8,6 +8,8 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
+  - device_info_plus (0.0.1):
+    - Flutter
   - FBAEMKit (14.0.0):
     - FBSDKCoreKit_Basics (= 14.0.0)
   - FBSDKCoreKit (14.0.0):
@@ -16,19 +18,19 @@ PODS:
   - FBSDKCoreKit_Basics (14.0.0)
   - FBSDKLoginKit (14.0.0):
     - FBSDKCoreKit (= 14.0.0)
-  - Firebase/CoreOnly (10.2.0):
-    - FirebaseCore (= 10.2.0)
-  - Firebase/Messaging (10.2.0):
+  - Firebase/CoreOnly (10.3.0):
+    - FirebaseCore (= 10.3.0)
+  - Firebase/Messaging (10.3.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.2.0)
-  - firebase_core (2.3.0):
-    - Firebase/CoreOnly (= 10.2.0)
+    - FirebaseMessaging (~> 10.3.0)
+  - firebase_core (2.4.0):
+    - Firebase/CoreOnly (= 10.3.0)
     - Flutter
-  - firebase_messaging (14.1.2):
-    - Firebase/Messaging (= 10.2.0)
+  - firebase_messaging (14.2.0):
+    - Firebase/Messaging (= 10.3.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (10.2.0):
+  - FirebaseCore (10.3.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
@@ -39,7 +41,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.2.0):
+  - FirebaseMessaging (10.3.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.2)
@@ -117,6 +119,8 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
+  - package_info_plus (0.4.5):
+    - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
@@ -151,6 +155,7 @@ PODS:
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
@@ -165,6 +170,7 @@ DEPENDENCIES:
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - location (from `.symlinks/plugins/location/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - quickblox_sdk (from `.symlinks/plugins/quickblox_sdk/ios`)
@@ -206,6 +212,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
@@ -234,6 +242,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   permission_handler:
@@ -258,17 +268,18 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   FBAEMKit: d00064597439e75885c70d9adbcb5f3e9ad84f5d
   FBSDKCoreKit: e5d3acfffe5063a9d0b967ba2ad1f5afc460cf43
   FBSDKCoreKit_Basics: 1ff46a12e80f0b66e6c00e1ef32d6a5b5b9008a5
   FBSDKLoginKit: dbe86ef42ab142f3bd0f1c904a21bb33f31c5569
-  Firebase: a3ea7eba4382afd83808376edb99acdaff078dcf
-  firebase_core: db1432de826785171029b7c1a26e5b22ce1dd477
-  firebase_messaging: 7d54a2ef65a4a28c5729241bbdd5854d305e86ec
-  FirebaseCore: 813838072b797b64f529f3c2ee35e696e5641dd1
+  Firebase: f92fc551ead69c94168d36c2b26188263860acd9
+  firebase_core: 6f2f753e316765799d88568232ed59e300ff53db
+  firebase_messaging: 048cb84d3f87969d37a6947b32d0009eaf6f6b3c
+  FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: 29b76f784d607df8b2a1259d73c3f04f1210137b
   FirebaseInstallations: e2f26126089dcf41e215f7b8925af8d953c7d602
-  FirebaseMessaging: cc9f40f5b7494680f3844d08e517e92aa4e8d9f7
+  FirebaseMessaging: e345b219fd15d325f0cf2fef28cb8ce00d851b3f
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_facebook_auth: 8992ef870d441b8403a3b6b9859e7932605407cf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -289,6 +300,7 @@ SPEC CHECKSUMS:
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
